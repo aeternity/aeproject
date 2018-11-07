@@ -68,7 +68,7 @@ async function run() {
 }
 
 const installLibraries = async () => {
-  const fileSource = `${artifactsDir}/package.json`;
+  const fileSource = `../../package.json`;
   copyFileOrDir(fileSource, "./package.json")
   await installAeppSDK();
 }
