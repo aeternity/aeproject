@@ -32,12 +32,14 @@ const run = async (path) => {
   }
 
   testDirectory = path;
+  console.log(testDirectory)
 
   if (!path.includes(workingDirectory)) {
     testDirectory = `${process.cwd()}/${path}`;
   }
-
-  const files = await utils.getFiles(`${process.cwd()}/${path}/`, `/.*\.(js|es|es6|jsx|sol)$/`);
+  testDirectory = `${process.cwd()}/${path}`;
+  console.log(testDirectory)
+  const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\.(js|es|es6|jsx|sol)$`);
 
   await aeprojectTest.run(files);
 }

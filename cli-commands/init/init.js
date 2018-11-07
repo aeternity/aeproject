@@ -28,7 +28,7 @@ const {
 
 const testDir = './test';
 const testTemplateFile = 'exampleTests.js';
-const testFileDestination = `${testDir}/example.js`;
+const testFileDestination = `${testDir}/exampleTest.js`;
 
 const deployDir = './deploy';
 const deployTemplateFile = 'deployTemplate.js';
