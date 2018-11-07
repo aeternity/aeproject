@@ -65,7 +65,7 @@ secretKey:
     publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
 
 List of all default wallets
-
+```json
 [
 
 {
@@ -159,7 +159,7 @@ secretKey:
 }
 
 ]
-
+```
   
   
   
