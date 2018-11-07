@@ -22,7 +22,9 @@ import {
   createIfExistsFolder,
   copyFileOrDir,
 } from '../../utils.js'
-const { spawn } = require('promisify-child-process');
+const {
+  spawn
+} = require('promisify-child-process');
 
 const testDir = './test';
 const testTemplateFile = 'exampleTests.js';
@@ -66,7 +68,7 @@ async function run() {
 }
 
 const installLibraries = async () => {
-  const fileSource = `../../package.json`;
+  const fileSource = `${artifactsDir}/package.json`;
   copyFileOrDir(fileSource, "./package.json")
   await installAeppSDK();
 }
