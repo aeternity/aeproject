@@ -16,14 +16,12 @@
  */
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 
-import {
-  printError,
-  print
-} from '../../../utils/print'
+const { printError, print } = require('./../../utils');
 const utils = require('../../utils.js');
 const { spawn } = require('promisify-child-process');
 const dockerCLI = require('docker-cli-js');
-const cli = require('./../../../utils/cli');
+const AeSDK = require('@aeternity/aepp-sdk');
+const cli = AeSDK.Cli;
 const docker = new dockerCLI.Docker();
 
 const config = {

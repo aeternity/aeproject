@@ -16,9 +16,9 @@
  */
 
 require = require('esm')(module /*, options */) // use to handle es6 import/export
-import { printError, print } from '../../../utils/print'
-const utils = require('../../utils.js');
-const readFile = require('../../../utils/helpers').readFile;
+const { printError, print } = require('./../../utils');
+const utils = require('./../../utils');
+const readFile = require('../../utils').readFile;
 const { spawn } = require('promisify-child-process');
 
 async function compileAndPrint(file){

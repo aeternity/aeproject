@@ -22,9 +22,7 @@ import {
   createIfExistsFolder,
   copyFileOrDir,
 } from '../../utils.js'
-const {
-  spawn
-} = require('promisify-child-process');
+const { spawn } = require('promisify-child-process');
 
 const testDir = './test';
 const testTemplateFile = 'exampleTests.js';

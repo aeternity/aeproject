@@ -15,11 +15,7 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 require = require('esm')(module /*, options */ ) // use to handle es6 import/export
-import {
-  printError,
-  print
-} from '../../../utils/print'
-
+const { printError, print } = require('./../../utils');
 const Mocha = require("mocha");
 const originalRequire = require("original-require");
 const chai = require("chai");
