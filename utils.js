@@ -21,7 +21,7 @@ const AeSDK = require('@aeternity/aepp-sdk');
 const {
   spawn
 } = require('promisify-child-process');
-const cli = AeSDK.Universal;
+const Universal = AeSDK.Universal;
 
 const config = {
   host: "http://localhost:3001/",
@@ -81,14 +81,31 @@ const getClient = async function () {
   let client;
 
   await handleApiError(async () => {
-    client = await cli.initClient({
-      url: config.host,
-      keypair: config.keyPair,
-      internalUrl: config.internalHost
-    })
+    client = await Universal(
+      { url: config.host, 
+        process, 
+        keypair: config.keyPair, 
+        internalUrl: config.internalHost, 
+        forceCompatibility: true, 
+        nativeMode: true 
+      })
   })
 
   return client;
+}
+
+const handleApiError = async (fn) => {
+  try {
+    return await fn()
+  } catch (e) {
+    const response = e.response
+    logApiError(response && response.data ? response.data.reason : e)
+    process.exit(1)
+  }
+}
+
+function logApiError (error) { 
+  printError(`API ERROR: ${error}`) 
 }
 
 const sleep = (ms) => {
