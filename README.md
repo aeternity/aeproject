@@ -1,41 +1,41 @@
-\# AEProject
+# AEProject
 
-\*\*AEProject\*\* is an aeternity framework which helps with setting up an
+**AEProject** is an aeternity framework which helps with setting up an
 project.
 
 The framework is built in the JavaScript SDK and no additional installations are
 needed.
 
-\#\# Initialize AEProject
+## Initialize AEProject
 
-\`\`\`
+```
 
 aeproject init
 
-\`\`\`
+```
 
-The \*\*init\*\* command creates aeternity project structure with a few folders
+The **init** command creates aeternity project structure with a few folders
 in which the developer can create
 
 the contracts, tests and deployment files and scripts. Docker configuration
 files are also created, for easy use of the aeternity blockchain network.
 
-\#\# Compile sophia contracts
+## Compile sophia contracts
 
-The \*\*compile\*\* command compiles sophia contract. Files should be with .aes
-file extension. Default directory is \$projectDir/contracts.
+The **compile** command compiles sophia contract. Files should be with .aes
+file extension. Default directory is $projectDir/contracts.
 
-\#\# Run unit tests
+## Run unit tests
 
-\`\`\`
+```
 
 aeproject test
 
-\`\`\`
+```
 
-The \*\*test\*\* command help developers run their unit tests for aeternity
+The **test** command help developers run their unit tests for aeternity
 proejcts. The command executes the tests scripts that are located in the
-\*\*test\*\* folder
+**test** folder
 
 of your aeternity project.
 
@@ -44,15 +44,15 @@ of your aeternity project.
   
 
 
-\#\# Start docker epoch
+## Start docker epoch
 
-\`\`\`
+```
 
 aeproject epoch
 
-\`\`\`
+```
 
-The \*\*epoch\*\* command help developers run their local network on docker.
+The **epoch** command help developers run their local network on docker.
 Local network contains 3 nodes. To spawn fully functional network takes up to 1
 minute. 30 seconds takes to up docker containers and up to 30 seconds to fund
 default wallets.

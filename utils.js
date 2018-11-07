@@ -18,8 +18,10 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
-const { spawn } = require('promisify-child-process');
-const cli = AeSDK.Cli;
+const {
+  spawn
+} = require('promisify-child-process');
+const cli = AeSDK.Universal;
 
 const config = {
   host: "http://localhost:3001/",
