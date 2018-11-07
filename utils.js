@@ -17,7 +17,9 @@
 
 const fs = require('fs-extra');
 const dir = require('node-dir');
-const cli = require('./../utils/cli');
+const AeSDK = require('@aeternity/aepp-sdk');
+const { spawn } = require('promisify-child-process');
+const cli = AeSDK.Cli;
 
 const config = {
   host: "http://localhost:3001/",
@@ -95,6 +97,21 @@ const sleep = (ms) => {
   }
 }
 
+const execute = async (command, args, options = {}) => {
+  let result = ''
+  const child = spawn('aeproject', [command, ...args], options)
+
+  child.stdout.on('data', (data) => {
+    console.log(data.toString())
+  })
+
+  child.stderr.on('data', (data) => {
+    console.log(data.toString())
+  })
+
+  await child;
+}
+
 module.exports = {
   print,
   printError,
@@ -102,5 +119,6 @@ module.exports = {
   copyFileOrDir,
   getFiles,
   getClient,
-  sleep
+  sleep,
+  execute
 }
