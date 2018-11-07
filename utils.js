@@ -18,9 +18,7 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
-const {
-  spawn
-} = require('promisify-child-process');
+const { spawn } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
 
 const config = {

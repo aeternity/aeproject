@@ -25,7 +25,6 @@ const { spawn } = require('promisify-child-process');
 const dockerCLI = require('docker-cli-js');
 const AeSDK = require('@aeternity/aepp-sdk');
 const cli = AeSDK.Universal;
-const dli = AeSDK.Cli;
 const docker = new dockerCLI.Docker();
 
 const config = {
@@ -95,12 +94,6 @@ async function dockerPs() {
 }
 
 async function fundWallets() {
-  // let client = await cli.initClient({
-  //   url: config.host,
-  //   keypair: config.keyPair,
-  //   internalUrl: config.internalHost
-  // })
-
   let client = await utils.getClient();
 
   let balance = 0;
@@ -144,8 +137,7 @@ async function fundWallet(client, recipient) {
 }
 
 async function run(option) {
-  console.log(dli)
-  console.log(cli)
+
   try {
     var sdkInstallProcess;
     let running = await dockerPs();
