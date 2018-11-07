@@ -26,7 +26,7 @@ async function compileAndPrint(file){
     
     try{
         let client = await utils.getClient();
-        let code = readFile(file)
+        let code = await readFile(file)
         let contract = await client.contractCompile(code.toString());
 
         print(`Contract '${file} has been successfully compiled'`)
