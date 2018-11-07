@@ -18,10 +18,8 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
-const {
-  spawn
-} = require('promisify-child-process');
-const cli = AeSDK.Universal;
+const { spawn } = require('promisify-child-process');
+const Universal = AeSDK.Universal;
 
 const config = {
   host: "http://localhost:3001/",
@@ -81,14 +79,31 @@ const getClient = async function () {
   let client;
 
   await handleApiError(async () => {
-    client = await cli.initClient({
-      url: config.host,
-      keypair: config.keyPair,
-      internalUrl: config.internalHost
-    })
+    client = await Universal(
+      { url: config.host, 
+        process, 
+        keypair: config.keyPair, 
+        internalUrl: config.internalHost, 
+        forceCompatibility: true, 
+        nativeMode: true 
+      })
   })
 
   return client;
+}
+
+const handleApiError = async (fn) => {
+  try {
+    return await fn()
+  } catch (e) {
+    const response = e.response
+    logApiError(response && response.data ? response.data.reason : e)
+    process.exit(1)
+  }
+}
+
+function logApiError (error) { 
+  printError(`API ERROR: ${error}`) 
 }
 
 const sleep = (ms) => {
@@ -114,6 +129,23 @@ const execute = async (command, args, options = {}) => {
   await child;
 }
 
+const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
+  try {
+    return fs.readFileSync(
+      path,
+      encoding
+    )
+  } catch (e) {
+    switch (e.code) {
+      case 'ENOENT':
+        throw new Error('File not found')
+        break
+      default:
+        throw e
+    }
+  }
+}
+
 module.exports = {
   print,
   printError,
@@ -122,5 +154,6 @@ module.exports = {
   getFiles,
   getClient,
   sleep,
-  execute
+  execute,
+  readFile
 }
