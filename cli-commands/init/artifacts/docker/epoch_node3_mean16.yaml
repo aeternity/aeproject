@@ -4,28 +4,28 @@ peers:
     - aenode://pp_28uQUgsPcsy7TQwnRxhF8GMKU4ykFLKsgf4TwDwPMNaSCXwWV8@node2:3015
 
 http:
-    external:
-        port: 3013
-    internal:
-        listen_address: 0.0.0.0
+  external:
+    port: 3013
+  internal:
+    listen_address: 0.0.0.0
 
 websocket:
-    internal:
-        listen_address: 0.0.0.0
+  channel:
+    listen_address: 0.0.0.0
+    port: 3014
 
 keys:
-    password: "top secret"
-    dir: ./keys
+  peer_password: "top secret"
+  dir: ./keys
 
 chain:
-    persist: false
+  persist: true
 
 mining:
-    beneficiary: "ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU"
-    beneficiary_reward_delay: 2
-    autostart: false
-    cuckoo:
-        miner:
-            executable: mean16s-generic
-            extra_args: ""
-            node_bits: 16
+  autostart: true
+  beneficiary: "ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU"
+  cuckoo:
+    miner:
+      executable: mean16s-generic
+      extra_args: ""
+      node_bits: 16

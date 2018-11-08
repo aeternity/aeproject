@@ -115,7 +115,6 @@ const sleep = (ms) => {
 }
 
 const execute = async (command, args, options = {}) => {
-  let result = ''
   const child = spawn('aeproject', [command, ...args], options)
 
   child.stdout.on('data', (data) => {

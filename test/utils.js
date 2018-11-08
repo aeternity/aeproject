@@ -11,7 +11,7 @@ let filesAndfoldersToRemove = [
 const fs = require('fs-extra')
 
 async function cleanUp() {
-    let path = process.cwd() + "/bin/aeproject/test/";
+    let path = process.cwd() + "/test/";
     filesAndfoldersToRemove.forEach((e) => {
         try{
             fs.removeSync(path + e); 

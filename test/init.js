@@ -4,7 +4,7 @@ const assert = chai.assert;
 const execute = require('./../utils.js').execute;
 const cleanUp = require("./utils").cleanUp
 
-let executeOptions = { cwd : process.cwd() + "/bin/aeproject/test/"};
+let executeOptions = { cwd : process.cwd() + "/test"};
 let expect = chai.expect;
 let file = chaiFiles.file;
 let dir = chaiFiles.dir;
