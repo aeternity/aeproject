@@ -14,7 +14,7 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 
 const {
   printError,
@@ -27,7 +27,7 @@ const AeSDK = require('@aeternity/aepp-sdk');
 const cli = AeSDK.Universal;
 const docker = new dockerCLI.Docker();
 
-const config = {
+const config = { // This and the wallets should be in a config json file 
   host: "http://localhost:3001/",
   internalHost: "http://localhost:3001/internal/",
   keyPair: {
@@ -38,51 +38,51 @@ const config = {
 }
 
 const defaultWallets = [{
-    publicKey: "ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk",
-    secretKey: "ak_HHC295F8zFpcagPpApwyapA2DXV6ki3WFZW7fbHi6jyhLMrpJsM1cannt2ySA9CsivEzAQzkLZhDzd6mAtgzbgxyiSru4"
-  },
-  {
-    publicKey: "ak_tWZrf8ehmY7CyB1JAoBmWJEeThwWnDpU4NadUdzxVSbzDgKjP",
-    secretKey: "ak_HhegEtZYJE23JTXEGshDQ6xZ4CsC7qW8diCZsk893dSkP2ib5RCXzB2uofRV2csmiAWyuT6WfXwWA2uRJfRqZZbhTfeH6"
-  },
-  {
-    publicKey: "ak_FHZrEbRmanKUe9ECPXVNTLLpRP2SeQCLCT6Vnvs9JuVu78J7V",
-    secretKey: "ak_3keAmRQhg5XPQUWNPZ6GCkd7VpiwoYE8oMThJX6Tony8ZfRGp6R12teMCQq2dSA92EAvo3bPc4VMxdmH8LvJja2esASi4"
-  },
-  {
-    publicKey: "ak_RYkcTuYcyxQ6fWZsL2G3Kj3K5WCRUEXsi76bPUNkEsoHc52Wp",
-    secretKey: "ak_CcMj5Z9AR22Mw8CfQRqVi4sDVnBKsLJ91G3B92MTFEMkohPoUpVamBPReCAKWn3LZHX7Lj4bYiMKzWNFkZiziR696cKoR"
-  },
-  {
-    publicKey: "ak_2VvB4fFu7BQHaSuW5EkQ7GCaM5qiA5BsFUHjJ7dYpAaBoeFCZi",
-    secretKey: "ak_BW78ZXYUGCqofmemBqyEWGRSz8YWyC9QMyP162cwSBdZQPomdrrXhm9tfcxaiugABZXmtq7FzR8ZgPC67DKzEke7C59EG"
-  },
-  {
-    publicKey: "ak_286tvbfP6xe4GY9sEbuN2ftx1LpavQwFVcPor9H4GxBtq5fXws",
-    secretKey: "ak_FiS9o4tw9R87cshczZzEsRK29F1o1NDcX7AYAVgEFmuzXJR55aNVMwTLFJvnmxc2VZ3rPpsptbKAVnBL1vXtKcSGkDvhA"
-  },
-  {
-    publicKey: "ak_f9bmi44rdvUGKDsTLp3vMCMLMvvqsMQVWyc3XDAYECmCXEbzy",
-    secretKey: "ak_L9mrJp6fvifoUtR2amRZwz8wMySQP8GM5NJFkDTYQ81fKEdDerpZKk1GUMwY4Segy6yuVZL99cGCxwhJiURFoZxch3QLQ"
-  },
-  {
-    publicKey: "ak_23p6pT7bajYMJRbnJ5BsbFUuYGX2PBoZAiiYcsrRHZ1BUY2zSF",
-    secretKey: "ak_WUx8h4o18KAFJjHNt8Amti2WXn7wRf4gw5vxYbs3v93uCmGpe21QzQBVwvBFQU1Vhy1p6MNbpcEcipPu4TthebvskG9Dv"
-  },
-  {
-    publicKey: "ak_gLYH5tAexTCvvQA6NpXksrkPJKCkLnB9MTDFTVCBuHNDJ3uZv",
-    secretKey: "ak_FUwKv5yhtZHmk2o3ZKQSHtYT7gbY7cAU11QB6RZFXDhag5n3uqez1XDPkCHpHGDmE3Nfgs7smAabRhHLsiKXvMTfcMjVT"
-  },
-  {
-    publicKey: "ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ",
-    secretKey: "ak_87QPyEAD44fZTddnHi9vP1hSPaxPpmDy7TDHUqJxbeWgSLG27oLFAQaR4VC1zVTQXzmcW9cjcjjzVwnpHxmBw9DLgcyAM"
-  }
+  publicKey: "ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk",
+  secretKey: "ak_HHC295F8zFpcagPpApwyapA2DXV6ki3WFZW7fbHi6jyhLMrpJsM1cannt2ySA9CsivEzAQzkLZhDzd6mAtgzbgxyiSru4"
+},
+{
+  publicKey: "ak_tWZrf8ehmY7CyB1JAoBmWJEeThwWnDpU4NadUdzxVSbzDgKjP",
+  secretKey: "ak_HhegEtZYJE23JTXEGshDQ6xZ4CsC7qW8diCZsk893dSkP2ib5RCXzB2uofRV2csmiAWyuT6WfXwWA2uRJfRqZZbhTfeH6"
+},
+{
+  publicKey: "ak_FHZrEbRmanKUe9ECPXVNTLLpRP2SeQCLCT6Vnvs9JuVu78J7V",
+  secretKey: "ak_3keAmRQhg5XPQUWNPZ6GCkd7VpiwoYE8oMThJX6Tony8ZfRGp6R12teMCQq2dSA92EAvo3bPc4VMxdmH8LvJja2esASi4"
+},
+{
+  publicKey: "ak_RYkcTuYcyxQ6fWZsL2G3Kj3K5WCRUEXsi76bPUNkEsoHc52Wp",
+  secretKey: "ak_CcMj5Z9AR22Mw8CfQRqVi4sDVnBKsLJ91G3B92MTFEMkohPoUpVamBPReCAKWn3LZHX7Lj4bYiMKzWNFkZiziR696cKoR"
+},
+{
+  publicKey: "ak_2VvB4fFu7BQHaSuW5EkQ7GCaM5qiA5BsFUHjJ7dYpAaBoeFCZi",
+  secretKey: "ak_BW78ZXYUGCqofmemBqyEWGRSz8YWyC9QMyP162cwSBdZQPomdrrXhm9tfcxaiugABZXmtq7FzR8ZgPC67DKzEke7C59EG"
+},
+{
+  publicKey: "ak_286tvbfP6xe4GY9sEbuN2ftx1LpavQwFVcPor9H4GxBtq5fXws",
+  secretKey: "ak_FiS9o4tw9R87cshczZzEsRK29F1o1NDcX7AYAVgEFmuzXJR55aNVMwTLFJvnmxc2VZ3rPpsptbKAVnBL1vXtKcSGkDvhA"
+},
+{
+  publicKey: "ak_f9bmi44rdvUGKDsTLp3vMCMLMvvqsMQVWyc3XDAYECmCXEbzy",
+  secretKey: "ak_L9mrJp6fvifoUtR2amRZwz8wMySQP8GM5NJFkDTYQ81fKEdDerpZKk1GUMwY4Segy6yuVZL99cGCxwhJiURFoZxch3QLQ"
+},
+{
+  publicKey: "ak_23p6pT7bajYMJRbnJ5BsbFUuYGX2PBoZAiiYcsrRHZ1BUY2zSF",
+  secretKey: "ak_WUx8h4o18KAFJjHNt8Amti2WXn7wRf4gw5vxYbs3v93uCmGpe21QzQBVwvBFQU1Vhy1p6MNbpcEcipPu4TthebvskG9Dv"
+},
+{
+  publicKey: "ak_gLYH5tAexTCvvQA6NpXksrkPJKCkLnB9MTDFTVCBuHNDJ3uZv",
+  secretKey: "ak_FUwKv5yhtZHmk2o3ZKQSHtYT7gbY7cAU11QB6RZFXDhag5n3uqez1XDPkCHpHGDmE3Nfgs7smAabRhHLsiKXvMTfcMjVT"
+},
+{
+  publicKey: "ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ",
+  secretKey: "ak_87QPyEAD44fZTddnHi9vP1hSPaxPpmDy7TDHUqJxbeWgSLG27oLFAQaR4VC1zVTQXzmcW9cjcjjzVwnpHxmBw9DLgcyAM"
+}
 ]
 
 async function dockerPs() {
   let running = false
 
-  await docker.command('ps', function (err, data) {
+  await docker.command('ps', function (err, data) { // err should be checked
     data.containerList.forEach(function (container) {
       if (container.image.startsWith("aeternity") && container.status.indexOf("healthy") != -1) {
         running = true;
@@ -97,7 +97,7 @@ async function fundWallets() {
   let client = await utils.getClient();
 
   let balance = 0;
-  while (parseInt(balance) > 0) {
+  while (parseInt(balance) > 0) { // move this while to another function and name it properly
     try {
       process.stdout.write(".");
       utils.sleep(1500)
@@ -108,7 +108,7 @@ async function fundWallets() {
   }
 
   let walletIndex = 1;
-  defaultWallets.forEach(async function (wallet) {
+  defaultWallets.forEach(async function (wallet) { // Use a regular for as this .forEach moves the elements from the array
     await fundWallet(client, wallet.publicKey)
     print(`#${walletIndex++} ------------------------------------------------------------`)
     print(`public key: ${wallet.publicKey}`)
@@ -139,7 +139,7 @@ async function fundWallet(client, recipient) {
 async function run(option) {
 
   try {
-    var sdkInstallProcess;
+    var sdkInstallProcess; // this should be let
     let running = await dockerPs();
 
     if (option.stop) {
@@ -152,6 +152,7 @@ async function run(option) {
       } else {
         print('===== Epoch is not running! =====');
       }
+      // just add return here and skip the else keyword below
     } else {
       if (!running) {
         print('===== Starting epoch =====');

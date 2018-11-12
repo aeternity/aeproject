@@ -16,9 +16,9 @@
  */
 
 const aeprojectTest = require('./aeproject-test');
-const dir = require('node-dir');
+const dir = require('node-dir'); // unused
 const utils = require('./../../utils.js');
-let path = require("path");
+let path = require("path"); // unued
 
 
 const run = async (path) => {
@@ -32,7 +32,7 @@ const run = async (path) => {
   }
 
   testDirectory = path;
-  console.log(testDirectory)
+  console.log(testDirectory) // do we need these?
 
   if (!path.includes(workingDirectory)) {
     testDirectory = `${process.cwd()}/${path}`;

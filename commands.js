@@ -1,3 +1,5 @@
+// Lets move this whole file to the cli-commands folder
+
 /*
  * ISC License (ISC)
  * Copyright (c) 2018 aeternity developers

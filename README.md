@@ -9,9 +9,7 @@ needed.
 ## Initialize AEProject
 
 ```
-
 aeproject init
-
 ```
 
 The **init** command creates aeternity project structure with a few folders
@@ -28,9 +26,7 @@ file extension. Default directory is $projectDir/contracts.
 ## Run unit tests
 
 ```
-
 aeproject test
-
 ```
 
 The **test** command help developers run their unit tests for aeternity
@@ -47,9 +43,7 @@ of your aeternity project.
 ## Start docker epoch
 
 ```
-
 aeproject epoch
-
 ```
 
 The **epoch** command help developers run their local network on docker.
@@ -64,7 +58,7 @@ secretKey:
 
     publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
 
-List of all default wallets
+List of all default wallets // My addresses vary from this
 ```json
 [
 

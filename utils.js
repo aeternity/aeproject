@@ -1,3 +1,5 @@
+// Lets move this whole file to the cli-commands folder
+
 /*
  * ISC License (ISC)
  * Copyright (c) 2018 aeternity developers
@@ -31,7 +33,6 @@ const config = {
   nonce: 1
 }
 
-// Print helper
 const print = (msg, obj) => {
   if (obj) {
     console.log(msg, obj)
@@ -40,19 +41,19 @@ const print = (msg, obj) => {
   }
 }
 
-// Print error helper
-const printError = (msg) => {
-  console.log(msg)
+const printError = (msg) => { // The name of this parameter seems incorrect to me
+  console.log(msg) // I think we should write this to console.error also I feel the stack needs to be shown too
 }
 
-const createIfExistsFolder = (dir) => {
+const createIfExistsFolder = (dir) => { // 1.Shouldnt this be named quite the opposite createIfNotExists?
+  // 2. We should either use Folder or Dir. Therefore we should probably also name this ending with Dir
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
 }
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
-  if (fs.existsSync(`${destinationFileOrDir}`)) {
+  if (fs.existsSync(`${destinationFileOrDir}`)) { // Can copyOptions { override: true } actually ever work? Seems to me that if you pass existing directory you will always throw an error
     throw new Error(`${destinationFileOrDir} already exists.`);
   }
 
@@ -78,14 +79,15 @@ const getFiles = async function (directory, regex) {
 const getClient = async function () {
   let client;
 
-  await handleApiError(async () => {
+  await handleApiError(async () => { // Wouldnt just return of the await Universal do the same as you do now. It seems to me that handleApiError would pass it down to the caller
     client = await Universal(
-      { url: config.host, 
-        process, 
-        keypair: config.keyPair, 
-        internalUrl: config.internalHost, 
-        forceCompatibility: true, 
-        nativeMode: true 
+      {
+        url: config.host,
+        process,
+        keypair: config.keyPair,
+        internalUrl: config.internalHost,
+        forceCompatibility: true,
+        nativeMode: true
       })
   })
 
@@ -102,20 +104,20 @@ const handleApiError = async (fn) => {
   }
 }
 
-function logApiError (error) { 
-  printError(`API ERROR: ${error}`) 
+function logApiError(error) {
+  printError(`API ERROR: ${error}`)
 }
 
 const sleep = (ms) => {
   var start = Date.now();
-  while (true) {
+  while (true) { // https://www.npmjs.com/package/thread-sleep this is better implementation
     var clock = (Date.now() - start);
     if (clock >= ms) break;
   }
 }
 
-const execute = async (command, args, options = {}) => {
-  let result = ''
+const execute = async (command, args, options = {}) => { // Lets rename this to something like executeCommand
+  let result = ''// This is not used
   const child = spawn('aeproject', [command, ...args], options)
 
   child.stdout.on('data', (data) => {
@@ -129,7 +131,7 @@ const execute = async (command, args, options = {}) => {
   await child;
 }
 
-const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
+const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => { // errTitle is never used
   try {
     return fs.readFileSync(
       path,

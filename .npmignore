@@ -1,0 +1,8 @@
+/* I am fairly sure that here we need to list atleast the test folder. Noone using the library needs to have the tests too.
+IMPORTANT: Rename the test folder in cli-commands (the one governign aeproject test) to aeproject-test otherwise npm will ignore it too
+This is what we have in etherlimon
+docs
+test
+.etherlime-store
+.nyc_output
+*/
