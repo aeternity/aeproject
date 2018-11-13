@@ -23,16 +23,14 @@ const {
 const utils = require('../../utils');
 const { spawn } = require('promisify-child-process');
 const dockerCLI = require('docker-cli-js');
-const AeSDK = require('@aeternity/aepp-sdk');
-const cli = AeSDK.Universal;
 const docker = new dockerCLI.Docker();
 
 const config = {
   host: "http://localhost:3001/",
   internalHost: "http://localhost:3001/internal/",
   keyPair: {
-    secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
-    publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
+    priv: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
+    pub: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
   },
   nonce: 1
 }
@@ -95,7 +93,6 @@ async function dockerPs() {
 
 async function fundWallets() {
   let client = await utils.getClient();
-
   let balance = 0;
   while (parseInt(balance) > 0) {
     try {
@@ -123,11 +120,10 @@ async function fundWallet(client, recipient) {
   } = await client.api.postSpend({
     fee: 1,
     amount: 100000000000000000,
-    senderId: config.keyPair.publicKey,
+    senderId: config.keyPair.pub,
     recipientId: recipient,
     payload: '',
-    ttl: 55555,
-    nonce: config.nonce++
+    ttl: 100
   })
 
   const signed = await client.signTransaction(tx)
@@ -137,16 +133,15 @@ async function fundWallet(client, recipient) {
 }
 
 async function run(option) {
-
   try {
-    var sdkInstallProcess;
+    var dockerProcess;
     let running = await dockerPs();
 
     if (option.stop) {
       if (running) {
         print('===== Stopping epoch =====');
 
-        sdkInstallProcess = await spawn('docker-compose', ['down', '-v'], {});
+        dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
 
         print('===== Epoch was successfully stopped! =====');
       } else {
@@ -155,8 +150,16 @@ async function run(option) {
     } else {
       if (!running) {
         print('===== Starting epoch =====');
+        console.log(process.cwd())
+        dockerProcess = spawn('docker-compose', ['up', '-d']);
 
-        sdkInstallProcess = spawn('docker-compose', ['up', '-d'], {});
+        dockerProcess.stdout.on('data', (data) => {
+          console.log(data.toString())
+        })
+      
+        dockerProcess.stderr.on('data', (data) => {
+          console.log(data.toString())
+        })
 
         while (!(await dockerPs())) {
           process.stdout.write(".");

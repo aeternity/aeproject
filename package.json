@@ -18,6 +18,7 @@
     "commander": "^2.19.0",
     "docker-cli-js": "^2.5.1",
     "esm": "^3.0.77",
+    "fs-copy-file": "^2.1.2",
     "fs-extra": "^7.0.0",
     "mocha": "^5.0.0",
     "node-dir": "^0.1.17",

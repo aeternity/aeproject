@@ -31,7 +31,7 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
   program
     .command('compile')
-    .option('--path [compile path]', 'Path to contract files', './contracts')
+    .option('--path [path]', 'Path to contract files', './contracts')
     .description('Compile contracts')
     .action(async (option) => {
       await compile.run(option.path);

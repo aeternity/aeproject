@@ -52,6 +52,10 @@ const createIfExistsFolder = (dir) => {
 }
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
+  console.log("sourceFileOrDir")
+  console.log(sourceFileOrDir)
+  console.log("destinationFileOrDir")
+  console.log(destinationFileOrDir)
   if (fs.existsSync(`${destinationFileOrDir}`)) {
     throw new Error(`${destinationFileOrDir} already exists.`);
   }
@@ -77,7 +81,6 @@ const getFiles = async function (directory, regex) {
 
 const getClient = async function () {
   let client;
-
   await handleApiError(async () => {
     client = await Universal(
       { url: config.host, 
@@ -88,7 +91,7 @@ const getClient = async function () {
         nativeMode: true 
       })
   })
-
+  
   return client;
 }
 
@@ -116,16 +119,20 @@ const sleep = (ms) => {
 
 const execute = async (command, args, options = {}) => {
   const child = spawn('aeproject', [command, ...args], options)
+  let result = '';
 
   child.stdout.on('data', (data) => {
     console.log(data.toString())
+    result += data.toString();
   })
 
   child.stderr.on('data', (data) => {
     console.log(data.toString())
+    result += data.toString();
   })
 
   await child;
+  return result;
 }
 
 const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {

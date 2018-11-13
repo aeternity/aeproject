@@ -44,7 +44,7 @@ const dockerTemplateDir = 'docker';
 const dockerFilesDestination = `${dockerDir}`;
 
 const dockerYmlFile = 'docker-compose.yml'
-const dockerYmlFileDestination = './docker-compose.yml'
+const dockerYmlFileDestination = `./docker/docker-compose.yml`;
 
 async function run() {
   try {
@@ -76,7 +76,7 @@ const installLibraries = async () => {
 const installAeppSDK = async () => {
   print('===== Installing aepp-sdk =====');
 
-  const sdkInstallProcess = spawn('npm', ['install', '@aeternity/aepp-sdk'], {});
+  const sdkInstallProcess = spawn('npm', ['install', '@aeternity/aepp-sdk', '--save'], {});
 
   sdkInstallProcess.stdout.on('data', (data) => {
     print(`${data}`);
@@ -114,7 +114,7 @@ const setupDocker = () => {
   print(`===== Creating docker directory =====`);
   const dockerFilesSource = `${artifactsDir}/${dockerTemplateDir}`;
   const copyOptions = {
-    overwrite: true
+    overwrite: false
   }
 
   const dockerYmlFileSource = `${artifactsDir}/${dockerYmlFile}`;

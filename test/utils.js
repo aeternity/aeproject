@@ -3,7 +3,7 @@ let filesAndfoldersToRemove = [
 	'deploy',
 	'docker',
 	'test',
-	'contracts/Identity.aes',
+	'contracts/ExampleContract.aes',
 	'package.json',
 	'package-lock.json',
 	'docker-compose.yml'
