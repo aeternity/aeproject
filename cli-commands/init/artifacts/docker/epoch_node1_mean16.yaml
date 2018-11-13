@@ -9,12 +9,8 @@ http:
     internal:
         listen_address: 0.0.0.0
 
-websocket:
-    internal:
-        listen_address: 0.0.0.0
-
 keys:
-    password: "top secret"
+    peer_password: "top secret"
     dir: ./keys
 
 chain:

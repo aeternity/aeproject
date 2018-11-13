@@ -18,8 +18,11 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
-const { spawn } = require('promisify-child-process');
+const {
+  spawn
+} = require('promisify-child-process');
 const Universal = AeSDK.Universal;
+
 
 const config = {
   host: "http://localhost:3001/",
@@ -79,14 +82,14 @@ const getClient = async function () {
   let client;
 
   await handleApiError(async () => {
-    client = await Universal(
-      { url: config.host, 
-        process, 
-        keypair: config.keyPair, 
-        internalUrl: config.internalHost, 
-        forceCompatibility: true, 
-        nativeMode: true 
-      })
+    client = await Universal({
+      url: config.host,
+      process,
+      keypair: config.keyPair,
+      internalUrl: config.internalHost,
+      forceCompatibility: true,
+      nativeMode: true
+    })
   })
 
   return client;
@@ -102,8 +105,8 @@ const handleApiError = async (fn) => {
   }
 }
 
-function logApiError (error) { 
-  printError(`API ERROR: ${error}`) 
+function logApiError(error) {
+  printError(`API ERROR: ${error}`)
 }
 
 const sleep = (ms) => {
