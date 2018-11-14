@@ -14,7 +14,7 @@ keys:
     dir: ./keys
 
 chain:
-    persist: true
+    persist: false
 
 mining:
     beneficiary: "ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU"
