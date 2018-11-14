@@ -28,7 +28,7 @@ const {
 
 const testDir = './test';
 const testTemplateFile = 'exampleTests.js';
-const testFileDestination = `${testDir}/example.js`;
+const testFileDestination = `${testDir}/exampleTest.js`;
 
 const deployDir = './deploy';
 const deployTemplateFile = 'deployTemplate.js';
@@ -76,7 +76,7 @@ const installLibraries = async () => {
 const installAeppSDK = async () => {
   print('===== Installing aepp-sdk =====');
 
-  const sdkInstallProcess = spawn('npm', ['install', 'git://github.com/aeternity/aepp-sdk-js.git#develop', '--save'], {});
+  const sdkInstallProcess = spawn('npm', ['install', '@aeternity/aepp-sdk', '--save'], {});
 
   sdkInstallProcess.stdout.on('data', (data) => {
     print(`${data}`);

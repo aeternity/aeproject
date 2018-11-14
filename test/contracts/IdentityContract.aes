@@ -1,3 +1,0 @@
-contract IdentityContract =
-   type state = ()
-   function main(x : int) = x 
