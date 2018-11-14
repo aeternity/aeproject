@@ -97,7 +97,8 @@ async function fundWallets() {
   while (parseInt(balance) > 0) {
     try {
       process.stdout.write(".");
-      utils.sleep(1500)
+      utils.sleep(2500)
+      // console.log(balance)
       balance = (await client.balance(await client.address()));
     } catch (e) {
       //todo
@@ -120,10 +121,10 @@ async function fundWallet(client, recipient) {
   } = await client.api.postSpend({
     fee: 1,
     amount: 100000000000000000,
-    senderId: config.keyPair.pub,
+    senderId: config.keyPair.publicKey,
     recipientId: recipient,
     payload: '',
-    ttl: 100
+    ttl: 55
   })
 
   const signed = await client.signTransaction(tx)
