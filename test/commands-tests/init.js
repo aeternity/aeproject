@@ -2,47 +2,43 @@ const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
 const execute = require('../../utils.js').execute;
-const cleanUp = require("../utils").cleanUp
 const fs = require('fs-extra')
+const constants = require('../constants.json')
 
 let executeOptions = {
-	cwd: process.cwd() + "./test/commands-tests/initTests"
+	cwd: process.cwd() + constants.initTestsFolderPath
 };
-let expect = chai.expect;
-let file = chaiFiles.file;
-let dir = chaiFiles.dir;
 
 chai.use(chaiFiles);
 
-
-describe('Aeproject Init command', () => {
+describe('Aeproject Init', () => {
 	before(async () => {
-		fs.ensureDirSync('./test/commands-tests/initTests')
+		fs.ensureDirSync(`.${constants.initTestsFolderPath}`)
 	})
 
 	it('Should init project successfully', async () => {
-		let result = await execute("init", [], executeOptions)
+		await execute(constants.cliCommands.init, [], executeOptions)
 
-		expect(file(executeOptions.cwd + '/package.json')).to.exist;
-		expect(file(executeOptions.cwd + '/package-lock.json')).to.exist;
-		expect(file(executeOptions.cwd + '/docker-compose.yml')).to.exist;
-		expect(file(executeOptions.cwd + '/test/exampleTest.js')).to.exist;
-		expect(file(executeOptions.cwd + '/deploy/deploy.js')).to.exist;
-		expect(file(executeOptions.cwd + '/contracts/ExampleContract.aes')).to.exist;
-		expect(dir(executeOptions.cwd + '/node_modules')).to.not.be.empty;
-		expect(file(executeOptions.cwd + '/docker/entrypoint.sh')).to.exist;
-		expect(file(executeOptions.cwd + '/docker/epoch_node1_mean16.yaml')).to.exist;
-		expect(file(executeOptions.cwd + '/docker/epoch_node2_mean16.yaml')).to.exist;
-		expect(file(executeOptions.cwd + '/docker/epoch_node3_mean16.yaml')).to.exist;
-		expect(file(executeOptions.cwd + '/docker/healthcheck.sh')).to.exist;
-		expect(file(executeOptions.cwd + '/docker/nginx-cors.conf')).to.exist;
-		expect(file(executeOptions.cwd + '/docker/nginx-default.conf')).to.exist;
-		expect(file(executeOptions.cwd + '/docker/nginx-ws.conf')).to.exist;
-		expect(dir(executeOptions.cwd + '/docker/keys')).to.not.be.empty;
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageJson}`), "package.json doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageLockJson}`), "package-lock.json doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerComposeYml}`), "docker-compose.yml doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.testContractPath}`), "test contract doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.deployScriptsPath}`), "deploy scripts doesn't exists");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.contractsPath}`), "example contract doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.nodeModules}`), "node modules folder doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerEntryPoint}`), "docker entrypoint.sh doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerEpochNode1}`), "docker epoch node1 doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerEpochNode2}`), "docker epoch node2 doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerEpochNode3}`), "docker epoch node3 doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerHealthCheck}`), "docker healtcheck.sh doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxCors}`), "docker nginx-cors.conf doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxDefault}`), "docker nginx-default doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxWs}`), "docker nginx-ws doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerKeys}`), "docker keys folder doesn't exist");
 
 	})
 
 	after(async () => {
-		fs.removeSync('./test/commands-tests/initTests');
+		fs.removeSync(`.${constants.initTestsFolderPath}`);
 	})
 })

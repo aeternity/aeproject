@@ -118,18 +118,21 @@ const sleep = (ms) => {
 }
 
 const execute = async (command, args, options = {}) => {
-  let result = ''
   const child = spawn('aeproject', [command, ...args], options)
+  let result = '';
 
   child.stdout.on('data', (data) => {
-    console.log(data.toString())
+    // console.log(data.toString())
+    result += data.toString();
   })
 
   child.stderr.on('data', (data) => {
-    console.log(data.toString())
+    // console.log(data.toString())
+    result += data.toString();
   })
 
   await child;
+  return result;
 }
 
 const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {

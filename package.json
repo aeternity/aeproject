@@ -4,7 +4,7 @@
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "scripts": {
-    "test": "mocha './test/commands-tests/*.js' --timeout 0 --exit"
+    "test": "mocha './test/**/*.js' --timeout 0 --exit"
   },
   "bin": {
     "aeproject": "./aeproject-cli.js"
@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "^0.24.0-0.2.0",
+    "@aeternity/aepp-sdk": "^0.25.0-0.1.0-next",
     "await-spawn": "^2.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",

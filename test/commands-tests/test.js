@@ -7,25 +7,25 @@ const execute = require('../../utils').execute;
 const utils = require('../../utils');
 const test = require('../../cli-commands/test/test')
 const sinon = require('sinon')
-
+const constants = require('../constants.json')
 
 var shell = require('shelljs');
 
 let executeOptions = {
-	cwd: process.cwd() + "/test/contractsTests/exampleTests.js"
+	cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe('Aeproject Test command', () => {
+describe('Aeproject Test', () => {
 
 	before(async function () {
 		currentDir = process.cwd();
 
-		fs.ensureDirSync('./test/contractsTests')
-		utils.copyFileOrDir(`${currentDir}/cli-commands/init/artifacts/exampleTests.js`, `${currentDir}/test/contractsTests/exampleTests.js`);
+		fs.ensureDirSync(`.${constants.testTestsFolderPath}`)
+		utils.copyFileOrDir(`${currentDir}${constants.sourceTestsFilesPath}`, `${currentDir}${constants.testTestsFolderPath}${constants.exampleContractTests}`);
 	})
 
 	it('should work on unexisting test folder', async function () {
-		await assert.isFulfilled(test.run('/test/contractsTests'))
+		await assert.isFulfilled(test.run(constants.testTestsFolderPath))
 	})
 
 	it('shоuld throw on wrong path', async function () {
@@ -54,6 +54,6 @@ describe('Aeproject Test command', () => {
 
 	after(async function () {
 		process.chdir(currentDir);
-		fs.removeSync('./test/contractsTests');
+		fs.removeSync(`.${constants.testTestsFolderPath}`);
 	})
 })
