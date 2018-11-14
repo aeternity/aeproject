@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "^0.24.0-0.2.0",
+    "@aeternity/aepp-sdk": "git://github.com/aeternity/aepp-sdk-js.git#develop",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "commander": "^2.19.0",

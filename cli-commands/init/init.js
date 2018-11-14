@@ -44,7 +44,7 @@ const dockerTemplateDir = 'docker';
 const dockerFilesDestination = `${dockerDir}`;
 
 const dockerYmlFile = 'docker-compose.yml'
-const dockerYmlFileDestination = `./docker/docker-compose.yml`;
+const dockerYmlFileDestination = `./docker-compose.yml`;
 
 async function run() {
   try {
@@ -76,7 +76,7 @@ const installLibraries = async () => {
 const installAeppSDK = async () => {
   print('===== Installing aepp-sdk =====');
 
-  const sdkInstallProcess = spawn('npm', ['install', '@aeternity/aepp-sdk', '--save'], {});
+  const sdkInstallProcess = spawn('npm', ['install', 'git://github.com/aeternity/aepp-sdk-js.git#develop', '--save'], {});
 
   sdkInstallProcess.stdout.on('data', (data) => {
     print(`${data}`);

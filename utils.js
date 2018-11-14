@@ -52,10 +52,6 @@ const createIfExistsFolder = (dir) => {
 }
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
-  console.log("sourceFileOrDir")
-  console.log(sourceFileOrDir)
-  console.log("destinationFileOrDir")
-  console.log(destinationFileOrDir)
   if (fs.existsSync(`${destinationFileOrDir}`)) {
     throw new Error(`${destinationFileOrDir} already exists.`);
   }
@@ -122,12 +118,12 @@ const execute = async (command, args, options = {}) => {
   let result = '';
 
   child.stdout.on('data', (data) => {
-    console.log(data.toString())
+    // console.log(data.toString())
     result += data.toString();
   })
 
   child.stderr.on('data', (data) => {
-    console.log(data.toString())
+    // console.log(data.toString())
     result += data.toString();
   })
 
