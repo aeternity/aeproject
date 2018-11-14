@@ -128,6 +128,7 @@ const execute = async (command, args, options = {}) => {
   })
 
   await child;
+  
   return result;
 }
 
