@@ -6,15 +6,15 @@
 	"sourceTestsFilesPath": "/cli-commands/init/artifacts/exampleTests.js",
 	"exampleContractTests": "/exampleTests.js",
 	"cliCommands": {
-		"init": "init",
-		"test": "test",
-		"epoch": "epoch",
-		"compile": "compile"
+		"INIT": "init",
+		"TEST": "test",
+		"EPOCH": "epoch",
+		"COMPILE": "compile"
 	},
 	"cliCommandsOptions": {
-		"start": "--start",
-		"stop": "--stop",
-		"path": "--path"
+		"START": "--start",
+		"STOP": "--stop",
+		"PATH": "--path"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",

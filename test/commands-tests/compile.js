@@ -19,23 +19,23 @@ describe('Aeproject Compile', () => {
 	before(async () => {
 
 		fs.ensureDirSync(`.${constants.compileTestsFolderPath}`)
-		await execute(constants.cliCommands.init, [], executeOptions)
-		await execute(constants.cliCommands.epoch, [], executeOptions)
+		await execute(constants.cliCommands.INIT, [], executeOptions)
+		await execute(constants.cliCommands.EPOCH, [], executeOptions)
 	})
 
 	describe('Compile', () => {
 		it('Should compile contract successfully with specif contract path', async () => {
-			let result = await execute(constants.cliCommands.compile, [constants.cliCommandsOptions.path, `${executeOptions.cwd}/contracts/ExampleContract.aes`])
+			let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${executeOptions.cwd}/contracts/ExampleContract.aes`])
 			assert.include(result, expectedCompileResultExampleContract)
 		})
 
 		it('Should compile contract successfully without path', async () => {
-			let result = await execute(constants.cliCommands.compile, [], executeOptions)
+			let result = await execute(constants.cliCommands.COMPILE, [], executeOptions)
 			assert.include(result, expectedCompileResultExampleContract)
 		})
 
 		it('Should compile multiple contracts successfully with path', async () => {
-			let result = await execute(constants.cliCommands.compile, [constants.cliCommandsOptions.path, "../multipleContractsFolder"], executeOptions)
+			let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder"], executeOptions)
 			assert.include(result, expectedResult1)
 			assert.include(result, expectedResult2)
 			assert.include(result, expectedResult3)
@@ -43,7 +43,7 @@ describe('Aeproject Compile', () => {
 	})
 
 	after(async () => {
-		await execute(constants.cliCommands.epoch, [constants.cliCommandsOptions.stop], executeOptions)
+		await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
 		fs.removeSync(`.${constants.compileTestsFolderPath}`);
 	})
 })

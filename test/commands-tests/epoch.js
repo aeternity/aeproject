@@ -16,8 +16,8 @@ describe('Aeproject Epoch', () => {
 	before(async () => {
 		fs.ensureDirSync(`.${constants.epochTestsFolderPath}`)
 
-		await execute(constants.cliCommands.init, [], executeOptions)
-		await execute(constants.cliCommands.epoch, [], executeOptions)
+		await execute(constants.cliCommands.INIT, [], executeOptions)
+		await execute(constants.cliCommands.EPOCH, [], executeOptions)
 	})
 
 	it('Should start the epoch successfully', async () => {
@@ -26,7 +26,7 @@ describe('Aeproject Epoch', () => {
 	})
 
 	it('Should stop the epoch successfully', async () => {
-		await execute(constants.cliCommands.epoch, [constants.cliCommandsOptions.stop], executeOptions)
+		await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
 		let running = await dockerPs();
 		assert.isNotTrue(running, "Epoch wasn't stopped properly");
 	})
@@ -35,7 +35,7 @@ describe('Aeproject Epoch', () => {
 
 		let running = await dockerPs();
 		if (running) {
-			await execute(constants.cliCommands.epoch, [constants.cliCommandsOptions.stop], executeOptions)
+			await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
 		}
 		fs.removeSync(`.${constants.epochTestsFolderPath}`)
 	})

@@ -122,12 +122,10 @@ const execute = async (command, args, options = {}) => {
   let result = '';
 
   child.stdout.on('data', (data) => {
-    // console.log(data.toString())
     result += data.toString();
   })
 
   child.stderr.on('data', (data) => {
-    // console.log(data.toString())
     result += data.toString();
   })
 

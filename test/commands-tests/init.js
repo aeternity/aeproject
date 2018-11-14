@@ -17,7 +17,7 @@ describe('Aeproject Init', () => {
 	})
 
 	it('Should init project successfully', async () => {
-		await execute(constants.cliCommands.init, [], executeOptions)
+		await execute(constants.cliCommands.INIT, [], executeOptions)
 
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageJson}`), "package.json doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageLockJson}`), "package-lock.json doesn't exist");
