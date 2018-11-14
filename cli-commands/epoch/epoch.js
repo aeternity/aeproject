@@ -21,7 +21,9 @@ const {
   print
 } = require('./../../utils');
 const utils = require('../../utils');
-const { spawn } = require('promisify-child-process');
+const {
+  spawn
+} = require('promisify-child-process');
 const dockerCLI = require('docker-cli-js');
 const AeSDK = require('@aeternity/aepp-sdk');
 const cli = AeSDK.Universal;
@@ -126,7 +128,7 @@ async function fundWallet(client, recipient) {
     senderId: config.keyPair.publicKey,
     recipientId: recipient,
     payload: '',
-    ttl: 55555,
+    ttl: 123,
     nonce: config.nonce++
   })
 
