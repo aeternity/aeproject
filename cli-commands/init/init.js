@@ -76,7 +76,7 @@ const installLibraries = async () => {
 const installAeppSDK = async () => {
   print('===== Installing aepp-sdk =====');
 
-  const sdkInstallProcess = spawn('npm', ['install', '@aeternity/aepp-sdk', '--save'], {});
+  const sdkInstallProcess = spawn('npm', ['install', '@aeternity/aepp-sdk@next', '--save'], {});
 
   sdkInstallProcess.stdout.on('data', (data) => {
     print(`${data}`);
