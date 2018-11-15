@@ -156,11 +156,11 @@ async function run(option) {
         dockerProcess = spawn('docker-compose', ['up', '-d']);
 
         dockerProcess.stdout.on('data', (data) => {
-          console.log(data.toString())
+          print(data.toString())
         })
       
         dockerProcess.stderr.on('data', (data) => {
-          console.log(data.toString())
+          print(data.toString())
         })
 
         while (!(await dockerPs())) {
