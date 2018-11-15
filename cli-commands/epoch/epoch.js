@@ -100,7 +100,6 @@ async function fundWallets() {
     try {
       process.stdout.write(".");
       utils.sleep(2500)
-      // console.log(balance)
       balance = (await client.balance(await client.address()));
     } catch (e) {
       //todo

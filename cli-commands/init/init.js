@@ -114,7 +114,7 @@ const setupDocker = () => {
   print(`===== Creating docker directory =====`);
   const dockerFilesSource = `${artifactsDir}/${dockerTemplateDir}`;
   const copyOptions = {
-    overwrite: false
+    overwrite: true
   }
 
   const dockerYmlFileSource = `${artifactsDir}/${dockerYmlFile}`;
