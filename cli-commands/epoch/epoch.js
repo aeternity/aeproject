@@ -155,10 +155,6 @@ async function run(option) {
         print('===== Starting epoch =====');
         dockerProcess = spawn('docker-compose', ['up', '-d']);
 
-        dockerProcess.stdout.on('data', (data) => {
-          print(data.toString())
-        })
-      
         dockerProcess.stderr.on('data', (data) => {
           print(data.toString())
         })

@@ -4,7 +4,7 @@
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "scripts": {
-    "test": "mocha './test/commands-tests/*.js' --timeout 0 --exit"
+    "test": "mocha './test/**/*.js' --timeout 0 --exit"
   },
   "bin": {
     "aeproject": "./aeproject-cli.js"
