@@ -7,7 +7,7 @@ services:
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
     command: >
-      -aecore expected_mine_ ${EPOCH_MINE_RATE:-5000}
+      -aecore expected_mine_ ${EPOCH_MINE_RATE:-15000}
       -aehttp enable_debug_endpoints true
     volumes:
       - ./docker/epoch_node1_mean16.yaml:/home/epoch/epoch.yaml
@@ -20,7 +20,7 @@ services:
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
     command: >
-      -aecore expected_mine_rate ${EPOCH_MINE_RATE:-5000}
+      -aecore expected_mine_rate ${EPOCH_MINE_RATE:-15000}
       -aehttp enable_debug_endpoints true
     volumes:
       - ./docker/epoch_node2_mean16.yaml:/home/epoch/epoch.yaml
@@ -33,7 +33,7 @@ services:
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
     command: >
-      -aecore expected_mine_rate ${EPOCH_MINE_RATE:-5000}
+      -aecore expected_mine_rate ${EPOCH_MINE_RATE:-15000}
       -aehttp enable_debug_endpoints true
     volumes:
       - ./docker/epoch_node3_mean16.yaml:/home/epoch/epoch.yaml

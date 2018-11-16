@@ -25,8 +25,6 @@ const {
   spawn
 } = require('promisify-child-process');
 const dockerCLI = require('docker-cli-js');
-const AeSDK = require('@aeternity/aepp-sdk');
-const cli = AeSDK.Universal;
 const docker = new dockerCLI.Docker();
 
 const config = {
@@ -97,12 +95,11 @@ async function dockerPs() {
 
 async function fundWallets() {
   let client = await utils.getClient();
-
   let balance = 0;
   while (parseInt(balance) > 0) {
     try {
       process.stdout.write(".");
-      utils.sleep(1500)
+      utils.sleep(2500)
       balance = (await client.balance(await client.address()));
     } catch (e) {
       //todo
@@ -139,16 +136,15 @@ async function fundWallet(client, recipient) {
 }
 
 async function run(option) {
-
   try {
-    var sdkInstallProcess;
+    var dockerProcess;
     let running = await dockerPs();
 
     if (option.stop) {
       if (running) {
         print('===== Stopping epoch =====');
 
-        sdkInstallProcess = await spawn('docker-compose', ['down', '-v'], {});
+        dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
 
         print('===== Epoch was successfully stopped! =====');
       } else {
@@ -157,8 +153,11 @@ async function run(option) {
     } else {
       if (!running) {
         print('===== Starting epoch =====');
+        dockerProcess = spawn('docker-compose', ['up', '-d']);
 
-        sdkInstallProcess = spawn('docker-compose', ['up', '-d'], {});
+        dockerProcess.stderr.on('data', (data) => {
+          print(data.toString())
+        })
 
         while (!(await dockerPs())) {
           process.stdout.write(".");

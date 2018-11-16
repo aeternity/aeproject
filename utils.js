@@ -80,7 +80,6 @@ const getFiles = async function (directory, regex) {
 
 const getClient = async function () {
   let client;
-
   await handleApiError(async () => {
     client = await Universal({
       url: config.host,
@@ -91,7 +90,7 @@ const getClient = async function () {
       nativeMode: true
     })
   })
-
+  
   return client;
 }
 

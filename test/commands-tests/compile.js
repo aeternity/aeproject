@@ -17,7 +17,6 @@ chai.use(chaiAsPromised);
 
 describe('Aeproject Compile', () => {
 	before(async () => {
-
 		fs.ensureDirSync(`.${constants.compileTestsFolderPath}`)
 		await execute(constants.cliCommands.INIT, [], executeOptions)
 		await execute(constants.cliCommands.EPOCH, [], executeOptions)
