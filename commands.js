@@ -23,8 +23,9 @@ const addInitOption = (program) => {
   program
     .command('init')
     .description('Initialize aepp project')
-    .action(async () => {
-      await init.run();
+    .option('--update [update]', 'Update project files')
+    .action(async (option) => {
+      await init.run(option.update);
     })
 }
 

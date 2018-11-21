@@ -46,24 +46,32 @@ const dockerFilesDestination = `${dockerDir}`;
 const dockerYmlFile = 'docker-compose.yml'
 const dockerYmlFileDestination = `./docker-compose.yml`;
 
-async function run() {
-  try {
-    print('===== Initializing aeproject =====');
-
-    await installLibraries()
-
-    print(`===== Creating project file & dir structure =====`);
-
-    setupContracts();
-    setupTests();
-    setupDeploy();
+async function run(update) {
+  if(update){
+    print(`===== Updating Aeproject files =====`);
+  
     setupDocker();
 
-    print('===== Aeproject was successfully initialized! =====');
-
-  } catch (e) {
-    printError(e.message)
-    console.error(e);
+    print('===== Aeproject was successfully updated! =====');
+  }else {
+    try {
+      print('===== Initializing aeproject =====');
+  
+      await installLibraries()
+  
+      print(`===== Creating project file & dir structure =====`);
+  
+      setupContracts();
+      setupTests();
+      setupDeploy();
+      setupDocker();
+  
+      print('===== Aeproject was successfully initialized! =====');
+  
+    } catch (e) {
+      printError(e.message)
+      console.error(e);
+    }
   }
 }
 
