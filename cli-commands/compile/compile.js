@@ -20,11 +20,10 @@ const { printError, print } = require('./../../utils');
 const utils = require('./../../utils');
 const readFile = require('../../utils').readFile;
 
-async function compileAndPrint(file){
+async function compileAndPrint(file, client){
     print('\r')
     
     try{
-        let client = await utils.getClient();
         let code = await readFile(file)
         let contract = await client.contractCompile(code.toString());
 
@@ -38,16 +37,18 @@ async function compileAndPrint(file){
     print('\r')
 }
 
-async function run(path) {
+async function run(path, url) {
     print('===== Compiling contracts =====');
+    
+    let client = await utils.getClient(url);
 
     if (path.includes('.aes')) {
-        compileAndPrint(path)
+        compileAndPrint(path, client)
     } else {
         const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\.(aes)`);
 
         files.forEach(async (file) => {
-            compileAndPrint(file)
+            compileAndPrint(file, client)
         });
     } 
 }
