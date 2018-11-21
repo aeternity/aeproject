@@ -22,14 +22,12 @@ describe('Aeproject Epoch', () => {
 
 	it('Should start the epoch successfully', async () => {
 		let running = await dockerPs();
-		console.log(running)
 		assert.isTrue(running, "Epoch wasn't started properly");
 	})
 
 	it('Should stop the epoch successfully', async () => {
 		await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
 		let running = await dockerPs();
-		console.log(running)
 		assert.isNotTrue(running, "Epoch wasn't stopped properly");
 	})
 

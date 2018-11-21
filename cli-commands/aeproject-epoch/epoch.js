@@ -49,12 +49,11 @@ async function dockerPs() {
 
 async function fundWallets() {
 
-  waitToFundWallet()
+  waitToMineCoins()
   let walletIndex = 1;
 
   let client = await utils.getClient();
   for (let wallet in defaultWallets) {
-    console.log(wallet)
     await fundWallet(client, defaultWallets[wallet].publicKey)
     print(`#${walletIndex++} ------------------------------------------------------------`)
     print(`public key: ${defaultWallets[wallet].publicKey}`)
@@ -62,7 +61,7 @@ async function fundWallets() {
   }
 }
 
-async function waitToFundWallet() {
+async function waitToMineCoins() {
   let client = await utils.getClient();
   let balance = 0;
   while (parseInt(balance) > 0) {
@@ -71,7 +70,7 @@ async function waitToFundWallet() {
       utils.sleep(2500)
       balance = (await client.balance(await client.address()));
     } catch (e) {
-      throw new Error(`Funding wallet ${client} failed`)
+      throw new Error(`Funding the ${client} failed`)
     }
   }
 }
@@ -85,7 +84,7 @@ async function fundWallet(client, recipient) {
     senderId: config.keyPair.publicKey,
     recipientId: recipient,
     payload: '',
-    ttl: 123,
+    ttl: 55,
     nonce: config.nonce++
   })
 
@@ -101,39 +100,42 @@ async function run(option) {
     let running = await dockerPs();
 
     if (option.stop) {
-      if (running) {
-        print('===== Stopping epoch =====');
-
-        dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
-
-        print('===== Epoch was successfully stopped! =====');
-        return;
-      }
-      print('===== Epoch is not running! =====');
-      return
-    }
-    if (!running) {
-      print('===== Starting epoch =====');
-      dockerProcess = spawn('docker-compose', ['up', '-d']);
-
-      dockerProcess.stderr.on('data', (data) => {
-        print(data.toString())
-      })
-
-      while (!(await dockerPs())) {
-        process.stdout.write(".");
-        utils.sleep(1000);
+      if (!running) {
+        print('===== Epoch is not running! =====');
+        return
       }
 
-      print('\n\r===== Epoch was successfully started! =====');
-      print('===== Funding default wallets! =====');
+      print('===== Stopping epoch =====');
 
-      await fundWallets();
+      dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
 
-      print('\r\n===== Default wallets was successfully funded! =====');
-      return
+      print('===== Epoch was successfully stopped! =====');
+      return;
     }
-    print('\r\n===== Epoch already started and healthy started! =====');
+    if (running) {
+      print('\r\n===== Epoch already started and healthy! =====');
+      return;
+    }
+
+    print('===== Starting epoch =====');
+    dockerProcess = spawn('docker-compose', ['up', '-d']);
+
+    dockerProcess.stderr.on('data', (data) => {
+      print(data.toString())
+    })
+
+    while (!(await dockerPs())) {
+      process.stdout.write(".");
+      utils.sleep(1000);
+    }
+
+    print('\n\r===== Epoch was successfully started! =====');
+    print('===== Funding default wallets! =====');
+
+    await fundWallets();
+
+    print('\r\n===== Default wallets was successfully funded! =====');
+    return
 
   } catch (e) {
     printError(e.message)
