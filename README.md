@@ -1,8 +1,8 @@
 # AEProject
 
 **AEProject** is an aeternity framework which helps with setting up a project.
-The framework makes the development of smart contracts in the aeternity network pretty easily. It provides commands
-for compilation of smart contracts, running a local Epoch and the unit tests for the contracts.
+The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands
+for compilation of smart contracts, running a local Epoch and the unit testing the contracts.
 In future deployment will be also available using aeproject.
 
 Currently, to use the framework, you must checkout the repository and use the following command:
