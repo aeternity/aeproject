@@ -39,9 +39,23 @@ proejcts. The command executes the tests scripts that are located in the
 
 of your aeternity project.
 
-  
-  
-  
+## Run deploy script
+
+```
+
+aeproject deploy
+
+```
+
+The **deploy** command help developers run their deploy script aeternity
+proejcts. The sample deploy script is scaffolded in deployment folder.
+-You can specify nodeUrl, there are 3 options for nodeUrls: 
+-- "local" -> http://localhost:3001 
+-- "edgeNet" -> "https://sdk-edgenet.aepps.com",
+-- "custom", you specify custom nodeUrl.
+-You can specify and path to the deploy script
+
+-Deployer.deploy(path, gasLimit) function takes 2 arguments: relative path to the contract and gasLimit
 
 
 ## Start docker epoch
