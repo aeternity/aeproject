@@ -18,6 +18,7 @@ const compile = require('./cli-commands/compile/compile.js');
 const init = require('./cli-commands/init/init.js');
 const testConfig = require('./cli-commands/test/test.js');
 const epoch = require('./cli-commands/epoch/epoch.js');
+const config = require('./utils').config;
 
 const addInitOption = (program) => {
   program
@@ -31,10 +32,11 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
   program
     .command('compile')
+    .option('-u --url [hostname]', 'Node to connect to', config.localhost)
     .option('--path [compile path]', 'Path to contract files', './contracts')
     .description('Compile contracts')
     .action(async (option) => {
-      await compile.run(option.path);
+      await compile.run(option.path, option.url);
     })
 }
 

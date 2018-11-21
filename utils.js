@@ -22,8 +22,8 @@ const { spawn } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
 
 const config = {
-  host: "http://localhost:3001/",
-  internalHost: "http://localhost:3001/internal/",
+  localhost: "http://localhost:3001",
+  edgenetHost: "https://sdk-edgenet.aepps.com",
   keyPair: {
     secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
     publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
@@ -75,16 +75,20 @@ const getFiles = async function (directory, regex) {
   });
 }
 
-const getClient = async function () {
+const getClient = async function (url) {
   let client;
+  let internalUrl = url;
+
+  if(url.includes("localhost")){
+    internalUrl = internalUrl + "/internal"
+  }
 
   await handleApiError(async () => {
     client = await Universal(
-      { url: config.host, 
+      { url: url, 
         process, 
         keypair: config.keyPair, 
-        internalUrl: config.internalHost, 
-        forceCompatibility: true, 
+        internalUrl: internalUrl, 
         nativeMode: true 
       })
   })
@@ -115,7 +119,6 @@ const sleep = (ms) => {
 }
 
 const execute = async (command, args, options = {}) => {
-  let result = ''
   const child = spawn('aeproject', [command, ...args], options)
 
   child.stdout.on('data', (data) => {
@@ -155,5 +158,6 @@ module.exports = {
   getClient,
   sleep,
   execute,
-  readFile
+  readFile,
+  config
 }
