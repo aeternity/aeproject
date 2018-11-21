@@ -1,16 +1,16 @@
 # AEProject
 
-**AEProject** is an aeternity framework which helps with setting up an project.
-The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commads
+**AEProject** is an aeternity framework which helps with setting up a project.
+The framework makes the development of smart contracts in the aeternity network pretty easily. It provides commands
 for compilation of smart contracts, running a local Epoch and the unit tests for the contracts.
-In future deployment will be also available using aeaproject.
+In future deployment will be also available using aeproject.
 
-Currently the framework can be downloaded from the github repository and link it with npm, then can be used globally.
+Currently, to use the framework, you must checkout the repository and use the following command:
 ```
 npm link
 ```
 
-Soon, it will be published in npm, and will be availble for installation
+It will be soon published in **npm** and will be available for installation
 
 ## Initialize AEProject
 
@@ -31,10 +31,10 @@ files are also created, for easy use of the aeternity blockchain network.
 aeproject compile
 ```
 
-The **compile** command compiles sophia contract. Files should be with .aes
+The **compile** command compiles Sophia contract. Files should be with .aes
 file extension. Default directory is $projectDir/contracts. The result of the compilation is the contract bytecode
-which is printed on the console.
-Additional **--path** parmeter is avaiable, which cna sepcify the path to the contract to be compiled.
+printed in the console.
+Additional **--path** parameter is available, which can specify the path to the contract to be compiled.
 
 ## Run unit tests
 
@@ -45,7 +45,7 @@ aeproject test
 ```
 
 The **test** command help developers run their unit tests for aeternity
-proejcts. The command executes the tests scripts that are located in the
+projects. The command executes the tests scripts that are located in the
 **test** folder of your aeternity project.
 Additional **--path** param is available, which can specify the path to the tests
 
@@ -57,8 +57,9 @@ Additional **--path** param is available, which can specify the path to the test
 aeproject epoch
 
 ```
+
 The **epoch** command help developers run their local network on docker.
-Local network contains 3 nodes. To spawn fully functional network takes up to 1
+The local network contains 3 nodes. To spawn a fully functional network takes up to 1
 minute. 30 seconds takes to up docker containers and up to 30 seconds to fund
 default wallets.
 To stop the local epoch, simply run
