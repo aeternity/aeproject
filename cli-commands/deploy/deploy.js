@@ -1,5 +1,5 @@
 const fs = require('fs');
-const defaultDeploymentFilePath = `deploy/deploy.js`;
+const defaultDeploymentFilePath = `deployment/deploy.js`;
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -16,20 +16,14 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 };
 
-const run = async (deploymentFilePath, network, secret, silent) => {
+const run = async (deploymentFilePath, network, keypair) => {
 	const deployMethod = getDeployMethod(deploymentFilePath);
 
 	try {
-		await deployMethod(network, secret);
-		logger.log(`Your deployment script finished successfully!`);
+		await deployMethod(network, keypair);
+		console.log(`Your deployment script finished successfully!`);
 	} catch (e) {
-		if (!silent) {
-            console.error(e);
-            //todo: printError
-		}
-
-        // logger.log(`Your deployment script finished with failure!`);
-        //todo: printError
+        console.error(e);
 	}
 };
 

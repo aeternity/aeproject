@@ -78,7 +78,7 @@ const getFiles = async function (directory, regex) {
   });
 }
 
-const getClient = async function (url) {
+const getClient = async function (url, keypair = config.keyPair) {
   let client;
   let internalUrl = url;
 
@@ -88,10 +88,10 @@ const getClient = async function (url) {
 
   await handleApiError(async () => {
     client = await Universal(
-      { url: url, 
+      { url, 
         process, 
-        keypair: config.keyPair, 
-        internalUrl: internalUrl, 
+        keypair, 
+        internalUrl, 
         nativeMode: true 
       })
   })

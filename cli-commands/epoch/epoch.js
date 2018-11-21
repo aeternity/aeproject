@@ -94,7 +94,7 @@ async function dockerPs() {
 }
 
 async function fundWallets() {
-  let client = await utils.getClient();
+  let client = await utils.getClient(utils.config.localhost);
   let balance = 0;
   while (parseInt(balance) > 0) {
     try {
