@@ -32,11 +32,11 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
   program
     .command('compile')
-    .option('-u --url [hostname]', 'Node to connect to', config.localhost)
+    .option('-n --nodeUrl [nodeUrl]', 'Node to connect to', config.localhost)
     .option('--path [compile path]', 'Path to contract files', './contracts')
     .description('Compile contracts')
     .action(async (option) => {
-      await compile.run(option.path, option.url);
+      await compile.run(option.path, option.nodeUrl);
     })
 }
 
