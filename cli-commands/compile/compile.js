@@ -19,7 +19,6 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const { printError, print } = require('./../../utils');
 const utils = require('./../../utils');
 const readFile = require('../../utils').readFile;
-const { spawn } = require('promisify-child-process');
 
 async function compileAndPrint(file){
     print('\r')
