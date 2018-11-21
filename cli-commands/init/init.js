@@ -53,25 +53,26 @@ async function run(update) {
     setupDocker();
 
     print('===== Aeproject was successfully updated! =====');
-  }else {
-    try {
-      print('===== Initializing aeproject =====');
-  
-      await installLibraries()
-  
-      print(`===== Creating project file & dir structure =====`);
-  
-      setupContracts();
-      setupTests();
-      setupDeploy();
-      setupDocker();
-  
-      print('===== Aeproject was successfully initialized! =====');
-  
-    } catch (e) {
-      printError(e.message)
-      console.error(e);
-    }
+    return;
+  }
+
+  try {
+    print('===== Initializing aeproject =====');
+
+    await installLibraries()
+
+    print(`===== Creating project file & dir structure =====`);
+
+    setupContracts();
+    setupTests();
+    setupDeploy();
+    setupDocker();
+
+    print('===== Aeproject was successfully initialized! =====');
+
+  } catch (e) {
+    printError(e.message)
+    console.error(e);
   }
 }
 
