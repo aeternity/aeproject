@@ -1,0 +1,37 @@
+{
+	"compileTestsFolderPath": "/test/commands-tests/compileTests",
+	"epochTestsFolderPath": "/test/commands-tests/epochTest",
+	"initTestsFolderPath": "/test/commands-tests/initTests",
+	"testTestsFolderPath": "/test/commands-tests/contractsTests",
+	"sourceTestsFilesPath": "/cli-commands/init/artifacts/exampleTests.js",
+	"exampleContractTests": "/exampleTests.js",
+	"cliCommands": {
+		"INIT": "init",
+		"TEST": "test",
+		"EPOCH": "epoch",
+		"COMPILE": "compile"
+	},
+	"cliCommandsOptions": {
+		"START": "--start",
+		"STOP": "--stop",
+		"PATH": "--path"
+	},
+	"testsFiles": {
+		"packageJson": "/package.json",
+		"packageLockJson": "/package-lock.json",
+		"dockerComposeYml": "/docker-compose.yml",
+		"testContractPath": "/test/exampleTest.js",
+		"deployScriptsPath": "/deploy/deploy.js",
+		"contractsPath": "/contracts/ExampleContract.aes",
+		"nodeModules": "/node_modules",
+		"dockerEntryPoint": "/docker/entrypoint.sh",
+		"dockerEpochNode1": "/docker/epoch_node1_mean16.yaml",
+		"dockerEpochNode2": "/docker/epoch_node2_mean16.yaml",
+		"dockerEpochNode3": "/docker/epoch_node3_mean16.yaml",
+		"dockerHealthCheck": "/docker/healthcheck.sh",
+		"dockerNginxCors": "/docker/nginx-cors.conf",
+		"dockerNginxDefault": "/docker/nginx-default.conf",
+		"dockerNginxWs": "/docker/nginx-ws.conf",
+		"dockerKeys": "/docker/keys"
+	}
+}

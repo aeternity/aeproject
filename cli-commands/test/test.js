@@ -32,7 +32,7 @@ const run = async (path) => {
   }
 
   testDirectory = path;
-
+  
   if (!path.includes(workingDirectory)) {
     testDirectory = `${process.cwd()}/${path}`;
   }

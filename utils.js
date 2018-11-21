@@ -18,8 +18,11 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
-const { spawn } = require('promisify-child-process');
+const {
+  spawn
+} = require('promisify-child-process');
 const Universal = AeSDK.Universal;
+
 
 const config = {
   localhost: "http://localhost:3001",
@@ -92,7 +95,7 @@ const getClient = async function (url) {
         nativeMode: true 
       })
   })
-
+  
   return client;
 }
 
@@ -106,8 +109,8 @@ const handleApiError = async (fn) => {
   }
 }
 
-function logApiError (error) { 
-  printError(`API ERROR: ${error}`) 
+function logApiError(error) {
+  printError(`API ERROR: ${error}`)
 }
 
 const sleep = (ms) => {
@@ -120,16 +123,18 @@ const sleep = (ms) => {
 
 const execute = async (command, args, options = {}) => {
   const child = spawn('aeproject', [command, ...args], options)
+  let result = '';
 
   child.stdout.on('data', (data) => {
-    console.log(data.toString())
+    result += data.toString();
   })
 
   child.stderr.on('data', (data) => {
-    console.log(data.toString())
+    result += data.toString();
   })
 
   await child;
+  return result;
 }
 
 const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
