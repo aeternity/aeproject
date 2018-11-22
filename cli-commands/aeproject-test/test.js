@@ -16,14 +16,11 @@
  */
 
 const aeprojectTest = require('./aeproject-test');
-const dir = require('node-dir');
-const utils = require('./../../utils.js');
-let path = require("path");
-
+const utils = require('../utils.js');
 
 const run = async (path) => {
-  var workingDirectory = process.cwd();
-  var testDirectory = '';
+  let workingDirectory = process.cwd();
+  let testDirectory = '';
 
   if (path.includes('.js')) {
     await aeprojectTest.run([path]);
