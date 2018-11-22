@@ -28,8 +28,8 @@ class Deployer {
         let client = await this.selectNetwork(this.network);
         let contract = await this.readFile(contractPath);
         
-        const compiledContract = await client.contractCompile(contract, { gas: gasLimit })
-        const deployPromise = compiledContract.deploy({options: { ttl, gas: gasLimit}, abi: "sophia"});
+        const compiledContract = await client.contractCompile(contract, { gas })
+        const deployPromise = compiledContract.deploy({options: { ttl, gas }, abi: "sophia"});
         const deployedContract = await deployPromise;
         
         return deployedContract;
