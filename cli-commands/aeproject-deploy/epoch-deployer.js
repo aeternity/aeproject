@@ -13,11 +13,13 @@ class Deployer {
     async selectNetwork(network) {
         if(network == "local"){
             return utils.getClient(utils.config.localhost, this.keypair)
-        } else if(network == "edgenet"){
+        } 
+         
+        if(network == "edgenet"){
             return utils.getClient(utils.config.edgenetHost, this.keypair)
-        } else {
-            return utils.getClient(network, this.keypair)
-        }
+        } 
+        
+        return utils.getClient(network, this.keypair)
     }
 
     async readFile(path){
