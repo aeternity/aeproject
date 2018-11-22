@@ -21,30 +21,11 @@ import {
   print,
   createIfExistsFolder,
   copyFileOrDir,
-} from '../../utils.js'
+} from '../utils.js'
 const {
   spawn
 } = require('promisify-child-process');
-
-const testDir = './test';
-const testTemplateFile = 'exampleTests.js';
-const testFileDestination = `${testDir}/exampleTest.js`;
-
-const deployDir = './deploy';
-const deployTemplateFile = 'deployTemplate.js';
-const deployFileDestination = `${deployDir}/deploy.js`;
-
-const contractsDir = './contracts';
-const contractTemplateFile = 'ExampleContract.aes';
-const contractFileDestination = `${contractsDir}/ExampleContract.aes`;
-const artifactsDir = `${__dirname}/artifacts`;
-
-const dockerDir = './docker';
-const dockerTemplateDir = 'docker';
-const dockerFilesDestination = `${dockerDir}`;
-
-const dockerYmlFile = 'docker-compose.yml'
-const dockerYmlFileDestination = `./docker-compose.yml`;
+const constants = require('./constants.json');
 
 async function run() {
   try {
@@ -68,7 +49,7 @@ async function run() {
 }
 
 const installLibraries = async () => {
-  const fileSource = `${artifactsDir}/package.json`;
+  const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
   copyFileOrDir(fileSource, "./package.json")
   await installAeppSDK();
 }
@@ -91,35 +72,35 @@ const installAeppSDK = async () => {
 
 const setupContracts = () => {
   print(`===== Creating contracts directory =====`);
-  const fileSource = `${artifactsDir}/${contractTemplateFile}`;
-  createIfExistsFolder(contractsDir);
-  copyFileOrDir(fileSource, contractFileDestination)
+  const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
+  createIfExistsFolder(constants.contractsDir);
+  copyFileOrDir(fileSource, constants.contractFileDestination)
 }
 
 const setupTests = () => {
   print(`===== Creating tests directory =====`);
-  const fileSource = `${artifactsDir}/${testTemplateFile}`;
-  createIfExistsFolder(testDir, "Creating tests file structure");
-  copyFileOrDir(fileSource, testFileDestination)
+  const fileSource = `${__dirname}${constants.artifactsDir}/${constants.testTemplateFile}`;
+  createIfExistsFolder(constants.testDir, "Creating tests file structure");
+  copyFileOrDir(fileSource, constants.testFileDestination)
 }
 
 const setupDeploy = () => {
   print(`===== Creating deploy directory =====`);
-  const fileSource = `${artifactsDir}/${deployTemplateFile}`;
-  createIfExistsFolder(deployDir, "Creating deploy directory file structure");
-  copyFileOrDir(fileSource, deployFileDestination)
+  const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
+  createIfExistsFolder(constants.deployDir, "Creating deploy directory file structure");
+  copyFileOrDir(fileSource, constants.deployFileDestination)
 }
 
 const setupDocker = () => {
   print(`===== Creating docker directory =====`);
-  const dockerFilesSource = `${artifactsDir}/${dockerTemplateDir}`;
+  const dockerFilesSource = `${__dirname}${constants.artifactsDir}/${constants.dockerTemplateDir}`;
   const copyOptions = {
     overwrite: true
   }
 
-  const dockerYmlFileSource = `${artifactsDir}/${dockerYmlFile}`;
-  copyFileOrDir(dockerYmlFileSource, dockerYmlFileDestination, copyOptions)
-  copyFileOrDir(dockerFilesSource, dockerFilesDestination, copyOptions)
+  const dockerYmlFileSource = `${__dirname}${constants.artifactsDir}/${constants.dockerYmlFile}`;
+  copyFileOrDir(dockerYmlFileSource, constants.dockerYmlFileDestination, copyOptions)
+  copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
 }
 
 module.exports = {

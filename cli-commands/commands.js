@@ -14,12 +14,13 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-const compile = require('./cli-commands/compile/compile.js');
-const init = require('./cli-commands/init/init.js');
-const testConfig = require('./cli-commands/test/test.js');
-const epoch = require('./cli-commands/epoch/epoch.js');
-const deploy = require('./cli-commands/deploy/deploy.js');
+const compile = require('./aeproject-compile/compile.js');
+const init = require('./aeproject-init/init.js');
+const testConfig = require('./aeproject-test/test.js');
+const epoch = require('./aeproject-epoch/epoch.js');
+const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('./utils').config;
+
 
 const addInitOption = (program) => {
   program

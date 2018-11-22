@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
-const execute = require('../../utils.js').execute;
+const execute = require('../../cli-commands/utils.js').execute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 
