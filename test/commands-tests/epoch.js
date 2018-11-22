@@ -2,7 +2,7 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const execute = require('../../utils.js').execute;
+const execute = require('../../cli-commands/utils.js').execute;
 const dockerPs = require('../utils').dockerPs;
 const constants = require('../constants.json')
 const fs = require('fs-extra')

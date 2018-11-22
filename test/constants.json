@@ -3,8 +3,11 @@
 	"epochTestsFolderPath": "/test/commands-tests/epochTest",
 	"initTestsFolderPath": "/test/commands-tests/initTests",
 	"testTestsFolderPath": "/test/commands-tests/contractsTests",
-	"sourceTestsFilesPath": "/cli-commands/init/artifacts/exampleTests.js",
+	"sourceTestsFilesPath": "/cli-commands/aeproject-init/artifacts/exampleTests.js",
 	"exampleContractTests": "/exampleTests.js",
+	"dockerFolderPath": "/cli-commands/aeproject-init/artifacts",
+	"epochStartingFolder": "/test/commands-tests/contractsTests/artifacts",
+
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
