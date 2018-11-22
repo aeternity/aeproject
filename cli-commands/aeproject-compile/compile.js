@@ -15,23 +15,28 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-require = require('esm')(module /*, options */) // use to handle es6 import/export
-const { printError, print } = require('./../../utils');
-const utils = require('./../../utils');
-const readFile = require('../../utils').readFile;
-const { spawn } = require('promisify-child-process');
+require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+const {
+    printError,
+    print,
+    readFile
+} = require('./../utils');
+const utils = require('./../utils');
+const {
+    spawn
+} = require('promisify-child-process');
 
-async function compileAndPrint(file){
+async function compileAndPrint(file) {
     print('\r')
-    
-    try{
+
+    try {
         let client = await utils.getClient();
         let code = await readFile(file)
         let contract = await client.contractCompile(code.toString());
 
         print(`Contract '${file} has been successfully compiled'`)
         print(`Contract bytecode: ${contract.bytecode}`)
-    } catch(error){
+    } catch (error) {
         printError(`Contract '${file} has not been compiled'`)
         printError(`reason: ${error}`)
     }
@@ -50,9 +55,9 @@ async function run(path) {
         files.forEach(async (file) => {
             compileAndPrint(file)
         });
-    } 
+    }
 }
 
 module.exports = {
-  run
+    run
 }

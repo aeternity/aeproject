@@ -3,16 +3,16 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const execute = require('../../utils').execute;
-const utils = require('../../utils');
-const test = require('../../cli-commands/test/test')
+const execute = require('../../cli-commands/utils').execute;
+const utils = require('../../cli-commands/utils');
+const test = require('../../cli-commands/aeproject-test/test')
 const sinon = require('sinon')
 const constants = require('../constants.json')
 
 var shell = require('shelljs');
 
 let executeOptions = {
-	cwd: process.cwd() + constants.testTestsFolderPath
+	cwd: process.cwd() + constants.epochStartingFolder
 };
 
 describe('Aeproject Test', () => {
@@ -21,7 +21,9 @@ describe('Aeproject Test', () => {
 		currentDir = process.cwd();
 
 		fs.ensureDirSync(`.${constants.testTestsFolderPath}`)
-		utils.copyFileOrDir(`${currentDir}${constants.sourceTestsFilesPath}`, `${currentDir}${constants.testTestsFolderPath}${constants.exampleContractTests}`);
+		utils.copyFileOrDir(`${currentDir}${constants.dockerFolderPath}`, `${currentDir}${constants.testTestsFolderPath}/artifacts`);
+
+		await execute(constants.cliCommands.EPOCH, [], executeOptions)
 	})
 
 	it('should work on unexisting test folder', async function () {
@@ -54,6 +56,7 @@ describe('Aeproject Test', () => {
 
 	after(async function () {
 		process.chdir(currentDir);
+		await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
 		fs.removeSync(`.${constants.testTestsFolderPath}`);
 	})
 })
