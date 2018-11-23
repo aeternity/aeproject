@@ -18,6 +18,7 @@ const compile = require('./aeproject-compile/compile.js');
 const init = require('./aeproject-init/init.js');
 const testConfig = require('./aeproject-test/test.js');
 const epoch = require('./aeproject-epoch/epoch.js');
+const config = require('./utils').config;
 
 const addInitOption = (program) => {
   program
@@ -31,10 +32,11 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
   program
     .command('compile')
-    .option('--path [path]', 'Path to contract files', './contracts')
+    .option('-n --nodeUrl [nodeUrl]', 'Node to connect to', config.localhost)
+    .option('--path [compile path]', 'Path to contract files', './contracts')
     .description('Compile contracts')
     .action(async (option) => {
-      await compile.run(option.path);
+      await compile.run(option.path, option.nodeUrl);
     })
 }
 
