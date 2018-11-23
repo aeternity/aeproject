@@ -20,6 +20,8 @@ in which the developer can create
 the contracts, tests and deployment files and scripts. Docker configuration
 files are also created, for easy use of the aeternity blockchain network.
 
+The **init --update** command updates projects files. Important all files in docker folder and docker-compose will be replaced. 
+
 ## Compile sophia contracts
 
 The **compile** command compiles sophia contract. Files should be with .aes
