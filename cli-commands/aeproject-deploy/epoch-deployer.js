@@ -34,6 +34,10 @@ class Deployer {
         const deployPromise = await compiledContract.deploy({options: { ttl, gas }, abi: "sophia"});
         const deployedContract = await deployPromise;
 
+        let regex = new RegExp(/[\w]+.aes$/);
+        let contractFileName = regex.exec(contractPath)
+
+        console.log(`===== Contract: ${contractFileName} has been deployed =====`)
         console.log(deployedContract)
         
         return deployedContract;
