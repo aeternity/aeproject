@@ -10,16 +10,16 @@ class Deployer {
 		this.keypair = keypair;
 	}
     
-    async selectNetwork(network) {
-        if(network == "local"){
-            return utils.getClient(utils.config.localhost, this.keypair)
+    async selectNetwork() {
+        if(this.network == "local"){
+            return utils.config.localhost
         } 
          
-        if(network == "edgenet"){
-            return utils.getClient(utils.config.edgenetHost, this.keypair)
+        if(this.network == "edgenet"){
+            return utils.config.edgenetHost
         } 
         
-        return utils.getClient(network, this.keypair)
+        return network
     }
 
     async readFile(path){
@@ -27,7 +27,7 @@ class Deployer {
     }
 
 	async deploy(contractPath, gas = gasLimit) {
-        let client = await this.selectNetwork(this.network);
+        let client = await utils.getClient(this.selectNetwork(), this.keypair);
         let contract = await this.readFile(contractPath);
         
         const compiledContract = await client.contractCompile(contract, { gas })

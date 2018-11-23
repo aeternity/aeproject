@@ -9,7 +9,7 @@ const fs = require('fs-extra')
 let executeOptions = {
 	cwd: process.cwd() + constants.epochTestsFolderPath
 };
-
+const Deployer = require("./../../cli-commands/aeproject-deploy/deploy")
 
 describe('Aeproject deploy', () => {
 
@@ -20,8 +20,24 @@ describe('Aeproject deploy', () => {
 		await execute(constants.cliCommands.EPOCH, [], executeOptions)
 	})
 
-	it('test', async () => {
+	describe('Deployer', async () => {
+		it('Should init Deployer with local network', async () => {
+		//Arrange
+		let expectedLocalNodeUrl = "http://localhost:3001"
+
+		//Act
+		let deployer = new Deployer("local");
+		console.log(deployer.getClient)
+
+		//Assert
+		assert.equal(deployer.network, expectedLocalNodeUrl)
+		})
+	})
+
+	describe('Commands', async () => {
+		it('test', async () => {
 		
+		})
 	})
 
 	after(async () => {
