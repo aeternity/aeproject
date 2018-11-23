@@ -31,7 +31,7 @@ files are also created, for easy use of the aeternity blockchain network.
 aeproject compile
 ```
 
-The **compile** command compiles Sophia contract. Files should be with .aes
+The **compile** command compiles Sophia contract. It's recommended to use **.aes**
 file extension. Default directory is $projectDir/contracts. The result of the compilation is the contract bytecode
 printed in the console.
 Additional **--path** parameter is available, which can specify the path to the contract to be compiled.
