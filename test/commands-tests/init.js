@@ -38,7 +38,7 @@ describe('Aeproject Init', () => {
 	})
 
 
-	it.only('Should update project successfully', async () => {
+	it('Should update project successfully', async () => {
 		//Arrange
 		const editedContent = "edited content"
 		await execute(constants.cliCommands.INIT, [], executeOptions)
