@@ -23,7 +23,7 @@ const deploy = async () => {
 	// let deployer = new Deployer("edgenet")
 	// let deployer = new Deployer("http://someurl.com")
 
-	deployer.deploy("./contracts/ExampleContract.aes")
+	let result = await deployer.deploy("./contracts/ExampleContract.aes")
 	// deployer.deploy("./contracts/ExampleContract.aes", gasLimit)
 
 	//todo edit package.json

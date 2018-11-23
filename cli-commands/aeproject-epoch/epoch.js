@@ -52,7 +52,7 @@ async function fundWallets() {
   waitToMineCoins()
   let walletIndex = 1;
 
-  let client = await utils.getClient();
+  let client = await utils.getClient(config.host);
   for (let wallet in defaultWallets) {
     await fundWallet(client, defaultWallets[wallet].publicKey)
     print(`#${walletIndex++} ------------------------------------------------------------`)
@@ -62,7 +62,7 @@ async function fundWallets() {
 }
 
 async function waitToMineCoins() {
-  let client = await utils.getClient();
+  let client = await utils.getClient(config.host);
   let balance = 0;
   while (parseInt(balance) > 0) {
     try {
@@ -112,6 +112,7 @@ async function run(option) {
       print('===== Epoch was successfully stopped! =====');
       return;
     }
+
     if (running) {
       print('\r\n===== Epoch already started and healthy! =====');
       return;

@@ -69,7 +69,7 @@ const addDeployOption = (program) => {
     .description('Run deploy script')
     .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
     .option('-n --network', 'Select network', "local")
-    .option('-k --keypair [keypair]', 'Wallet keypair', config.keyPair)
+    .option('-k --keypair [keypair]', 'Wallet keypair', config.keypair)
     .action(async (options) => {
       await deploy.run(options.path, options.network, options.keypair);
     })

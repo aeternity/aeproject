@@ -5,7 +5,7 @@ const ttl = 100;
 
 class Deployer {
 
-	constructor(network , keypair = utils.config.keyPair ) {
+	constructor(network , keypair = utils.config.keypair ) {
         this.network = network;
 		this.keypair = keypair;
 	}
@@ -31,9 +31,11 @@ class Deployer {
         let contract = await this.readFile(contractPath);
         
         const compiledContract = await client.contractCompile(contract, { gas })
-        const deployPromise = compiledContract.deploy({options: { ttl, gas }, abi: "sophia"});
+        const deployPromise = await compiledContract.deploy({options: { ttl, gas }, abi: "sophia"});
         const deployedContract = await deployPromise;
 
+        console.log(deployedContract)
+        
         return deployedContract;
 	}
 }
