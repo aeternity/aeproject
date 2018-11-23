@@ -19,7 +19,7 @@ class Deployer {
             return utils.config.edgenetHost
         } 
         
-        return network
+        return this.network
     }
 
     async readFile(path){
@@ -27,7 +27,7 @@ class Deployer {
     }
 
 	async deploy(contractPath, gas = gasLimit) {
-        let client = await utils.getClient(this.selectNetwork(), this.keypair);
+        let client = await utils.getClient(await this.selectNetwork(), this.keypair);
         let contract = await this.readFile(contractPath);
         
         const compiledContract = await client.contractCompile(contract, { gas })

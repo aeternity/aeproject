@@ -68,11 +68,10 @@ const addDeployOption = (program) => {
     .command('deploy')
     .description('Run deploy script')
     .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
-    .option('-n --network', 'Select network', "local")
-    .option('-pk --publicKey [publicKey]', 'Wallet keypair', config.keypair.publicKey)
-    .option('-sk --secretKey [secretKey]', 'Wallet keypair', config.keypair.secretKey)
+    .option('-n --network [network]', 'Select network', "local")
+    .option('-s --secretKey [secretKey]', 'Wallet keypair', config.keypair.secretKey)
     .action(async (options) => {
-      await deploy.run(options.path, options.network, {publicKey: options.publicKey, secretKey: options.secretKey});
+      await deploy.run(options.path, options.network, options.secretKey);
     })
 }
 

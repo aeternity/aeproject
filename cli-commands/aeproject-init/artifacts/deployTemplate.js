@@ -18,10 +18,8 @@ const Ae = require('@aeternity/aepp-sdk').Universal;
 const Deployer = require('aeproject').Deployer;
 const gasLimit = 1000000;
 
-const deploy = async () => {
-	let deployer = new Deployer("local")
-	// let deployer = new Deployer("edgenet")
-	// let deployer = new Deployer("http://someurl.com")
+const deploy = async (network, privateKey) => {
+	let deployer = new Deployer(network, privateKey)
 
 	let result = await deployer.deploy("./contracts/ExampleContract.aes")
 	// deployer.deploy("./contracts/ExampleContract.aes", gasLimit)

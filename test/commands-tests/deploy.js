@@ -2,14 +2,14 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils.js').aeprojectExecute;
+const execute = require('../../cli-commands/utils').aeprojectExecute;
 const dockerPs = require('../utils').dockerPs;
 const constants = require('../constants.json')
 const fs = require('fs-extra')
 let executeOptions = {
 	cwd: process.cwd() + constants.epochTestsFolderPath
 };
-const Deployer = require("./../../cli-commands/aeproject-deploy/deploy")
+const Deployer = require("./../../cli-commands/aeproject-deploy/epoch-deployer")
 
 describe('Aeproject deploy', () => {
 
@@ -22,15 +22,36 @@ describe('Aeproject deploy', () => {
 
 	describe('Deployer', async () => {
 		it('Should init Deployer with local network', async () => {
-		//Arrange
-		let expectedLocalNodeUrl = "http://localhost:3001"
+			//Arrange
+			let expectedNetwork = "local"
 
-		//Act
-		let deployer = new Deployer("local");
-		console.log(deployer.getClient)
+			//Act
+			let deployer = new Deployer(expectedNetwork);
 
-		//Assert
-		assert.equal(deployer.network, expectedLocalNodeUrl)
+			//Assert
+			assert.equal(deployer.network, expectedNetwork)
+		})
+
+		it('Should init Deployer with edgenet network', async () => {
+			//Arrange
+			let expectedNetwork = "edgenet"
+
+			//Act
+			let deployer = new Deployer(expectedNetwork);
+
+			//Assert
+			assert.equal(deployer.network, expectedNetwork)
+		})
+
+		it('Should init Deployer with custom network', async () => {
+			//Arrange
+			let expectedNetwork = "http://customNodeUrl.com"
+
+			//Act
+			let deployer = new Deployer(expectedNetwork);
+
+			//Assert
+			assert.equal(deployer.network, expectedNetwork)
 		})
 	})
 
