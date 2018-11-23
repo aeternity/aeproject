@@ -57,8 +57,7 @@ proejcts. The sample deploy script is scaffolded in deployment folder.
 
 --path -> You can set path to the deploy script
 
--pk -> publicKey
--sk -> secretKey
+-s -> secretKey that will be used to deploy and call contracts
 
 -Deployer.deploy(path, gasLimit) function takes 2 arguments: relative path to the contract and gasLimit
 
