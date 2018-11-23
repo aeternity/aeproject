@@ -20,7 +20,11 @@ const run = async (deploymentFilePath, network, keypair) => {
 	const deployMethod = getDeployMethod(deploymentFilePath);
 
 	try {
-		await deployMethod(network, keypair);
+		const result = await deployMethod(network, keypair);
+		if(result == undefined)
+			throw Error("Something went wrong!")
+		
+		console.log(result)
 		console.log(`Your deployment script finished successfully!`);
 	} catch (e) {
         console.error(e);

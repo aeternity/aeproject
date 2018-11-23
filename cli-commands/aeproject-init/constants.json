@@ -3,9 +3,9 @@
 	"testTemplateFile": "exampleTests.js",
 	"testFileDestination": "./test/exampleTest.js",
 
-	"deployDir": "./deploy",
+	"deployDir": "./deployment",
 	"deployTemplateFile": "deployTemplate.js",
-	"deployFileDestination": "./deploy/deploy.js",
+	"deployFileDestination": "./deployment/deploy.js",
 
 	"contractsDir": "./contracts",
 	"contractTemplateFile": "ExampleContract.aes",

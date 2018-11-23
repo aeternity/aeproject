@@ -85,6 +85,17 @@ const setupTests = () => {
 }
 
 const setupDeploy = () => {
+
+  const aeprojectInstallProcess = spawn('npm', ['install', './../aeproject', '--save'], {});
+
+  aeprojectInstallProcess.stdout.on('data', (data) => {
+    print(`${data}`);
+  });
+
+  aeprojectInstallProcess.stderr.on('data', (data) => {
+    print(`WARN: ${data}`);
+  });
+
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
   createIfExistsFolder(constants.deployDir, "Creating deploy directory file structure");

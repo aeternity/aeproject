@@ -1,4 +1,4 @@
-const utils = require('./../../utils')
+const utils = require('./../utils')
 const fs = require('fs')
 const gasLimit = 1000000;
 const ttl = 100;
@@ -33,7 +33,7 @@ class Deployer {
         const compiledContract = await client.contractCompile(contract, { gas })
         const deployPromise = compiledContract.deploy({options: { ttl, gas }, abi: "sophia"});
         const deployedContract = await deployPromise;
-        
+
         return deployedContract;
 	}
 }
