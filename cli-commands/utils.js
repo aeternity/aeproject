@@ -55,7 +55,7 @@ const createIfExistsFolder = (dir) => {
 }
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
-  if (fs.existsSync(`${destinationFileOrDir}`)) {
+  if (fs.existsSync(`${destinationFileOrDir}`) && copyOptions.overwrite == false) {
     throw new Error(`${destinationFileOrDir} already exists.`);
   }
 

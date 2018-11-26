@@ -27,7 +27,16 @@ const {
 } = require('promisify-child-process');
 const constants = require('./constants.json');
 
-async function run() {
+async function run(update) {
+  if(update){
+    print(`===== Updating Aeproject files =====`);
+  
+    setupDocker();
+
+    print('===== Aeproject was successfully updated! =====');
+    return;
+  }
+
   try {
     print('===== Initializing aeproject =====');
 
