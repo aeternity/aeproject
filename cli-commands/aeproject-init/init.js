@@ -25,7 +25,16 @@ import {
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
 
-async function run() {
+async function run(update) {
+  if(update){
+    print(`===== Updating Aeproject files =====`);
+  
+    setupDocker();
+
+    print('===== Aeproject was successfully updated! =====');
+    return;
+  }
+
   try {
     print('===== Initializing aeproject =====');
 

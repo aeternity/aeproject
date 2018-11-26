@@ -10,9 +10,7 @@ const expectedCompileResultExampleContract = "cb_PrYsBBtiqaRZTzdeE1FbEWtNbf1rhKS
 let expectedResult1 = "ExampleContract1.aes has been successfully compiled"
 let expectedResult2 = "ExampleContract2.aes has been successfully compiled"
 let expectedResult3 = "ExampleContract3.aes has been successfully compiled"
-let executeOptions = {
-	cwd: process.cwd() + constants.compileTestsFolderPath
-};
+let executeOptions = { cwd: process.cwd() + constants.compileTestsFolderPath };
 chai.use(chaiAsPromised);
 
 describe('Aeproject Compile', () => {
@@ -38,6 +36,18 @@ describe('Aeproject Compile', () => {
 			assert.include(result, expectedResult1)
 			assert.include(result, expectedResult2)
 			assert.include(result, expectedResult3)
+		})
+
+		it('Should compile contracts with nodeUrl argument - localhost', async () => {
+			let result = await execute(constants.cliCommands.COMPILE, ["-n", "http://localhost:3001"], executeOptions)
+			
+			assert.include(result, expectedCompileResultExampleContract)
+		})
+
+		it('Should compile contracts with nodeUrl argument - edgenet ', async () => {
+			let result = await execute(constants.cliCommands.COMPILE, ["-n", "https://sdk-edgenet.aepps.com"], executeOptions)
+			
+			assert.include(result, expectedCompileResultExampleContract)
 		})
 	})
 
