@@ -1,6 +1,7 @@
 {
 	"compileTestsFolderPath": "/test/commands-tests/compileTests",
 	"epochTestsFolderPath": "/test/commands-tests/epochTest",
+	"deployTestsFolderPath": "/test/commands-tests/deployTest",
 	"initTestsFolderPath": "/test/commands-tests/initTests",
 	"testTestsFolderPath": "/test/commands-tests/contractsTests",
 	"sourceTestsFilesPath": "/cli-commands/aeproject-init/artifacts/exampleTests.js",
@@ -12,7 +13,8 @@
 		"INIT": "init",
 		"TEST": "test",
 		"EPOCH": "epoch",
-		"COMPILE": "compile"
+		"COMPILE": "compile",
+		"DEPLOY": "deploy"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",

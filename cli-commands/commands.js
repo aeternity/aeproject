@@ -18,7 +18,9 @@ const compile = require('./aeproject-compile/compile.js');
 const init = require('./aeproject-init/init.js');
 const testConfig = require('./aeproject-test/test.js');
 const epoch = require('./aeproject-epoch/epoch.js');
+const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('./utils').config;
+
 
 const addInitOption = (program) => {
   program
@@ -62,12 +64,25 @@ const addEpochOption = (program) => {
     })
 }
 
+const addDeployOption = (program) => {
+  program
+    .command('deploy')
+    .description('Run deploy script')
+    .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
+    .option('-n --network [network]', 'Select network', "local")
+    .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)', config.keypair.secretKey)
+    .action(async (options) => {
+      await deploy.run(options.path, options.network, options.secretKey);
+    })
+}
+
 
 const initCommands = (program) => {
   addInitOption(program);
   addCompileOption(program);
   addTestOption(program);
   addEpochOption(program);
+  addDeployOption(program)
 }
 
 module.exports = {

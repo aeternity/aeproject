@@ -78,7 +78,7 @@ const getFiles = async function (directory, regex) {
   });
 }
 
-const getClient = async function (url) {
+const getClient = async function (url, keypair = config.keyPair) {
   let client;
   let internalUrl = url;
 
@@ -88,10 +88,10 @@ const getClient = async function (url) {
 
   await handleApiError(async () => {
     client = await Universal(
-      { url: url, 
+      { url, 
         process, 
-        keypair: config.keyPair, 
-        internalUrl: internalUrl, 
+        keypair, 
+        internalUrl, 
         nativeMode: true 
       })
   })
@@ -121,8 +121,12 @@ const sleep = (ms) => {
   }
 }
 
-const execute = async (command, args, options = {}) => {
-  const child = spawn('aeproject', [command, ...args], options)
+const aeprojectExecute = async (command, args, options = {}) => {
+  return await execute("aeproject", command, args, options)
+}
+
+const execute = async (cli, command, args, options = {}) => {
+  const child = spawn(cli, [command, ...args], options)
   let result = '';
 
   child.stdout.on('data', (data) => {
@@ -164,5 +168,6 @@ module.exports = {
   sleep,
   execute,
   readFile,
-  config
+  config,
+  aeprojectExecute
 }

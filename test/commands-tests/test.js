@@ -3,7 +3,7 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils').execute;
+const execute = require('../../cli-commands/utils').aeprojectExecute;
 const utils = require('../../cli-commands/utils');
 const test = require('../../cli-commands/aeproject-test/test')
 const sinon = require('sinon')

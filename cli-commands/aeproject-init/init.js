@@ -22,10 +22,8 @@ import {
   createIfExistsFolder,
   copyFileOrDir,
 } from '../utils.js'
-const {
-  spawn
-} = require('promisify-child-process');
 const constants = require('./constants.json');
+const execute = require('./../utils').execute;
 
 async function run(update) {
   if(update){
@@ -46,7 +44,7 @@ async function run(update) {
 
     setupContracts();
     setupTests();
-    setupDeploy();
+    await setupDeploy();
     setupDocker();
 
     print('===== Aeproject was successfully initialized! =====');
@@ -65,18 +63,8 @@ const installLibraries = async () => {
 
 const installAeppSDK = async () => {
   print('===== Installing aepp-sdk =====');
-
-  const sdkInstallProcess = spawn('npm', ['install', '@aeternity/aepp-sdk@next', '--save'], {});
-
-  sdkInstallProcess.stdout.on('data', (data) => {
-    print(`${data}`);
-  });
-
-  sdkInstallProcess.stderr.on('data', (data) => {
-    print(`WARN: ${data}`);
-  });
-
-  await sdkInstallProcess;
+  
+  await execute('npm', 'install', ['@aeternity/aepp-sdk@next', '--save']);
 }
 
 const setupContracts = () => {
@@ -93,7 +81,11 @@ const setupTests = () => {
   copyFileOrDir(fileSource, constants.testFileDestination)
 }
 
-const setupDeploy = () => {
+const setupDeploy = async () => {
+  print(`===== Installing aeproject locally =====`);
+
+  await execute('npm', 'install', ['git+https://github.com/aeternity/aeproject.git', '--save']);
+  
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
   createIfExistsFolder(constants.deployDir, "Creating deploy directory file structure");
