@@ -1,0 +1,9 @@
+contract ExampleContract4 =
+  record state = { 
+    name              : string}
+
+  public stateful function  name() : string =
+    state.name
+  
+  public stateful function  init(name : string) = {
+  	name = name}

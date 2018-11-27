@@ -33,12 +33,12 @@ class Deployer {
      * @param {int} gasLimit - Gas limit
      * @param {object} initArgs - Initial arguments that will be passed to init function.
      */
-	async deploy(contractPath, gas = gasLimit, initArgs = {}) {
+	async deploy(contractPath, gas = gasLimit, initState = "") {
         let client = await utils.getClient(await this.selectNetwork(), this.keypair);
         let contract = await this.readFile(contractPath);
         
         const compiledContract = await client.contractCompile(contract, { gas })
-        const deployPromise = await compiledContract.deploy({initState: { initArgs }, options: { ttl, gas }, abi: "sophia"});
+        const deployPromise = await compiledContract.deploy(initState == "" ? {options: { ttl, gas }, abi: "sophia"} : {initState, options: { ttl, gas }, abi: "sophia"});
         const deployedContract = await deployPromise;
 
         let regex = new RegExp(/[\w]+.aes$/);

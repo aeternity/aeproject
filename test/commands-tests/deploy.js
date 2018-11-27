@@ -52,6 +52,25 @@ describe('Aeproject deploy', () => {
 			//Assert
 			assert.equal(deployer.network, expectedNetwork)
 		})
+
+		it('Should deploy contract with init arguments', async () => {
+			//Arrange
+			let expectedNetwork = "local"
+			let expectedInitValue = "testString"
+			let deployer = new Deployer(expectedNetwork);
+
+			//Act
+			console.log(process.cwd())
+			let deployedContract = await deployer.deploy("./test/commands-tests/multipleContractsFolder/ExampleContract4.aes", 250250, `("${expectedInitValue}")`)
+
+			const callNamePromise = deployedContract.call('name', { options: { ttl: 50, gas: 250250 } });
+			assert.isFulfilled(callNamePromise, 'Could call the name');
+			const callNameResult = await callNamePromise;
+
+			//Assert
+			const decodedNameResult = await callNameResult.decode("string");
+			assert.equal(decodedNameResult.value, expectedInitValue)
+		})
 	})
 
 	describe('Deploy command ', async () => {
