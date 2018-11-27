@@ -26,12 +26,19 @@ class Deployer {
         return await fs.readFileSync(path, "utf-8")
     }
 
-	async deploy(contractPath, gas = gasLimit) {
+    /**
+     * Deploy command
+     * @deploy
+     * @param {string} contractPath - Relative path to the contract
+     * @param {int} gasLimit - Gas limit
+     * @param {object} initArgs - Initial arguments that will be passed to init function.
+     */
+	async deploy(contractPath, gas = gasLimit, initArgs = {}) {
         let client = await utils.getClient(await this.selectNetwork(), this.keypair);
         let contract = await this.readFile(contractPath);
         
         const compiledContract = await client.contractCompile(contract, { gas })
-        const deployPromise = await compiledContract.deploy({options: { ttl, gas }, abi: "sophia"});
+        const deployPromise = await compiledContract.deploy({initState: { initArgs }, options: { ttl, gas }, abi: "sophia"});
         const deployedContract = await deployPromise;
 
         let regex = new RegExp(/[\w]+.aes$/);
