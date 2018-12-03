@@ -78,7 +78,8 @@ const getFiles = async function (directory, regex) {
   });
 }
 
-const getClient = async function (url, keypair = config.keyPair) {
+const getClient = async function (url, keypair = config.keypair) {
+
   let client;
   let internalUrl = url;
 

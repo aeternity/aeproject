@@ -31,6 +31,8 @@ describe('Aeproject Epoch', () => {
 		assert.isNotTrue(running, "Epoch wasn't stopped properly");
 	})
 
+	// TODO add test seeing that the wallets were funded
+
 	after(async () => {
 
 		let running = await dockerPs();
