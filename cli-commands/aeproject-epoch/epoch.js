@@ -48,12 +48,12 @@ async function dockerPs() {
 }
 
 async function fundWallets() {
-
   waitToMineCoins()
   let walletIndex = 1;
 
   let client = await utils.getClient(config.host);
   for (let wallet in defaultWallets) {
+
     await fundWallet(client, defaultWallets[wallet].publicKey)
     print(`#${walletIndex++} ------------------------------------------------------------`)
     print(`public key: ${defaultWallets[wallet].publicKey}`)
