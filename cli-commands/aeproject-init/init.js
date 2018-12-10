@@ -84,7 +84,7 @@ const setupTests = () => {
 const setupDeploy = async () => {
   print(`===== Installing aeproject locally =====`);
 
-  await execute('npm', 'install', ['git+https://github.com/aeternity/aeproject.git#upgrade-epoch', '--save']);
+  await execute('npm', 'install', ['git+https://github.com/aeternity/aeproject.git', '--save']);
 
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;

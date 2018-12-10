@@ -80,9 +80,7 @@ describe('Aeproject deploy', () => {
 		let expectedDeployResult = "ExampleContract.aes has been deployed";
 
 		it('without any arguments', async () => {
-			console.log(executeOptions)
 			let result = await execute(constants.cliCommands.DEPLOY, [], executeOptions)
-			console.log(result)
 			assert.include(result, expectedDeployResult)
 		})
 
