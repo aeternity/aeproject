@@ -46,13 +46,13 @@ describe('Aeproject Init', () => {
 		//Act
 		fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, editedContent)
 		fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeYml, editedContent)
-		
+
 		await execute(constants.cliCommands.INIT, ["--update"], executeOptions)
 
 		// //assert
-		let editPackageJson = fs.readFileSync(executeOptions.cwd + constants.testsFiles.packageJson,'utf8')
+		let editPackageJson = fs.readFileSync(executeOptions.cwd + constants.testsFiles.packageJson, 'utf8')
 		let editedDockerComposeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeYml, 'utf8')
-		
+
 		assert.equal(editPackageJson, editedContent)
 		assert.notEqual(editedDockerComposeYml, editedContent)
 
