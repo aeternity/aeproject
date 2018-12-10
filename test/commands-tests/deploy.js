@@ -19,7 +19,7 @@ describe('Aeproject deploy', () => {
 		await execute(constants.cliCommands.EPOCH, [], executeOptions)
 	})
 
-	xdescribe('Deployer', async () => {
+	describe('Deployer', async () => {
 		it('Should init Deployer with local network', async () => {
 			//Arrange
 			let expectedNetwork = "local"
@@ -154,6 +154,6 @@ describe('Aeproject deploy', () => {
 			await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
 		}
 
-		// fs.removeSync(`.${constants.deployTestsFolderPath}`)
+		fs.removeSync(`.${constants.deployTestsFolderPath}`)
 	})
 })
