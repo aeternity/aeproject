@@ -80,10 +80,17 @@ const getFiles = async function (directory, regex) {
 const getClient = async function (url, keypair = config.keypair) {
   let client;
   let internalUrl = url;
+  let networkId = 'ae_devnet'
+
 
   if (url.includes("localhost")) {
     internalUrl = internalUrl + "/internal"
   }
+
+  if (url.includes("mainnet")) {
+    networkId = 'ae_mainnet'
+  }
+
 
   await handleApiError(async () => {
     client = await Universal({
@@ -91,7 +98,8 @@ const getClient = async function (url, keypair = config.keypair) {
       process,
       keypair,
       internalUrl,
-      nativeMode: true
+      nativeMode: true,
+      networkId: networkId
     })
   })
 

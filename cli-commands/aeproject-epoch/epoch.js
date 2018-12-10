@@ -48,50 +48,33 @@ async function dockerPs() {
 }
 
 async function fundWallets() {
-  waitToMineCoins()
-  let walletIndex = 1;
+  await waitToMineCoins()
 
+  let walletIndex = 1;
   let client = await utils.getClient(config.host);
   for (let wallet in defaultWallets) {
 
     await fundWallet(client, defaultWallets[wallet].publicKey)
+    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
+
     print(`#${walletIndex++} ------------------------------------------------------------`)
     print(`public key: ${defaultWallets[wallet].publicKey}`)
     print(`private key: ${defaultWallets[wallet].secretKey}`)
+    print(`Wallet's balance is ${recipientBalanace}`);
+
   }
 }
 
 async function waitToMineCoins() {
   let client = await utils.getClient(config.host);
-  let balance = 0;
-  while (parseInt(balance) > 0) {
-    try {
-      process.stdout.write(".");
-      utils.sleep(2500)
-      balance = (await client.balance(await client.address()));
-    } catch (e) {
-      throw new Error(`Funding the ${client} failed`)
-    }
-  }
+  await client.awaitHeight(8)
 }
 
 async function fundWallet(client, recipient) {
-  const {
-    tx
-  } = await client.api.postSpend({
-    fee: 1,
-    amount: 100000000000000000,
-    senderId: config.keyPair.publicKey,
-    recipientId: recipient,
-    payload: '',
-    ttl: 55,
-    nonce: config.nonce++
-  })
 
-  const signed = await client.signTransaction(tx)
-  await client.api.postTransaction({
-    tx: signed
-  })
+  client.setKeypair(config.keyPair)
+  await client.spend(config.amountToFund, recipient)
+
 }
 
 async function run(option) {
