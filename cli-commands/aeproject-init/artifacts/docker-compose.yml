@@ -2,41 +2,38 @@
 version: '3'
 services:
   node1:
-    image: aeternity/epoch:v0.25.0
+    image: aeternity/epoch:v1.0.0
     hostname: node1
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
     command: >
-      -aecore expected_mine_ ${EPOCH_MINE_RATE:-15000}
       -aehttp enable_debug_endpoints true
     volumes:
-      - ./docker/epoch_node1_mean16.yaml:/home/epoch/epoch.yaml
+      - ./docker/epoch_node1_mean15.yaml:/home/epoch/epoch.yaml
       - ./docker/keys/node1:/home/epoch/node/keys
       - node1_db:/home/epoch/node/data/mnesia
 
   node2:
-    image: aeternity/epoch:v0.25.0
+    image: aeternity/epoch:v1.0.0
     hostname: node2
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
     command: >
-      -aecore expected_mine_rate ${EPOCH_MINE_RATE:-15000}
       -aehttp enable_debug_endpoints true
     volumes:
-      - ./docker/epoch_node2_mean16.yaml:/home/epoch/epoch.yaml
+      - ./docker/epoch_node2_mean15.yaml:/home/epoch/epoch.yaml
       - ./docker/keys/node2:/home/epoch/node/keys
       - node2_db:/home/epoch/node/data/mnesia
 
   node3:
-    image: aeternity/epoch:v0.25.0
+    image: aeternity/epoch:v1.0.0
     hostname: node3
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
     command: >
-      -aecore expected_mine_rate ${EPOCH_MINE_RATE:-15000}
       -aehttp enable_debug_endpoints true
     volumes:
-      - ./docker/epoch_node3_mean16.yaml:/home/epoch/epoch.yaml
+      - ./docker/epoch_node3_mean15.yaml:/home/epoch/epoch.yaml
       - ./docker/keys/node3:/home/epoch/node/keys
       - node3_db:/home/epoch/node/data/mnesia
 
@@ -60,3 +57,4 @@ volumes:
   node2_keys:
   node3_db:
   node3_keys:
+    

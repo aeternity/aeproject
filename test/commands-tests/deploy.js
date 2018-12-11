@@ -60,10 +60,13 @@ describe('Aeproject deploy', () => {
 			let deployer = new Deployer(expectedNetwork);
 
 			//Act
-			console.log(process.cwd())
 			let deployedContract = await deployer.deploy("./test/commands-tests/multipleContractsFolder/ExampleContract4.aes", 250250, `("${expectedInitValue}")`)
 
-			const callNamePromise = deployedContract.call('name', { options: { ttl: 50, gas: 250250 } });
+			const callNamePromise = deployedContract.call('name', {
+				options: {
+					ttl: 50
+				}
+			});
 			assert.isFulfilled(callNamePromise, 'Could call the name');
 			const callNameResult = await callNamePromise;
 
@@ -74,53 +77,52 @@ describe('Aeproject deploy', () => {
 	})
 
 	describe('Deploy command ', async () => {
-		let expectedDeployResult = "===== Contract: ExampleContract.aes has been deployed =====";
-		
+		let expectedDeployResult = "ExampleContract.aes has been deployed";
+
 		it('without any arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, [], executeOptions)
-			
 			assert.include(result, expectedDeployResult)
 		})
 
 		it('with network arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, ["-n", "local"], executeOptions)
-			
+
 			assert.include(result, expectedDeployResult)
 		})
 
 		it('with secret key arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, ["-s", secretKey], executeOptions)
-			
+
 			assert.include(result, expectedDeployResult)
 		})
 
 		it('with path arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, ["--path", "./deployment/deploy.js"], executeOptions)
-			
+
 			assert.include(result, expectedDeployResult)
 		})
 
 		it('with secret key and network arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, ["-s", secretKey, "-n", "local"], executeOptions)
-			
+
 			assert.include(result, expectedDeployResult)
 		})
 
 		it('with secret key and path arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, ["-s", secretKey, "--path", "./deployment/deploy.js"], executeOptions)
-			
+
 			assert.include(result, expectedDeployResult)
 		})
 
 		it('with network key and path arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, ["-n", "local", "--path", "./deployment/deploy.js"], executeOptions)
-			
+
 			assert.include(result, expectedDeployResult)
 		})
 
 		it('with all arguments', async () => {
 			let result = await execute(constants.cliCommands.DEPLOY, ["-n", "local", "-s", secretKey, "--path", "./deployment/deploy.js"], executeOptions)
-			
+
 			assert.include(result, expectedDeployResult)
 		})
 
@@ -148,8 +150,8 @@ describe('Aeproject deploy', () => {
 		let running = await dockerPs();
 		if (running) {
 			await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
-        }
-        
+		}
+
 		fs.removeSync(`.${constants.deployTestsFolderPath}`)
 	})
 })

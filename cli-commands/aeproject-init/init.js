@@ -26,9 +26,9 @@ const constants = require('./constants.json');
 const execute = require('./../utils').execute;
 
 async function run(update) {
-  if(update){
+  if (update) {
     print(`===== Updating Aeproject files =====`);
-  
+
     setupDocker();
 
     print('===== Aeproject was successfully updated! =====');
@@ -63,8 +63,8 @@ const installLibraries = async () => {
 
 const installAeppSDK = async () => {
   print('===== Installing aepp-sdk =====');
-  
-  await execute('npm', 'install', ['@aeternity/aepp-sdk@next', '--save']);
+
+  await execute('npm', 'install', ['@aeternity/aepp-sdk@1.0.1', '--save']);
 }
 
 const setupContracts = () => {
@@ -85,7 +85,7 @@ const setupDeploy = async () => {
   print(`===== Installing aeproject locally =====`);
 
   await execute('npm', 'install', ['git+https://github.com/aeternity/aeproject.git', '--save']);
-  
+
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
   createIfExistsFolder(constants.deployDir, "Creating deploy directory file structure");
