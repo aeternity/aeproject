@@ -20,6 +20,7 @@ const testConfig = require('./aeproject-test/test.js');
 const epoch = require('./aeproject-epoch/epoch.js');
 const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('./utils').config;
+const history = require('./aeproject-history/log-store-service');
 
 
 const addInitOption = (program) => {
@@ -76,13 +77,27 @@ const addDeployOption = (program) => {
     })
 }
 
+const addHistoryOption = (program) => {
+  program
+    .command('history')
+    .description('Show deployment history info')
+    .action(async (options) => {
+      
+      let data = history.getHistory();
+      for (let i = 0; i < data.length; i++) {
+        console.log(data[i].actions);
+      }
+    })
+}
+
 
 const initCommands = (program) => {
   addInitOption(program);
   addCompileOption(program);
   addTestOption(program);
   addEpochOption(program);
-  addDeployOption(program)
+  addDeployOption(program);
+  addHistoryOption(program);
 }
 
 module.exports = {

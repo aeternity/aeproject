@@ -18,6 +18,7 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
+const Crypto = AeSDK.Crypto;
 const {
   spawn
 } = require('promisify-child-process');
@@ -166,6 +167,12 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
   }
 }
 
+function keyToHex (publicKey) {
+	let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]); // const Crypto = require('@aeternity/aepp-sdk').Crypto
+	let asHex = '0x' + byteArray.toString('hex');
+	return asHex;
+}
+
 module.exports = {
   print,
   printError,
@@ -177,5 +184,6 @@ module.exports = {
   execute,
   readFile,
   config,
-  aeprojectExecute
+  aeprojectExecute,
+  keyToHex
 }

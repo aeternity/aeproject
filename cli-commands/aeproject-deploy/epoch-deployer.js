@@ -2,6 +2,7 @@ const utils = require('./../utils')
 const fs = require('fs')
 const gasLimit = 20000000;
 const ttl = 100;
+const logStoreService = require('./../aeproject-history/log-store-service');
 
 class Deployer {
 
@@ -52,7 +53,21 @@ class Deployer {
         const deployedContract = await deployPromise;
 
         let regex = new RegExp(/[\w]+.aes$/);
-        let contractFileName = regex.exec(contractPath)
+        let contractFileName = regex.exec(contractPath);
+
+        console.log(`==> Try create history..`)
+        let info = {
+            deployerType: this.constructor.name,
+            nameOrLabel: 'get contract name',
+            transactionHash: 'get tx hash',
+            status: 1, 
+            gasPrice: 11, 
+            gasUsed: 22, 
+            result: 'contract address'
+        }
+
+        logStoreService.initHistoryRecord();
+        logStoreService.logAction(info);
 
         console.log(`===== Contract: ${contractFileName} has been deployed =====`)
         console.log(deployedContract)

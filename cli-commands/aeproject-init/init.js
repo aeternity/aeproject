@@ -25,6 +25,9 @@ import {
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
 
+// del me
+const fs = require('fs');
+
 async function run(update) {
   if (update) {
     print(`===== Updating Aeproject files =====`);
