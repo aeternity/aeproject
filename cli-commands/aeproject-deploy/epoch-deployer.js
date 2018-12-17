@@ -3,6 +3,48 @@ const fs = require('fs')
 const gasLimit = 20000000;
 const ttl = 100;
 const logStoreService = require('./../aeproject-history/log-store-service');
+const execute = require('./../utils').execute;
+
+logStoreService.initHistoryRecord();
+
+function getContractName (contract) {
+    let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
+    var match = rgx.exec(contract);
+
+    return match[1];
+}
+
+async function getTxInfo(txHash, network) {
+
+    let result = await execute('aecli', 'inspect', [txHash, '-u', network]);
+    let temp = '';
+    for (const key in result) {
+        if (result.hasOwnProperty(key)) {
+            //console.log(key, result[key])
+            temp += result[key]
+        }
+    }
+
+    let info = {};
+    info.gasUsed = extractUsedGas(temp) || -1;
+    info.gasPrice = extractGasPrice(temp) || -1;
+
+    return info;
+
+    function extractUsedGas(txInfo) {
+        let rgx = /Gas[_]+\s(\d+)/g;
+        var match = rgx.exec(txInfo);
+    
+        return match[1];
+    }
+    
+    function extractGasPrice(txInfo) {
+        let rgx = /Gas\sPrice[_]+\s(\d+)/g
+        var match = rgx.exec(txInfo);
+        
+        return match[1];
+    }
+}
 
 class Deployer {
 
@@ -55,22 +97,22 @@ class Deployer {
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
 
-        console.log(`==> Try create history..`)
+        let txInfo = await getTxInfo(deployedContract.transaction, await this.selectNetwork());
+
+        const isSuccess = txInfo.gasPrice >= 0 && txInfo.gasUsed > 0;
         let info = {
             deployerType: this.constructor.name,
-            nameOrLabel: 'get contract name',
-            transactionHash: 'get tx hash',
-            status: 1, 
-            gasPrice: 11, 
-            gasUsed: 22, 
-            result: 'contract address'
+            nameOrLabel: getContractName(contract),
+            transactionHash: deployedContract.transaction,
+            status: isSuccess,
+            gasPrice: txInfo.gasPrice, 
+            gasUsed: txInfo.gasUsed, 
+            result: deployedContract.address
         }
 
-        logStoreService.initHistoryRecord();
         logStoreService.logAction(info);
 
         console.log(`===== Contract: ${contractFileName} has been deployed =====`)
-        console.log(deployedContract)
 
         return deployedContract;
     }

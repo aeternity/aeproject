@@ -21,7 +21,7 @@ const epoch = require('./aeproject-epoch/epoch.js');
 const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('./utils').config;
 const history = require('./aeproject-history/log-store-service');
-
+const printReportTable = require('./aeproject-history/utils').printReportTable;
 
 const addInitOption = (program) => {
   program
@@ -81,11 +81,13 @@ const addHistoryOption = (program) => {
   program
     .command('history')
     .description('Show deployment history info')
+    .option('--limit [limit]', 'Get last N records.', 5)
     .action(async (options) => {
       
-      let data = history.getHistory();
+      let data = history.getHistory().slice(options.limit * -1);
+
       for (let i = 0; i < data.length; i++) {
-        console.log(data[i].actions);
+        printReportTable(data[i].actions);
       }
     })
 }

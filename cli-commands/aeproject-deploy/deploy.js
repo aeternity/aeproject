@@ -32,10 +32,10 @@ const generatePublicKeyFromSecretKey = (secretKey) => {
 const run = async (deploymentFilePath, network, secretKey) => {
 	const deployMethod = getDeployMethod(deploymentFilePath);
 
-	if (secretKey.indexOf('_') === 2) {
-		secretKey = keyToHEX(secretKey);
-		console.log(secretKey);
-	}
+	// if (secretKey.indexOf('_') === 2) {
+	// 	secretKey = keyToHEX(secretKey);
+	// 	console.log(secretKey);
+	// }
 
 	try {
 		await deployMethod(
@@ -46,22 +46,6 @@ const run = async (deploymentFilePath, network, secretKey) => {
 			});
 		
 		console.log(`Your deployment script finished successfully!`);
-
-		//console.log(`==>Try create history..`)
-		// console.log(result)
-		// console.log()
-
-        // let info = {
-        //     deployerType: this.constructor.name,
-        //     nameOrLabel: 'get contract name',
-        //     transactionHash: 'get tx hash',
-        //     status: 1, 
-        //     gasPrice: 11, 
-        //     gasUsed: 22, 
-        //     result: 'contract address'
-        // }
-
-		// //logStoreService.logAction(info);
 		
 	} catch (e) {
         console.error(e);

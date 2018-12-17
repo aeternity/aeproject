@@ -20,12 +20,15 @@ class LogStoreService {
 	 * Initializes the history store with default empty array value
 	 */
 	initHistoryRecord() {
+
 		if (this.isInitied) {
 			return;
 		}
+
 		const initialRecord = {
 			actions: new Array()
 		}
+
 		this._historyStore.set(this._HISTORY_ID, initialRecord)
 		this.isInitied = true;
 	}
@@ -64,7 +67,6 @@ class LogStoreService {
 	 */
 	logAction(actionInfo) {
 		if (!this.isInitied) {
-			console.log('tuk')
 			return;
 		}
 
@@ -81,7 +83,7 @@ class LogStoreService {
 			gasUsed,
 			result
 		}
-
+		
 		const currentRecord = this.getCurrentWorkingRecord();
 		currentRecord.actions.push(record);
 		this._historyStore.set(this._HISTORY_ID, currentRecord);
