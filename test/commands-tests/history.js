@@ -35,7 +35,7 @@ const deleteFolderRecursive = function(path) {
   if (fs.existsSync(path)) {
     fs.readdirSync(path).forEach(function(file, index){
       var curPath = path + "/" + file;
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      if (fs.lstatSync(curPath).isDirectory()) {
         deleteFolderRecursive(curPath);
       } else { // delete file
         fs.unlinkSync(curPath);
@@ -142,6 +142,7 @@ describe('Log store service tests', () => {
 
 
 describe.only('Test CLI "History" command', async () => {
+    let store;
     let tempTestPath = path.resolve(process.cwd(), TEMP_TEST_PATH);
 
     console.log(path.resolve(__dirname, PATH_TO_STORE_DIRECTORY, HISTORY_FILENAME))
@@ -152,11 +153,14 @@ describe.only('Test CLI "History" command', async () => {
         if (!fs.existsSync(tempTestPath)) {
             fs.mkdirSync(tempTestPath);
         }
+
+        // let storeConstructor = _store.constructor;
+        // store = new storeConstructor();
     });
 
 
     // 
-    it('History should be empty', async () => {
+    it.only('History should be empty', async () => {
         // create hidden folder ...
         console.log(constants.cliCommands.INIT)
         console.log(executeOptions);
@@ -184,9 +188,109 @@ describe.only('Test CLI "History" command', async () => {
     });
 
     // execute 1 deployment
+    it('History should have 1 record', async () => {
+        // create hidden folder ...
+        console.log(constants.cliCommands.INIT)
+        console.log(executeOptions);
+
+        let currentCwd = process.cwd();
+        process.chdir(tempTestPath);
+        //await execute(constants.cliCommands.INIT, [], executeOptions);
+        let interval = setInterval(() => {
+            process.stdout.write('.');
+        }, 500);
+        let result = await execute(constants.cliCommands.INIT, []);
+        clearInterval(interval)
+        if (result.indexOf('Process exited with code 1') >= 0 || true) {
+            console.log(result);
+            //assert.ok(false, 'Cannot initialize test project!');
+        }
+        
+        //result = await execute(constants.cliCommands.DEPLOY, []);
+        //result = await execute(constants.cliCommands.HISTORY, []);
+
+        process.chdir(currentCwd);
+    });
+
     // execute few deployments
+    it('History should have 3 records', async () => {
+        // create hidden folder ...
+        console.log(constants.cliCommands.INIT)
+        console.log(executeOptions);
+
+        let currentCwd = process.cwd();
+        process.chdir(tempTestPath);
+        //await execute(constants.cliCommands.INIT, [], executeOptions);
+        let interval = setInterval(() => {
+            process.stdout.write('.');
+        }, 500);
+        let result = await execute(constants.cliCommands.INIT, []);
+        clearInterval(interval)
+        if (result.indexOf('Process exited with code 1') >= 0 || true) {
+            console.log(result);
+            //assert.ok(false, 'Cannot initialize test project!');
+        }
+        
+        for (let i = 0; i < 3; i++) {
+            //result = await execute(constants.cliCommands.DEPLOY, []);
+        }
+
+        //result = await execute(constants.cliCommands.HISTORY, []);
+
+        process.chdir(currentCwd);
+    });
+
     // test limit
+    it('History should have 10 records', async () => {
+        // create hidden folder ...
+
+        let currentCwd = process.cwd();
+        process.chdir(tempTestPath);
+        //await execute(constants.cliCommands.INIT, [], executeOptions);
+        let interval = setInterval(() => {
+            process.stdout.write('.');
+        }, 500);
+        let result = await execute(constants.cliCommands.INIT, []);
+        clearInterval(interval)
+        if (result.indexOf('Process exited with code 1') >= 0 || true) {
+            console.log(result);
+            //assert.ok(false, 'Cannot initialize test project!');
+        }
+        
+        for (let i = 0; i < 10; i++) {
+            result = await execute(constants.cliCommands.DEPLOY, []);
+        }
+
+        //result = await execute(constants.cliCommands.HISTORY, [], 3);
+
+        process.chdir(currentCwd);
+    });
+
     // check that there are 2 entries by ID
+    it('History should have 10 records', async () => {
+        // create hidden folder ...
+
+        let currentCwd = process.cwd();
+        process.chdir(tempTestPath);
+        //await execute(constants.cliCommands.INIT, [], executeOptions);
+        let interval = setInterval(() => {
+            process.stdout.write('.');
+        }, 500);
+        let result = await execute(constants.cliCommands.INIT, []);
+        clearInterval(interval)
+        if (result.indexOf('Process exited with code 1') >= 0 || true) {
+            console.log(result);
+            //assert.ok(false, 'Cannot initialize test project!');
+        }
+        
+        for (let i = 0; i < 1; i++) {
+            result = await execute(constants.cliCommands.DEPLOY, [], 'deploy with 2 contracts');
+        }
+
+        //result = await execute(constants.cliCommands.HISTORY, []);
+
+        process.chdir(currentCwd);
+    });
 
 
     afterEach(async () => {
