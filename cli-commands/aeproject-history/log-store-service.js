@@ -7,7 +7,6 @@ let store;
  */
 class LogStoreService {
 
-
 	constructor() {
 		this._historyStore = LogJSONStore(`${storageDir}/.history.json`);
 
@@ -22,15 +21,17 @@ class LogStoreService {
 	initHistoryRecord() {
 
 		if (this.isInitied) {
-			return;
+			return false;
 		}
-
+		
 		const initialRecord = {
 			actions: new Array()
 		}
 
 		this._historyStore.set(this._HISTORY_ID, initialRecord)
 		this.isInitied = true;
+
+		return true;
 	}
 
 	/**

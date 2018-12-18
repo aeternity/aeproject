@@ -8,13 +8,15 @@
 	"exampleContractTests": "/exampleTests.js",
 	"dockerFolderPath": "/cli-commands/aeproject-init/artifacts",
 	"epochStartingFolder": "/test/commands-tests/contractsTests/artifacts",
+	"historyTestsFolderPath": "/test/commands-tests/historyTest",
 
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
 		"EPOCH": "epoch",
 		"COMPILE": "compile",
-		"DEPLOY": "deploy"
+		"DEPLOY": "deploy",
+		"HISTORY": "history"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",
