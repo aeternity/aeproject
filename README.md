@@ -1,10 +1,16 @@
 # AEProject
 
-**AEProject** is an aeternity framework which helps with setting up an
-project.
+**AEProject** is an aeternity framework which helps with setting up a project.
+The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands
+for compilation of smart contracts, running a local Epoch and unit testing the contracts.
+In future deployment will be also available using aeproject.
 
-The framework is built in the JavaScript SDK and no additional installations are
-needed.
+Currently, to use the framework, you must checkout the repository and use the following command:
+```
+npm link
+```
+
+It will be soon published in **npm** and will be available for installation
 
 ## Initialize AEProject
 
@@ -20,10 +26,17 @@ in which the developer can create
 the contracts, tests and deployment files and scripts. Docker configuration
 files are also created, for easy use of the aeternity blockchain network.
 
-## Compile sophia contracts
+The **init --update** command updates projects files. Important all files in docker folder and docker-compose will be replaced. 
 
-The **compile** command compiles sophia contract. Files should be with .aes
-file extension. Default directory is $projectDir/contracts.
+## Compile sophia contracts
+```
+aeproject compile
+```
+
+The **compile** command compiles Sophia contract. It's recommended to use **.aes**
+file extension. Default directory is $projectDir/contracts. The result of the compilation is the contract bytecode
+printed in the console.
+Additional **--path** parameter is available, which can specify the path to the contract to be compiled.
 
 ## Run unit tests
 
@@ -34,14 +47,31 @@ aeproject test
 ```
 
 The **test** command help developers run their unit tests for aeternity
-proejcts. The command executes the tests scripts that are located in the
-**test** folder
+projects. The command executes the tests scripts that are located in the
+**test** folder of your aeternity project.
+Additional **--path** param is available, which can specify the path to the tests
 
-of your aeternity project.
+## Run deploy script
 
-  
-  
-  
+```
+
+aeproject deploy
+
+```
+
+The **deploy** command help developers run their deploy script aeternity
+proejcts. The sample deploy script is scaffolded in deployment folder.
+
+-You can specify nodeUrl, there are 3 options for nodeUrls: 
+-- "local" -> http://localhost:3001 
+-- "edgeNet" -> "https://sdk-edgenet.aepps.com",
+-- "custom", you can specify custom nodeUrl.
+
+--path -> You can set path to the deploy script
+
+-s -> secretKey that will be used to deploy and call contracts
+
+-Deployer.deploy(path, gasLimit) function takes 2 arguments: relative path to the contract and gasLimit
 
 
 ## Start docker epoch
@@ -53,9 +83,13 @@ aeproject epoch
 ```
 
 The **epoch** command help developers run their local network on docker.
-Local network contains 3 nodes. To spawn fully functional network takes up to 1
+The local network contains 3 nodes. To spawn a fully functional network takes up to 1
 minute. 30 seconds takes to up docker containers and up to 30 seconds to fund
 default wallets.
+To stop the local epoch, simply run
+```
+aeproject epoch --stop
+```
 
 Beneficiary wallet:
 

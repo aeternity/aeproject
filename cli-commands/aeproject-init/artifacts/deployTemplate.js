@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /*
  * ISC License (ISC)
  * Copyright (c) 2018 aeternity developers
@@ -16,41 +14,21 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-'use strict'
+const Ae = require('@aeternity/aepp-sdk').Universal;
+const Deployer = require('aeproject').Deployer;
+const gasLimit = 1000000;
 
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+const deploy = async (network, privateKey) => {
+	let deployer = new Deployer(network, privateKey)
 
-const program = require('commander')
-const commands = require('./cli-commands/commands')
+	let result = await deployer.deploy("./contracts/ExampleContract.aes")
+	// deployer.deploy("./contracts/ExampleContract.aes", gasLimit)
+	// deployer.deploy("./contracts/ExampleContract.aes", gasLimit, {tokenName: "tkn"})
 
-const setupVersion = () => {
-  program.version("0.0.1")
-}
+	//todo edit package.json
+	//todo command keypair rework
+};
 
-const setupDefaultHandler = () => {
-  program.on('command:*', () => {
-    program.help();
-  })
-}
-
-const setupCommands = () => {
-  commands.initCommands(program);
-}
-
-const parseParams = () => {
-  program.parse(process.argv)
-}
-
-const presentHelpIfNeeded = () => {
-  if (!program.args.length) program.help();
-}
-
-const run = () => {
-  setupVersion();
-  setupDefaultHandler();
-  setupCommands();
-  parseParams();
-  presentHelpIfNeeded();
-}
-
-run();
+module.exports = {
+	deploy
+};

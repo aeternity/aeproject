@@ -1,0 +1,21 @@
+{
+	"testDir": "./test",
+	"testTemplateFile": "exampleTests.js",
+	"testFileDestination": "./test/exampleTest.js",
+
+	"deployDir": "./deployment",
+	"deployTemplateFile": "deployTemplate.js",
+	"deployFileDestination": "./deployment/deploy.js",
+
+	"contractsDir": "./contracts",
+	"contractTemplateFile": "ExampleContract.aes",
+	"contractFileDestination": "./contracts/ExampleContract.aes",
+	"artifactsDir": "/artifacts",
+
+	"dockerDir": "./docker",
+	"dockerTemplateDir": "docker",
+	"dockerFilesDestination": "./docker",
+
+	"dockerYmlFile": "docker-compose.yml",
+	"dockerYmlFileDestination": "./docker-compose.yml"
+}
