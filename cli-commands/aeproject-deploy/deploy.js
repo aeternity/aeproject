@@ -3,8 +3,6 @@ const defaultDeploymentFilePath = `deployment/deploy.js`;
 const AeSDK = require('@aeternity/aepp-sdk');
 const Crypto = AeSDK.Crypto;
 const path = require('path');
-const keyToHEX = require('./../utils').keyToHex;
-const logStoreService = require('./../aeproject-history/log-store-service');
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -31,12 +29,6 @@ const generatePublicKeyFromSecretKey = (secretKey) => {
 
 const run = async (deploymentFilePath, network, secretKey) => {
 	const deployMethod = getDeployMethod(deploymentFilePath);
-
-	// if (secretKey.indexOf('_') === 2) {
-	// 	secretKey = keyToHEX(secretKey);
-	// 	console.log(secretKey);
-	// }
-
 	try {
 		await deployMethod(
 			network, 
@@ -46,7 +38,6 @@ const run = async (deploymentFilePath, network, secretKey) => {
 			});
 		
 		console.log(`Your deployment script finished successfully!`);
-		
 	} catch (e) {
         console.error(e);
 	}

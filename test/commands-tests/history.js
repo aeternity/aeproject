@@ -3,57 +3,59 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
-const execute = require('../../cli-commands/utils.js').aeprojectExecute;
-const dockerPs = require('../utils').dockerPs;
-const constants = require('../constants.json');
-const fsExtra = require('fs-extra');
+const cliUtils = require('../../cli-commands/utils.js');
+const execute = cliUtils.aeprojectExecute;
+const exec = cliUtils.execute;
 const fs = require('fs');
-const epochConfig = require('../../cli-commands/aeproject-epoch/config.json');
-const utils = require('../../cli-commands/utils');
-
 const path = require('path');
+const _store = require('./../../cli-commands/aeproject-history/log-store-service');
 
-const INIT_PATH = '';
+const constants = require('../constants.json');
 const TEMP_TEST_PATH = 'temp-test';
 const PATH_TO_STORE_DIRECTORY = '.aeproject-store';
-const HISTORY_FILENAME = '.history.json';
 
-let executeOptions = {
-    cwd: path.resolve(__dirname, TEMP_TEST_PATH)
-	// cwd: process.cwd() + constants.historyTestsFolderPath
+
+const deleteFolderRecursive = function (path) {
+    if (fs.existsSync(path)) {
+        fs.readdirSync(path).forEach(function (file, index) {
+            var curPath = path + "/" + file;
+            if (fs.lstatSync(curPath).isDirectory()) {
+                deleteFolderRecursive(curPath);
+            } else {
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
 };
 
-const _store = require('./../../cli-commands/aeproject-history/log-store-service'); 
+function countHistoryLogs(result) {
+    let counter = 0;
+    let hasMatch = true;
+    let index = 0;
 
-// const defaultWallets = epochConfig.defaultWallets;
+    while (hasMatch) {
+        index = result.indexOf('Event Time', index);
+        if (index < 0) {
+            hasMatch = false;
+        } else {
+            index++;
+            counter++;
+        }
+    }
 
-
-// const toHex = require('./../../cli-commands/utils').keyToHex;
-// console.log(toHex('ct_2KtGYFX1RTX5LZjasbjusZuMuL6KdddtDPND5Bd84G7TnF7oSv'))
-
-const deleteFolderRecursive = function(path) {
-  if (fs.existsSync(path)) {
-    fs.readdirSync(path).forEach(function(file, index){
-      var curPath = path + "/" + file;
-      if (fs.lstatSync(curPath).isDirectory()) {
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(path);
-  }
-};
+    return counter;
+}
 
 describe('Log store service tests', () => {
 
-	const now = Date.now();
-	const deployerType = 'Deployer Type';
-	const label = 'Label Name';
-	const transactionHash = '0x00'
-	const status = 1;
+    const now = Date.now();
+    const deployerType = 'Deployer Type';
+    const label = 'Label Name';
+    const transactionHash = '0x00'
+    const status = 1;
     const result = 'Result of the transaction'
-    
+
     const actionInfo = {
         deployerType,
         nameOrLabel: label,
@@ -67,233 +69,173 @@ describe('Log store service tests', () => {
 
     let store;
 
-	beforeEach(() => {
-        // store.initHistoryRecord();
-        // history = store.getHistory();
-
+    beforeEach(() => {
         let storeConstructor = _store.constructor;
         store = new storeConstructor()
-	})
+    })
 
-	it('should initialize the store', () => {
+    it('should initialize the store', () => {
         let result = store.initHistoryRecord();
         let history = store.getHistory();
-        
+
         assert(result, "It's not initialized correct!");
-		assert(store._historyStore.path.endsWith('.aeproject-store/.history.json'), 'Incorrect path');
-		assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
+        assert(store._historyStore.path.endsWith('.aeproject-store/.history.json'), 'Incorrect path');
+        assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
     });
 
     it('[NEGATIVE] Store should NOT be initialized', () => {
         let isInitialize = store.isInitied;
-        
+
         assert(!isInitialize, "It's initialized!");
     });
-    
-	it('should initialize logs correctly', () => {
+
+    it('should initialize logs correctly', () => {
         store.initHistoryRecord();
 
-		const currentRecord = store.getCurrentWorkingRecord();
-		assert(Array.isArray(currentRecord.actions), 'The last record actions is not array');
+        const currentRecord = store.getCurrentWorkingRecord();
+        assert(Array.isArray(currentRecord.actions), 'The last record actions is not array');
     });
-    
+
     it('[NEGATIVE] store is not initialized, should NOT have any records', () => {
-		const currentRecord = store.getCurrentWorkingRecord();
-		assert(!currentRecord, 'Store is initialized or has some record!');
-	});
+        const currentRecord = store.getCurrentWorkingRecord();
+        assert(!currentRecord, 'Store is initialized or has some record!');
+    });
 
-	it('should log actions correctly', () => {
+    it('should log actions correctly', () => {
         store.initHistoryRecord();
-        
-		store.logAction(actionInfo);
 
-		const lastRecord = store.getLastWorkingRecord();
-		const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
+        store.logAction(actionInfo);
 
-		assert(lastAction.deployerType == deployerType, 'Deployer Type not set correctly');
-		assert(lastAction.nameOrLabel == label, 'Label not set correctly');
-		assert(lastAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
-		assert(lastAction.status == status, 'status not set correctly');
-		assert(lastAction.eventTimestamp >= now, 'timestamp set was not correct');
+        const lastRecord = store.getLastWorkingRecord();
+        const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
 
-		const currentRecord = store.getLastWorkingRecord();
-		const currentAction = currentRecord.actions[currentRecord.actions.length - 1];
+        assert(lastAction.deployerType == deployerType, 'Deployer Type not set correctly');
+        assert(lastAction.nameOrLabel == label, 'Label not set correctly');
+        assert(lastAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
+        assert(lastAction.status == status, 'status not set correctly');
+        assert(lastAction.eventTimestamp >= now, 'timestamp set was not correct');
 
-		assert(currentAction.deployerType == deployerType, 'Deployer Type not set correctly');
-		assert(currentAction.nameOrLabel == label, 'Label not set correctly');
-		assert(currentAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
-		assert(currentAction.status == status, 'status not set correctly');
-		assert(currentAction.eventTimestamp >= now, 'timestamp set was not correct');
-	});
+        const currentRecord = store.getLastWorkingRecord();
+        const currentAction = currentRecord.actions[currentRecord.actions.length - 1];
 
-	it('[NEGATIVE] should not log if log store service is not inited', () => {
+        assert(currentAction.deployerType == deployerType, 'Deployer Type not set correctly');
+        assert(currentAction.nameOrLabel == label, 'Label not set correctly');
+        assert(currentAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
+        assert(currentAction.status == status, 'status not set correctly');
+        assert(currentAction.eventTimestamp >= now, 'timestamp set was not correct');
+    });
 
-		store.logAction(actionInfo);
+    it('[NEGATIVE] should not log if log store service is not inited', () => {
+
+        store.logAction(actionInfo);
 
         let lastRecord = store.getCurrentWorkingRecord();
         assert.notOk(lastRecord, "There is a record!")
     });
-    
+
     afterEach(async () => {
         deleteFolderRecursive(path.resolve(process.cwd(), PATH_TO_STORE_DIRECTORY));
     });
 
 });
 
-
-describe.only('Test CLI "History" command', async () => {
-    let store;
+describe('Test CLI "History" command', async () => {
+    let currentCwd;
     let tempTestPath = path.resolve(process.cwd(), TEMP_TEST_PATH);
 
-    console.log(path.resolve(__dirname, PATH_TO_STORE_DIRECTORY, HISTORY_FILENAME))
-    console.log('dir name =>', __dirname)
-    console.log('cwd =>', process.cwd());
-
-    beforeEach(async () => {
+    before('', async () => {
         if (!fs.existsSync(tempTestPath)) {
             fs.mkdirSync(tempTestPath);
         }
 
-        // let storeConstructor = _store.constructor;
-        // store = new storeConstructor();
-    });
-
-
-    // 
-    it.only('History should be empty', async () => {
-        // create hidden folder ...
-        console.log(constants.cliCommands.INIT)
-        console.log(executeOptions);
-
-        let currentCwd = process.cwd();
+        currentCwd = process.cwd();
         process.chdir(tempTestPath);
-        //await execute(constants.cliCommands.INIT, [], executeOptions);
-        let interval = setInterval(() => {
+
+        let initInterval = setInterval(() => {
             process.stdout.write('.');
         }, 500);
-        let result = await execute(constants.cliCommands.INIT, []);
-        clearInterval(interval)
-        if (result.indexOf('Process exited with code 1') >= 0 || true) {
-            console.log(result);
-            //assert.ok(false, 'Cannot initialize test project!');
-        }
-        
-        //result = await execute(constants.cliCommands.HISTORY, []);
 
-        //aeproject init 
-        // make init ... 
-        // make deploy 
-        // check for creating store data...
-        process.chdir(currentCwd);
-    });
+        console.log('Executing aeproject init.');
+        let initResult = await execute(constants.cliCommands.INIT, []);
+        clearInterval(initInterval);
 
-    // execute 1 deployment
-    it('History should have 1 record', async () => {
-        // create hidden folder ...
-        console.log(constants.cliCommands.INIT)
-        console.log(executeOptions);
+        console.log();
+        console.log(initResult);
 
-        let currentCwd = process.cwd();
-        process.chdir(tempTestPath);
-        //await execute(constants.cliCommands.INIT, [], executeOptions);
-        let interval = setInterval(() => {
+        // // When master branch has history functionality this command should be removed.
+        await exec('npm', 'link', ['aeproject']);
+
+        console.log('Starting epoch..');
+        let epochInterval = setInterval(() => {
             process.stdout.write('.');
-        }, 500);
-        let result = await execute(constants.cliCommands.INIT, []);
-        clearInterval(interval)
-        if (result.indexOf('Process exited with code 1') >= 0 || true) {
-            console.log(result);
-            //assert.ok(false, 'Cannot initialize test project!');
-        }
-        
-        //result = await execute(constants.cliCommands.DEPLOY, []);
-        //result = await execute(constants.cliCommands.HISTORY, []);
+        }, 1000);
 
-        process.chdir(currentCwd);
+
+        let epochResult = await execute(constants.cliCommands.EPOCH, ['--start']);
+        clearInterval(epochInterval);
+
+        console.log(epochResult);
     });
 
-    // execute few deployments
-    it('History should have 3 records', async () => {
-        // create hidden folder ...
-        console.log(constants.cliCommands.INIT)
-        console.log(executeOptions);
+    it('History should be empty', async () => {
 
-        let currentCwd = process.cwd();
-        process.chdir(tempTestPath);
-        //await execute(constants.cliCommands.INIT, [], executeOptions);
-        let interval = setInterval(() => {
-            process.stdout.write('.');
-        }, 500);
-        let result = await execute(constants.cliCommands.INIT, []);
-        clearInterval(interval)
-        if (result.indexOf('Process exited with code 1') >= 0 || true) {
-            console.log(result);
-            //assert.ok(false, 'Cannot initialize test project!');
-        }
-        
-        for (let i = 0; i < 3; i++) {
-            //result = await execute(constants.cliCommands.DEPLOY, []);
-        }
+        let result = await execute(constants.cliCommands.HISTORY, []);
+        let numberOfLogs = countHistoryLogs(result);
 
-        //result = await execute(constants.cliCommands.HISTORY, []);
-
-        process.chdir(currentCwd);
-    });
-
-    // test limit
-    it('History should have 10 records', async () => {
-        // create hidden folder ...
-
-        let currentCwd = process.cwd();
-        process.chdir(tempTestPath);
-        //await execute(constants.cliCommands.INIT, [], executeOptions);
-        let interval = setInterval(() => {
-            process.stdout.write('.');
-        }, 500);
-        let result = await execute(constants.cliCommands.INIT, []);
-        clearInterval(interval)
-        if (result.indexOf('Process exited with code 1') >= 0 || true) {
-            console.log(result);
-            //assert.ok(false, 'Cannot initialize test project!');
-        }
-        
-        for (let i = 0; i < 10; i++) {
-            result = await execute(constants.cliCommands.DEPLOY, []);
-        }
-
-        //result = await execute(constants.cliCommands.HISTORY, [], 3);
-
-        process.chdir(currentCwd);
-    });
-
-    // check that there are 2 entries by ID
-    it('History should have 10 records', async () => {
-        // create hidden folder ...
-
-        let currentCwd = process.cwd();
-        process.chdir(tempTestPath);
-        //await execute(constants.cliCommands.INIT, [], executeOptions);
-        let interval = setInterval(() => {
-            process.stdout.write('.');
-        }, 500);
-        let result = await execute(constants.cliCommands.INIT, []);
-        clearInterval(interval)
-        if (result.indexOf('Process exited with code 1') >= 0 || true) {
-            console.log(result);
-            //assert.ok(false, 'Cannot initialize test project!');
-        }
-        
-        for (let i = 0; i < 1; i++) {
-            result = await execute(constants.cliCommands.DEPLOY, [], 'deploy with 2 contracts');
-        }
-
-        //result = await execute(constants.cliCommands.HISTORY, []);
-
-        process.chdir(currentCwd);
+        assert.equal(numberOfLogs, 0, "There are some logs!");
     });
 
 
-    afterEach(async () => {
+    it('After first deployment, history should return 1 record', async () => {
+
+        await execute(constants.cliCommands.DEPLOY, []);
+        let result = await execute(constants.cliCommands.HISTORY, []);
+        let numberOfLogs = countHistoryLogs(result);
+
+        assert.equal(numberOfLogs, 1, "There are some logs!");
+    });
+
+    it('After 3 deployments, history should return 3 records', async () => {
+
+        for (let i = 0; i < 2; i++) {
+            await execute(constants.cliCommands.DEPLOY, []);
+        }
+
+        let result = await execute(constants.cliCommands.HISTORY, []);
+        let numberOfLogs = countHistoryLogs(result);
+
+        // !!! => 2 records from this test and 1 from previous
+        assert.equal(numberOfLogs, 3, "Incorrect number of logs!");
+    });
+
+    it('History should return 5(default limit) records', async () => {
+        for (let i = 0; i < 12; i++) {
+            await execute(constants.cliCommands.DEPLOY, []);
+        }
+
+        let result = await execute(constants.cliCommands.HISTORY, []);
+        let numberOfLogs = countHistoryLogs(result);
+
+        assert.equal(numberOfLogs, 5, "Incorrect number of logs!");
+    });
+
+    it('History should return 10 records, test --limit parameter', async () => {
+        let numberOfExpectedLogs = 10;
+        let result = await execute(constants.cliCommands.HISTORY, ['--limit', numberOfExpectedLogs]);
+        let numberOfLogs = countHistoryLogs(result);
+
+        assert.equal(numberOfLogs, numberOfExpectedLogs, "Incorrect number of logs!");
+    });
+
+    after(async () => {
+
+        let result = await execute(constants.cliCommands.EPOCH, ['--stop']);
+        console.log(result);
+
+        // // When master branch has history functionality this command should be removed.
+        await exec('npm', 'unlink', ['aeproject']);
+
         deleteFolderRecursive(tempTestPath);
+        process.chdir(currentCwd);
     });
 });

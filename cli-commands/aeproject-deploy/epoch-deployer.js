@@ -16,21 +16,6 @@ function getContractName (contract) {
 
 async function getTxInfo(txHash, network) {
 
-    let result = await execute('aecli', 'inspect', [txHash, '-u', network]);
-    let temp = '';
-    for (const key in result) {
-        if (result.hasOwnProperty(key)) {
-            //console.log(key, result[key])
-            temp += result[key]
-        }
-    }
-
-    let info = {};
-    info.gasUsed = extractUsedGas(temp) || -1;
-    info.gasPrice = extractGasPrice(temp) || -1;
-
-    return info;
-
     function extractUsedGas(txInfo) {
         let rgx = /Gas[_]+\s(\d+)/g;
         var match = rgx.exec(txInfo);
@@ -44,6 +29,32 @@ async function getTxInfo(txHash, network) {
         
         return match[1];
     }
+    
+    let result;
+    try {
+        result = await execute('aecli', 'inspect', [txHash, '-u', network]);
+    } catch (error) {
+        let info = {
+            gasUsed: 0,
+            gasPrice: 0
+        };
+
+        return info;
+    }
+    
+    let temp = '';
+    for (const key in result) {
+        if (result.hasOwnProperty(key)) {
+            //console.log(key, result[key])
+            temp += result[key]
+        }
+    }
+
+    let info = {};
+    info.gasUsed = extractUsedGas(temp) || -1;
+    info.gasPrice = extractGasPrice(temp) || -1;
+
+    return info;
 }
 
 class Deployer {
@@ -53,7 +64,7 @@ class Deployer {
         this.keypair = keypair;
     }
 
-    async selectNetwork() {
+    selectNetwork() {
         if (this.network == "local") {
             return utils.config.localhost
         }
@@ -76,7 +87,8 @@ class Deployer {
      * @param {object} initArgs - Initial arguments that will be passed to init function.
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
-        let client = await utils.getClient(await this.selectNetwork(), this.keypair);
+
+        let client = await utils.getClient(this.selectNetwork(), this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
             options: {
@@ -90,14 +102,15 @@ class Deployer {
         }
         const compiledContract = await client.contractCompile(contract, {
             gas
-        })
-        const deployPromise = await compiledContract.deploy(deployOptions)
+        });
+
+        const deployPromise = await compiledContract.deploy(deployOptions);
         const deployedContract = await deployPromise;
 
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
 
-        let txInfo = await getTxInfo(deployedContract.transaction, await this.selectNetwork());
+        let txInfo = await getTxInfo(deployedContract.transaction, this.selectNetwork());
 
         const isSuccess = txInfo.gasPrice >= 0 && txInfo.gasUsed > 0;
         let info = {

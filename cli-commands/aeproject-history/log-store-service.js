@@ -88,7 +88,6 @@ class LogStoreService {
 		const currentRecord = this.getCurrentWorkingRecord();
 		currentRecord.actions.push(record);
 		this._historyStore.set(this._HISTORY_ID, currentRecord);
-
 	}
 }
 
