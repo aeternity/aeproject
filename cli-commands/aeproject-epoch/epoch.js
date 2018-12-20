@@ -50,29 +50,27 @@ async function dockerPs() {
 async function fundWallets() {
   await waitToMineCoins()
 
-  let walletIndex = 1;
+  let walletIndex = 0;
   let client = await utils.getClient(config.host);
   await printBeneficiaryKey(client);
   for (let wallet in defaultWallets) {
 
     await fundWallet(client, defaultWallets[wallet].publicKey)
-    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
-
-    print(`#${walletIndex++} ------------------------------------------------------------`)
-    print(`public key: ${defaultWallets[wallet].publicKey}`)
-    print(`private key: ${defaultWallets[wallet].secretKey}`)
-    print(`Wallet's balance is ${recipientBalanace}`);
-
+    await printWallet(client, defaultWallets[wallet], `#${walletIndex++}`)
   }
 }
 
 async function printBeneficiaryKey(client) {
-  let minerBalance = await client.balance(config.keyPair.publicKey)
+  await printWallet(client, config.keyPair, "Miner")
+}
 
-  print(`Miner ------------------------------------------------------------`)
-  print(`public key: ${config.keyPair.publicKey}`)
-  print(`private key: ${config.keyPair.secretKey}`)
-  print(`Wallet's balance is ${minerBalance}`);
+async function printWallet(client, keyPair, label) {
+  let keyPairBalance = await client.balance(keyPair.publicKey)
+
+  print(`${label} ------------------------------------------------------------`)
+  print(`public key: ${keyPair.publicKey}`)
+  print(`private key: ${keyPair.secretKey}`)
+  print(`Wallet's balance is ${keyPairBalance}`);
 }
 
 async function waitToMineCoins() {
@@ -124,7 +122,7 @@ async function run(option) {
     }
 
     print('\n\r===== Epoch was successfully started! =====');
-    print('===== Funding default wallets! =====');
+    print('===== Funding default wallets! (~1 min) =====');
 
     await fundWallets();
 
