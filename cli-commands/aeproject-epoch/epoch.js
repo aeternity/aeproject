@@ -14,7 +14,7 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 
 const {
   printError,
@@ -52,6 +52,7 @@ async function fundWallets() {
 
   let walletIndex = 1;
   let client = await utils.getClient(config.host);
+  await printBeneficiaryKey(client);
   for (let wallet in defaultWallets) {
 
     await fundWallet(client, defaultWallets[wallet].publicKey)
@@ -63,6 +64,15 @@ async function fundWallets() {
     print(`Wallet's balance is ${recipientBalanace}`);
 
   }
+}
+
+async function printBeneficiaryKey(client) {
+  let minerBalance = await client.balance(config.keyPair.publicKey)
+
+  print(`Miner ------------------------------------------------------------`)
+  print(`public key: ${config.keyPair.publicKey}`)
+  print(`private key: ${config.keyPair.secretKey}`)
+  print(`Wallet's balance is ${minerBalance}`);
 }
 
 async function waitToMineCoins() {

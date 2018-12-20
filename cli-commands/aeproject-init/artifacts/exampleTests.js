@@ -19,28 +19,40 @@ const Ae = require('@aeternity/aepp-sdk').Universal;
 const config = {
   host: "http://localhost:3001/",
   internalHost: "http://localhost:3001/internal/",
-  ownerKeyPair: {
-    secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
-    publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
-  },
-  pubKeyHex: '0xe9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
+  gas: 200000,
+  ttl: 55
 }
 
-describe('Test', () => {
+describe('Example Contract', () => {
 
-  let firstClient;
+  let owner;
 
   before(async () => {
-    firstClient = await Ae({
+    const ownerKeyPair = wallets[0];
+    owner = await Ae({
       url: config.host,
       internalUrl: config.internalHost,
-      keypair: config.ownerKeyPair
+      keypair: ownerKeyPair,
+      nativeMode: true,
+      networkId: 'ae_devnet'
     });
 
   })
 
-  it('some test', async () => {
-    // some test logic
+  it('Deploying Example Contract', async () => {
+    let contractSource = utils.readFileRelative('./contracts/ExampleContract.aes', "utf-8"); // Read the aes file
+
+    const compiledContract = await owner.contractCompile(contractSource, { // Compile it
+      gas: config.gas
+    })
+
+    const deployPromise = compiledContract.deploy({ // Deploy it
+      options: {
+        ttl: config.ttl,
+      }
+    });
+
+    assert.isFulfilled(deployPromise, 'Could not deploy the Restricted Smart Contract'); // Check it is deployed
   })
 
 })
