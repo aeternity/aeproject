@@ -168,7 +168,7 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
 }
 
 function keyToHex (publicKey) {
-	let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]); // const Crypto = require('@aeternity/aepp-sdk').Crypto
+	let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
 	let asHex = '0x' + byteArray.toString('hex');
 	return asHex;
 }

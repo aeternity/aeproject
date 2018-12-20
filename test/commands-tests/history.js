@@ -7,27 +7,13 @@ const cliUtils = require('../../cli-commands/utils.js');
 const execute = cliUtils.aeprojectExecute;
 const exec = cliUtils.execute;
 const fs = require('fs');
+const fsExtra = require('fs-extra');
 const path = require('path');
 const _store = require('./../../cli-commands/aeproject-history/log-store-service');
 
 const constants = require('../constants.json');
 const TEMP_TEST_PATH = 'temp-test';
 const PATH_TO_STORE_DIRECTORY = '.aeproject-store';
-
-
-const deleteFolderRecursive = function (path) {
-    if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach(function (file, index) {
-            var curPath = path + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) {
-                deleteFolderRecursive(curPath);
-            } else {
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(path);
-    }
-};
 
 function countHistoryLogs(result) {
     let counter = 0;
@@ -134,7 +120,7 @@ describe('Log store service tests', () => {
     });
 
     afterEach(async () => {
-        deleteFolderRecursive(path.resolve(process.cwd(), PATH_TO_STORE_DIRECTORY));
+        fsExtra.removeSync(path.resolve(process.cwd(), PATH_TO_STORE_DIRECTORY));
     });
 
 });
@@ -234,8 +220,7 @@ describe('Test CLI "History" command', async () => {
 
         // // When master branch has history functionality this command should be removed.
         await exec('npm', 'unlink', ['aeproject']);
-
-        deleteFolderRecursive(tempTestPath);
+        fsExtra.removeSync(tempTestPath);
         process.chdir(currentCwd);
     });
 });
