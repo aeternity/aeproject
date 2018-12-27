@@ -17,7 +17,7 @@
 const compile = require('./aeproject-compile/compile.js');
 const init = require('./aeproject-init/init.js');
 const testConfig = require('./aeproject-test/test.js');
-const epoch = require('./aeproject-epoch/epoch.js');
+const node = require('./aeproject-node/node.js');
 const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('./utils').config;
 
@@ -53,14 +53,14 @@ const addTestOption = (program) => {
     })
 }
 
-const addEpochOption = (program) => {
+const addNodeOption = (program) => {
   program
-    .command('epoch')
-    .description('Running the epoch. Without any argument epoch will be runned with --start argument')
-    .option('--stop', 'Stop the epoch')
-    .option('--start', 'Start the epoch')
+    .command('node')
+    .description('Running a local node. Without any argument node will be runned with --start argument')
+    .option('--stop', 'Stop the node')
+    .option('--start', 'Start the node')
     .action(async (options) => {
-      await epoch.run(options);
+      await node.run(options);
     })
 }
 
@@ -81,7 +81,7 @@ const initCommands = (program) => {
   addInitOption(program);
   addCompileOption(program);
   addTestOption(program);
-  addEpochOption(program);
+  addNodeOption(program);
   addDeployOption(program)
 }
 
