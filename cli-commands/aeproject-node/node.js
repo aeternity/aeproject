@@ -50,19 +50,27 @@ async function waitForContainer() {
 async function fundWallets() {
   await waitToMineCoins()
 
-  let walletIndex = 1;
+  let walletIndex = 0;
   let client = await utils.getClient(config.host);
+  await printBeneficiaryKey(client);
   for (let wallet in defaultWallets) {
 
     await fundWallet(client, defaultWallets[wallet].publicKey)
-    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
-
-    print(`#${walletIndex++} ------------------------------------------------------------`)
-    print(`public key: ${defaultWallets[wallet].publicKey}`)
-    print(`private key: ${defaultWallets[wallet].secretKey}`)
-    print(`Wallet's balance is ${recipientBalanace}`);
-
+    await printWallet(client, defaultWallets[wallet], `#${walletIndex++}`)
   }
+}
+
+async function printBeneficiaryKey(client) {
+  await printWallet(client, config.keyPair, "Miner")
+}
+
+async function printWallet(client, keyPair, label) {
+  let keyPairBalance = await client.balance(keyPair.publicKey)
+
+  print(`${label} ------------------------------------------------------------`)
+  print(`public key: ${keyPair.publicKey}`)
+  print(`private key: ${keyPair.secretKey}`)
+  print(`Wallet's balance is ${keyPairBalance}`);
 }
 
 async function waitToMineCoins() {
