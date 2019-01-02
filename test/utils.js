@@ -1,7 +1,7 @@
 const dockerCLI = require('docker-cli-js');
 const docker = new dockerCLI.Docker();
 
-async function dockerPs() {
+async function waitForContainer() {
 	let running = false
 
 	await docker.command('ps', function (err, data) {
@@ -15,6 +15,12 @@ async function dockerPs() {
 	return running;
 }
 
+async function waitUntilFundedBlocks(client, blocks = 18) {
+	await waitForContainer()
+	await client.awaitHeight(blocks)
+}
+
 module.exports = {
-	dockerPs
+	waitForContainer,
+	waitUntilFundedBlocks
 }

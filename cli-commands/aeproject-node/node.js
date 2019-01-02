@@ -14,7 +14,7 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 
 const {
   printError,
@@ -26,11 +26,11 @@ const {
 } = require('promisify-child-process');
 const dockerCLI = require('docker-cli-js');
 const docker = new dockerCLI.Docker();
-const epochConfig = require('./config.json')
-const config = epochConfig.config;
-const defaultWallets = epochConfig.defaultWallets;
+const nodeConfig = require('./config.json')
+const config = nodeConfig.config;
+const defaultWallets = nodeConfig.defaultWallets;
 
-async function dockerPs() {
+async function waitForContainer() {
   let running = false
 
   await docker.command('ps', function (err, data) {
@@ -80,40 +80,40 @@ async function fundWallet(client, recipient) {
 async function run(option) {
   try {
     let dockerProcess;
-    let running = await dockerPs();
+    let running = await waitForContainer();
 
     if (option.stop) {
       if (!running) {
-        print('===== Epoch is not running! =====');
+        print('===== Node is not running! =====');
         return
       }
 
-      print('===== Stopping epoch =====');
+      print('===== Stopping node =====');
 
       dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
 
-      print('===== Epoch was successfully stopped! =====');
+      print('===== Node was successfully stopped! =====');
       return;
     }
 
     if (running) {
-      print('\r\n===== Epoch already started and healthy! =====');
+      print('\r\n===== Node already started and healthy! =====');
       return;
     }
 
-    print('===== Starting epoch =====');
+    print('===== Starting node =====');
     dockerProcess = spawn('docker-compose', ['up', '-d']);
 
     dockerProcess.stderr.on('data', (data) => {
       print(data.toString())
     })
 
-    while (!(await dockerPs())) {
+    while (!(await waitForContainer())) {
       process.stdout.write(".");
       utils.sleep(1000);
     }
 
-    print('\n\r===== Epoch was successfully started! =====');
+    print('\n\r===== Node was successfully started! =====');
     print('===== Funding default wallets! =====');
 
     await fundWallets();
