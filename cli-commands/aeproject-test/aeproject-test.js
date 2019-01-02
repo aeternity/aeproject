@@ -25,7 +25,7 @@ const originalRequire = require("original-require");
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
-const epochConfig = require('./../aeproject-epoch/config.json')
+const nodeConfig = require('./../aeproject-node/config.json')
 
 async function run(files) {
   try {
@@ -72,8 +72,8 @@ const runMocha = (mocha) => {
 async function setGlobalOptions() {
   global.assert = chai.assert;
   global.utils = contractUtils;
-  global.minerWallet = epochConfig.config.keyPair;
-  global.wallets = epochConfig.defaultWallets;
+  global.minerWallet = nodeConfig.config.keyPair;
+  global.wallets = nodeConfig.defaultWallets;
 }
 
 module.exports = {
