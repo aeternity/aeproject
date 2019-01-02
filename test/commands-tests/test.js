@@ -12,7 +12,7 @@ const constants = require('../constants.json')
 var shell = require('shelljs');
 
 let executeOptions = {
-	cwd: process.cwd() + constants.epochStartingFolder
+	cwd: process.cwd() + constants.nodeStartingFolder
 };
 
 describe('Aeproject Test', () => {
@@ -23,7 +23,7 @@ describe('Aeproject Test', () => {
 		fs.ensureDirSync(`.${constants.testTestsFolderPath}`)
 		utils.copyFileOrDir(`${currentDir}${constants.dockerFolderPath}`, `${currentDir}${constants.testTestsFolderPath}/artifacts`);
 
-		await execute(constants.cliCommands.EPOCH, [], executeOptions)
+		await execute(constants.cliCommands.NODE, [], executeOptions)
 	})
 
 	it('should work on unexisting test folder', async function () {
@@ -34,7 +34,7 @@ describe('Aeproject Test', () => {
 		await assert.isRejected(test.run('wrongTestDirectory'));
 
 	});
-	//TODO: Sinon test should be reworked with the new epoch version 
+	//TODO: Sinon test should be reworked with the new node version 
 	xit('should execute test cli command with specific path', async function () {
 
 		let aeprojectTestSpy = sinon.spy(test, "run")
@@ -56,7 +56,7 @@ describe('Aeproject Test', () => {
 
 	after(async function () {
 		process.chdir(currentDir);
-		await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
+		await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
 		fs.removeSync(`.${constants.testTestsFolderPath}`);
 	})
 })
