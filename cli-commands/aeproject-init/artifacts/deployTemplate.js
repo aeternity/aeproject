@@ -22,11 +22,6 @@ const deploy = async (network, privateKey) => {
 	let deployer = new Deployer(network, privateKey)
 
 	let result = await deployer.deploy("./contracts/ExampleContract.aes")
-	// deployer.deploy("./contracts/ExampleContract.aes", gasLimit)
-	// deployer.deploy("./contracts/ExampleContract.aes", gasLimit, {tokenName: "tkn"})
-
-	//todo edit package.json
-	//todo command keypair rework
 };
 
 module.exports = {
