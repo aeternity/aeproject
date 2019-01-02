@@ -26,7 +26,26 @@ in which the developer can create
 the contracts, tests and deployment files and scripts. Docker configuration
 files are also created, for easy use of the aeternity blockchain network.
 
-The **init --update** command updates projects files. Important all files in docker folder and docker-compose will be replaced. 
+The **init --update** command updates projects files. Important all files in docker folder and docker-compose will be replaced.
+
+## Start your local development node
+
+```
+
+aeproject node
+
+```
+
+The **node** command help developers run their local network on docker.
+The local network contains 3 nodes. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
+```
+aeproject node
+```
+
+To stop the local node, simply run
+```
+aeproject node --stop
+```
 
 ## Compile sophia contracts
 ```
@@ -38,25 +57,10 @@ file extension. Default directory is $projectDir/contracts. The result of the co
 printed in the console.
 Additional **--path** parameter is available, which can specify the path to the contract to be compiled.
 
-## Run unit tests
-
-```
-
-aeproject test
-
-```
-
-The **test** command help developers run their unit tests for aeternity
-projects. The command executes the tests scripts that are located in the
-**test** folder of your aeternity project.
-Additional **--path** param is available, which can specify the path to the tests
-
 ## Run deploy script
 
 ```
-
 aeproject deploy
-
 ```
 
 The **deploy** command help developers run their deploy script aeternity
@@ -73,78 +77,70 @@ proejcts. The sample deploy script is scaffolded in deployment folder.
 
 -Deployer.deploy(path, gasLimit) function takes 2 arguments: relative path to the contract and gasLimit
 
-
-## Start docker epoch
-
-```
-
-aeproject epoch
+## Run unit tests
 
 ```
-
-The **epoch** command help developers run their local network on docker.
-The local network contains 3 nodes. To spawn a fully functional network takes up to 1
-minute. 30 seconds takes to up docker containers and up to 30 seconds to fund
-default wallets.
-To stop the local epoch, simply run
-```
-aeproject epoch --stop
+aeproject test
 ```
 
-Beneficiary wallet:
+The **test** command help developers run their unit tests for aeternity
+projects. The command executes the tests scripts that are located in the
+**test** folder of your aeternity project.
+Additional **--path** param is available, which can specify the path to the tests
 
-secretKey:
-'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
+### Special global variables and modules available for unit tests
 
-    publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
+aeproject exposes special convenience global variables and functions that can be used in the unit tests.
 
-List of all default wallets
-```json
- [{
-    "publicKey": "ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk",
-	"secretKey": "7c6e602a94f30e4ea7edabe4376314f69ba7eaa2f355ecedb339df847b6f0d80575f81ffb0a297b7725dc671da0b1769b1fc5cbe45385c7b5ad1fc2eaf1d609d"
-		},
-		{
-	"publicKey": "ak_tWZrf8ehmY7CyB1JAoBmWJEeThwWnDpU4NadUdzxVSbzDgKjP",
-	"secretKey": "7fa7934d142c8c1c944e1585ec700f671cbc71fb035dc9e54ee4fb880edfe8d974f58feba752ae0426ecbee3a31414d8e6b3335d64ec416f3e574e106c7e5412"
-		},
-		{
-	"publicKey": "ak_FHZrEbRmanKUe9ECPXVNTLLpRP2SeQCLCT6Vnvs9JuVu78J7V",
-	"secretKey": "1509d7d0e113528528b7ce4bf72c3a027bcc98656e46ceafcfa63e56597ec0d8206ff07f99ea517b7a028da8884fb399a2e3f85792fe418966991ba09b192c91"
-		},
-		{
-	"publicKey": "ak_RYkcTuYcyxQ6fWZsL2G3Kj3K5WCRUEXsi76bPUNkEsoHc52Wp",
-	"secretKey": "58bd39ded1e3907f0b9c1fbaa4456493519995d524d168e0b04e86400f4aa13937bcec56026494dcf9b19061559255d78deea3281ac649ca307ead34346fa621"
-		},
-		{
-	"publicKey": "ak_2VvB4fFu7BQHaSuW5EkQ7GCaM5qiA5BsFUHjJ7dYpAaBoeFCZi",
-	"secretKey": "50458d629ae7109a98e098c51c29ec39c9aea9444526692b1924660b5e2309c7c55aeddd5ebddbd4c6970e91f56e8aaa04eb52a1224c6c783196802e136b9459"
-		},
-		{
-	"publicKey": "ak_286tvbfP6xe4GY9sEbuN2ftx1LpavQwFVcPor9H4GxBtq5fXws",
-	"secretKey": "707881878eacacce4db463de9c7bf858b95c3144d52fafed4a41ffd666597d0393d23cf31fcd12324cd45d4784d08953e8df8283d129f357463e6795b40e88aa"
-		},
-		{
-	"publicKey": "ak_f9bmi44rdvUGKDsTLp3vMCMLMvvqsMQVWyc3XDAYECmCXEbzy",
-	"secretKey": "9262701814da8149615d025377e2a08b5f10a6d33d1acaf2f5e703e87fe19c83569ecc7803d297fde01758f1bdc9e0c2eb666865284dff8fa39edb2267de70db"
-		},
-		{
-	"publicKey": "ak_23p6pT7bajYMJRbnJ5BsbFUuYGX2PBoZAiiYcsrRHZ1BUY2zSF",
-	"secretKey": "e15908673cda8a171ea31333538437460d9ca1d8ba2e61c31a9a3d01a8158c398a14cd12266e480f85cc1dc3239ed5cfa99f3d6955082446bebfe961449dc48b"
-		},
-		{
-	"publicKey": "ak_gLYH5tAexTCvvQA6NpXksrkPJKCkLnB9MTDFTVCBuHNDJ3uZv",
-	"secretKey": "6eb127925aa10d6d468630a0ca28ff5e1b8ad00db151fdcc4878362514d6ae865951b78cf5ef047cab42218e0d5a4020ad34821ca043c0f1febd27aaa87d5ed7"
-		},
-		{
-	"publicKey": "ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ",
-	"secretKey": "36595b50bf097cd19423c40ee66b117ed15fc5ec03d8676796bdf32bc8fe367d82517293a0f82362eb4f93d0de77af5724fba64cbcf55542328bc173dbe13d33"
-		}
-	]
+#### wallets
+Global wallets array is available to be used by the developer. Wallets has 10 items all representing the 10 `aeproject node` wallets created on the node start. Every item has the structure of:
 ```
-  
-  
-  
-  
-  
+{
+	"publicKey": "ak_fUq2NesPXcYZe...",
+	"secretKey": "7c6e602a94f30e4e..."
+}
+```
+This structure makes it very convenient for creation of SDK client objects
+##### Example
+```
+// Create client objects
+owner = await Ae({
+	url: config.host,
+	internalUrl: config.internalHost,
+	keypair: wallets[0],
+	nativeMode: true,
+	networkId: 'ae_devnet'
+});
 
+nonOwner = await Ae({
+	url: config.host,
+	internalUrl: config.internalHost,
+	keypair: wallets[1],
+	nativeMode: true,
+	networkId: 'ae_devnet'
+});
+```
+#### minerWallet
+Similarly to `wallets` there is a global variable `minerWallet` representing the wallet of the node miner following the same structure.
+
+##### Example
+```
+// Create client objects
+miner = await Ae({
+	url: config.host,
+	internalUrl: config.internalHost,
+	keypair: minerWallet,
+	nativeMode: true,
+	networkId: 'ae_devnet'
+});
+```
+#### utils
+`utils` is a package giving helper functions mainly for working with files. Most widely used one is `readFileRelative(relativePath, fileEncoding)`
+
+##### readFileRelative Example
+```
+const contractSource = utils.readFileRelative(config.contractSourceFile, "utf-8");
+const compiledContract = await client.contractCompile(contractSource, {
+	gas: config.gas
+})
+```
