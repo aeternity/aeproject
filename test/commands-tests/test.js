@@ -3,9 +3,9 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils').aeprojectExecute;
+const execute = require('../../cli-commands/utils').forgaeExecute;
 const utils = require('../../cli-commands/utils');
-const test = require('../../cli-commands/aeproject-test/test')
+const test = require('../../cli-commands/forgae-test/test')
 const sinon = require('sinon')
 const constants = require('../constants.json')
 
@@ -15,7 +15,7 @@ let executeOptions = {
 	cwd: process.cwd() + constants.nodeStartingFolder
 };
 
-describe('Aeproject Test', () => {
+describe('ForgAE Test', () => {
 
 	before(async function () {
 		currentDir = process.cwd();
@@ -37,14 +37,14 @@ describe('Aeproject Test', () => {
 	//TODO: Sinon test should be reworked with the new node version 
 	xit('should execute test cli command with specific path', async function () {
 
-		let aeprojectTestSpy = sinon.spy(test, "run")
-		var version = await shell.exec(`aeproject test --path ${currentDir}/test/contractsTests/exampleTests.js`, {
+		let forgaeTestSpy = sinon.spy(test, "run")
+		var version = await shell.exec(`forgae test --path ${currentDir}/test/contractsTests/exampleTests.js`, {
 			silent: false,
 			async: true
 		});
 
-		sinon.assert.calledOnce(aeprojectTestSpy);
-		aeprojectTestSpy.restore();
+		sinon.assert.calledOnce(forgaeTestSpy);
+		forgaeTestSpy.restore();
 	});
 
 	xit('should execute test cli command without specific js file', async function () {

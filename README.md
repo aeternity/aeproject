@@ -1,9 +1,9 @@
-# AEProject
+# ForgAE
 
-**AEProject** is an aeternity framework which helps with setting up a project.
+**ForgAE** is an aeternity framework which helps with setting up a project.
 The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands
 for compilation of smart contracts, running a local Epoch and unit testing the contracts.
-In future deployment will be also available using aeproject.
+In future deployment will be also available using forgae.
 
 Currently, to use the framework, you must checkout the repository and use the following command:
 ```
@@ -12,11 +12,11 @@ npm link
 
 It will be soon published in **npm** and will be available for installation
 
-## Initialize AEProject
+## Initialize Forgae
 
 ```
 
-aeproject init
+forgae init
 
 ```
 
@@ -32,24 +32,24 @@ The **init --update** command updates projects files. Important all files in doc
 
 ```
 
-aeproject node
+forgae node
 
 ```
 
 The **node** command help developers run their local network on docker.
 The local network contains 3 nodes. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
 ```
-aeproject node
+forgae node
 ```
 
 To stop the local node, simply run
 ```
-aeproject node --stop
+forgae node --stop
 ```
 
 ## Compile sophia contracts
 ```
-aeproject compile
+forgae compile
 ```
 
 The **compile** command compiles Sophia contract. It's recommended to use **.aes**
@@ -60,7 +60,7 @@ Additional **--path** parameter is available, which can specify the path to the 
 ## Run deploy script
 
 ```
-aeproject deploy
+forgae deploy
 ```
 
 The **deploy** command help developers run their deploy script aeternity
@@ -80,7 +80,7 @@ proejcts. The sample deploy script is scaffolded in deployment folder.
 ## Run unit tests
 
 ```
-aeproject test
+forgae test
 ```
 
 The **test** command help developers run their unit tests for aeternity
@@ -90,10 +90,10 @@ Additional **--path** param is available, which can specify the path to the test
 
 ### Special global variables and modules available for unit tests
 
-aeproject exposes special convenience global variables and functions that can be used in the unit tests.
+forgae exposes special convenience global variables and functions that can be used in the unit tests.
 
 #### wallets
-Global wallets array is available to be used by the developer. Wallets has 10 items all representing the 10 `aeproject node` wallets created on the node start. Every item has the structure of:
+Global wallets array is available to be used by the developer. Wallets has 10 items all representing the 10 `forgae node` wallets created on the node start. Every item has the structure of:
 ```
 {
 	"publicKey": "ak_fUq2NesPXcYZe...",

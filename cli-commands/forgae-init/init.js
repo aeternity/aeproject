@@ -27,16 +27,16 @@ const execute = require('./../utils').execute;
 
 async function run(update) {
   if (update) {
-    print(`===== Updating Aeproject files =====`);
+    print(`===== Updating ForgAE files =====`);
 
     setupDocker();
 
-    print('===== Aeproject was successfully updated! =====');
+    print('===== ForgAE was successfully updated! =====');
     return;
   }
 
   try {
-    print('===== Initializing aeproject =====');
+    print('===== Initializing ForgAE =====');
 
     await installLibraries()
 
@@ -47,7 +47,7 @@ async function run(update) {
     await setupDeploy();
     setupDocker();
 
-    print('===== Aeproject was successfully initialized! =====');
+    print('===== ForgAE was successfully initialized! =====');
 
   } catch (e) {
     printError(e.message)
@@ -82,9 +82,9 @@ const setupTests = () => {
 }
 
 const setupDeploy = async () => {
-  print(`===== Installing aeproject locally =====`);
+  print(`===== Installing ForgAE locally =====`);
 
-  await execute('npm', 'install', ['git+https://github.com/aeternity/aeproject.git', '--save']);
+  await execute('npm', 'install', ['git+https://github.com/aeternity/forgae.git', '--save']);
 
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;

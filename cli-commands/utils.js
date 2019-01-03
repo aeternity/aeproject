@@ -129,8 +129,8 @@ const sleep = (ms) => {
   }
 }
 
-const aeprojectExecute = async (command, args, options = {}) => {
-  return await execute("aeproject", command, args, options)
+const forgaeExecute = async (command, args, options = {}) => {
+  return await execute("forgae", command, args, options)
 }
 
 const execute = async (cli, command, args, options = {}) => {
@@ -177,5 +177,5 @@ module.exports = {
   execute,
   readFile,
   config,
-  aeprojectExecute
+  forgaeExecute
 }

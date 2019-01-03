@@ -25,7 +25,7 @@ const originalRequire = require("original-require");
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
-const nodeConfig = require('./../aeproject-node/config.json')
+const nodeConfig = require('./../forgae-node/config.json')
 
 async function run(files) {
   try {

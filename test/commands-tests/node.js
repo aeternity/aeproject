@@ -1,11 +1,11 @@
 const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
-const execute = require('../../cli-commands/utils.js').aeprojectExecute;
+const execute = require('../../cli-commands/utils.js').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
 const waitUntilFundedBlocks = require('../utils').waitUntilFundedBlocks;
 const constants = require('../constants.json')
 const fs = require('fs-extra')
-const nodeConfig = require('../../cli-commands/aeproject-node/config.json')
+const nodeConfig = require('../../cli-commands/forgae-node/config.json')
 const utils = require('../../cli-commands/utils')
 let executeOptions = {
 	cwd: process.cwd() + constants.nodeTestsFolderPath
@@ -15,7 +15,7 @@ const assert = chai.assert;
 const defaultWallets = nodeConfig.defaultWallets
 
 
-describe('Aeproject node', () => {
+describe('ForgAE node', () => {
 
 	before(async () => {
 		fs.ensureDirSync(`.${constants.nodeTestsFolderPath}`)

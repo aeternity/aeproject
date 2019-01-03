@@ -4,9 +4,9 @@
 	"deployTestsFolderPath": "/test/commands-tests/deployTest",
 	"initTestsFolderPath": "/test/commands-tests/initTests",
 	"testTestsFolderPath": "/test/commands-tests/contractsTests",
-	"sourceTestsFilesPath": "/cli-commands/aeproject-init/artifacts/exampleTests.js",
+	"sourceTestsFilesPath": "/cli-commands/forgae-init/artifacts/exampleTests.js",
 	"exampleContractTests": "/exampleTests.js",
-	"dockerFolderPath": "/cli-commands/aeproject-init/artifacts",
+	"dockerFolderPath": "/cli-commands/forgae-init/artifacts",
 	"nodeStartingFolder": "/test/commands-tests/contractsTests/artifacts",
 	"cliCommands": {
 		"INIT": "init",

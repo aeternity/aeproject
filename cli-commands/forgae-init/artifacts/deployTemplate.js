@@ -14,32 +14,16 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
+const Ae = require('@aeternity/aepp-sdk').Universal;
+const Deployer = require('forgae').Deployer;
+const gasLimit = 1000000;
 
-const aeprojectTest = require('./aeproject-test');
-const utils = require('../utils.js');
+const deploy = async (network, privateKey) => {
+	let deployer = new Deployer(network, privateKey)
 
-const run = async (path) => {
-  let workingDirectory = process.cwd();
-  let testDirectory = '';
-
-  if (path.includes('.js')) {
-    await aeprojectTest.run([path]);
-
-    return;
-  }
-
-  testDirectory = path;
-  
-  if (!path.includes(workingDirectory)) {
-    testDirectory = `${process.cwd()}/${path}`;
-  }
-
-  testDirectory = `${process.cwd()}/${path}`;
-  const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\.(js|es|es6|jsx|sol)$`);
-
-  await aeprojectTest.run(files);
-}
+	let result = await deployer.deploy("./contracts/ExampleContract.aes")
+};
 
 module.exports = {
-  run
-}
+	deploy
+};

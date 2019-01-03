@@ -5,7 +5,7 @@ const Crypto = AeSDK.Crypto
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
-		throw new Error(`${deploymentFile} file not found. Probably you've not initialized aeproject. Please run aeproject init first.`)
+		throw new Error(`${deploymentFile} file not found. Probably you've not initialized ForgAE. Please run forgae init first.`)
 	}
 };
 
