@@ -5,7 +5,7 @@ const ttl = 100;
 
 class Deployer {
 
-    constructor(network, keypairOrSecret = utils.config.keypair) {
+    constructor(network = "local", keypairOrSecret = utils.config.keypair) {
         this.network = network;
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
@@ -16,8 +16,6 @@ class Deployer {
                 publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
                 secretKey: keypairOrSecret
             }
-
-            console.log(this.keypair)
             return
         }
 
