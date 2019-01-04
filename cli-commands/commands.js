@@ -14,18 +14,18 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-const compile = require('./aeproject-compile/compile.js');
-const init = require('./aeproject-init/init.js');
-const testConfig = require('./aeproject-test/test.js');
-const node = require('./aeproject-node/node.js');
-const deploy = require('./aeproject-deploy/deploy.js');
+const compile = require('./forgae-compile/compile.js');
+const init = require('./forgae-init/init.js');
+const testConfig = require('./forgae-test/test.js');
+const node = require('./forgae-node/node.js');
+const deploy = require('./forgae-deploy/deploy.js');
 const config = require('./utils').config;
 
 
 const addInitOption = (program) => {
   program
     .command('init')
-    .description('Initialize aepp project')
+    .description('Initialize ForgAE')
     .option('--update [update]', 'Update project files')
     .action(async (option) => {
       await init.run(option.update);

@@ -2,15 +2,15 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils').aeprojectExecute;
+const execute = require('../../cli-commands/utils').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
 const constants = require('../constants.json')
 const fs = require('fs-extra')
 let executeOptions = {
 	cwd: process.cwd() + constants.deployTestsFolderPath
 };
-const Deployer = require("./../../cli-commands/aeproject-deploy/aeproject-deployer")
-describe('Aeproject deploy', () => {
+const Deployer = require("./../../cli-commands/forgae-deploy/forgae-deployer")
+describe('ForgAE Deploy', () => {
 	const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
 	before(async () => {
 		fs.ensureDirSync(`.${constants.deployTestsFolderPath}`)
