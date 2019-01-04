@@ -15,7 +15,7 @@ const assert = chai.assert;
 const defaultWallets = nodeConfig.defaultWallets
 
 
-describe('ForgAE node', () => {
+describe('ForgAE Node', () => {
 
 	before(async () => {
 		fs.ensureDirSync(`.${constants.nodeTestsFolderPath}`)

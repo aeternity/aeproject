@@ -12,17 +12,14 @@ const constants = require('../constants.json')
 var shell = require('shelljs');
 
 let executeOptions = {
-	cwd: process.cwd() + constants.nodeStartingFolder
+	cwd: process.cwd() + constants.testTestsFolderPath
 };
 
 describe('ForgAE Test', () => {
 
 	before(async function () {
-		currentDir = process.cwd();
-
 		fs.ensureDirSync(`.${constants.testTestsFolderPath}`)
-		utils.copyFileOrDir(`${currentDir}${constants.dockerFolderPath}`, `${currentDir}${constants.testTestsFolderPath}/artifacts`);
-
+		await execute(constants.cliCommands.INIT, [], executeOptions)
 		await execute(constants.cliCommands.NODE, [], executeOptions)
 	})
 
@@ -38,7 +35,7 @@ describe('ForgAE Test', () => {
 	xit('should execute test cli command with specific path', async function () {
 
 		let forgaeTestSpy = sinon.spy(test, "run")
-		var version = await shell.exec(`forgae test --path ${currentDir}/test/contractsTests/exampleTests.js`, {
+		var version = await shell.exec(`forgae test --path ${executeOptions}/exampleTests.js`, {
 			silent: false,
 			async: true
 		});
@@ -55,7 +52,6 @@ describe('ForgAE Test', () => {
 	});
 
 	after(async function () {
-		process.chdir(currentDir);
 		await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
 		fs.removeSync(`.${constants.testTestsFolderPath}`);
 	})
