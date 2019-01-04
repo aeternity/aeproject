@@ -22,6 +22,7 @@ const {
   spawn
 } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
+const Crypto = AeSDK.Crypto
 
 
 const config = {
@@ -166,6 +167,32 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
   }
 }
 
+const isKeyPair = (k) => {
+  if (k == null) {
+    return false
+  }
+  if (typeof k != 'object') {
+    return false
+  }
+
+  if (!k.hasOwnProperty('publicKey')) {
+    return false
+  }
+
+  if (!k.hasOwnProperty('secretKey')) {
+    return false
+  }
+
+  return true
+}
+
+const generatePublicKeyFromSecretKey = (secretKey) => {
+  const hexStr = Crypto.hexStringToByte(secretKey.trim())
+  const keys = Crypto.generateKeyPairFromSecret(hexStr)
+
+  return Crypto.aeEncodeKey(keys.publicKey)
+}
+
 module.exports = {
   print,
   printError,
@@ -177,5 +204,7 @@ module.exports = {
   execute,
   readFile,
   config,
-  aeprojectExecute
+  aeprojectExecute,
+  isKeyPair,
+  generatePublicKeyFromSecretKey
 }

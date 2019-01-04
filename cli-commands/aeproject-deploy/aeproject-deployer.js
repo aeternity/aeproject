@@ -5,9 +5,23 @@ const ttl = 100;
 
 class Deployer {
 
-    constructor(network, keypair = utils.config.keypair) {
+    constructor(network, keypairOrSecret = utils.config.keypair) {
         this.network = network;
-        this.keypair = keypair;
+        if (utils.isKeyPair(keypairOrSecret)) {
+            this.keypair = keypairOrSecret;
+            return
+        }
+        if (typeof keypairOrSecret === 'string' || keypairOrSecret instanceof String) {
+            this.keypair = {
+                publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
+                secretKey: keypairOrSecret
+            }
+
+            console.log(this.keypair)
+            return
+        }
+
+        throw new Error("Incorrect keypair or secret key passed")
     }
 
     async selectNetwork() {
