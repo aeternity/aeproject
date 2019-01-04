@@ -5,20 +5,37 @@ const ttl = 100;
 
 class Deployer {
 
-    constructor(network, keypair = utils.config.keypair) {
-        this.network = network;
-        this.keypair = keypair;
+    constructor(network = "local", keypairOrSecret = utils.config.keypair) {
+        this.network = this.getNetwork(network);
+        if (utils.isKeyPair(keypairOrSecret)) {
+            this.keypair = keypairOrSecret;
+            return
+        }
+        if (typeof keypairOrSecret === 'string' || keypairOrSecret instanceof String) {
+            this.keypair = {
+                publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
+                secretKey: keypairOrSecret
+            }
+            return
+        }
+
+        throw new Error("Incorrect keypair or secret key passed")
     }
 
-    async selectNetwork() {
-        if (this.network == "local") {
-            return utils.config.localhost
+    getNetwork(network) {
+        const networks = {
+            local: utils.config.localhost,
+            edgenet: utils.config.edgenetHost,
+            testnet: utils.config.testnetHost,
+            mainnet: utils.config.mainnetHost
         }
 
-        if (this.network == "edgenet") {
-            return utils.config.edgenetHost
+        const result = networks[network]
+        if (!result) {
+            throw new Error(`Unrecognised network ${network}`)
         }
-        return this.network
+
+        return result
     }
 
     async readFile(path) {
@@ -33,7 +50,7 @@ class Deployer {
      * @param {object} initArgs - Initial arguments that will be passed to init function.
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
-        let client = await utils.getClient(await this.selectNetwork(), this.keypair);
+        let client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
             options: {
