@@ -15,7 +15,7 @@ async function waitForContainer() {
 	return running;
 }
 
-async function waitUntilFundedBlocks(client, blocks = 18) {
+async function waitUntilFundedBlocks(client, blocks = 8) {
 	await waitForContainer()
 	await client.awaitHeight(blocks)
 }
