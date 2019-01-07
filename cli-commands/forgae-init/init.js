@@ -84,7 +84,7 @@ const setupTests = () => {
 const setupDeploy = async () => {
   print(`===== Installing ForgAE locally =====`);
 
-  await execute('npm', 'install', ['git+https://github.com/aeternity/aepp-forgae-js.git#forgae-rename', '--save']);
+  await execute('npm', 'install', ['git+https://github.com/aeternity/aepp-forgae-js.git', '--save']);
 
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
