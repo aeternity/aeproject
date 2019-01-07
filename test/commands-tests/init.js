@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils.js').aeprojectExecute;
+const execute = require('../../cli-commands/utils.js').forgaeExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 
@@ -11,7 +11,7 @@ let executeOptions = {
 
 chai.use(chaiFiles);
 
-describe('Aeproject Init', () => {
+describe('ForgAE Init', () => {
 	before(async () => {
 		fs.ensureDirSync(`.${constants.initTestsFolderPath}`)
 	})

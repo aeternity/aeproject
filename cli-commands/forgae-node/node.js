@@ -14,7 +14,7 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */) // use to handle es6 import/export
+require = require('esm')(module /*, options */ ) // use to handle es6 import/export
 
 const {
   printError,
@@ -75,7 +75,11 @@ async function printWallet(client, keyPair, label) {
 
 async function waitToMineCoins() {
   let client = await utils.getClient(config.host);
-  await client.awaitHeight(8)
+  let heightOptions = {
+    interval: 8000,
+    attempts: 300
+  }
+  await client.awaitHeight(8, heightOptions)
 }
 
 async function fundWallet(client, recipient) {

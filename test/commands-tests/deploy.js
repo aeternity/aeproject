@@ -2,15 +2,15 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils').aeprojectExecute;
+const execute = require('../../cli-commands/utils').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
 const constants = require('../constants.json')
 const fs = require('fs-extra')
 let executeOptions = {
 	cwd: process.cwd() + constants.deployTestsFolderPath
 };
-const Deployer = require("./../../cli-commands/aeproject-deploy/aeproject-deployer")
-describe('Aeproject deploy', () => {
+const Deployer = require("./../../cli-commands/forgae-deploy/forgae-deployer")
+describe('ForgAE Deploy', () => {
 	const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
 	before(async () => {
 		fs.ensureDirSync(`.${constants.deployTestsFolderPath}`)
@@ -22,10 +22,11 @@ describe('Aeproject deploy', () => {
 	describe('Deployer', async () => {
 		it('Should init Deployer with local network', async () => {
 			//Arrange
-			let expectedNetwork = "local"
+			const expectedNetwork = "http://localhost:3001"
+			const passedNetwork = "local"
 
 			//Act
-			let deployer = new Deployer(expectedNetwork);
+			const deployer = new Deployer(passedNetwork);
 
 			//Assert
 			assert.equal(deployer.network, expectedNetwork)
@@ -33,21 +34,35 @@ describe('Aeproject deploy', () => {
 
 		it('Should init Deployer with edgenet network', async () => {
 			//Arrange
-			let expectedNetwork = "edgenet"
+			const expectedNetwork = "https://sdk-edgenet.aepps.com"
+			const passedNetwork = "edgenet"
 
 			//Act
-			let deployer = new Deployer(expectedNetwork);
+			const deployer = new Deployer(passedNetwork);
 
 			//Assert
 			assert.equal(deployer.network, expectedNetwork)
 		})
 
-		it('Should init Deployer with custom network', async () => {
+		it('Should init Deployer with testnet network', async () => {
 			//Arrange
-			let expectedNetwork = "http://customNodeUrl.com"
+			const expectedNetwork = "https://sdk-testnet.aepps.com"
+			const passedNetwork = "testnet"
 
 			//Act
-			let deployer = new Deployer(expectedNetwork);
+			const deployer = new Deployer(passedNetwork);
+
+			//Assert
+			assert.equal(deployer.network, expectedNetwork)
+		})
+
+		it('Should init Deployer with mainnet network', async () => {
+			//Arrange
+			const expectedNetwork = "https://sdk-mainnet.aepps.com"
+			const passedNetwork = "mainnet"
+
+			//Act
+			const deployer = new Deployer(passedNetwork);
 
 			//Assert
 			assert.equal(deployer.network, expectedNetwork)
@@ -128,8 +143,7 @@ describe('Aeproject deploy', () => {
 
 		it('with invalid network arguments', async () => {
 			let executePromise = execute(constants.cliCommands.DEPLOY, ["-n", "public"], executeOptions)
-
-			await assert.isRejected(executePromise);
+			await assert.isFulfilled(executePromise, "Error: Unrecognised network public");
 		})
 
 		it('with invalid password arguments', async () => {
