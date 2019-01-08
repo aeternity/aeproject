@@ -5,9 +5,9 @@ The framework makes the development of smart contracts in the aeternity network 
 for compilation of smart contracts, running a local Epoch and unit testing the contracts.
 In future deployment will be also available using forgae.
 
-Currently, to use the framework, you must checkout the repository and use the following command:
+The framework can be installed via npm:
 ```
-npm link
+npm i forgae
 ```
 
 It will be soon published in **npm** and will be available for installation
