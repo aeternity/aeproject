@@ -126,8 +126,7 @@ class Deployer {
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
 
-        let txInfo = await getTxInfo(deployedContract.transaction, this.selectNetwork());
-
+        let txInfo = await getTxInfo(deployedContract.transaction, this.network);
         const isSuccess = txInfo.gasPrice >= 0 && txInfo.gasUsed > 0;
         let info = {
             deployerType: this.constructor.name,

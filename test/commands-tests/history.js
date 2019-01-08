@@ -157,7 +157,7 @@ describe('Test CLI "History" command', async () => {
         }, 1000);
 
 
-        let epochResult = await execute(constants.cliCommands.EPOCH, ['--start']);
+        let epochResult = await execute(constants.cliCommands.NODE, ['--start']);
         clearInterval(epochInterval);
 
         console.log(epochResult);
@@ -215,7 +215,7 @@ describe('Test CLI "History" command', async () => {
 
     after(async () => {
 
-        let result = await execute(constants.cliCommands.EPOCH, ['--stop']);
+        let result = await execute(constants.cliCommands.NODE, ['--stop']);
         console.log(result);
 
         // // When master branch has history functionality this command should be removed.
