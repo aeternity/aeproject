@@ -138,31 +138,8 @@ describe('ForgAE History', async () => {
     
             currentCwd = process.cwd();
             process.chdir(tempTestPath);
-    
-            let initInterval = setInterval(() => {
-                process.stdout.write('.');
-            }, 500);
-    
-            console.log('Executing forgae init.');
-            let initResult = await execute(constants.cliCommands.INIT, []);
-            clearInterval(initInterval);
-    
-            console.log();
-            console.log(initResult);
-    
-            // // When master branch has history functionality this command should be removed.
-            await exec('npm', 'link', ['forgae']);
-    
-            console.log('Starting NODE..');
-            let epochInterval = setInterval(() => {
-                process.stdout.write('.');
-            }, 1000);
-    
-    
-            let epochResult = await execute(constants.cliCommands.NODE, ['--start']);
-            clearInterval(epochInterval);
-    
-            console.log(epochResult);
+        
+            await execute(constants.cliCommands.NODE, ['--start']);
         });
     
         it('History should be empty', async () => {
@@ -217,11 +194,8 @@ describe('ForgAE History', async () => {
     
         after(async () => {
     
-            let result = await execute(constants.cliCommands.NODE, ['--stop']);
-            console.log(result);
+            await execute(constants.cliCommands.NODE, ['--stop']);
     
-            // // When master branch has history functionality this command should be removed.
-            await exec('npm', 'unlink', ['forgae']);
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
         });
