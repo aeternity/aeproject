@@ -7,7 +7,7 @@ In future deployment will be also available using forgae.
 
 The framework can be installed via npm:
 ```
-npm i forgae
+npm i -g forgae
 ```
 
 It will be soon published in **npm** and will be available for installation
