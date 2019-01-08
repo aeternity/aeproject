@@ -1,7 +1,6 @@
 const fs = require('fs');
 const defaultDeploymentFilePath = `deployment/deploy.js`;
 const AeSDK = require('@aeternity/aepp-sdk');
-const Crypto = AeSDK.Crypto;
 const path = require('path');
 
 const verifyDeploymentFile = (deploymentFile) => {
