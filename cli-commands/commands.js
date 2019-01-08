@@ -20,8 +20,8 @@ const testConfig = require('./forgae-test/test.js');
 const node = require('./forgae-node/node.js');
 const deploy = require('./forgae-deploy/deploy.js');
 const config = require('./utils').config;
-const history = require('./aeproject-history/log-store-service');
-const printReportTable = require('./aeproject-history/utils').printReportTable;
+const history = require('./forgae-history/log-store-service');
+const printReportTable = require('./forgae-history/utils').printReportTable;
 
 const addInitOption = (program) => {
   program

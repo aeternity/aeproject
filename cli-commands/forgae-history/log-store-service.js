@@ -1,6 +1,6 @@
 const LogJSONStore = require('./log-json-store');
 
-const storageDir = './.aeproject-store'
+const storageDir = './.forgae-store'
 let store;
 /**
  * Store for the logs created by the deployment scripts.

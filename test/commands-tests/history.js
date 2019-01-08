@@ -4,16 +4,16 @@ chai.use(chaiAsPromised);
 const assert = chai.assert;
 
 const cliUtils = require('../../cli-commands/utils.js');
-const execute = cliUtils.aeprojectExecute;
+const execute = cliUtils.forgaeExecute;
 const exec = cliUtils.execute;
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const _store = require('./../../cli-commands/aeproject-history/log-store-service');
+const _store = require('./../../cli-commands/forgae-history/log-store-service');
 
 const constants = require('../constants.json');
 const TEMP_TEST_PATH = 'temp-test';
-const PATH_TO_STORE_DIRECTORY = '.aeproject-store';
+const PATH_TO_STORE_DIRECTORY = '.forgae-store';
 
 function countHistoryLogs(result) {
     let counter = 0;
@@ -65,7 +65,7 @@ describe('Log store service tests', () => {
         let history = store.getHistory();
 
         assert(result, "It's not initialized correct!");
-        assert(store._historyStore.path.endsWith('.aeproject-store/.history.json'), 'Incorrect path');
+        assert(store._historyStore.path.endsWith('.forgae-store/.history.json'), 'Incorrect path');
         assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
     });
 
@@ -141,7 +141,7 @@ describe('Test CLI "History" command', async () => {
             process.stdout.write('.');
         }, 500);
 
-        console.log('Executing aeproject init.');
+        console.log('Executing forgae init.');
         let initResult = await execute(constants.cliCommands.INIT, []);
         clearInterval(initInterval);
 
@@ -149,7 +149,7 @@ describe('Test CLI "History" command', async () => {
         console.log(initResult);
 
         // // When master branch has history functionality this command should be removed.
-        await exec('npm', 'link', ['aeproject']);
+        await exec('npm', 'link', ['forgae']);
 
         console.log('Starting epoch..');
         let epochInterval = setInterval(() => {
@@ -219,7 +219,7 @@ describe('Test CLI "History" command', async () => {
         console.log(result);
 
         // // When master branch has history functionality this command should be removed.
-        await exec('npm', 'unlink', ['aeproject']);
+        await exec('npm', 'unlink', ['forgae']);
         fsExtra.removeSync(tempTestPath);
         process.chdir(currentCwd);
     });

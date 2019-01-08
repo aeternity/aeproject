@@ -17,7 +17,6 @@ const run = async (limit, output) => {
 	}
 };
 
-
 module.exports = {
 	run
 };

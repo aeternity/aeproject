@@ -2,7 +2,7 @@ const utils = require('./../utils')
 const fs = require('fs')
 const gasLimit = 20000000;
 const ttl = 100;
-const logStoreService = require('./../aeproject-history/log-store-service');
+const logStoreService = require('./../forgae-history/log-store-service');
 const execute = require('./../utils').execute;
 
 logStoreService.initHistoryRecord();
