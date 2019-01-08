@@ -23,8 +23,6 @@ const {
   spawn
 } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
-const Crypto = AeSDK.Crypto
-
 
 const config = {
   localhost: "http://localhost:3001",
