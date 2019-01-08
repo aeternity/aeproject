@@ -20,7 +20,6 @@ const utils = require('../utils.js');
 
 const run = async (path) => {
   let workingDirectory = process.cwd();
-  let testDirectory = '';
 
   if (path.includes('.js')) {
     await forgaeTest.run([path]);
@@ -35,7 +34,7 @@ const run = async (path) => {
   }
 
   testDirectory = `${process.cwd()}/${path}`;
-  const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\.(js|es|es6|jsx|sol)$`);
+  const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\\.(js|es|es6|jsx|sol)$`);
 
   await forgaeTest.run(files);
 }

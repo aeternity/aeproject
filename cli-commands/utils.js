@@ -70,10 +70,11 @@ const getFiles = async function (directory, regex) {
         reject(new Error(error));
         return;
       }
-
+      
       files = files.filter(function (file) {
         return file.match(regex) != null;
       });
+
       resolve(files);
     });
   });
