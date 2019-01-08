@@ -1,5 +1,5 @@
 {
-  "name": "aeproject",
+  "name": "forgae",
   "version": "0.0.1",
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "test": "mocha './test/**/*.js' --timeout 0 --exit"
   },
   "bin": {
-    "aeproject": "./aeproject-cli.js"
+    "forgae": "./forgae-cli.js"
   },
   "author": "",
   "license": "ISC",

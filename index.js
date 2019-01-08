@@ -1,4 +1,4 @@
-const Deployer = require("./cli-commands/aeproject-deploy/epoch-deployer")
+const Deployer = require("./cli-commands/forgae-deploy/forgae-deployer")
 
 module.exports = {
     Deployer

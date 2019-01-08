@@ -23,11 +23,14 @@ const {
   spawn
 } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
+const Crypto = AeSDK.Crypto
 
 
 const config = {
   localhost: "http://localhost:3001",
   edgenetHost: "https://sdk-edgenet.aepps.com",
+  testnetHost: "https://sdk-testnet.aepps.com",
+  mainnetHost: "https://sdk-mainnet.aepps.com",
   keypair: {
     secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
     publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
@@ -88,7 +91,7 @@ const getClient = async function (url, keypair = config.keypair) {
     internalUrl = internalUrl + "/internal"
   }
 
-  if (url.includes("mainnet")) {
+  if (url.includes(config.mainnetHost)) {
     networkId = 'ae_mainnet'
   }
 
@@ -130,8 +133,8 @@ const sleep = (ms) => {
   }
 }
 
-const aeprojectExecute = async (command, args, options = {}) => {
-  return await execute("aeproject", command, args, options)
+const forgaeExecute = async (command, args, options = {}) => {
+  return await execute("forgae", command, args, options)
 }
 
 const execute = async (cli, command, args, options = {}) => {
@@ -170,7 +173,33 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
 function keyToHex (publicKey) {
 	let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
 	let asHex = '0x' + byteArray.toString('hex');
-	return asHex;
+  return asHex;
+}
+
+const isKeyPair = (k) => {
+  if (k == null) {
+    return false
+  }
+  if (typeof k != 'object') {
+    return false
+  }
+
+  if (!k.hasOwnProperty('publicKey')) {
+    return false
+  }
+
+  if (!k.hasOwnProperty('secretKey')) {
+    return false
+  }
+
+  return true
+}
+
+const generatePublicKeyFromSecretKey = (secretKey) => {
+  const hexStr = Crypto.hexStringToByte(secretKey.trim())
+  const keys = Crypto.generateKeyPairFromSecret(hexStr)
+
+  return Crypto.aeEncodeKey(keys.publicKey)
 }
 
 module.exports = {
@@ -184,6 +213,8 @@ module.exports = {
   execute,
   readFile,
   config,
-  aeprojectExecute,
-  keyToHex
+  keyToHex,
+  forgaeExecute,
+  isKeyPair,
+  generatePublicKeyFromSecretKey
 }

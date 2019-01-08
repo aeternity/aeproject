@@ -3,27 +3,24 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils').aeprojectExecute;
+const execute = require('../../cli-commands/utils').forgaeExecute;
 const utils = require('../../cli-commands/utils');
-const test = require('../../cli-commands/aeproject-test/test')
+const test = require('../../cli-commands/forgae-test/test')
 const sinon = require('sinon')
 const constants = require('../constants.json')
 
 var shell = require('shelljs');
 
 let executeOptions = {
-	cwd: process.cwd() + constants.epochStartingFolder
+	cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe('Aeproject Test', () => {
+describe('ForgAE Test', () => {
 
 	before(async function () {
-		currentDir = process.cwd();
-
 		fs.ensureDirSync(`.${constants.testTestsFolderPath}`)
-		utils.copyFileOrDir(`${currentDir}${constants.dockerFolderPath}`, `${currentDir}${constants.testTestsFolderPath}/artifacts`);
-
-		await execute(constants.cliCommands.EPOCH, [], executeOptions)
+		await execute(constants.cliCommands.INIT, [], executeOptions)
+		await execute(constants.cliCommands.NODE, [], executeOptions)
 	})
 
 	it('should work on unexisting test folder', async function () {
@@ -34,17 +31,17 @@ describe('Aeproject Test', () => {
 		await assert.isRejected(test.run('wrongTestDirectory'));
 
 	});
-	//TODO: Sinon test should be reworked with the new epoch version 
+	//TODO: Sinon test should be reworked with the new node version 
 	xit('should execute test cli command with specific path', async function () {
 
-		let aeprojectTestSpy = sinon.spy(test, "run")
-		var version = await shell.exec(`aeproject test --path ${currentDir}/test/contractsTests/exampleTests.js`, {
+		let forgaeTestSpy = sinon.spy(test, "run")
+		var version = await shell.exec(`forgae test --path ${executeOptions}/exampleTests.js`, {
 			silent: false,
 			async: true
 		});
 
-		sinon.assert.calledOnce(aeprojectTestSpy);
-		aeprojectTestSpy.restore();
+		sinon.assert.calledOnce(forgaeTestSpy);
+		forgaeTestSpy.restore();
 	});
 
 	xit('should execute test cli command without specific js file', async function () {
@@ -55,8 +52,7 @@ describe('Aeproject Test', () => {
 	});
 
 	after(async function () {
-		process.chdir(currentDir);
-		await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
+		await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
 		fs.removeSync(`.${constants.testTestsFolderPath}`);
 	})
 })

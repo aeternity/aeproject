@@ -14,11 +14,11 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-const compile = require('./aeproject-compile/compile.js');
-const init = require('./aeproject-init/init.js');
-const testConfig = require('./aeproject-test/test.js');
-const epoch = require('./aeproject-epoch/epoch.js');
-const deploy = require('./aeproject-deploy/deploy.js');
+const compile = require('./forgae-compile/compile.js');
+const init = require('./forgae-init/init.js');
+const testConfig = require('./forgae-test/test.js');
+const node = require('./forgae-node/node.js');
+const deploy = require('./forgae-deploy/deploy.js');
 const config = require('./utils').config;
 const history = require('./aeproject-history/log-store-service');
 const printReportTable = require('./aeproject-history/utils').printReportTable;
@@ -26,7 +26,7 @@ const printReportTable = require('./aeproject-history/utils').printReportTable;
 const addInitOption = (program) => {
   program
     .command('init')
-    .description('Initialize aepp project')
+    .description('Initialize ForgAE')
     .option('--update [update]', 'Update project files')
     .action(async (option) => {
       await init.run(option.update);
@@ -54,14 +54,14 @@ const addTestOption = (program) => {
     })
 }
 
-const addEpochOption = (program) => {
+const addNodeOption = (program) => {
   program
-    .command('epoch')
-    .description('Running the epoch. Without any argument epoch will be runned with --start argument')
-    .option('--stop', 'Stop the epoch')
-    .option('--start', 'Start the epoch')
+    .command('node')
+    .description('Running a local node. Without any argument node will be runned with --start argument')
+    .option('--stop', 'Stop the node')
+    .option('--start', 'Start the node')
     .action(async (options) => {
-      await epoch.run(options);
+      await node.run(options);
     })
 }
 
@@ -71,7 +71,7 @@ const addDeployOption = (program) => {
     .description('Run deploy script')
     .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
     .option('-n --network [network]', 'Select network', "local")
-    .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)', config.keypair.secretKey)
+    .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)')
     .action(async (options) => {
       await deploy.run(options.path, options.network, options.secretKey);
     })
@@ -97,7 +97,7 @@ const initCommands = (program) => {
   addInitOption(program);
   addCompileOption(program);
   addTestOption(program);
-  addEpochOption(program);
+  addNodeOption(program);
   addDeployOption(program);
   addHistoryOption(program);
 }

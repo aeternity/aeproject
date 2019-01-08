@@ -14,16 +14,18 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 const {
   printError,
   print
 } = require('../utils');
+const contractUtils = require('./utils');
 const Mocha = require("mocha");
 const originalRequire = require("original-require");
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
+const nodeConfig = require('./../forgae-node/config.json')
 
 async function run(files) {
   try {
@@ -58,7 +60,7 @@ const createMocha = async (config, files) => {
     mocha.addFile(file);
   });
 
-  return mocha
+  return mocha;
 }
 
 const runMocha = (mocha) => {
@@ -68,7 +70,10 @@ const runMocha = (mocha) => {
 }
 
 async function setGlobalOptions() {
-  global.assert = chai.assert
+  global.assert = chai.assert;
+  global.utils = contractUtils;
+  global.minerWallet = nodeConfig.config.keyPair;
+  global.wallets = nodeConfig.defaultWallets;
 }
 
 module.exports = {

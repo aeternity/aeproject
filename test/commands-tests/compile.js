@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils.js').aeprojectExecute;
+const execute = require('../../cli-commands/utils.js').forgaeExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
@@ -14,11 +14,11 @@ let executeOptions = {
 };
 chai.use(chaiAsPromised);
 
-describe('Aeproject Compile', () => {
+describe('ForgAE Compile', () => {
 	before(async () => {
 		fs.ensureDirSync(`.${constants.compileTestsFolderPath}`)
 		await execute(constants.cliCommands.INIT, [], executeOptions)
-		await execute(constants.cliCommands.EPOCH, [], executeOptions)
+		await execute(constants.cliCommands.NODE, [], executeOptions)
 	})
 
 	describe('Compile', () => {
@@ -53,7 +53,7 @@ describe('Aeproject Compile', () => {
 	})
 
 	after(async () => {
-		await execute(constants.cliCommands.EPOCH, [constants.cliCommandsOptions.STOP], executeOptions)
+		await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
 		fs.removeSync(`.${constants.compileTestsFolderPath}`);
 	})
 })

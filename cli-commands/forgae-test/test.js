@@ -15,7 +15,7 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-const aeprojectTest = require('./aeproject-test');
+const forgaeTest = require('./forgae-test');
 const utils = require('../utils.js');
 
 const run = async (path) => {
@@ -23,13 +23,13 @@ const run = async (path) => {
   let testDirectory = '';
 
   if (path.includes('.js')) {
-    await aeprojectTest.run([path]);
+    await forgaeTest.run([path]);
 
     return;
   }
 
   testDirectory = path;
-  
+
   if (!path.includes(workingDirectory)) {
     testDirectory = `${process.cwd()}/${path}`;
   }
@@ -37,7 +37,7 @@ const run = async (path) => {
   testDirectory = `${process.cwd()}/${path}`;
   const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\.(js|es|es6|jsx|sol)$`);
 
-  await aeprojectTest.run(files);
+  await forgaeTest.run(files);
 }
 
 module.exports = {
