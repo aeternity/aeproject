@@ -1,5 +1,7 @@
 const fs = require('fs');
 const defaultDeploymentFilePath = `deployment/deploy.js`;
+const AeSDK = require('@aeternity/aepp-sdk');
+const path = require('path');
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -9,8 +11,9 @@ const verifyDeploymentFile = (deploymentFile) => {
 
 const getDeployMethod = (deploymentFilePath) => {
 	const _deploymentFilePath = (deploymentFilePath) ? deploymentFilePath : defaultDeploymentFilePath;
-	verifyDeploymentFile(_deploymentFilePath)
-	const deploymentFile = `${process.cwd()}/${_deploymentFilePath}`;
+	verifyDeploymentFile(_deploymentFilePath);
+
+	const deploymentFile = path.resolve(process.cwd(),_deploymentFilePath);
 	const deployModule = require(deploymentFile);
 
 	return deployModule.deploy;

@@ -18,12 +18,11 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
+const Crypto = AeSDK.Crypto;
 const {
   spawn
 } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
-const Crypto = AeSDK.Crypto
-
 
 const config = {
   localhost: "http://localhost:3001",
@@ -71,10 +70,11 @@ const getFiles = async function (directory, regex) {
         reject(new Error(error));
         return;
       }
-
+      
       files = files.filter(function (file) {
         return file.match(regex) != null;
       });
+
       resolve(files);
     });
   });
@@ -169,6 +169,12 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
   }
 }
 
+function keyToHex (publicKey) {
+	let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
+	let asHex = '0x' + byteArray.toString('hex');
+  return asHex;
+}
+
 const isKeyPair = (k) => {
   if (k == null) {
     return false
@@ -206,6 +212,7 @@ module.exports = {
   execute,
   readFile,
   config,
+  keyToHex,
   forgaeExecute,
   isKeyPair,
   generatePublicKeyFromSecretKey

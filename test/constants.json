@@ -8,12 +8,14 @@
 	"exampleContractTests": "/exampleTests.js",
 	"dockerFolderPath": "/cli-commands/forgae-init/artifacts",
 	"nodeStartingFolder": "/test/commands-tests/contractsTests/artifacts",
+	"historyTestsFolderPath": "/test/commands-tests/historyTest",
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
 		"NODE": "node",
 		"COMPILE": "compile",
-		"DEPLOY": "deploy"
+		"DEPLOY": "deploy",
+		"HISTORY": "history"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",

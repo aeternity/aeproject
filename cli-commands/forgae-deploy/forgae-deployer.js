@@ -2,6 +2,60 @@ const utils = require('./../utils')
 const fs = require('fs')
 const gasLimit = 20000000;
 const ttl = 100;
+const logStoreService = require('./../forgae-history/log-store-service');
+const execute = require('./../utils').execute;
+
+logStoreService.initHistoryRecord();
+
+function getContractName (contract) {
+    let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
+    var match = rgx.exec(contract);
+
+    return match[1];
+}
+
+async function getTxInfo(txHash, network) {
+
+    function extractUsedGas(txInfo) {
+        let rgx = /Gas[_]+\s(\d+)/g;
+        var match = rgx.exec(txInfo);
+    
+        return match[1];
+    }
+    
+    function extractGasPrice(txInfo) {
+        let rgx = /Gas\sPrice[_]+\s(\d+)/g
+        var match = rgx.exec(txInfo);
+        
+        return match[1];
+    }
+    
+    let result;
+    try {
+        result = await execute('aecli', 'inspect', [txHash, '-u', network]);
+    } catch (error) {
+        let info = {
+            gasUsed: 0,
+            gasPrice: 0
+        };
+
+        return info;
+    }
+    
+    let temp = '';
+    for (const key in result) {
+        if (result.hasOwnProperty(key)) {
+            //console.log(key, result[key])
+            temp += result[key]
+        }
+    }
+
+    let info = {};
+    info.gasUsed = extractUsedGas(temp) || -1;
+    info.gasPrice = extractGasPrice(temp) || -1;
+
+    return info;
+}
 
 class Deployer {
 
@@ -64,15 +118,33 @@ class Deployer {
         }
         const compiledContract = await client.contractCompile(contract, {
             gas
-        })
-        const deployPromise = await compiledContract.deploy(deployOptions)
+        });
+
+        const deployPromise = await compiledContract.deploy(deployOptions);
         const deployedContract = await deployPromise;
 
         let regex = new RegExp(/[\w]+.aes$/);
-        let contractFileName = regex.exec(contractPath)
+        let contractFileName = regex.exec(contractPath);
+
+        let txInfo = await getTxInfo(deployedContract.transaction, this.network);
+        let isSuccess = false;
+        if(deployedContract.transaction) {
+            isSuccess = true;
+        }
+        
+        let info = {
+            deployerType: this.constructor.name,
+            nameOrLabel: getContractName(contract),
+            transactionHash: deployedContract.transaction,
+            status: isSuccess,
+            gasPrice: txInfo.gasPrice, 
+            gasUsed: txInfo.gasUsed, 
+            result: deployedContract.address
+        }
+
+        logStoreService.logAction(info);
 
         console.log(`===== Contract: ${contractFileName} has been deployed =====`)
-        console.log(deployedContract)
 
         return deployedContract;
     }
