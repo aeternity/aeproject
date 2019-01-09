@@ -59,13 +59,9 @@ class LogStoreService {
 	/**
 	 * 
 	 * Add a record to the history of deployments
-	 * 
-	 * @param {*} deployerType type of deployer
-	 * @param {*} nameOrLabel name of the contract or label of the transaction
-	 * @param {*} transactionHash transaction hash if available
-	 * @param {*} status 0 - success, 1 - failure
-	 * @param {*} result arbitrary result text
-	 */
+	 * @param {*} actionInfo should have those properties: 'deployerType' type of deployer, 'nameOrLabel' name of the contract or label of the transaction, 
+	 * 'transactionHash' transaction hash if available, 'status' 1 - success, 0 - failure, 'result' arbitrary result text
+	*/
 	logAction(actionInfo) {
 		if (!this.isInitied) {
 			return;

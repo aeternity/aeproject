@@ -127,7 +127,11 @@ class Deployer {
         let contractFileName = regex.exec(contractPath);
 
         let txInfo = await getTxInfo(deployedContract.transaction, this.network);
-        const isSuccess = txInfo.gasPrice >= 0 && txInfo.gasUsed > 0;
+        let isSuccess = false;
+        if(deployedContract.transaction) {
+            isSuccess = true;
+        }
+        
         let info = {
             deployerType: this.constructor.name,
             nameOrLabel: getContractName(contract),

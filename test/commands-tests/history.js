@@ -138,7 +138,8 @@ describe('ForgAE History', async () => {
     
             currentCwd = process.cwd();
             process.chdir(tempTestPath);
-        
+            
+            await execute(constants.cliCommands.INIT, []);
             await execute(constants.cliCommands.NODE, ['--start']);
         });
     
@@ -195,7 +196,7 @@ describe('ForgAE History', async () => {
         after(async () => {
     
             await execute(constants.cliCommands.NODE, ['--stop']);
-    
+            
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
         });
