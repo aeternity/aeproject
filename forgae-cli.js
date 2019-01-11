@@ -24,7 +24,7 @@ const program = require('commander')
 const commands = require('./cli-commands/commands')
 
 const setupVersion = () => {
-  program.version("0.0.1")
+  program.version("1.0.2")
 }
 
 const setupDefaultHandler = () => {
