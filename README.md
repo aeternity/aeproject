@@ -128,8 +128,8 @@ Similarly to `wallets` there is a global variable `minerWallet` representing the
 ```
 // Create client objects
 miner = await Ae({
-	url: config.host,
-	internalUrl: config.internalHost,
+	url: host,
+	internalUrl: internalHost,
 	keypair: minerWallet,
 	nativeMode: true,
 	networkId: 'ae_devnet'
