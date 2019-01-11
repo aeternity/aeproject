@@ -10,8 +10,6 @@ The framework can be installed via npm:
 npm i -g forgae
 ```
 
-It will be soon published in **npm** and will be available for installation
-
 ## Initialize Forgae
 
 ```
@@ -103,18 +101,21 @@ Global wallets array is available to be used by the developer. Wallets has 10 it
 This structure makes it very convenient for creation of SDK client objects
 ##### Example
 ```
+const host: "http://localhost:3001/",
+const internalHost: "http://localhost:3001/internal/",
+
 // Create client objects
 owner = await Ae({
-	url: config.host,
-	internalUrl: config.internalHost,
+	url: host,
+	internalUrl: internalHost,
 	keypair: wallets[0],
 	nativeMode: true,
 	networkId: 'ae_devnet'
 });
 
 nonOwner = await Ae({
-	url: config.host,
-	internalUrl: config.internalHost,
+	url: host,
+	internalUrl: internalHost,
 	keypair: wallets[1],
 	nativeMode: true,
 	networkId: 'ae_devnet'
