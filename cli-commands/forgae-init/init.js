@@ -24,12 +24,14 @@ import {
 } from '../utils.js'
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
+const sdkVersion = '1.0.1'
 
 async function run(update) {
   if (update) {
     print(`===== Updating ForgAE files =====`);
 
     setupDocker();
+    await installAeppSDK(sdkVersion)
 
     print('===== ForgAE was successfully updated! =====');
     return;
@@ -58,13 +60,20 @@ async function run(update) {
 const installLibraries = async () => {
   const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
   copyFileOrDir(fileSource, "./package.json")
-  await installAeppSDK();
+  await installAeppSDK(sdkVersion);
 }
 
-const installAeppSDK = async () => {
+const installAeppSDK = async (_sdkVersion = '') => {
   print('===== Installing aepp-sdk =====');
 
-  await execute('npm', 'install', ['@aeternity/aepp-sdk@1.0.1', '--save-exact']);
+  await execute('npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
+}
+
+const installFograe = async (_forgaeVersion = '') => {
+
+  print(`===== Installing ForgAE locally =====`);
+
+  await execute('npm', 'install', [`git+https://github.com/aeternity/aepp-forgae-js.git@${_forgaeVersion}`, '--save']);
 }
 
 const setupContracts = () => {
@@ -82,9 +91,6 @@ const setupTests = () => {
 }
 
 const setupDeploy = async () => {
-  print(`===== Installing ForgAE locally =====`);
-
-  await execute('npm', 'install', ['git+https://github.com/aeternity/aepp-forgae-js.git', '--save']);
 
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
