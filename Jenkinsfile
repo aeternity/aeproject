@@ -19,7 +19,8 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'genesis-wallet',
                                           usernameVariable: 'WALLET_PUB',
                                           passwordVariable: 'WALLET_PRIV')]) {
-          sh "docker run --name=forgae-${env.BUILD_NUMBER} npm test"
+
+          sh "DOCKER_HOST=tcp://localhost:2376 docker run --name=forgae-${env.BUILD_NUMBER} npm test"
         }
       }
     }
@@ -29,8 +30,8 @@ pipeline {
     always {
       junit 'test-results.xml'
       archive 'dist/*'
-      sh "docker stop forgae-${env.BUILD_NUMBER}"
-	  sh "docker rm forgae-${env.BUILD_NUMBER}"
+      sh "DOCKER_HOST=tcp://localhost:2376 docker stop forgae-${env.BUILD_NUMBER}"
+	  sh "DOCKER_HOST=tcp://localhost:2376 docker rm forgae-${env.BUILD_NUMBER}"
 
     }
   }
