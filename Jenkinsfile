@@ -13,13 +13,7 @@ pipeline {
   }
 
   stages {
-    stage('Build') {
-      steps {
-        sh 'ln -sf /node_modules ./'
-        sh 'pnpm run build'
-      }
-    }
-
+    
     stage('Test') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'genesis-wallet',
