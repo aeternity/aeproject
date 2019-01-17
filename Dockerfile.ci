@@ -10,6 +10,6 @@ RUN curl -L https://unpkg.com/@pnpm/self-installer | node
 COPY package.json /
 RUN pnpm install
 RUN ln -f -s /node_modules/.bin/* /usr/local/bin/
-RUN mkdir /usr/local/mocha/bin
+RUN mkdir -p /usr/local/mocha/bin
 RUN ln -f -s /node_modules/.bin/mocha /usr/local/mocha/bin/mocha
 WORKDIR /app
