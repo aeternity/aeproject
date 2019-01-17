@@ -24,7 +24,10 @@ import {
 } from '../utils.js'
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
+const packageJson = require('../../package.json')
 const sdkVersion = '1.0.1'
+const forgaeVersion = packageJson.version
+
 
 async function run(update) {
   if (update) {
@@ -32,6 +35,7 @@ async function run(update) {
 
     setupDocker();
     await installAeppSDK(sdkVersion)
+    await installFograe(forgaeVersion)
 
     print('===== ForgAE was successfully updated! =====');
     return;
@@ -61,6 +65,7 @@ const installLibraries = async () => {
   const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
   copyFileOrDir(fileSource, "./package.json")
   await installAeppSDK(sdkVersion);
+  await installFograe(forgaeVersion)
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
@@ -73,7 +78,7 @@ const installFograe = async (_forgaeVersion = '') => {
 
   print(`===== Installing ForgAE locally =====`);
 
-  await execute('npm', 'install', [`git+https://github.com/aeternity/aepp-forgae-js.git@${_forgaeVersion}`, '--save']);
+  await execute('npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact']);
 }
 
 const setupContracts = () => {
