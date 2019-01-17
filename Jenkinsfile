@@ -7,7 +7,7 @@ pipeline {
            '-v /etc/passwd:/etc/passwd:ro ' +
            '-v /var/lib/jenkins:/var/lib/jenkins ' +
            '-v /usr/bin/docker:/usr/bin/docker:ro ' +
-           '--network=host' +
+           '--network=host ' +
 		   "--name=forgae-${env.BUILD_NUMBER}"
     }
   }
