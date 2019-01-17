@@ -19,7 +19,7 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'genesis-wallet',
                                           usernameVariable: 'WALLET_PUB',
                                           passwordVariable: 'WALLET_PRIV')]) {
-          sh 'npm test'
+          sh "docker run --name=forgae-${env.BUILD_NUMBER} npm test"
         }
       }
     }
