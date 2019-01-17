@@ -20,7 +20,8 @@ pipeline {
                                           usernameVariable: 'WALLET_PUB',
                                           passwordVariable: 'WALLET_PRIV')]) {
 
-          sh "DOCKER_HOST=tcp://localhost:2376 docker run --name=forgae-${env.BUILD_NUMBER} npm test"
+		  sh "DOCKER_HOST=tcp://localhost:2376 docker start forgae-${env.BUILD_NUMBER}"
+          sh "DOCKER_HOST=tcp://localhost:2376 docker exec forgae-${env.BUILD_NUMBER} npm test"
         }
       }
     }
