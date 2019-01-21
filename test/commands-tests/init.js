@@ -45,7 +45,6 @@ describe('ForgAE Init', () => {
 		await execute(constants.cliCommands.INIT, [], executeOptions)
 
 		//Act
-		// fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, editedContent)
 		fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeYml, editedContent)
 
 		await execute(constants.cliCommands.INIT, ["--update"], executeOptions)

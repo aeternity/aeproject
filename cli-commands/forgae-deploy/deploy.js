@@ -13,7 +13,7 @@ const getDeployMethod = (deploymentFilePath) => {
 	const _deploymentFilePath = (deploymentFilePath) ? deploymentFilePath : defaultDeploymentFilePath;
 	verifyDeploymentFile(_deploymentFilePath);
 
-	const deploymentFile = path.resolve(process.cwd(),_deploymentFilePath);
+	const deploymentFile = path.resolve(process.cwd(), _deploymentFilePath);
 	const deployModule = require(deploymentFile);
 
 	return deployModule.deploy;

@@ -25,35 +25,18 @@ import {
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
 const packageJson = require('../../package.json')
-const sdkVersion = '1.0.1'
+const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk']
 const forgaeVersion = packageJson.version
 
 
 async function run(update) {
   if (update) {
-    print(`===== Updating ForgAE files =====`);
-
-    setupDocker();
-    await installAeppSDK(sdkVersion)
-    await installFograe(forgaeVersion)
-
-    print('===== ForgAE was successfully updated! =====');
+    await updateForgaeProjectLibraries(sdkVersion, forgaeVersion);
     return;
   }
 
   try {
-    print('===== Initializing ForgAE =====');
-
-    await installLibraries()
-
-    print(`===== Creating project file & dir structure =====`);
-
-    setupContracts();
-    setupTests();
-    await setupDeploy();
-    setupDocker();
-
-    print('===== ForgAE was successfully initialized! =====');
+    await createForgaeProjectStructure();
 
   } catch (e) {
     printError(e.message)
@@ -61,10 +44,36 @@ async function run(update) {
   }
 }
 
+const createForgaeProjectStructure = async () => {
+  print('===== Initializing ForgAE =====');
+
+  await installLibraries()
+
+  print(`===== Creating project file & dir structure =====`);
+
+  setupContracts();
+  setupTests();
+  await setupDeploy();
+  setupDocker();
+
+  print('===== ForgAE was successfully initialized! =====');
+}
+
+const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeVersion) => {
+  print(`===== Updating ForgAE files =====`);
+
+  setupDocker();
+  await installFograe(_forgaeVersion)
+  await installAeppSDK(_sdkVersion)
+
+  print('===== ForgAE was successfully updated! =====');
+  return;
+}
+
 const installLibraries = async () => {
   const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
   copyFileOrDir(fileSource, "./package.json")
-  await installAeppSDK(sdkVersion);
+  await installAeppSDK(sdkVersion)
   await installFograe(forgaeVersion)
 }
 
