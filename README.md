@@ -64,7 +64,7 @@ forgae deploy
 The **deploy** command help developers run their deploy script aeternity
 proejcts. The sample deploy script is scaffolded in deployment folder.
 
--You can specify nodeUrl, there are 3 options for nodeUrls: 
+-You can specify nodeUrl, there are 4 options for nodeUrls: 
 -- "local" -> http://localhost:3001 
 -- "edgeNet" -> "https://sdk-edgenet.aepps.com",
 -- "custom", you can specify custom nodeUrl.
