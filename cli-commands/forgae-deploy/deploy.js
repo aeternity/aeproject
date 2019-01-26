@@ -27,7 +27,7 @@ const run = async (deploymentFilePath, network, secretKey) => {
 
 		console.log(`Your deployment script finished successfully!`);
 	} catch (e) {
-		console.error(e);
+		// console.error(e);
 		throw e
 	}
 };

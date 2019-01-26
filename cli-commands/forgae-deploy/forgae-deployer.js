@@ -7,7 +7,7 @@ const execute = require('./../utils').execute;
 
 logStoreService.initHistoryRecord();
 
-function getContractName (contract) {
+function getContractName(contract) {
     let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
     var match = rgx.exec(contract);
 
@@ -19,17 +19,17 @@ async function getTxInfo(txHash, network) {
     function extractUsedGas(txInfo) {
         let rgx = /Gas[_]+\s(\d+)/g;
         var match = rgx.exec(txInfo);
-    
+
         return match[1];
     }
-    
+
     function extractGasPrice(txInfo) {
         let rgx = /Gas\sPrice[_]+\s(\d+)/g
         var match = rgx.exec(txInfo);
-        
+
         return match[1];
     }
-    
+
     let result;
     try {
         result = await execute('aecli', 'inspect', [txHash, '-u', network]);
@@ -41,7 +41,7 @@ async function getTxInfo(txHash, network) {
 
         return info;
     }
-    
+
     let temp = '';
     for (const key in result) {
         if (result.hasOwnProperty(key)) {
@@ -105,11 +105,12 @@ class Deployer {
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
         let client = await utils.getClient(this.network, this.keypair);
+        console.log(this.keypair)
+        console.log(client)
         let contract = await this.readFile(contractPath);
         let deployOptions = {
             options: {
-                ttl,
-                gas
+                ttl
             },
             abi: "sophia"
         }
@@ -119,26 +120,27 @@ class Deployer {
         const compiledContract = await client.contractCompile(contract, {
             gas
         });
-
+        console.log(compiledContract)
         const deployPromise = await compiledContract.deploy(deployOptions);
         const deployedContract = await deployPromise;
-
+        console.log(deployedContract)
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
 
         let txInfo = await getTxInfo(deployedContract.transaction, this.network);
+        console.log(deployedContract)
         let isSuccess = false;
-        if(deployedContract.transaction) {
+        if (deployedContract.transaction) {
             isSuccess = true;
         }
-        
+
         let info = {
             deployerType: this.constructor.name,
             nameOrLabel: getContractName(contract),
             transactionHash: deployedContract.transaction,
             status: isSuccess,
-            gasPrice: txInfo.gasPrice, 
-            gasUsed: txInfo.gasUsed, 
+            gasPrice: txInfo.gasPrice,
+            gasUsed: txInfo.gasUsed,
             result: deployedContract.address
         }
 

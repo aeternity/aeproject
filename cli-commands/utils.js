@@ -70,7 +70,7 @@ const getFiles = async function (directory, regex) {
         reject(new Error(error));
         return;
       }
-      
+
       files = files.filter(function (file) {
         return file.match(regex) != null;
       });
@@ -88,6 +88,9 @@ const getClient = async function (url, keypair = config.keypair) {
 
   if (url.includes("localhost")) {
     internalUrl = internalUrl + "/internal"
+  }
+  if (url.includes(config.testnetHost)) {
+    networkId = 'ae_uat'
   }
 
   if (url.includes(config.mainnetHost)) {
@@ -169,9 +172,9 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
   }
 }
 
-function keyToHex (publicKey) {
-	let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
-	let asHex = '0x' + byteArray.toString('hex');
+function keyToHex(publicKey) {
+  let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
+  let asHex = '0x' + byteArray.toString('hex');
   return asHex;
 }
 
