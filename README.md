@@ -1,9 +1,7 @@
 # ForgAE
 
 **ForgAE** is an aeternity framework which helps with setting up a project.
-The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands
-for compilation of smart contracts, running a local Epoch and unit testing the contracts.
-In future deployment will be also available using forgae.
+The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands for compilation, deployment of smart contracts, running a local node and unit testing the contracts.
 
 The framework can be installed via npm:
 ```
@@ -64,16 +62,25 @@ forgae deploy
 The **deploy** command help developers run their deploy script aeternity
 proejcts. The sample deploy script is scaffolded in deployment folder.
 
--You can specify nodeUrl, there are 3 options for nodeUrls: 
--- "local" -> http://localhost:3001 
--- "edgeNet" -> "https://sdk-edgenet.aepps.com",
--- "custom", you can specify custom nodeUrl.
+You can specify nodeUrl using the **-n** or **--nodeUrl** option. There are 4 options for nodeUrls predefined and available : 
+- "local" - "http://localhost:3001"
+- "edgenet" - "https://sdk-edgenet.aepps.com"
+- "testnet" - "https://sdk-testnet.aepps.com"
+- "mainnet" - "https://sdk-mainnet.aepps.com"
 
---path -> You can set path to the deploy script
+Example:
+```
+forgae deploy -n testnet
+```
 
--s -> secretKey that will be used to deploy and call contracts
+Additional **--path** parameter is availabe, which can specify the path to the deployment scripts.
 
--Deployer.deploy(path, gasLimit) function takes 2 arguments: relative path to the contract and gasLimit
+The **-s** is used for adding a secretKey that will be used to deploy and call contracts
+
+**Deployer.deploy(path, gasLimit, initState)** function can take up to 2 arguments:
+- path - relative path to the contract
+- gasLimit - the gas limit for the deployment
+- initState - variable for the arguments of the **init** function of the contract
 
 ## Run unit tests
 
@@ -144,7 +151,7 @@ forgae history [limit]
 ```
 
 Parameters:
-    limit - [Optional] By specifying --limit you can set the max number of historical records to be shown. Default is 5. 
+- limit - [Optional] By specifying --limit you can set the max number of historical records to be shown. Default is 5. 
     Example: 
     ```
     forgae history --limit 10
@@ -160,3 +167,4 @@ const compiledContract = await client.contractCompile(contractSource, {
 	gas: config.gas
 })
 ```
+
