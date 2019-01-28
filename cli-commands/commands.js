@@ -36,7 +36,7 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
   program
     .command('compile')
-    .option('-n --nodeUrl [nodeUrl]', 'Node to connect to', config.localhost)
+    .option('-n --network [network]', 'Network to connect to', "local")
     .option('--path [compile path]', 'Path to contract files', './contracts')
     .description('Compile contracts')
     .action(async (option) => {
@@ -83,7 +83,7 @@ const addHistoryOption = (program) => {
     .description('Show deployment history info')
     .option('--limit [limit]', 'Get last N records.', 5)
     .action(async (options) => {
-      
+
       let data = history.getHistory().slice(options.limit * -1);
 
       for (let i = 0; i < data.length; i++) {

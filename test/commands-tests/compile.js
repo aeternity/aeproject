@@ -45,8 +45,8 @@ describe('ForgAE Compile', () => {
 			assert.include(result, expectedCompileResultExampleContract)
 		})
 
-		it('Should compile contracts with nodeUrl argument - edgenet ', async () => {
-			let result = await execute(constants.cliCommands.COMPILE, ["-n", "https://sdk-edgenet.aepps.com"], executeOptions)
+		it('Should compile contracts with nodeUrl argument - testnet ', async () => {
+			let result = await execute(constants.cliCommands.COMPILE, ["-n", "https://sdk-testnet.aepps.com"], executeOptions)
 
 			assert.include(result, expectedCompileResultExampleContract)
 		})

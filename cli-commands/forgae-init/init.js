@@ -79,7 +79,7 @@ const installLibraries = async () => {
 
 const installAeppSDK = async (_sdkVersion = '') => {
   print('===== Installing aepp-sdk =====');
-
+  console.log(_sdkVersion)
   await execute('npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
 }
 

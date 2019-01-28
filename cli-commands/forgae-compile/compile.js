@@ -43,10 +43,10 @@ async function compileAndPrint(file, client) {
     print('\r')
 }
 
-async function run(path, nodeUrl) {
+async function run(path, network = "local") {
     print('===== Compiling contracts =====');
-    
-    let client = await utils.getClient(nodeUrl);
+    this.network = utils.getNetwork(network)
+    let client = await utils.getClient(network);
 
     if (path.includes('.aes')) {
         compileAndPrint(path, client)

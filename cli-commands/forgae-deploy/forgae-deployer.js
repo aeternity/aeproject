@@ -4,6 +4,7 @@ const gasLimit = 20000000;
 const ttl = 100;
 const logStoreService = require('./../forgae-history/log-store-service');
 const execute = require('./../utils').execute;
+let client
 
 logStoreService.initHistoryRecord();
 
@@ -14,25 +15,10 @@ function getContractName(contract) {
     return match[1];
 }
 
-async function getTxInfo(txHash, network) {
-
-    function extractUsedGas(txInfo) {
-        let rgx = /Gas[_]+\s(\d+)/g;
-        var match = rgx.exec(txInfo);
-
-        return match[1];
-    }
-
-    function extractGasPrice(txInfo) {
-        let rgx = /Gas\sPrice[_]+\s(\d+)/g
-        var match = rgx.exec(txInfo);
-
-        return match[1];
-    }
-
+async function getTxInfo(txHash) {
     let result;
     try {
-        result = await execute('aecli', 'inspect', [txHash, '-u', network]);
+        result = await client.getTxInfo(txHash)
     } catch (error) {
         let info = {
             gasUsed: 0,
@@ -41,26 +27,13 @@ async function getTxInfo(txHash, network) {
 
         return info;
     }
-
-    let temp = '';
-    for (const key in result) {
-        if (result.hasOwnProperty(key)) {
-            //console.log(key, result[key])
-            temp += result[key]
-        }
-    }
-
-    let info = {};
-    info.gasUsed = extractUsedGas(temp) || -1;
-    info.gasPrice = extractGasPrice(temp) || -1;
-
-    return info;
+    return result;
 }
 
 class Deployer {
 
     constructor(network = "local", keypairOrSecret = utils.config.keypair) {
-        this.network = this.getNetwork(network);
+        this.network = utils.getNetwork(network);
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
             return
@@ -76,21 +49,29 @@ class Deployer {
         throw new Error("Incorrect keypair or secret key passed")
     }
 
-    getNetwork(network) {
-        const networks = {
-            local: utils.config.localhost,
-            edgenet: utils.config.edgenetHost,
-            testnet: utils.config.testnetHost,
-            mainnet: utils.config.mainnetHost
-        }
+    // getNetwork(network) {
+    //     const networks = {
+    //         local: {
+    //             url: utils.config.localhostParams.url,
+    //             networkId: utils.config.localhostParams.networkId
+    //         },
+    //         testnet: {
+    //             url: utils.config.testnetParams.url,
+    //             networkId: utils.config.testnetParams.networkId
+    //         },
+    //         mainnet: {
+    //             url: utils.config.mainnetParams.url,
+    //             networkId: utils.config.mainnetParams.networkId
+    //         },
+    //     }
 
-        const result = networks[network]
-        if (!result) {
-            throw new Error(`Unrecognised network ${network}`)
-        }
+    //     const result = networks[network]
+    //     if (!result) {
+    //         throw new Error(`Unrecognised network ${network}`)
+    //     }
 
-        return result
-    }
+    //     return result
+    // }
 
     async readFile(path) {
         return await fs.readFileSync(path, "utf-8")
@@ -104,13 +85,12 @@ class Deployer {
      * @param {object} initArgs - Initial arguments that will be passed to init function.
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
-        let client = await utils.getClient(this.network, this.keypair);
-        console.log(this.keypair)
-        console.log(client)
+        client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
             options: {
-                ttl
+                ttl,
+                gas
             },
             abi: "sophia"
         }
@@ -120,15 +100,14 @@ class Deployer {
         const compiledContract = await client.contractCompile(contract, {
             gas
         });
-        console.log(compiledContract)
+
         const deployPromise = await compiledContract.deploy(deployOptions);
         const deployedContract = await deployPromise;
-        console.log(deployedContract)
+
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
 
-        let txInfo = await getTxInfo(deployedContract.transaction, this.network);
-        console.log(deployedContract)
+        let txInfo = await getTxInfo(deployedContract.transaction);
         let isSuccess = false;
         if (deployedContract.transaction) {
             isSuccess = true;
@@ -147,7 +126,6 @@ class Deployer {
         logStoreService.logAction(info);
 
         console.log(`===== Contract: ${contractFileName} has been deployed =====`)
-
         return deployedContract;
     }
 }
