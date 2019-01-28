@@ -91,8 +91,6 @@ const getFiles = async function (directory, regex) {
 const getClient = async function (network, keypair = config.keypair) {
   let client;
   let internalUrl = network.url;
-  console.log(network)
-  console.log(network.url)
 
   if (network.url.includes("localhost")) {
     internalUrl = internalUrl + "/internal"

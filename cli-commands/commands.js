@@ -40,7 +40,7 @@ const addCompileOption = (program) => {
     .option('--path [compile path]', 'Path to contract files', './contracts')
     .description('Compile contracts')
     .action(async (option) => {
-      await compile.run(option.path, option.nodeUrl);
+      await compile.run(option.path, option.network);
     })
 }
 

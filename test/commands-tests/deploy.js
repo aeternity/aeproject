@@ -29,7 +29,7 @@ describe('ForgAE Deploy', () => {
 			const deployer = new Deployer(passedNetwork);
 
 			//Assert
-			assert.equal(deployer.network, expectedNetwork)
+			assert.equal(deployer.network.url, expectedNetwork)
 		})
 
 		it('Should init Deployer with testnet network', async () => {
@@ -41,7 +41,7 @@ describe('ForgAE Deploy', () => {
 			const deployer = new Deployer(passedNetwork);
 
 			//Assert
-			assert.equal(deployer.network, expectedNetwork)
+			assert.equal(deployer.network.url, expectedNetwork)
 		})
 
 		it('Should init Deployer with mainnet network', async () => {
@@ -53,7 +53,7 @@ describe('ForgAE Deploy', () => {
 			const deployer = new Deployer(passedNetwork);
 
 			//Assert
-			assert.equal(deployer.network, expectedNetwork)
+			assert.equal(deployer.network.url, expectedNetwork)
 		})
 
 		it('Should deploy contract with init arguments', async () => {
@@ -129,7 +129,7 @@ describe('ForgAE Deploy', () => {
 			assert.include(result, expectedDeployResult)
 		})
 
-		it('with network and secret on test networ', async () => {
+		it('with network and secret on test network', async () => {
 			let testSecretKey = "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319"
 			let result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions)
 

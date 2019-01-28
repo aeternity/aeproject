@@ -45,8 +45,8 @@ async function compileAndPrint(file, client) {
 
 async function run(path, network = "local") {
     print('===== Compiling contracts =====');
-    this.network = utils.getNetwork(network)
-    let client = await utils.getClient(network);
+    let currentNetwork = utils.getNetwork(network)
+    let client = await utils.getClient(currentNetwork);
 
     if (path.includes('.aes')) {
         compileAndPrint(path, client)

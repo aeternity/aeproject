@@ -49,30 +49,6 @@ class Deployer {
         throw new Error("Incorrect keypair or secret key passed")
     }
 
-    // getNetwork(network) {
-    //     const networks = {
-    //         local: {
-    //             url: utils.config.localhostParams.url,
-    //             networkId: utils.config.localhostParams.networkId
-    //         },
-    //         testnet: {
-    //             url: utils.config.testnetParams.url,
-    //             networkId: utils.config.testnetParams.networkId
-    //         },
-    //         mainnet: {
-    //             url: utils.config.mainnetParams.url,
-    //             networkId: utils.config.mainnetParams.networkId
-    //         },
-    //     }
-
-    //     const result = networks[network]
-    //     if (!result) {
-    //         throw new Error(`Unrecognised network ${network}`)
-    //     }
-
-    //     return result
-    // }
-
     async readFile(path) {
         return await fs.readFileSync(path, "utf-8")
     }
@@ -89,8 +65,7 @@ class Deployer {
         let contract = await this.readFile(contractPath);
         let deployOptions = {
             options: {
-                ttl,
-                gas
+                ttl
             },
             abi: "sophia"
         }
