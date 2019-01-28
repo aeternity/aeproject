@@ -53,6 +53,16 @@ file extension. Default directory is $projectDir/contracts. The result of the co
 printed in the console.
 Additional **--path** parameter is available, which can specify the path to the contract to be compiled.
 
+You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available : 
+- "local" - "http://localhost:3001"
+- "testnet" - "https://sdk-testnet.aepps.com"
+- "mainnet" - "https://sdk-mainnet.aepps.com"
+
+Example:
+```
+forgae compile -n testnet
+```
+
 ## Run deploy script
 
 ```
@@ -62,7 +72,7 @@ forgae deploy
 The **deploy** command help developers run their deploy script aeternity
 proejcts. The sample deploy script is scaffolded in deployment folder.
 
-You can specify nodeUrl using the **-n** or **--network** option. There are 3 options for nodeUrls predefined and available : 
+You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available : 
 - "local" - "http://localhost:3001"
 - "testnet" - "https://sdk-testnet.aepps.com"
 - "mainnet" - "https://sdk-mainnet.aepps.com"
