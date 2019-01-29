@@ -9,5 +9,6 @@ RUN curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-co
 RUN curl -L https://unpkg.com/@pnpm/self-installer | node
 COPY package.json /
 RUN npm install
+RUN npm install -g forgae
 RUN ln -f -s /node_modules/.bin/* /usr/local/bin/
 WORKDIR /app
