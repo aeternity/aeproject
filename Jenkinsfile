@@ -8,7 +8,7 @@ pipeline {
            '-v /var/lib/jenkins:/var/lib/jenkins ' +
            '-v /usr/bin/docker:/usr/bin/docker:ro ' +
            '--network=host ' +
-		   "--name=forgae-${env.BUILD_NUMBER}"
+		       "--name=forgae-${env.BUILD_NUMBER}"
     }
   }
 
@@ -26,7 +26,6 @@ pipeline {
       }
     }
   }
-  
 
   post {
     always {
