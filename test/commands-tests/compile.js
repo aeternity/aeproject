@@ -17,8 +17,16 @@ chai.use(chaiAsPromised);
 describe('ForgAE Compile', () => {
 	before(async () => {
 		fs.ensureDirSync(`.${constants.compileTestsFolderPath}`)
+		console.log(executeOptions.cwd)
 		await execute(constants.cliCommands.INIT, [], executeOptions)
 		await execute(constants.cliCommands.NODE, [], executeOptions)
+		fs.readdir(executeOptions.cwd, function (err, items) {
+			console.log(items);
+
+			for (var i = 0; i < items.length; i++) {
+				console.log(items[i]);
+			}
+		});
 	})
 
 	describe('Compile', () => {
