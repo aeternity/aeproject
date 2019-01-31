@@ -20,14 +20,14 @@ import {
   printError,
   print,
   createIfExistsFolder,
-  copyFileOrDir,
-} from '../utils.js'
+  copyFileOrDir
+} from '../utils.js';
+
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
 const packageJson = require('../../package.json')
-const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk']
-const forgaeVersion = packageJson.version
-
+const forgaeVersion = packageJson.version;
+const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
 
 async function run(update) {
   if (update) {
