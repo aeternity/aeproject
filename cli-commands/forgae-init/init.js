@@ -20,19 +20,14 @@ import {
   printError,
   print,
   createIfExistsFolder,
-  copyFileOrDir,
-  parseVersion,
-  numberToVersion
-} from '../utils.js'
+  copyFileOrDir
+} from '../utils.js';
+
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
 const packageJson = require('../../package.json')
 const forgaeVersion = packageJson.version;
-
-const minSDKVersion = 131;
-const currentSdkVersion = parseVersion(packageJson.dependencies['@aeternity/aepp-sdk']);
-let sdkVersion = minSDKVersion < currentSdkVersion ? currentSdkVersion : minSDKVersion;
-sdkVersion = numberToVersion(sdkVersion);
+const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
 
 async function run(update) {
   if (update) {

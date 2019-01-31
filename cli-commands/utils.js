@@ -226,27 +226,6 @@ const generatePublicKeyFromSecretKey = (secretKey) => {
   return Crypto.aeEncodeKey(keys.publicKey)
 }
 
-function parseVersion(versionAsText) {
-  versionAsText = versionAsText.replace('.', '');
-  return parseInt(versionAsText)
-}
-
-function numberToVersion(number) {
-  let result = '';
-  number = number.toString();
-
-  for (let i = 0; i < number.length; i++) {
-    const char = number[i];
-    if(i === 0){
-      result += char;
-    } else {
-      result += `.${char}`; 
-    }
-  }
-
-  return result;
-}
-
 module.exports = {
   print,
   printError,
@@ -262,7 +241,5 @@ module.exports = {
   keyToHex,
   forgaeExecute,
   isKeyPair,
-  generatePublicKeyFromSecretKey,
-  parseVersion,
-  numberToVersion
+  generatePublicKeyFromSecretKey
 }
