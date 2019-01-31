@@ -1,16 +1,12 @@
 # ForgAE
 
 **ForgAE** is an aeternity framework which helps with setting up a project.
-The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands
-for compilation of smart contracts, running a local Epoch and unit testing the contracts.
-In future deployment will be also available using forgae.
+The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands for compilation, deployment of smart contracts, running a local node and unit testing the contracts.
 
 The framework can be installed via npm:
 ```
 npm i -g forgae
 ```
-
-It will be soon published in **npm** and will be available for installation
 
 ## Initialize Forgae
 
@@ -57,6 +53,16 @@ file extension. Default directory is $projectDir/contracts. The result of the co
 printed in the console.
 Additional **--path** parameter is available, which can specify the path to the contract to be compiled.
 
+You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available : 
+- "local" - "http://localhost:3001"
+- "testnet" - "https://sdk-testnet.aepps.com"
+- "mainnet" - "https://sdk-mainnet.aepps.com"
+
+Example:
+```
+forgae compile -n testnet
+```
+
 ## Run deploy script
 
 ```
@@ -66,16 +72,24 @@ forgae deploy
 The **deploy** command help developers run their deploy script aeternity
 proejcts. The sample deploy script is scaffolded in deployment folder.
 
--You can specify nodeUrl, there are 3 options for nodeUrls: 
--- "local" -> http://localhost:3001 
--- "edgeNet" -> "https://sdk-edgenet.aepps.com",
--- "custom", you can specify custom nodeUrl.
+You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available : 
+- "local" - "http://localhost:3001"
+- "testnet" - "https://sdk-testnet.aepps.com"
+- "mainnet" - "https://sdk-mainnet.aepps.com"
 
---path -> You can set path to the deploy script
+Example:
+```
+forgae deploy -n testnet
+```
 
--s -> secretKey that will be used to deploy and call contracts
+Additional **--path** parameter is availabe, which can specify the path to the deployment scripts.
 
--Deployer.deploy(path, gasLimit) function takes 2 arguments: relative path to the contract and gasLimit
+The **-s** is used for adding a secretKey that will be used to deploy and call contracts
+
+**Deployer.deploy(path, gasLimit, initState)** function can take up to 2 arguments:
+- path - relative path to the contract
+- gasLimit - the gas limit for the deployment
+- initState - variable for the arguments of the **init** function of the contract
 
 ## Run unit tests
 
@@ -103,18 +117,21 @@ Global wallets array is available to be used by the developer. Wallets has 10 it
 This structure makes it very convenient for creation of SDK client objects
 ##### Example
 ```
+const host: "http://localhost:3001/",
+const internalHost: "http://localhost:3001/internal/",
+
 // Create client objects
 owner = await Ae({
-	url: config.host,
-	internalUrl: config.internalHost,
+	url: host,
+	internalUrl: internalHost,
 	keypair: wallets[0],
 	nativeMode: true,
 	networkId: 'ae_devnet'
 });
 
 nonOwner = await Ae({
-	url: config.host,
-	internalUrl: config.internalHost,
+	url: host,
+	internalUrl: internalHost,
 	keypair: wallets[1],
 	nativeMode: true,
 	networkId: 'ae_devnet'
@@ -127,8 +144,8 @@ Similarly to `wallets` there is a global variable `minerWallet` representing the
 ```
 // Create client objects
 miner = await Ae({
-	url: config.host,
-	internalUrl: config.internalHost,
+	url: host,
+	internalUrl: internalHost,
 	keypair: minerWallet,
 	nativeMode: true,
 	networkId: 'ae_devnet'
@@ -143,7 +160,7 @@ forgae history [limit]
 ```
 
 Parameters:
-    limit - [Optional] By specifying --limit you can set the max number of historical records to be shown. Default is 5. 
+- limit - [Optional] By specifying --limit you can set the max number of historical records to be shown. Default is 5. 
     Example: 
     ```
     forgae history --limit 10
@@ -159,3 +176,4 @@ const compiledContract = await client.contractCompile(contractSource, {
 	gas: config.gas
 })
 ```
+
