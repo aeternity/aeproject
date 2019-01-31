@@ -63,7 +63,7 @@ const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeVersion) => {
   print(`===== Updating ForgAE files =====`);
 
   setupDocker();
-  await installFograe(_forgaeVersion)
+  await installForgae(_forgaeVersion)
   await installAeppSDK(_sdkVersion)
 
   print('===== ForgAE was successfully updated! =====');
@@ -74,19 +74,19 @@ const installLibraries = async () => {
   const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
   copyFileOrDir(fileSource, "./package.json")
   await installAeppSDK(sdkVersion)
-  await installFograe(forgaeVersion)
+  await installForgae(forgaeVersion)
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
-  print(`===== Installing aepp-sdk =====`);
-  await execute('npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
+  print('===== Installing aepp-sdk =====');
+  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
 }
 
-const installFograe = async (_forgaeVersion = '') => {
+const installForgae = async (_forgaeVersion = '') => {
 
   print(`===== Installing ForgAE locally =====`);
 
-  await execute('npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact']);
+  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact']);
 }
 
 const setupContracts = () => {
