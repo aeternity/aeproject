@@ -52,7 +52,7 @@ describe('Example Contract', () => {
       }
     });
 
-    assert.isFulfilled(deployPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check it is deployed
+    await assert.isFulfilled(deployPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check it is deployed
   })
 
 })
