@@ -70,7 +70,7 @@ const getFiles = async function (directory, regex) {
         reject(new Error(error));
         return;
       }
-      
+
       files = files.filter(function (file) {
         return file.match(regex) != null;
       });
@@ -149,6 +149,7 @@ const execute = async (cli, command, args, options = {}) => {
   })
 
   await child;
+  console.log(result);
   return result;
 }
 
@@ -169,9 +170,9 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
   }
 }
 
-function keyToHex (publicKey) {
-	let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
-	let asHex = '0x' + byteArray.toString('hex');
+function keyToHex(publicKey) {
+  let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
+  let asHex = '0x' + byteArray.toString('hex');
   return asHex;
 }
 
