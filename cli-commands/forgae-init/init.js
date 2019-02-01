@@ -64,7 +64,7 @@ const installLibraries = async () => {
 const installAeppSDK = async () => {
   print('===== Installing aepp-sdk =====');
 
-  await execute('npm', 'install', ['@aeternity/aepp-sdk@1.0.1', '--save-exact']);
+  await execute('npm', 'install', ['@aeternity/aepp-sdk@1.0.1', '--save-exact', '--verbose']);
 }
 
 const setupContracts = () => {
