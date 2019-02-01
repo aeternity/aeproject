@@ -73,7 +73,9 @@ const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeVersion) => {
 const installLibraries = async () => {
   const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
   copyFileOrDir(fileSource, "./package.json")
+  console.log("Now instaling forgae")
   await installForgae(forgaeVersion)
+  console.log("succesfully installed forgae")
   await installAeppSDK(sdkVersion)
 
 }
