@@ -79,7 +79,7 @@ const installLibraries = async () => {
 
 const installAeppSDK = async (_sdkVersion = '') => {
   print('===== Installing aepp-sdk =====');
-  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
+  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact', '--verbose']);
 }
 
 const installForgae = async (_forgaeVersion = '') => {
