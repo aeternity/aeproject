@@ -1,9 +1,7 @@
 # ForgAE
 
 **ForgAE** is an aeternity framework which helps with setting up a project.
-The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands
-for compilation of smart contracts, running a local Epoch and unit testing the contracts.
-In future deployment will be also available using forgae.
+The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands for compilation, deployment of smart contracts, running a local node and unit testing the contracts.
 
 The framework can be installed via npm:
 ```
@@ -55,6 +53,16 @@ file extension. Default directory is $projectDir/contracts. The result of the co
 printed in the console.
 Additional **--path** parameter is available, which can specify the path to the contract to be compiled.
 
+You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available : 
+- "local" - "http://localhost:3001"
+- "testnet" - "https://sdk-testnet.aepps.com"
+- "mainnet" - "https://sdk-mainnet.aepps.com"
+
+Example:
+```
+forgae compile -n testnet
+```
+
 ## Run deploy script
 
 ```
@@ -64,16 +72,24 @@ forgae deploy
 The **deploy** command help developers run their deploy script aeternity
 proejcts. The sample deploy script is scaffolded in deployment folder.
 
--You can specify nodeUrl, there are 3 options for nodeUrls: 
--- "local" -> http://localhost:3001 
--- "edgeNet" -> "https://sdk-edgenet.aepps.com",
--- "custom", you can specify custom nodeUrl.
+You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available : 
+- "local" - "http://localhost:3001"
+- "testnet" - "https://sdk-testnet.aepps.com"
+- "mainnet" - "https://sdk-mainnet.aepps.com"
 
---path -> You can set path to the deploy script
+Example:
+```
+forgae deploy -n testnet
+```
 
--s -> secretKey that will be used to deploy and call contracts
+Additional **--path** parameter is availabe, which can specify the path to the deployment scripts.
 
--Deployer.deploy(path, gasLimit) function takes 2 arguments: relative path to the contract and gasLimit
+The **-s** is used for adding a secretKey that will be used to deploy and call contracts
+
+**Deployer.deploy(path, gasLimit, initState)** function can take up to 2 arguments:
+- path - relative path to the contract
+- gasLimit - the gas limit for the deployment
+- initState - variable for the arguments of the **init** function of the contract
 
 ## Run unit tests
 
@@ -135,6 +151,21 @@ miner = await Ae({
 	networkId: 'ae_devnet'
 });
 ```
+
+## History of your deploys
+
+In order to see a list of what you've deployed you can run the following command:
+```
+forgae history [limit]
+```
+
+Parameters:
+- limit - [Optional] By specifying --limit you can set the max number of historical records to be shown. Default is 5. 
+    Example: 
+    ```
+    forgae history --limit 10
+    ```
+	
 #### utils
 `utils` is a package giving helper functions mainly for working with files. Most widely used one is `readFileRelative(relativePath, fileEncoding)`
 
@@ -145,3 +176,4 @@ const compiledContract = await client.contractCompile(contractSource, {
 	gas: config.gas
 })
 ```
+

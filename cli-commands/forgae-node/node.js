@@ -51,7 +51,7 @@ async function fundWallets() {
   await waitToMineCoins()
 
   let walletIndex = 0;
-  let client = await utils.getClient(config.host);
+  let client = await utils.getClient(utils.config.localhostParams);
   await printBeneficiaryKey(client);
   for (let wallet in defaultWallets) {
 
@@ -74,7 +74,7 @@ async function printWallet(client, keyPair, label) {
 }
 
 async function waitToMineCoins() {
-  let client = await utils.getClient(config.host);
+  let client = await utils.getClient(utils.config.localhostParams);
   let heightOptions = {
     interval: 8000,
     attempts: 300

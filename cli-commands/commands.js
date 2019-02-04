@@ -20,7 +20,8 @@ const testConfig = require('./forgae-test/test.js');
 const node = require('./forgae-node/node.js');
 const deploy = require('./forgae-deploy/deploy.js');
 const config = require('./utils').config;
-
+const history = require('./forgae-history/log-store-service');
+const printReportTable = require('./forgae-history/utils').printReportTable;
 
 const addInitOption = (program) => {
   program
@@ -35,11 +36,11 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
   program
     .command('compile')
-    .option('-n --nodeUrl [nodeUrl]', 'Node to connect to', config.localhost)
+    .option('-n --network [network]', 'Network to connect to', "local")
     .option('--path [compile path]', 'Path to contract files', './contracts')
     .description('Compile contracts')
     .action(async (option) => {
-      await compile.run(option.path, option.nodeUrl);
+      await compile.run(option.path, option.network);
     })
 }
 
@@ -76,13 +77,29 @@ const addDeployOption = (program) => {
     })
 }
 
+const addHistoryOption = (program) => {
+  program
+    .command('history')
+    .description('Show deployment history info')
+    .option('--limit [limit]', 'Get last N records.', 5)
+    .action(async (options) => {
+
+      let data = history.getHistory().slice(options.limit * -1);
+
+      for (let i = 0; i < data.length; i++) {
+        printReportTable(data[i].actions);
+      }
+    })
+}
+
 
 const initCommands = (program) => {
   addInitOption(program);
   addCompileOption(program);
   addTestOption(program);
   addNodeOption(program);
-  addDeployOption(program)
+  addDeployOption(program);
+  addHistoryOption(program);
 }
 
 module.exports = {

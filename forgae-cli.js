@@ -19,12 +19,14 @@
 'use strict'
 
 require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+const packageJson = require('./package.json')
+
 
 const program = require('commander')
 const commands = require('./cli-commands/commands')
 
 const setupVersion = () => {
-  program.version("1.0.2")
+  program.version(packageJson.version)
 }
 
 const setupDefaultHandler = () => {

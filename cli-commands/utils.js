@@ -18,18 +18,25 @@
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
+const Crypto = AeSDK.Crypto;
 const {
   spawn
 } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
-const Crypto = AeSDK.Crypto
-
 
 const config = {
-  localhost: "http://localhost:3001",
-  edgenetHost: "https://sdk-edgenet.aepps.com",
-  testnetHost: "https://sdk-testnet.aepps.com",
-  mainnetHost: "https://sdk-mainnet.aepps.com",
+  localhostParams: {
+    url: "http://localhost:3001",
+    networkId: 'ae_devnet'
+  },
+  testnetParams: {
+    url: "https://sdk-testnet.aepps.com",
+    networkId: 'ae_uat'
+  },
+  mainnetParams: {
+    url: 'https://sdk-mainnet.aepps.com',
+    networkId: 'ae_mainnet'
+  },
   keypair: {
     secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
     publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
@@ -75,38 +82,56 @@ const getFiles = async function (directory, regex) {
       files = files.filter(function (file) {
         return file.match(regex) != null;
       });
+
       resolve(files);
     });
   });
 }
 
-const getClient = async function (url, keypair = config.keypair) {
+const getClient = async function (network, keypair = config.keypair) {
   let client;
-  let internalUrl = url;
-  let networkId = 'ae_devnet'
+  let internalUrl = network.url;
 
-
-  if (url.includes("localhost")) {
+  if (network.url.includes("localhost")) {
     internalUrl = internalUrl + "/internal"
   }
 
-  if (url.includes(config.mainnetHost)) {
-    networkId = 'ae_mainnet'
-  }
-
-
   await handleApiError(async () => {
     client = await Universal({
-      url,
+      url: network.url,
       process,
       keypair,
       internalUrl,
       nativeMode: true,
-      networkId: networkId
+      networkId: network.networkId
     })
   })
 
   return client;
+}
+
+const getNetwork = (network) => {
+  const networks = {
+    local: {
+      url: config.localhostParams.url,
+      networkId: config.localhostParams.networkId
+    },
+    testnet: {
+      url: config.testnetParams.url,
+      networkId: config.testnetParams.networkId
+    },
+    mainnet: {
+      url: config.mainnetParams.url,
+      networkId: config.mainnetParams.networkId
+    },
+  }
+
+  const result = networks[network]
+  if (!result) {
+    throw new Error(`Unrecognised network ${network}`)
+  }
+
+  return result
 }
 
 const handleApiError = async (fn) => {
@@ -169,6 +194,12 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
   }
 }
 
+function keyToHex(publicKey) {
+  let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
+  let asHex = '0x' + byteArray.toString('hex');
+  return asHex;
+}
+
 const isKeyPair = (k) => {
   if (k == null) {
     return false
@@ -202,10 +233,12 @@ module.exports = {
   copyFileOrDir,
   getFiles,
   getClient,
+  getNetwork,
   sleep,
   execute,
   readFile,
   config,
+  keyToHex,
   forgaeExecute,
   isKeyPair,
   generatePublicKeyFromSecretKey
