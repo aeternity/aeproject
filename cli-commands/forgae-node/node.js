@@ -116,13 +116,25 @@ async function run(option) {
     print('===== Starting node =====');
     dockerProcess = spawn('docker-compose', ['up', '-d']);
 
+    let hasError = false;
+
     dockerProcess.stderr.on('data', (data) => {
-      print(data.toString())
+      print(data.toString());
+      hasError = true;
     })
 
     while (!(await waitForContainer())) {
       process.stdout.write(".");
       utils.sleep(1000);
+
+      if(hasError){
+        break;
+      }
+    }
+
+    if(hasError){
+      console.log('\nProcess will be terminated!');
+      return;
     }
 
     print('\n\r===== Node was successfully started! =====');
