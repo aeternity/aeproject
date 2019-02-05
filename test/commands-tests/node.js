@@ -54,13 +54,6 @@ describe('ForgAE Node', () => {
 		assert.isNotTrue(running, "node wasn't stopped properly");
 	})
 
-	it('Process should stop when command is started at wrong folder.', async () => {
-		let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], { cwd: process.cwd() });
-		if(result.indexOf('Process will be terminated!') < 0 ){
-			assert.isOk(false, "Process is still running in wrong folder.")
-		}
-	})
-
 	after(async () => {
 
 		let running = await waitForContainer();
@@ -68,5 +61,15 @@ describe('ForgAE Node', () => {
 			await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
 		}
 		fs.removeSync(`.${constants.nodeTestsFolderPath}`)
+	})
+})
+
+describe('ForgAE Node', async () => {
+	it('Process should stop when command is started at wrong folder.', async () => {
+		let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], { cwd: process.cwd() });
+		
+		if(result.indexOf('Process will be terminated!') < 0 ){
+			assert.isOk(false, "Process is still running in wrong folder.")
+		}
 	})
 })
