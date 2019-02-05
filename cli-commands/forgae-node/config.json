@@ -53,6 +53,6 @@
 
 	"dockerConfiguration": {
 		"configFileName": "docker-compose.yml",
-		"textToSearch": "image: aeternity/epoch"
+		"textToSearch": "image: aeternity/"
 	}
 }
