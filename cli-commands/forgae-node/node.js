@@ -24,6 +24,8 @@ const utils = require('../utils');
 const {
   spawn
 } = require('promisify-child-process');
+const fs = require('fs');
+const path = require('path');
 const dockerCLI = require('docker-cli-js');
 const docker = new dockerCLI.Docker();
 const nodeConfig = require('./config.json')
@@ -89,7 +91,28 @@ async function fundWallet(client, recipient) {
 
 }
 
+function hasNodeConfigFiles() {
+  const neededConfigFile = nodeConfig.dockerConfiguration.configFileName;
+  const configFilePath = path.resolve(process.cwd(), neededConfigFile);
+  let isDockerConfigFileExists = fs.existsSync(configFilePath);
+
+  if(!isDockerConfigFileExists){
+    console.log(`Missing ${neededConfigFile} file!`);
+    return false;
+  }
+
+  let fileContent = fs.readFileSync(configFilePath, 'utf-8');
+
+  if(fileContent.indexOf(nodeConfig.dockerConfiguration.textToSearch) < 0){
+    console.log(`Invalid ${neededConfigFile} file! Missing docker Ae node configuration.`);
+    return false;
+  }
+  
+  return true;
+}
+
 async function run(option) {
+  
   try {
     let dockerProcess;
     let running = await waitForContainer();
@@ -107,6 +130,11 @@ async function run(option) {
       print('===== Node was successfully stopped! =====');
       return;
     }
+    
+    if(!hasNodeConfigFiles()){
+      console.log('Process will be terminated!');
+      return;
+    }
 
     if (running) {
       print('\r\n===== Node already started and healthy! =====');
@@ -117,7 +145,7 @@ async function run(option) {
     dockerProcess = spawn('docker-compose', ['up', '-d']);
 
     dockerProcess.stderr.on('data', (data) => {
-      print(data.toString())
+      print(data.toString());
     })
 
     while (!(await waitForContainer())) {
