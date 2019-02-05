@@ -94,9 +94,9 @@ async function fundWallet(client, recipient) {
 function hasNodeConfigFiles() {
   const neededConfigFile = nodeConfig.dockerConfiguration.configFileName;
   const configFilePath = path.resolve(process.cwd(), neededConfigFile);
-  let isDockerFolderExist = fs.existsSync(configFilePath);
+  let isDockerConfigFileExists = fs.existsSync(configFilePath);
 
-  if(!isDockerFolderExist){
+  if(!isDockerConfigFileExists){
     console.log(`Missing ${neededConfigFile} file!`);
     return false;
   }
