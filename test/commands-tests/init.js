@@ -55,7 +55,7 @@ describe('ForgAE Init', () => {
 		const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk']
 		const projectPackageJson = require("./initTests/package.json")
 
-		const forgaeVersionInProject = projectPackageJson.version
+		const forgaeVersionInProject = projectPackageJson.dependencies['forgae']
 		const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk']
 
 

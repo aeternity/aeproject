@@ -31,7 +31,7 @@ describe('ForgAE Node', () => {
 
 	it('Should check if the wallets are funded', async () => {
 
-		let client = await utils.getClient(nodeConfig.config.host);
+		let client = await utils.getClient(utils.config.localhostParams);
 		await waitUntilFundedBlocks(client)
 		for (let wallet in defaultWallets) {
 			let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
@@ -41,7 +41,7 @@ describe('ForgAE Node', () => {
 
 	it('Should check if the wallets are funded with the exact amount', async () => {
 
-		let client = await utils.getClient(nodeConfig.config.host);
+		let client = await utils.getClient(utils.config.localhostParams);
 		for (let wallet in defaultWallets) {
 			let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
 			assert.equal(Number(recipientBalanace), nodeConfig.config.amountToFund, `${defaultWallets[wallet].publicKey} balance is not greater than 0`);
