@@ -13,6 +13,9 @@ let executeOptions = {
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 const defaultWallets = nodeConfig.defaultWallets
+let balanceOptions = {
+	format: false
+}
 
 
 describe('ForgAE Node', () => {
@@ -34,17 +37,19 @@ describe('ForgAE Node', () => {
 		let client = await utils.getClient(utils.config.localhostParams);
 		await waitUntilFundedBlocks(client)
 		for (let wallet in defaultWallets) {
-			let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
+			let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
 			assert.isAbove(Number(recipientBalanace), 0, `${defaultWallets[wallet].publicKey} balance is not greater than 0`);
 		}
 	})
 
 	it('Should check if the wallets are funded with the exact amount', async () => {
 
+
+
 		let client = await utils.getClient(utils.config.localhostParams);
 		for (let wallet in defaultWallets) {
-			let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
-			assert.equal(Number(recipientBalanace), nodeConfig.config.amountToFund, `${defaultWallets[wallet].publicKey} balance is not greater than 0`);
+			let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+			assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${defaultWallets[wallet].publicKey} balance is not greater than 0`);
 		}
 	})
 
@@ -52,6 +57,16 @@ describe('ForgAE Node', () => {
 		await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
 		let running = await waitForContainer();
 		assert.isNotTrue(running, "node wasn't stopped properly");
+	})
+
+	it('Process should stop when command is started at wrong folder.', async () => {
+		let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], {
+			cwd: process.cwd()
+		});
+
+		if (result.indexOf('Process will be terminated!') < 0) {
+			assert.isOk(false, "Process is still running in wrong folder.")
+		}
 	})
 
 	after(async () => {
