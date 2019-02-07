@@ -14,7 +14,7 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */) // use to handle es6 import/export
+require = require('esm')(module /*, options */ ) // use to handle es6 import/export
 
 import {
   printError,
@@ -86,7 +86,7 @@ const installForgae = async (_forgaeVersion = '') => {
 
   print(`===== Installing ForgAE locally =====`);
 
-  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact']);
 }
 
 const setupContracts = () => {
