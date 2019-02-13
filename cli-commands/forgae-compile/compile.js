@@ -40,7 +40,7 @@ async function compileAndPrint(file, client) {
         printError(`reason:`)
         printError(error)
     }
-
+sd
     print('\r')
 }
 
