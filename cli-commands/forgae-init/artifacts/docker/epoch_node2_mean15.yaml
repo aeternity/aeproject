@@ -25,7 +25,7 @@ chain:
   persist: true
 
 mining:
-  autostart: true
+  autostart: false
   beneficiary: "ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU"
   beneficiary_reward_delay: 2
   expected_mine_rate: 4000
