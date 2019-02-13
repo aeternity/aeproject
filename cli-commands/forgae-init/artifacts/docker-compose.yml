@@ -2,7 +2,7 @@
 version: '3'
 services:
   node1:
-    image: aeternity/epoch:v1.0.0
+    image: aeternity/aeternity
     hostname: node1
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
@@ -14,7 +14,7 @@ services:
       - node1_db:/home/epoch/node/data/mnesia
 
   node2:
-    image: aeternity/epoch:v1.0.0
+    image: aeternity/aeternity
     hostname: node2
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
@@ -26,7 +26,7 @@ services:
       - node2_db:/home/epoch/node/data/mnesia
 
   node3:
-    image: aeternity/epoch:v1.0.0
+    image: aeternity/aeternity
     hostname: node3
     environment:
       EPOCH_CONFIG: /home/epoch/epoch.yaml
