@@ -37,7 +37,8 @@ async function compileAndPrint(file, client) {
         print(`Contract bytecode: ${contract.bytecode}`)
     } catch (error) {
         printError(`Contract '${file} has not been compiled'`)
-        printError(`reason: ${error}`)
+        printError(`reason:`)
+        printError(error)
     }
 
     print('\r')
