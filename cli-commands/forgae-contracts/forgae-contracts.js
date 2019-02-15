@@ -3,6 +3,7 @@ const exec = util.promisify(require('child_process').exec);
 const fs = require('fs-extra');
 const path = require('path');
 const git = require('simple-git/promise')();
+const Hjson = require('hjson');
 
 const NODE_MODULES_LITERAL = 'node_modules';
 const CONTRACTS_AEPP_LITERAL = 'contracts-aepp';
@@ -11,7 +12,7 @@ const CONTRACTS_AEPP_GITHUB_URL = 'git+https://github.com/aeternity/aepp-contrac
 const CONTRACTS_SETTINGS_PATH = '/src/settings.js';
 const FORGAE_SETTINGS_PATH = '/cli-commands/forgae-contracts/settings.js';
 const DEFAULT_LOCAL_NODE_PORT = 3001;
-const LOCAL_NODE_REPLACE_LITERAL = /localhost:3001/g;
+const EXPORT_FILE_LITERAL = 'export default';
 
 let nodeModulesPath;
 let contractAeppProjectPath;
@@ -92,15 +93,14 @@ const configureSettings = (currentDir) => {
 };
 
 const updateSettingsFile = (options, currentDir) => {
-  if (options.port === DEFAULT_LOCAL_NODE_PORT) {
-    return;
-  }
-
   const pathToForgaeSettings = path.join(currentDir, FORGAE_SETTINGS_PATH);
-
   const settingsContent = fs.readFileSync(pathToForgaeSettings, 'utf8');
-  const replacementResult = settingsContent.replace(LOCAL_NODE_REPLACE_LITERAL, `localhost:${options.port}`);
-  console.log(replacementResult);
+  const jsonString = settingsContent.replace(EXPORT_FILE_LITERAL, '');
+  const settingsObj = Hjson.parse(jsonString);
+  settingsObj.host = `http://localhost:${options.port ? options.port : DEFAULT_LOCAL_NODE_PORT}/`;
+  settingsObj.internalHost = `http://localhost:${options.port ? options.port : DEFAULT_LOCAL_NODE_PORT}/internal/`;
+  const settingString = JSON.stringify(settingsObj);
+  const replacementResult = `${EXPORT_FILE_LITERAL} ${settingString}`;
   fs.writeFileSync(pathToForgaeSettings, replacementResult);
 };
 
