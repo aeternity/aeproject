@@ -8,7 +8,7 @@ const Hjson = require('hjson');
 const NODE_MODULES_LITERAL = 'node_modules';
 const CONTRACTS_AEPP_LITERAL = 'contracts-aepp';
 const YARN_LITERAL = 'yarn';
-const CONTRACTS_AEPP_GITHUB_URL = 'git+https://github.com/aeternity/aepp-contracts#forgae-integration';
+const CONTRACTS_AEPP_GITHUB_URL = 'git+https://github.com/aeternity/aepp-contracts#develop';
 const CONTRACTS_SETTINGS_PATH = '/src/settings.js';
 const FORGAE_SETTINGS_PATH = '/cli-commands/forgae-contracts/settings.js';
 const DEFAULT_LOCAL_NODE_PORT = 3001;
@@ -23,15 +23,8 @@ const run = async (options) => {
 
 const mainFlow = async (options) => {
   exec('npm list -g --depth 0', async function (error, stdout) {
-    const contractsAeppIsInstalled = checkGlobalModuleExistence(stdout, CONTRACTS_AEPP_LITERAL);
-
-    if (contractsAeppIsInstalled) {
-      contractAeppProjectPath = path.join(nodeModulesPath, CONTRACTS_AEPP_LITERAL);
-      await pullRepo(contractAeppProjectPath, CONTRACTS_AEPP_GITHUB_URL);
-    } else {
-      await installRepo();
-      await getFreshlyInstalledContractsAeppPath();
-    }
+    await installRepo();
+    await getFreshlyInstalledContractsAeppPath();
 
     const yarnIsInstalled = checkGlobalModuleExistence(stdout, YARN_LITERAL);
 
@@ -55,6 +48,7 @@ const pullRepo = async (projectPath) => {
   console.log('====== Pulling Contracts web Aepp =====');
   const currentDir = process.cwd();
   process.chdir(projectPath);
+  console.log(projectPath);
 
   await git.pull('origin', 'master');
 
@@ -81,6 +75,7 @@ const serveContractsAepp = async (options) => {
 
   await exec(`yarn install`);
   console.log('====== Contracts web Aepp is running on http://localhost:8080/ ======');
+  console.log(`====== The Aepp is trying to connect to the spawned local node on http://localhost:${options.port ? options.port : DEFAULT_LOCAL_NODE_PORT}/ ======`);
   console.log('====== Please install browser extension which allows CORS. (Access-Control-Allow-Origin to perform cross-domain requests in the web application) ======');
   await exec(`yarn run start:dev`);
 

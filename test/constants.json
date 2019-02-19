@@ -15,12 +15,14 @@
 		"NODE": "node",
 		"COMPILE": "compile",
 		"DEPLOY": "deploy",
-		"HISTORY": "history"
+		"HISTORY": "history",
+		"CONTRACTS": "contracts"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",
 		"STOP": "--stop",
-		"PATH": "--path"
+		"PATH": "--path",
+		"PORT": "--port"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",
