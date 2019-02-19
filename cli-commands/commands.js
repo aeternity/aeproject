@@ -97,7 +97,9 @@ const addContractsAeppIntegrationOption = (program) => {
   program
     .command('contracts')
     .description('Running a Contract web aepp locally and connect it to the spawned forgae node.')
-    .option('--port [port]', 'Specify the port of the local spawned node', 3001)
+    .option('--nodeUrl [nodeUrl]', 'Specify the url of the local spawned node', 'http://localhost:3001/')
+    .option('--update [update]', 'Update the contracts aepp with the latest version of develop branch')
+    .option('--ignoreOpenInBrowser [ignoreOpenInBrowser]', 'Ignore browser opening')
     .action(async (options) => {
       await contracts.run(options);
     })

@@ -22,7 +22,9 @@
 		"START": "--start",
 		"STOP": "--stop",
 		"PATH": "--path",
-		"PORT": "--port"
+		"PORT": "--port",
+		"UPDATE": "--update",
+		"IGNORE_OPENING": "--ignoreOpenInBrowser"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",
