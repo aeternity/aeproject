@@ -32,7 +32,7 @@ describe('ForgAE contracts', () => {
     await execute(constants.cliCommands.NODE, [], executeOptions);
   });
 
-  xit('should execute contracts cli command correctly', async function () {
+  it('should execute contracts cli command correctly', async function () {
     const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
     contractsResult = spawn(FORGAE_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.IGNORE_OPENING], {});
     contractsResult.stdout.pipe(logStream);
@@ -42,7 +42,7 @@ describe('ForgAE contracts', () => {
     fs.removeSync(LOG_FILE);
   });
 
-  xit('should execute contracts cli command with update parameter correctly', async function () {
+  it('should execute contracts cli command with update parameter correctly', async function () {
     const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
     contractsResult = spawn(FORGAE_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.UPDATE, constants.cliCommandsOptions.IGNORE_OPENING], {});
     contractsResult.stdout.pipe(logStream);
@@ -53,7 +53,7 @@ describe('ForgAE contracts', () => {
     fs.removeSync(LOG_FILE);
   });
 
-  xit('should connect the contracts aepp to the specified nodeUrl', async function () {
+  it('should connect the contracts aepp to the specified nodeUrl', async function () {
     const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
     contractsResult = spawn(FORGAE_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.NODE_URL, SPECIFIC_LOCAL_NODE_URL, constants.cliCommandsOptions.IGNORE_OPENING], {});
     contractsResult.stdout.pipe(logStream);
