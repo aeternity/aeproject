@@ -24,6 +24,7 @@
 		"PATH": "--path",
 		"PORT": "--port",
 		"UPDATE": "--update",
+		"NODE_URL": "--nodeUrl",
 		"IGNORE_OPENING": "--ignoreOpenInBrowser"
 	},
 	"testsFiles": {

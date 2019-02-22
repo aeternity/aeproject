@@ -57,14 +57,14 @@ const printError = (msg) => {
   console.log(msg)
 };
 
-const createIfExistsFolder = (dir) => {
+const createMissingFolder = (dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
 };
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
-  if (fs.existsSync(`${destinationFileOrDir}`) && copyOptions.overwrite == false) {
+  if (fs.existsSync(`${destinationFileOrDir}`) && !copyOptions.overwrite) {
     throw new Error(`${destinationFileOrDir} already exists.`);
   }
 
@@ -233,7 +233,7 @@ const timeout = (ms) => {
 module.exports = {
   print,
   printError,
-  createIfExistsFolder,
+  createMissingFolder,
   copyFileOrDir,
   getFiles,
   getClient,

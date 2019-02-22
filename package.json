@@ -33,6 +33,7 @@
     "promisify-child-process": "^2.1.2",
     "shelljs": "^0.8.2",
     "simple-git": "^1.107.0",
-    "sinon": "^7.1.1"
+    "sinon": "^7.1.1",
+    "yarn": "^1.13.0"
   }
 }
