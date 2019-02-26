@@ -32,6 +32,10 @@ const nodeConfig = require('./config.json')
 const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
 
+let balanceOptions = {
+  format: false
+}
+
 async function waitForContainer() {
   let running = false
 
@@ -67,7 +71,7 @@ async function printBeneficiaryKey(client) {
 }
 
 async function printWallet(client, keyPair, label) {
-  let keyPairBalance = await client.balance(keyPair.publicKey)
+  let keyPairBalance = await client.balance(keyPair.publicKey, balanceOptions)
 
   print(`${label} ------------------------------------------------------------`)
   print(`public key: ${keyPair.publicKey}`)
@@ -81,7 +85,7 @@ async function waitToMineCoins() {
     interval: 8000,
     attempts: 300
   }
-  await client.awaitHeight(8, heightOptions)
+  await client.awaitHeight(10, heightOptions)
 }
 
 async function fundWallet(client, recipient) {
@@ -96,23 +100,23 @@ function hasNodeConfigFiles() {
   const configFilePath = path.resolve(process.cwd(), neededConfigFile);
   let isDockerConfigFileExists = fs.existsSync(configFilePath);
 
-  if(!isDockerConfigFileExists){
+  if (!isDockerConfigFileExists) {
     console.log(`Missing ${neededConfigFile} file!`);
     return false;
   }
 
   let fileContent = fs.readFileSync(configFilePath, 'utf-8');
 
-  if(fileContent.indexOf(nodeConfig.dockerConfiguration.textToSearch) < 0){
+  if (fileContent.indexOf(nodeConfig.dockerConfiguration.textToSearch) < 0) {
     console.log(`Invalid ${neededConfigFile} file! Missing docker Ae node configuration.`);
     return false;
   }
-  
+
   return true;
 }
 
 async function run(option) {
-  
+
   try {
     let dockerProcess;
     let running = await waitForContainer();
@@ -130,8 +134,8 @@ async function run(option) {
       print('===== Node was successfully stopped! =====');
       return;
     }
-    
-    if(!hasNodeConfigFiles()){
+
+    if (!hasNodeConfigFiles()) {
       console.log('Process will be terminated!');
       return;
     }
