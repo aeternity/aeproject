@@ -1,2 +1,4 @@
 node_modules
 .forgae-store
+.idea/
+contractLogFile.log

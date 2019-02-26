@@ -15,12 +15,17 @@
 		"NODE": "node",
 		"COMPILE": "compile",
 		"DEPLOY": "deploy",
-		"HISTORY": "history"
+		"HISTORY": "history",
+		"CONTRACTS": "contracts"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",
 		"STOP": "--stop",
-		"PATH": "--path"
+		"PATH": "--path",
+		"PORT": "--port",
+		"UPDATE": "--update",
+		"NODE_URL": "--nodeUrl",
+		"IGNORE_OPENING": "--ignoreOpenInBrowser"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",

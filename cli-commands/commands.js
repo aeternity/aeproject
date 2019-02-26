@@ -22,6 +22,7 @@ const deploy = require('./forgae-deploy/deploy.js');
 const config = require('./utils').config;
 const history = require('./forgae-history/log-store-service');
 const printReportTable = require('./forgae-history/utils').printReportTable;
+const contracts = require('./forgae-contracts/forgae-contracts.js');
 
 const addInitOption = (program) => {
   program
@@ -92,6 +93,17 @@ const addHistoryOption = (program) => {
     })
 }
 
+const addContractsAeppIntegrationOption = (program) => {
+  program
+    .command('contracts')
+    .description('Running a Contract web aepp locally and connect it to the spawned forgae node.')
+    .option('--nodeUrl [nodeUrl]', 'Specify the url of the local spawned node', 'http://localhost:3001/')
+    .option('--update [update]', 'Update the contracts aepp with the latest version of develop branch')
+    .option('--ignoreOpenInBrowser [ignoreOpenInBrowser]', 'Ignore browser opening')
+    .action(async (options) => {
+      await contracts.run(options);
+    })
+};
 
 const initCommands = (program) => {
   addInitOption(program);
@@ -100,6 +112,7 @@ const initCommands = (program) => {
   addNodeOption(program);
   addDeployOption(program);
   addHistoryOption(program);
+  addContractsAeppIntegrationOption(program)
 }
 
 module.exports = {

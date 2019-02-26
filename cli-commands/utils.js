@@ -41,7 +41,7 @@ const config = {
     secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
     publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
   }
-}
+};
 
 // Print helper
 const print = (msg, obj) => {
@@ -50,26 +50,26 @@ const print = (msg, obj) => {
   } else {
     console.log(msg)
   }
-}
+};
 
 // Print error helper
 const printError = (msg) => {
   console.log(msg)
-}
+};
 
-const createIfExistsFolder = (dir) => {
+const createMissingFolder = (dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
-}
+};
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
-  if (fs.existsSync(`${destinationFileOrDir}`) && copyOptions.overwrite == false) {
+  if (fs.existsSync(`${destinationFileOrDir}`) && !copyOptions.overwrite) {
     throw new Error(`${destinationFileOrDir} already exists.`);
   }
 
   fs.copySync(sourceFileOrDir, destinationFileOrDir, copyOptions)
-}
+};
 
 const getFiles = async function (directory, regex) {
   return new Promise((resolve, reject) => {
@@ -86,7 +86,7 @@ const getFiles = async function (directory, regex) {
       resolve(files);
     });
   });
-}
+};
 
 const getClient = async function (network, keypair = config.keypair) {
   let client;
@@ -105,10 +105,10 @@ const getClient = async function (network, keypair = config.keypair) {
       nativeMode: true,
       networkId: network.networkId
     })
-  })
+  });
 
   return client;
-}
+};
 
 const getNetwork = (network) => {
   const networks = {
@@ -124,7 +124,7 @@ const getNetwork = (network) => {
       url: config.mainnetParams.url,
       networkId: config.mainnetParams.networkId
     },
-  }
+  };
 
   const result = networks[network]
   if (!result) {
@@ -132,7 +132,7 @@ const getNetwork = (network) => {
   }
 
   return result
-}
+};
 
 const handleApiError = async (fn) => {
   try {
@@ -143,7 +143,7 @@ const handleApiError = async (fn) => {
     logApiError(response && response.data ? response.data.reason : e)
     process.exit(1)
   }
-}
+};
 
 function logApiError(error) {
   printError(`API ERROR: ${error}`)
@@ -167,15 +167,15 @@ const execute = async (cli, command, args, options = {}) => {
 
   child.stdout.on('data', (data) => {
     result += data.toString();
-  })
+  });
 
   child.stderr.on('data', (data) => {
     result += data.toString();
-  })
+  });
 
   await child;
   return result;
-}
+};
 
 const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
   try {
@@ -192,7 +192,7 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
         throw e
     }
   }
-}
+};
 
 function keyToHex(publicKey) {
   let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
@@ -217,19 +217,23 @@ const isKeyPair = (k) => {
   }
 
   return true
-}
+};
 
 const generatePublicKeyFromSecretKey = (secretKey) => {
   const hexStr = Crypto.hexStringToByte(secretKey.trim())
   const keys = Crypto.generateKeyPairFromSecret(hexStr)
 
   return Crypto.aeEncodeKey(keys.publicKey)
-}
+};
+
+const timeout = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
 
 module.exports = {
   print,
   printError,
-  createIfExistsFolder,
+  createMissingFolder,
   copyFileOrDir,
   getFiles,
   getClient,
@@ -241,5 +245,6 @@ module.exports = {
   keyToHex,
   forgaeExecute,
   isKeyPair,
-  generatePublicKeyFromSecretKey
-}
+  generatePublicKeyFromSecretKey,
+  timeout
+};
