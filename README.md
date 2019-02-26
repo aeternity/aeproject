@@ -181,7 +181,7 @@ const compiledContract = await client.contractCompile(contractSource, {
 The integration between the forgae and the [Contracts aepp](https://testnet.contracts.aepps.com/) allows the user to compile and deploy contracts using the **Contracts aepp** on the local spawned node.
 
 The Contracts aepp runs on http://localhost:8080/ by default.
-There are three optional parameter to ```forgae contracts```:
+There are three optional parameters to ```forgae contracts```:
 - --nodeUrl - specify the url of the node to which the contracts aepp to connect with.
     Example: 
     ```
