@@ -157,34 +157,6 @@ describe('ForgAE Deploy', () => {
 		})
 	})
 
-	describe('Test FROM command', async () => {
-		it('call function from another private key', async () => {
-
-			const passedNetwork = "local"
-			const contractPath = path.resolve(__dirname, './multipleContractsFolder/ExampleContract1.aes');
-			const parameter = 991;
-			
-			const deployer = new Deployer(passedNetwork);
-			let deployedContract = await deployer.deploy(contractPath);
-			
-			const someKeyPair = {
-				publicKey: 'ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ',
-				privateKey: '36595b50bf097cd19423c40ee66b117ed15fc5ec03d8676796bdf32bc8fe367d82517293a0f82362eb4f93d0de77af5724fba64cbcf55542328bc173dbe13d33'
-			}
-			
-			let options = {
-				args: `(${parameter})`
-			}
-
-			let resultFromFuncCall = await deployedContract.from(someKeyPair.privateKey).call('main', options);
-
-			let returnedValue = await resultFromFuncCall.decode('int');
-
-			assert.equal(resultFromFuncCall.result.callerId, someKeyPair.publicKey, 'Caller is not the same!');
-			assert.equal(returnedValue.value, parameter, 'Passed and returned values are not equal!');
-		});
-	})
-
 	after(async () => {
 
 		let running = await waitForContainer();
@@ -195,3 +167,60 @@ describe('ForgAE Deploy', () => {
 		fs.removeSync(`.${constants.deployTestsFolderPath}`)
 	})
 })
+
+describe.only('ForgAE Deploy - [FROM] functionality', async () => {
+
+	const passedNetwork = "local";
+	const contractPath = path.resolve(__dirname, './multipleContractsFolder/ExampleContract1.aes');
+	const someKeyPair = {
+		publicKey: 'ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ',
+		privateKey: '36595b50bf097cd19423c40ee66b117ed15fc5ec03d8676796bdf32bc8fe367d82517293a0f82362eb4f93d0de77af5724fba64cbcf55542328bc173dbe13d33'
+	}
+
+	let deployedContract;
+
+	const parameter = 991;
+	let functionCallOptions = {
+		args: `(${parameter})`
+	}
+
+	before(async () => {
+		const deployer = new Deployer(passedNetwork);
+		deployedContract = await deployer.deploy(contractPath);
+	})
+
+	it('call function from another private key', async () => {
+		let resultFromFuncCall = await deployedContract.from(someKeyPair.privateKey).call('main', functionCallOptions);
+		let returnedValue = await resultFromFuncCall.decode('int');
+
+		assert.equal(resultFromFuncCall.result.callerId, someKeyPair.publicKey, 'Caller is not the same!');
+		assert.equal(returnedValue.value, parameter, 'Passed and returned values are not equal!');
+	});
+
+	it('[NEGATIVE] Should throw exception if secret key is invalid.', async () => {
+
+		let invalidSecretKeys = [
+			null,
+			undefined,
+			123,
+			'123',
+			'asfdsgr55y6h',
+			'eohfuh48hw8h7wwy48r7wyr87w4yrw87ryw87ryw847ryw87ryw48r7ywr7wy4r78wyiwrywiryw4irywir7wy4ir7ywirwefuhwiefhiww7yrwi74yri7whfiw7hfwiehfs'
+		];
+
+		for(let i = 0; i < invalidSecretKeys.length; i++) {
+			try{
+				await deployedContract.from(invalidSecretKeys[i]).call('main', functionCallOptions);
+			} catch (e) {
+				assert.equal(e.message, 'Invalid secret key!');
+			}
+		}
+
+		//await assert.isRejected(deployedContract.from(null).call('main', functionCallOptions));
+		// await assert.isRejected(deployedContract.from(undefined).call('main', functionCallOptions), 'Invalid secret key!');
+		// await assert.isRejected(deployedContract.from('').call('main', functionCallOptions), 'Invalid secret key!');
+		// await assert.isRejected(deployedContract.from(12345), 'Invalid secret key!');
+		// await assert.isRejected(deployedContract.from('asdfg54g54yrth').call('main', functionCallOptions), 'Invalid secret key!');
+	});
+})
+

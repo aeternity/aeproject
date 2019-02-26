@@ -117,6 +117,10 @@ class Deployer {
             const additionalFunctionality = {
                 from: function (secretKey) {
 
+                    if (!secretKey || !isNaN(secretKey) || secretKey.length !== 128) {
+                        throw new Error('Invalid secret key!');
+                    }
+
                     return {
                         call: async function (functionName, options) {
 
