@@ -4,8 +4,10 @@ chai.use(chaiAsPromised);
 const assert = chai.assert;
 const execute = require('../../cli-commands/utils').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
-const constants = require('../constants.json')
-const fs = require('fs-extra')
+const constants = require('../constants.json');
+const fs = require('fs-extra');
+const path = require('path');
+
 let executeOptions = {
 	cwd: process.cwd() + constants.deployTestsFolderPath
 };
@@ -153,6 +155,34 @@ describe('ForgAE Deploy', () => {
 
 			await assert.isFulfilled(executePromise, "wrongPath");
 		})
+	})
+
+	describe('Test FROM command', async () => {
+		it('call function from another private key', async () => {
+
+			const passedNetwork = "local"
+			const contractPath = path.resolve(__dirname, './multipleContractsFolder/ExampleContract1.aes');
+			const parameter = 991;
+			
+			const deployer = new Deployer(passedNetwork);
+			let deployedContract = await deployer.deploy(contractPath);
+			
+			const someKeyPair = {
+				publicKey: 'ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ',
+				privateKey: '36595b50bf097cd19423c40ee66b117ed15fc5ec03d8676796bdf32bc8fe367d82517293a0f82362eb4f93d0de77af5724fba64cbcf55542328bc173dbe13d33'
+			}
+			
+			let options = {
+				args: `(${parameter})`
+			}
+
+			let resultFromFuncCall = await deployedContract.from(someKeyPair.privateKey).call('main', options);
+
+			let returnedValue = await resultFromFuncCall.decode('int');
+
+			assert.equal(resultFromFuncCall.result.callerId, someKeyPair.publicKey, 'Caller is not the same!');
+			assert.equal(returnedValue.value, parameter, 'Passed and returned values are not equal!');
+		});
 	})
 
 	after(async () => {

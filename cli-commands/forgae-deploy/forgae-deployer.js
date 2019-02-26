@@ -1,10 +1,16 @@
+
+const Crypto = require('@aeternity/aepp-sdk').Crypto;
+
 const utils = require('./../utils')
 const fs = require('fs')
 const gasLimit = 20000000;
 const ttl = 100;
 const logStoreService = require('./../forgae-history/log-store-service');
 const execute = require('./../utils').execute;
-let client
+
+const ABI_TYPE = 'sophia';
+
+let client;
 
 logStoreService.initHistoryRecord();
 
@@ -61,6 +67,8 @@ class Deployer {
      * @param {object} initArgs - Initial arguments that will be passed to init function.
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
+        let self = this;
+        
         client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
@@ -77,7 +85,9 @@ class Deployer {
         });
 
         const deployPromise = await compiledContract.deploy(deployOptions);
-        const deployedContract = await deployPromise;
+        let deployedContract = await deployPromise;
+
+        deployedContract = addFromFunction(deployedContract);
 
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
@@ -99,10 +109,66 @@ class Deployer {
         }
 
         logStoreService.logAction(info);
-
         console.log(`===== Contract: ${contractFileName} has been deployed =====`)
         return deployedContract;
+
+        function addFromFunction (obj) {
+
+            const additionalFunctionality = {
+                from: function (secretKey) {
+
+                    return {
+                        call: async function (functionName, options) {
+
+                            const keyPair = await generateKeyPairFromSecretKey(secretKey);
+                            const newClient = await utils.getClient(self.network, keyPair);
+
+                            const anotherClientConfiguration = {
+                                client: newClient,
+                                byteCode: compiledContract.bytecode,
+                                contractAddress: obj.address
+                            }
+
+                            let configuration = {
+                                options: {
+                                    ttl: ttl
+                                },
+                                abi: ABI_TYPE,
+                            };
+                        
+                            if (options.args) {
+                                configuration.args = options.args
+                            }
+
+                            if (options.amount && options.amount > 0) {
+                                configuration.options.amount = options.amount;
+                            }
+                        
+                            return await anotherClientConfiguration.client.contractCall(anotherClientConfiguration.byteCode, ABI_TYPE, anotherClientConfiguration.contractAddress, functionName, configuration);
+                        }
+                    }
+                }
+            }
+
+            const newObj = Object.assign(additionalFunctionality, obj);
+        
+            return newObj;
+        }
     }
+}
+
+async function generateKeyPairFromSecretKey(secretKey) {
+    const hexStr = await Crypto.hexStringToByte(secretKey.trim());
+    const keys = await Crypto.generateKeyPairFromSecret(hexStr);
+
+    const publicKey = await Crypto.aeEncodeKey(keys.publicKey);
+
+    let keyPair = {
+        publicKey,
+        secretKey
+    }
+
+    return keyPair;
 }
 
 module.exports = Deployer;
