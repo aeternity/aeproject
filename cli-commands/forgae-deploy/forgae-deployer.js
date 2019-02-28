@@ -151,7 +151,8 @@ class Deployer {
                             return await anotherClientConfiguration.client.contractCall(anotherClientConfiguration.byteCode, ABI_TYPE, anotherClientConfiguration.contractAddress, functionName, configuration);
                         }
                     }
-                }
+                },
+                functions: assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract)
             }
 
             const newObj = Object.assign(additionalFunctionality, obj);
@@ -173,6 +174,143 @@ async function generateKeyPairFromSecretKey(secretKey) {
     }
 
     return keyPair;
+}
+
+function assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract) {
+    let functionsDescription = getContractFunctions(contractPath);
+
+    let functions = {};
+
+    for (func of functionsDescription) {
+        functions[func.name] = async function (amount = 0, args) {
+            
+            let argsBuilder = '(';
+
+            if (arguments.length > 1) {
+                for (let i = 1; i < arguments.length; i++) {
+
+                    console.log();
+                    console.log('i', i);
+                    console.log('func name', func.name);
+                    console.log('args', arguments);
+                    console.log('func args', func.args);
+                    console.log();
+                    let argType = func.args[i - 1].type.toLowerCase();
+
+                    switch (argType) {
+                        
+                        case 'int':
+                            argsBuilder += `${arguments[i]},`
+                            break;
+
+                        case 'bool':
+                            if (arguments[i]) {
+                                argsBuilder += `true,`
+                            } else {
+                                argsBuilder += `false,`
+                            }
+                            
+                            break;
+
+                        case 'string':
+                        default:
+                            argsBuilder += `"${arguments[i]}",`
+                            break;
+                    }
+                }
+
+                argsBuilder = argsBuilder.trim(',');
+                argsBuilder += ')';
+            }
+
+
+            
+            console.log(argsBuilder);
+            let resultFromExecution =  await deployedContract.call(func.name, {
+                args: argsBuilder, //`(${ownerPublicKeyAsHex}, 1000)`,
+                options: {
+                    ttl: ttl,
+                    amount: amount
+                },
+                abi: ABI_TYPE
+            });
+
+            return await resultFromExecution.decode(func.returnType);
+        }
+    }
+
+    console.log('======> [functions] <=========');
+    console.log(functions);
+
+    return functions;
+}
+
+function getContractFunctions(contractPath) {
+    // add-contract-funcs-to-deployed-contract-instance-#59
+
+    let contract = fs.readFileSync(contractPath, 'utf-8');
+
+    let rgx = /public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w]+)\s*)*=/gm;
+    
+    let matches = [];
+
+    let match = rgx.exec(contract);
+    while(match) {
+
+        // set function name
+        let temp = {
+            name: match[1],
+            args: [],
+            returnType: '()'
+        }
+
+        console.log();
+        console.log(temp.name);
+        // console.log();
+
+        // set functions args
+        if (match.length >= 3 && match[2]) {
+            let args = processArguments(match[2]);
+            temp.args = args;
+        }
+
+        // set functions returned type
+        if (match.length >= 4 && match[3]) {
+            temp.returnType = match[3]
+        }
+
+        matches.push(temp);
+        match = rgx.exec(contract);
+    }
+
+    return matches;
+}
+
+function processArguments (args) {
+    let splitedArgs = args.split(',').map(x => x.trim());
+    let processedArgs = [];
+
+    for (let i = 0; i < splitedArgs.length; i++) {
+        let tokens = splitedArgs[i].split(':').map(x => x.trim());
+        let processedArg = {
+            name: tokens[0],
+            type: null
+        };
+
+        if (tokens.length > 1) {
+            processedArg.type = tokens[1];
+        }
+
+        processedArgs.push(processedArg);
+    }
+
+
+    console.log();
+    console.log('process args');
+    console.log(processedArgs);
+    console.log();
+
+    return processedArgs;
 }
 
 module.exports = Deployer;
