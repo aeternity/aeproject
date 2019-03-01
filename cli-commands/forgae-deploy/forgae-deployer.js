@@ -152,10 +152,13 @@ class Deployer {
                         }
                     }
                 },
-                functions: assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract)
+                //a :assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract)
             }
 
-            const newObj = Object.assign(additionalFunctionality, obj);
+             let functions = assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract);
+            let tempModel =  Object.assign(additionalFunctionality, functions);
+            const newObj = Object.assign(tempModel, obj);
+
         
             return newObj;
         }
@@ -178,27 +181,35 @@ async function generateKeyPairFromSecretKey(secretKey) {
 
 function assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract) {
     let functionsDescription = getContractFunctions(contractPath);
-
     let functions = {};
 
     for (func of functionsDescription) {
-        functions[func.name] = async function (amount = 0, args) {
-            
+
+        let funcName = func.name;
+        let funcArgs = func.args;
+        let funcReturnType = func.returnType;
+
+        functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
+
+            const myName = funcName;
+            const myArgs = funcArgs;
+            const myReturnType = funcReturnType;
+
             let argsBuilder = '(';
 
-            if (arguments.length > 1) {
-                for (let i = 1; i < arguments.length; i++) {
+            if (arguments.length > 0) {
 
-                    console.log();
-                    console.log('i', i);
-                    console.log('func name', func.name);
-                    console.log('args', arguments);
-                    console.log('func args', func.args);
-                    console.log();
-                    let argType = func.args[i - 1].type.toLowerCase();
+                // console.log('--------');
+                // console.log(myArgs);
+                // console.log(arguments);
+                // console.log('--------');
 
+                for (let i = 0; i < myArgs.length; i++) {
+                    
+                    let argType = myArgs[i].type.toLowerCase();
+                    
                     switch (argType) {
-                        
+                        //case 'address': //TODO 
                         case 'int':
                             argsBuilder += `${arguments[i]},`
                             break;
@@ -219,14 +230,23 @@ function assignContractsFunctionToDeployedContractInstance(contractPath, deploye
                     }
                 }
 
-                argsBuilder = argsBuilder.trim(',');
-                argsBuilder += ')';
+                // trim last 'comma'
+                argsBuilder = argsBuilder.substr(0, argsBuilder.length - 1);
             }
 
+            let amount = 0;
+            if (arguments.length > myArgs.length) {
 
+                if(arguments[arguments.length -1].value && !isNaN(arguments[arguments.length -1].value)) {
+                    amount = parseInt(arguments[arguments.length -1].value);
+                }
+            }
             
-            console.log(argsBuilder);
-            let resultFromExecution =  await deployedContract.call(func.name, {
+            argsBuilder += ')';
+            // console.log('[ARG BUILDER]');
+            // console.log(argsBuilder);
+
+            let resultFromExecution =  await deployedContract.call(myName, {
                 args: argsBuilder, //`(${ownerPublicKeyAsHex}, 1000)`,
                 options: {
                     ttl: ttl,
@@ -235,12 +255,9 @@ function assignContractsFunctionToDeployedContractInstance(contractPath, deploye
                 abi: ABI_TYPE
             });
 
-            return await resultFromExecution.decode(func.returnType);
+            return (await resultFromExecution.decode(myReturnType)).value;
         }
     }
-
-    console.log('======> [functions] <=========');
-    console.log(functions);
 
     return functions;
 }
@@ -263,10 +280,6 @@ function getContractFunctions(contractPath) {
             args: [],
             returnType: '()'
         }
-
-        console.log();
-        console.log(temp.name);
-        // console.log();
 
         // set functions args
         if (match.length >= 3 && match[2]) {
@@ -303,12 +316,6 @@ function processArguments (args) {
 
         processedArgs.push(processedArg);
     }
-
-
-    console.log();
-    console.log('process args');
-    console.log(processedArgs);
-    console.log();
 
     return processedArgs;
 }
