@@ -84,10 +84,14 @@ class Deployer {
             gas
         });
 
-        const deployPromise = await compiledContract.deploy(deployOptions);
-        let deployedContract = await deployPromise;
+        let deployedContract = await compiledContract.deploy(deployOptions);
 
-        deployedContract = addFromFunction(deployedContract);
+        //add smart contract's functions
+        let functions = await assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network); // contractPath, deployedContract, privateKey, byteCode, network)
+        deployedContract = addSmartContractFunctions(deployedContract, functions);
+
+        // add [from] functionality !!!!!!!!!!!
+        deployedContract = addFromFunction(deployedContract, this.keypair);
 
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
@@ -109,10 +113,12 @@ class Deployer {
         }
 
         logStoreService.logAction(info);
-        console.log(`===== Contract: ${contractFileName} has been deployed =====`)
+
+        console.log(`===== Contract: ${contractFileName} has been deployed =====`);
+
         return deployedContract;
 
-        function addFromFunction (obj) {
+        function addFromFunction (contractInstance) {
 
             const additionalFunctionality = {
                 from: function (secretKey) {
@@ -127,10 +133,10 @@ class Deployer {
                             const keyPair = await generateKeyPairFromSecretKey(secretKey);
                             const newClient = await utils.getClient(self.network, keyPair);
 
-                            const anotherClientConfiguration = {
+                            const clientConfiguration = {
                                 client: newClient,
                                 byteCode: compiledContract.bytecode,
-                                contractAddress: obj.address
+                                contractAddress: contractInstance.address
                             }
 
                             let configuration = {
@@ -147,20 +153,22 @@ class Deployer {
                             if (options.amount && options.amount > 0) {
                                 configuration.options.amount = options.amount;
                             }
-                        
-                            return await anotherClientConfiguration.client.contractCall(anotherClientConfiguration.byteCode, ABI_TYPE, anotherClientConfiguration.contractAddress, functionName, configuration);
-                        }
+
+                            return await clientConfiguration.client.contractCall(clientConfiguration.byteCode, ABI_TYPE, clientConfiguration.contractAddress, functionName, configuration);
+                        },
                     }
-                },
-                //a :assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract)
+                }
             }
 
-             let functions = assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract);
-            let tempModel =  Object.assign(additionalFunctionality, functions);
-            const newObj = Object.assign(tempModel, obj);
+            const newInstanceWithAddedAdditionalFunctionality = Object.assign(additionalFunctionality, contractInstance);
 
-        
-            return newObj;
+            return newInstanceWithAddedAdditionalFunctionality;
+        }
+
+        function addSmartContractFunctions(deployedContract, functions) {
+            let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
+
+            return newInstanceWithAddedAdditionalFunctionality;
         }
     }
 }
@@ -179,17 +187,36 @@ async function generateKeyPairFromSecretKey(secretKey) {
     return keyPair;
 }
 
-function assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract) {
+async function assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract, privateKey, byteCode, network) {
     let functionsDescription = getContractFunctions(contractPath);
     let functions = {};
 
+    // let wrapper = new FunctionWrapper(privateKey);
+
+    let fNames = [];
+    let fMap = new Map();
+
     for (func of functionsDescription) {
 
-        let funcName = func.name;
-        let funcArgs = func.args;
-        let funcReturnType = func.returnType;
+        const funcName = func.name;
+        const funcArgs = func.args;
+        const funcReturnType = func.returnType;
+
+        fNames.push(funcName);
+        fMap.set(funcName, {
+            funcName,
+            funcArgs,
+            funcReturnType
+        });
+
+        const keyPair = await generateKeyPairFromSecretKey(privateKey);
+        let currentClient = await utils.getClient(network, keyPair);
 
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
+
+            if (currentClient) {
+                client = currentClient;
+            }
 
             const myName = funcName;
             const myArgs = funcArgs;
@@ -199,17 +226,13 @@ function assignContractsFunctionToDeployedContractInstance(contractPath, deploye
 
             if (arguments.length > 0) {
 
-                // console.log('--------');
-                // console.log(myArgs);
-                // console.log(arguments);
-                // console.log('--------');
-
                 for (let i = 0; i < myArgs.length; i++) {
                     
                     let argType = myArgs[i].type.toLowerCase();
                     
                     switch (argType) {
-                        //case 'address': //TODO 
+                        // TODO
+                        //case 'address': // TODO 
                         case 'int':
                             argsBuilder += `${arguments[i]},`
                             break;
@@ -234,29 +257,77 @@ function assignContractsFunctionToDeployedContractInstance(contractPath, deploye
                 argsBuilder = argsBuilder.substr(0, argsBuilder.length - 1);
             }
 
+            argsBuilder += ')';
+
             let amount = 0;
             if (arguments.length > myArgs.length) {
+                
+                let element = arguments[arguments.length - 1].value;
+                if(element && !isNaN(element)) {
+                    amount = parseInt(element);
+                }
 
-                if(arguments[arguments.length -1].value && !isNaN(arguments[arguments.length -1].value)) {
-                    amount = parseInt(arguments[arguments.length -1].value);
+                element = arguments[arguments.length - 2].value;
+                if(element && !isNaN(element)) {
+                    amount = parseInt(element);
                 }
             }
-            
-            argsBuilder += ')';
-            // console.log('[ARG BUILDER]');
-            // console.log(argsBuilder);
 
-            let resultFromExecution =  await deployedContract.call(myName, {
-                args: argsBuilder, //`(${ownerPublicKeyAsHex}, 1000)`,
+            let configuration = {
+                args: argsBuilder,
                 options: {
                     ttl: ttl,
                     amount: amount
                 },
-                abi: ABI_TYPE
-            });
+                abi: ABI_TYPE,
+            };
+            
+            let resultFromExecution = await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, myName, configuration);
 
             return (await resultFromExecution.decode(myReturnType)).value;
         }
+
+    }
+
+    functions['from'] = async function (privateKey) {
+
+        const keyPair = await generateKeyPairFromSecretKey(privateKey);
+        let client = await utils.getClient(network, keyPair);
+
+        let result = {};
+        for(fName of fNames) {
+
+            const name = fName;
+
+            result[name] = async function () {
+
+                let f = functions[name];
+
+                return await f(...arguments, client);
+            }
+        }
+
+        result['call'] = async function (functionName, options) {
+
+            let configuration = {
+                options: {
+                    ttl: ttl
+                },
+                abi: ABI_TYPE,
+            };
+        
+            if (options.args) {
+                configuration.args = options.args
+            }
+
+            if (options.amount && options.amount > 0) {
+                configuration.options.amount = options.amount;
+            }
+
+            return await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, functionName, configuration);
+        }
+
+        return result;
     }
 
     return functions;
@@ -300,11 +371,11 @@ function getContractFunctions(contractPath) {
 }
 
 function processArguments (args) {
-    let splitedArgs = args.split(',').map(x => x.trim());
+    let splittedArgs = args.split(',').map(x => x.trim());
     let processedArgs = [];
 
-    for (let i = 0; i < splitedArgs.length; i++) {
-        let tokens = splitedArgs[i].split(':').map(x => x.trim());
+    for (let i = 0; i < splittedArgs.length; i++) {
+        let tokens = splittedArgs[i].split(':').map(x => x.trim());
         let processedArg = {
             name: tokens[0],
             type: null
@@ -319,5 +390,32 @@ function processArguments (args) {
 
     return processedArgs;
 }
+
+// class FunctionWrapper {
+    //     constructor(privateKey, byteCode, address, network) {
+    //         this.privateKey = privateKey;
+    //         this.funcs = [];
+    //         this.originClient = undefined;
+    //         this.fromClient = undefined;
+    //         this.byteCode = byteCode;
+    //         this.address = address;
+    //         this.network = network;
+
+    //         this._init();
+    //     }
+
+    //     async _init() {
+    //         const keyPair = await generateKeyPairFromSecretKey(this.privateKey);
+    //         this.originClient = await utils.getClient(this.network, keyPair);
+    //     }
+
+    //     addFunction(func) {
+    //         this.funcs.push(func);
+    //     }
+
+    //     getFuncs() {
+    //         return this.funcs;
+    //     }
+    // }
 
 module.exports = Deployer;
