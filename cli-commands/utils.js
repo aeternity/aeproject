@@ -23,6 +23,7 @@ const {
     spawn
 } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
+const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
 
 const config = {
     localhostParams: {
@@ -226,6 +227,13 @@ const generatePublicKeyFromSecretKey = (secretKey) => {
     return Crypto.aeEncodeKey(keys.publicKey)
 }
 
+function decodedHexAddressToPublicAddress(hexAddress) {
+
+	const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
+
+	return publicKey;
+}
+
 module.exports = {
     print,
     printError,
@@ -241,5 +249,6 @@ module.exports = {
     keyToHex,
     forgaeExecute,
     isKeyPair,
-    generatePublicKeyFromSecretKey
+    generatePublicKeyFromSecretKey,
+    decodedHexAddressToPublicAddress
 }

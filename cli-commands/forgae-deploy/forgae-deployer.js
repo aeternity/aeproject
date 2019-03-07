@@ -5,7 +5,6 @@ const fs = require('fs')
 const gasLimit = 20000000;
 const ttl = 100;
 const logStoreService = require('./../forgae-history/log-store-service');
-const execute = require('./../utils').execute;
 
 const ABI_TYPE = 'sophia';
 
@@ -90,7 +89,7 @@ class Deployer {
         deployedContract = addSmartContractFunctions(deployedContract, functions);
 
         // add [from] functionality !!!!!!!!!!!
-        deployedContract = addFromFunction(deployedContract, this.keypair);
+        //deployedContract = addFromFunction(deployedContract, this.keypair);
 
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
@@ -248,6 +247,14 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
                             }
 
                             break;
+
+                        //     // TODO
+                        // case 'list(int)':
+                        //     break;
+                        // case 'list(string)':
+                        //     break;
+                        // case 'list(bool)':
+                        //     break;
 
                         case 'string':
                         default:
