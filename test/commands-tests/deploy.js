@@ -133,26 +133,26 @@ describe('ForgAE Deploy', () => {
 			assert.include(result, expectedDeployResult)
 		})
 
-    it('with network and secret on test network', async () => {
-      let testSecretKey = constants.privateKeyTestnetDeploy;
-      let result = '';
+		it('with network and secret on test network', async () => {
+			let testSecretKey = constants.privateKeyTestnetDeploy;
+			let result = '';
 
-      const mainForgaeProjectDir = process.cwd();
-      process.chdir(executeOptions.cwd);
+			const mainForgaeProjectDir = process.cwd();
+			process.chdir(executeOptions.cwd);
 
-      await exec(`npm link ${mainForgaeProjectDir}`);
+			await exec(`npm link ${mainForgaeProjectDir}`);
 
-      try {
-        result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
-      } catch (err) {
-        console.log(err);
-        console.log(err.stdout.toString('utf8'));
-      }
+			try {
+				result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
+			} catch (err) {
+				console.log(err);
+				console.log(err.stdout.toString('utf8'));
+			}
 
-      process.chdir(mainForgaeProjectDir);
+			process.chdir(mainForgaeProjectDir);
 
-      assert.include(result, expectedDeployResult)
-    });
+			assert.include(result, expectedDeployResult)
+		});
 
 
 		it('with invalid network arguments', async () => {
