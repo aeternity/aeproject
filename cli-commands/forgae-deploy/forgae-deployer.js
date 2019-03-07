@@ -1,4 +1,3 @@
-
 const Crypto = require('@aeternity/aepp-sdk').Crypto;
 
 const utils = require('./../utils')
@@ -68,7 +67,7 @@ class Deployer {
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
         let self = this;
-        
+
         client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
@@ -118,7 +117,7 @@ class Deployer {
 
         return deployedContract;
 
-        function addFromFunction (contractInstance) {
+        function addFromFunction(contractInstance) {
 
             const additionalFunctionality = {
                 from: function (secretKey) {
@@ -145,7 +144,7 @@ class Deployer {
                                 },
                                 abi: ABI_TYPE,
                             };
-                        
+
                             if (options.args) {
                                 configuration.args = options.args
                             }
@@ -214,7 +213,9 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
 
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
 
-            if (currentClient) {
+            if (arguments.length > 0 && arguments[arguments.length - 1].Chain && arguments[arguments.length - 1].Ae) {
+                client = arguments[arguments.length - 1];
+            } else {
                 client = currentClient;
             }
 
@@ -227,12 +228,14 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
             if (arguments.length > 0) {
 
                 for (let i = 0; i < myArgs.length; i++) {
-                    
+
                     let argType = myArgs[i].type.toLowerCase();
-                    
+
                     switch (argType) {
-                        // TODO
-                        //case 'address': // TODO 
+                        case 'address':
+                            argsBuilder += `${utils.keyToHex(arguments[i])},`
+                            break;
+
                         case 'int':
                             argsBuilder += `${arguments[i]},`
                             break;
@@ -243,7 +246,7 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
                             } else {
                                 argsBuilder += `false,`
                             }
-                            
+
                             break;
 
                         case 'string':
@@ -253,23 +256,32 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
                     }
                 }
 
-                // trim last 'comma'
-                argsBuilder = argsBuilder.substr(0, argsBuilder.length - 1);
+                if (myArgs.length > 0) {
+                    // trim last 'comma'
+                    argsBuilder = argsBuilder.substr(0, argsBuilder.length - 1);
+                }
             }
 
             argsBuilder += ')';
 
+            // console.log('[ARG BUILDER]');
+            // console.log(argsBuilder);
+
             let amount = 0;
             if (arguments.length > myArgs.length) {
-                
-                let element = arguments[arguments.length - 1].value;
-                if(element && !isNaN(element)) {
-                    amount = parseInt(element);
+
+                if (arguments[arguments.length - 1].value) {
+                    let element = arguments[arguments.length - 1].value;
+                    if (element && !isNaN(element)) {
+                        amount = parseInt(element);
+                    }
                 }
 
-                element = arguments[arguments.length - 2].value;
-                if(element && !isNaN(element)) {
-                    amount = parseInt(element);
+                if (arguments.length > 1 && arguments[arguments.length - 2].value) {
+                    element = arguments[arguments.length - 2].value;
+                    if (element && !isNaN(element)) {
+                        amount = parseInt(element);
+                    }
                 }
             }
 
@@ -281,7 +293,7 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
                 },
                 abi: ABI_TYPE,
             };
-            
+
             let resultFromExecution = await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, myName, configuration);
 
             return (await resultFromExecution.decode(myReturnType)).value;
@@ -292,16 +304,16 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
     functions['from'] = async function (privateKey) {
 
         const keyPair = await generateKeyPairFromSecretKey(privateKey);
-        let client = await utils.getClient(network, keyPair);
+        const client = await utils.getClient(network, keyPair);
 
         let result = {};
-        for(fName of fNames) {
+        for (fName of fNames) {
 
             const name = fName;
 
             result[name] = async function () {
 
-                let f = functions[name];
+                const f = functions[name];
 
                 return await f(...arguments, client);
             }
@@ -315,7 +327,7 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
                 },
                 abi: ABI_TYPE,
             };
-        
+
             if (options.args) {
                 configuration.args = options.args
             }
@@ -339,11 +351,11 @@ function getContractFunctions(contractPath) {
     let contract = fs.readFileSync(contractPath, 'utf-8');
 
     let rgx = /public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w]+)\s*)*=/gm;
-    
+
     let matches = [];
 
     let match = rgx.exec(contract);
-    while(match) {
+    while (match) {
 
         // set function name
         let temp = {
@@ -370,7 +382,7 @@ function getContractFunctions(contractPath) {
     return matches;
 }
 
-function processArguments (args) {
+function processArguments(args) {
     let splittedArgs = args.split(',').map(x => x.trim());
     let processedArgs = [];
 
@@ -391,31 +403,31 @@ function processArguments (args) {
     return processedArgs;
 }
 
-// class FunctionWrapper {
-    //     constructor(privateKey, byteCode, address, network) {
-    //         this.privateKey = privateKey;
-    //         this.funcs = [];
-    //         this.originClient = undefined;
-    //         this.fromClient = undefined;
-    //         this.byteCode = byteCode;
-    //         this.address = address;
-    //         this.network = network;
-
-    //         this._init();
-    //     }
-
-    //     async _init() {
-    //         const keyPair = await generateKeyPairFromSecretKey(this.privateKey);
-    //         this.originClient = await utils.getClient(this.network, keyPair);
-    //     }
-
-    //     addFunction(func) {
-    //         this.funcs.push(func);
-    //     }
-
-    //     getFuncs() {
-    //         return this.funcs;
-    //     }
-    // }
-
 module.exports = Deployer;
+
+// class FunctionWrapper {
+//     constructor(privateKey, byteCode, address, network) {
+//         this.privateKey = privateKey;
+//         this.funcs = [];
+//         this.originClient = undefined;
+//         this.fromClient = undefined;
+//         this.byteCode = byteCode;
+//         this.address = address;
+//         this.network = network;
+
+//         this._init();
+//     }
+
+//     async _init() {
+//         const keyPair = await generateKeyPairFromSecretKey(this.privateKey);
+//         this.originClient = await utils.getClient(this.network, keyPair);
+//     }
+
+//     addFunction(func) {
+//         this.funcs.push(func);
+//     }
+
+//     getFuncs() {
+//         return this.funcs;
+//     }
+// }
