@@ -17,10 +17,10 @@
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 
 import {
-  printError,
-  print,
-  createMissingFolder,
-  copyFileOrDir
+	printError,
+	print,
+	createMissingFolder,
+	copyFileOrDir
 } from '../utils.js';
 
 const constants = require('./constants.json');
@@ -28,108 +28,117 @@ const execute = require('./../utils').execute;
 const packageJson = require('../../package.json')
 const forgaeVersion = packageJson.version;
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
+const fs = require('fs-extra');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+const NODE_MODULES_LITERAL = './node_modules';
 
 async function run(update) {
-  if (update) {
-    await updateForgaeProjectLibraries(sdkVersion, forgaeVersion);
-    return;
-  }
+	if (update) {
+		await updateForgaeProjectLibraries(sdkVersion, forgaeVersion);
+		return;
+	}
 
-  try {
-    await createForgaeProjectStructure();
+	try {
+		await createForgaeProjectStructure();
 
-  } catch (e) {
-    printError(e.message)
-    console.error(e);
-  }
+	} catch (e) {
+		printError(e.message)
+		console.error(e);
+	}
 }
 
 const createForgaeProjectStructure = async () => {
-  print('===== Initializing ForgAE =====');
+	print('===== Initializing ForgAE =====');
 
-  await installLibraries()
+	await installLibraries()
 
-  print(`===== Creating project file & dir structure =====`);
+	print(`===== Creating project file & dir structure =====`);
 
-  setupContracts();
-  setupTests();
-  await setupDeploy();
-  setupDocker();
+	setupContracts();
+	setupTests();
+	await setupDeploy();
+	setupDocker();
 
-  print('===== ForgAE was successfully initialized! =====');
+	print('===== ForgAE was successfully initialized! =====');
 }
 
 const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeVersion) => {
-  print(`===== Updating ForgAE files =====`);
+	print(`===== Updating ForgAE files =====`);
 
-  setupDocker();
-  await installForgae(_forgaeVersion)
-  await installAeppSDK(_sdkVersion)
-  await installYarn()
+	if (fs.existsSync(NODE_MODULES_LITERAL)) {
+		fs.removeSync(NODE_MODULES_LITERAL)
+	}
 
-  print('===== ForgAE was successfully updated! =====');
-  return;
+	await exec('npm install');
+
+	setupDocker();
+	await installForgae(_forgaeVersion)
+	await installAeppSDK(_sdkVersion)
+	await installYarn()
+
+	print('===== ForgAE was successfully updated! =====');
 }
 
 const installLibraries = async () => {
-  const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
-  copyFileOrDir(fileSource, "./package.json")
-  await installAeppSDK(sdkVersion)
-  await installForgae(forgaeVersion)
-  await installYarn()
+	const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
+	copyFileOrDir(fileSource, "./package.json")
+	await installAeppSDK(sdkVersion)
+	await installForgae(forgaeVersion)
+	await installYarn()
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
-  print('===== Installing aepp-sdk =====');
-  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
+	print('===== Installing aepp-sdk =====');
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
 }
 
 const installForgae = async (_forgaeVersion = '') => {
 
-  print(`===== Installing ForgAE locally =====`);
+	print(`===== Installing ForgAE locally =====`);
 
-  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const installYarn = async () => {
-  print(`===== Installing yarn locally =====`);
-  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	print(`===== Installing yarn locally =====`);
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const setupContracts = () => {
-  print(`===== Creating contracts directory =====`);
-  const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
-  createMissingFolder(constants.contractsDir);
-  copyFileOrDir(fileSource, constants.contractFileDestination)
+	print(`===== Creating contracts directory =====`);
+	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
+	createMissingFolder(constants.contractsDir);
+	copyFileOrDir(fileSource, constants.contractFileDestination)
 }
 
 const setupTests = () => {
-  print(`===== Creating tests directory =====`);
-  const fileSource = `${__dirname}${constants.artifactsDir}/${constants.testTemplateFile}`;
-  createMissingFolder(constants.testDir, "Creating tests file structure");
-  copyFileOrDir(fileSource, constants.testFileDestination)
+	print(`===== Creating tests directory =====`);
+	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.testTemplateFile}`;
+	createMissingFolder(constants.testDir, "Creating tests file structure");
+	copyFileOrDir(fileSource, constants.testFileDestination)
 }
 
 const setupDeploy = async () => {
 
-  print(`===== Creating deploy directory =====`);
-  const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
-  createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
-  copyFileOrDir(fileSource, constants.deployFileDestination)
+	print(`===== Creating deploy directory =====`);
+	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
+	createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
+	copyFileOrDir(fileSource, constants.deployFileDestination)
 }
 
 const setupDocker = () => {
-  print(`===== Creating docker directory =====`);
-  const dockerFilesSource = `${__dirname}${constants.artifactsDir}/${constants.dockerTemplateDir}`;
-  const copyOptions = {
-    overwrite: true
-  }
+	print(`===== Creating docker directory =====`);
+	const dockerFilesSource = `${__dirname}${constants.artifactsDir}/${constants.dockerTemplateDir}`;
+	const copyOptions = {
+		overwrite: true
+	}
 
-  const dockerYmlFileSource = `${__dirname}${constants.artifactsDir}/${constants.dockerYmlFile}`;
-  copyFileOrDir(dockerYmlFileSource, constants.dockerYmlFileDestination, copyOptions)
-  copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
+	const dockerYmlFileSource = `${__dirname}${constants.artifactsDir}/${constants.dockerYmlFile}`;
+	copyFileOrDir(dockerYmlFileSource, constants.dockerYmlFileDestination, copyOptions)
+	copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
 }
 
 module.exports = {
-  run
+	run
 }
