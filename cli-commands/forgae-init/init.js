@@ -19,7 +19,7 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 import {
   printError,
   print,
-  createIfExistsFolder,
+  createMissingFolder,
   copyFileOrDir
 } from '../utils.js';
 
@@ -65,6 +65,7 @@ const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeVersion) => {
   setupDocker();
   await installForgae(_forgaeVersion)
   await installAeppSDK(_sdkVersion)
+  await installYarn()
 
   print('===== ForgAE was successfully updated! =====');
   return;
@@ -75,6 +76,7 @@ const installLibraries = async () => {
   copyFileOrDir(fileSource, "./package.json")
   await installAeppSDK(sdkVersion)
   await installForgae(forgaeVersion)
+  await installYarn()
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
@@ -89,17 +91,22 @@ const installForgae = async (_forgaeVersion = '') => {
   await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
+const installYarn = async () => {
+  print(`===== Installing yarn locally =====`);
+  await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
+}
+
 const setupContracts = () => {
   print(`===== Creating contracts directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
-  createIfExistsFolder(constants.contractsDir);
+  createMissingFolder(constants.contractsDir);
   copyFileOrDir(fileSource, constants.contractFileDestination)
 }
 
 const setupTests = () => {
   print(`===== Creating tests directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.testTemplateFile}`;
-  createIfExistsFolder(constants.testDir, "Creating tests file structure");
+  createMissingFolder(constants.testDir, "Creating tests file structure");
   copyFileOrDir(fileSource, constants.testFileDestination)
 }
 
@@ -107,7 +114,7 @@ const setupDeploy = async () => {
 
   print(`===== Creating deploy directory =====`);
   const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
-  createIfExistsFolder(constants.deployDir, "Creating deploy directory file structure");
+  createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
   copyFileOrDir(fileSource, constants.deployFileDestination)
 }
 

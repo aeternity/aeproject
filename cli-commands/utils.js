@@ -26,51 +26,51 @@ const Universal = AeSDK.Universal;
 const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
 
 const config = {
-    localhostParams: {
-        url: "http://localhost:3001",
-        networkId: 'ae_devnet'
-    },
-    testnetParams: {
-        url: "https://sdk-testnet.aepps.com",
-        networkId: 'ae_uat'
-    },
-    mainnetParams: {
-        url: 'https://sdk-mainnet.aepps.com',
-        networkId: 'ae_mainnet'
-    },
-    keypair: {
-        secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
-        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
-    }
-}
+  localhostParams: {
+    url: "http://localhost:3001",
+    networkId: 'ae_devnet'
+  },
+  testnetParams: {
+    url: "https://sdk-testnet.aepps.com",
+    networkId: 'ae_uat'
+  },
+  mainnetParams: {
+    url: 'https://sdk-mainnet.aepps.com',
+    networkId: 'ae_mainnet'
+  },
+  keypair: {
+    secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
+    publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
+  }
+};
 
 // Print helper
 const print = (msg, obj) => {
-    if (obj) {
-        console.log(msg, obj)
-    } else {
-        console.log(msg)
-    }
-}
+  if (obj) {
+    console.log(msg, obj)
+  } else {
+    console.log(msg)
+  }
+};
 
 // Print error helper
 const printError = (msg) => {
-    console.log(msg)
-}
+  console.log(msg)
+};
 
-const createIfExistsFolder = (dir) => {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-}
+const createMissingFolder = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+};
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
-    if (fs.existsSync(`${destinationFileOrDir}`) && copyOptions.overwrite == false) {
-        throw new Error(`${destinationFileOrDir} already exists.`);
-    }
+  if (fs.existsSync(`${destinationFileOrDir}`) && !copyOptions.overwrite) {
+    throw new Error(`${destinationFileOrDir} already exists.`);
+  }
 
-    fs.copySync(sourceFileOrDir, destinationFileOrDir, copyOptions)
-}
+  fs.copySync(sourceFileOrDir, destinationFileOrDir, copyOptions)
+};
 
 const getFiles = async function (directory, regex) {
     return new Promise((resolve, reject) => {
@@ -87,7 +87,7 @@ const getFiles = async function (directory, regex) {
             resolve(files);
         });
     });
-}
+};
 
 const getClient = async function (network, keyPair = config.keypair) {
     let client;
@@ -115,54 +115,55 @@ const getClient = async function (network, keyPair = config.keypair) {
     return client;
 }
 
-const createLocalAccount = async function (keyPair) {
-    let tempAccount = await Universal({
-        networkId: config.localhostParams.networkId,
-        url: config.localhostParams.url,
-        internalUrl: config.localhostParams.url + "/internal",
-        keypair: {
-            publicKey: keyPair.publicKey,
-            secretKey: keyPair.secretKey
-        }
-    })
+// const createLocalAccount = async function (keyPair) {
+//     let tempAccount = await Universal({
+//         networkId: config.localhostParams.networkId,
+//         url: config.localhostParams.url,
+//         internalUrl: config.localhostParams.url + "/internal",
+//         keypair: {
+//             publicKey: keyPair.publicKey,
+//             secretKey: keyPair.secretKey
+//         }
+//     })
+//   });
 
-    return tempAccount;
-}
+//   return client;
+// };
 
 const getNetwork = (network) => {
-    const networks = {
-        local: {
-            url: config.localhostParams.url,
-            networkId: config.localhostParams.networkId
-        },
-        testnet: {
-            url: config.testnetParams.url,
-            networkId: config.testnetParams.networkId
-        },
-        mainnet: {
-            url: config.mainnetParams.url,
-            networkId: config.mainnetParams.networkId
-        },
-    }
+  const networks = {
+    local: {
+      url: config.localhostParams.url,
+      networkId: config.localhostParams.networkId
+    },
+    testnet: {
+      url: config.testnetParams.url,
+      networkId: config.testnetParams.networkId
+    },
+    mainnet: {
+      url: config.mainnetParams.url,
+      networkId: config.mainnetParams.networkId
+    },
+  };
 
     const result = networks[network]
     if (!result) {
         throw new Error(`Unrecognised network ${network}`)
     }
 
-    return result
-}
+  return result
+};
 
 const handleApiError = async (fn) => {
     try {
 
-        return await fn()
-    } catch (e) {
-        const response = e.response
-        logApiError(response && response.data ? response.data.reason : e)
-        process.exit(1)
-    }
-}
+    return await fn()
+  } catch (e) {
+    const response = e.response
+    logApiError(response && response.data ? response.data.reason : e)
+    process.exit(1)
+  }
+};
 
 function logApiError(error) {
     printError(`API ERROR: ${error}`)
@@ -184,17 +185,17 @@ const execute = async (cli, command, args, options = {}) => {
     const child = spawn(cli, [command, ...args], options)
     let result = '';
 
-    child.stdout.on('data', (data) => {
-        result += data.toString();
-    })
+  child.stdout.on('data', (data) => {
+    result += data.toString();
+  });
 
-    child.stderr.on('data', (data) => {
-        result += data.toString();
-    })
+  child.stderr.on('data', (data) => {
+    result += data.toString();
+  });
 
-    await child;
-    return result;
-}
+  await child;
+  return result;
+};
 
 const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
     try {
@@ -211,7 +212,7 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
                 throw e
         }
     }
-}
+};
 
 function keyToHex(publicKey) {
     let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
@@ -235,8 +236,8 @@ const isKeyPair = (k) => {
         return false
     }
 
-    return true
-}
+  return true
+};
 
 const generatePublicKeyFromSecretKey = (secretKey) => {
     const hexStr = Crypto.hexStringToByte(secretKey.trim())
@@ -249,25 +250,29 @@ function decodedHexAddressToPublicAddress(hexAddress) {
 
 	const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
 
-	return publicKey;
-}
+  return Crypto.aeEncodeKey(keys.publicKey)
+};
+
+const timeout = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
 
 module.exports = {
-    print,
-    printError,
-    createIfExistsFolder,
-    copyFileOrDir,
-    getFiles,
-    getClient,
-    getNetwork,
-    sleep,
-    execute,
-    readFile,
-    config,
-    keyToHex,
-    forgaeExecute,
-    isKeyPair,
-    generatePublicKeyFromSecretKey,
-    decodedHexAddressToPublicAddress,
-    createLocalAccount
-}
+  print,
+  printError,
+  createMissingFolder,
+  copyFileOrDir,
+  getFiles,
+  getClient,
+  getNetwork,
+  sleep,
+  execute,
+  readFile,
+  config,
+  keyToHex,
+  forgaeExecute,
+  isKeyPair,
+  generatePublicKeyFromSecretKey,
+  timeout,
+  decodedHexAddressToPublicAddress
+};

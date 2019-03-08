@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "1.3.2",
+    "@aeternity/aepp-sdk": "2.3.0",
     "await-spawn": "^2.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
@@ -23,9 +23,11 @@
     "docker-cli-js": "^2.5.1",
     "esm": "^3.0.77",
     "fs-extra": "^7.0.1",
+    "hjson": "^3.1.2",
     "mocha": "^5.0.0",
     "moment": "^2.23.0",
     "node-dir": "^0.1.17",
+    "opn": "^5.4.0",
     "original-require": "^1.0.1",
     "path": "^0.12.7",
     "promisify-child-process": "^2.1.2",
@@ -34,6 +36,9 @@
   },
   "devDependencies": {
     "eslint": "^5.15.1",
-    "eslint-config-standard": "^12.0.0"
+    "eslint-config-standard": "^12.0.0",
+    "simple-git": "^1.107.0",
+    "sinon": "^7.1.1",
+    "yarn": "^1.13.0"
   }
 }
