@@ -34,6 +34,7 @@
 		"testContractPath": "/test/exampleTest.js",
 		"deployScriptsPath": "/deployment/deploy.js",
 		"contractsPath": "/contracts/ExampleContract.aes",
+		"contractsAeppSettings": "/integrations/contractsAeppSettings.js",
 		"nodeModules": "/node_modules",
 		"dockerEntryPoint": "/docker/entrypoint.sh",
 		"dockernodeNode1": "/docker/epoch_node1_mean15.yaml",
