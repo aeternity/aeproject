@@ -37,13 +37,14 @@
 		"contractsAeppSettings": "/integrations/contractsAeppSettings.js",
 		"nodeModules": "/node_modules",
 		"dockerEntryPoint": "/docker/entrypoint.sh",
-		"dockernodeNode1": "/docker/epoch_node1_mean15.yaml",
-		"dockernodeNode2": "/docker/epoch_node2_mean15.yaml",
-		"dockernodeNode3": "/docker/epoch_node3_mean15.yaml",
+		"dockernodeNode1": "/docker/aeternity_node1_mean15.yaml",
+		"dockernodeNode2": "/docker/aeternity_node2_mean15.yaml",
+		"dockernodeNode3": "/docker/aeternity_node3_mean15.yaml",
 		"dockerHealthCheck": "/docker/healthcheck.sh",
 		"dockerNginxCors": "/docker/nginx-cors.conf",
 		"dockerNginxDefault": "/docker/nginx-default.conf",
 		"dockerNginxWs": "/docker/nginx-ws.conf",
 		"dockerKeys": "/docker/keys"
-	}
+	},
+	"privateKeyTestnetDeploy": "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319"
 }
