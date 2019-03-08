@@ -66,7 +66,7 @@ class Deployer {
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
         let self = this;
-
+        
         client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
@@ -74,7 +74,7 @@ class Deployer {
                 ttl
             },
             abi: "sophia"
-        }
+        };
         if (initState != "") {
             deployOptions.initState = initState
         }

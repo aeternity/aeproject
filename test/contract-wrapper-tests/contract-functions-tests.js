@@ -4,12 +4,16 @@ const assert = chai.assert;
 chai.use(chaiAsPromised);
 
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
+
+const constants = require('./../constants.json');
 
 const Universal = require('@aeternity/aepp-sdk').Universal;
 // const Deployer = require('forgae').Deployer;
 const Deployer = require('./../../cli-commands/forgae-deploy/forgae-deployer');
-const utils = require('./../../cli-commands/utils');
+//const utils = require('./../../cli-commands/utils');
+const execute = require('./../../cli-commands/utils').forgaeExecute;
+const waitForContainer = require('./../utils').waitForContainer;
 
 const contractPath = './contracts/example-contract.aes';
 
@@ -31,19 +35,24 @@ const unavailableSmartContratsFunctions = [
     'prv_func'
 ];
 
-//console.log(wallets);
+let executeOptions = {
+	cwd: process.cwd() + constants.deployTestsFolderPath
+};
 
 describe("Deployed contract instance additional functionality", async () => {
 
     let deployedContract;
 
-        before(async () => {
+    before(async () => {
 
-            // start node 
+        // start node 
+        fs.ensureDirSync(`.${constants.deployTestsFolderPath}`);
+		await execute(constants.cliCommands.INIT, [], executeOptions);
+		await execute(constants.cliCommands.NODE, [], executeOptions);
 
-            let deployer = new Deployer('local', ownerKeyPair.privateKey);
-            deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
-        });
+        let deployer = new Deployer('local', ownerKeyPair.privateKey);
+        deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
+    });
 
     describe("Test Extract smart contract's functions", async () => {
 
@@ -104,49 +113,45 @@ describe("Deployed contract instance additional functionality", async () => {
 
         it("Should execute function without parameter successfully", async () => {
             let result = await deployedContract.get_caller();
-            assert.equal(utils.decodedHexAddressToPublicAddress(result), ownerKeyPair.publicKey, "Returned value is not as the passed one, should be true");
+            assert.equal(result, ownerKeyPair.publicKey, "Returned value is not as the passed one, should be true");
         });
 
         it("Should execute function that accept AND 'amount/aettos' as second parameter", async () => {
             let parameter = "Aleks";
             
-            await assert.isFulfilled(deployedContract.sayHello(parameter, { value: 69}), "Function does not executed successfully!")
+            await assert.isFulfilled(deployedContract.sayHello(parameter, { value: 169}), "Function does not executed successfully!")
         });
 
-        // test call function
+        it("Should execute default [call] function.", async () => {
+            let param = `("I'm a super hero!")`;
+            let result = await deployedContract.call('sayHello', { "args": param });
+            let value = (await result.decode('string')).value;
+
+            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+        });
+
+        it("Should execute default [call] function with passed amount/aettos.", async () => {
+            let param = `("I'm a super hero!")`;
+            let result = await deployedContract.call('sayHello', { "args": param, amount: 101 });
+		    let value = (await result.decode('string')).value;
+
+            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+        });
     });
 
     describe("Test [from] functionality", async () => {
         let fromInstance;
 
         before(async () => {
-
-            console.log('owner');
-            console.log(ownerKeyPair);
-            console.log();
-            console.log('not owner');
-            console.log(notOwnerKeyPair);
-
-            let network = utils.getNetwork('local');
-            // let client = await utils.createLocalAccount(ownerKeyPair);
-            let client = await utils.getClient(network, ownerKeyPair);
-            
-            //fund not owner account
-            await client.spend(1000000, notOwnerKeyPair.publicKey);
-            // await client.spend(notOwnerKeyPair, 1000000000);
-
-            console.log(991);
-
-
-            // fromInstance = await deployedContract.from(notOwnerKeyPair.secretKey);
+            fromInstance = await deployedContract.from(notOwnerKeyPair.secretKey);
         });
 
-        it.only("Should execute function that accept 'string' as parameter successfully", async () => {
-            // let parameter = "George"
-            // let expectedResult = `Hello ${parameter}`;
+        it("Should execute function that accept 'string' as parameter successfully", async () => {
+            let parameter = "George"
+            let expectedResult = `Hello ${parameter}`;
 
-            // let result = await fromInstance.sayHello(parameter);
-		    // assert.equal(result, expectedResult, "Result is not expected one.");
+            let result = await fromInstance.sayHello(parameter);
+		    assert.equal(result, expectedResult, "Result is not expected one.");
         });
 
         it("Should execute function that accept 'int/ints' as parameter successfully", async () => {
@@ -160,10 +165,10 @@ describe("Deployed contract instance additional functionality", async () => {
         it("Should execute function that accept 'address' as parameter successfully", async () => {
 
             let result = await fromInstance.am_i_caller(ownerKeyPair.publicKey);
-            assert.equal(result, true, "Passed public key is not an owner!");
+            assert.equal(result, false, "Passed public key is an owner!");
             
             result = await fromInstance.am_i_caller(notOwnerKeyPair.publicKey);
-		    assert.equal(result, false, "Passed public key is an owner!");
+		    assert.equal(result, true, "Passed public key is NOT an owner!");
         });
 
         it("Should execute function that accept 'bool' as parameter successfully", async () => {
@@ -178,7 +183,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
         it("Should execute function without parameter successfully", async () => {
             let result = await fromInstance.get_caller();
-            assert.equal(utils.decodedHexAddressToPublicAddress(result), notOwnerKeyPair.publicKey, "Returned value is not as the passed one, should be true");
+            assert.equal(result, notOwnerKeyPair.publicKey, "Returned value is not as the passed one, should be true");
         });
 
         it("Should execute function that accept AND 'amount/aettos' as second parameter", async () => {
@@ -186,9 +191,31 @@ describe("Deployed contract instance additional functionality", async () => {
             
             await assert.isFulfilled(fromInstance.sayHello(parameter, { value: 69}), "Function does not executed successfully!")
         });
+
+        it("Should execute default [call] function.", async () => {
+            let param = `("I'm a super hero!")`;
+            let result = await fromInstance.call('sayHello', { "args": param });
+            let value = (await result.decode('string')).value;
+
+            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+        });
+
+        it("Should execute default [call] function with passed amount/aettos.", async () => {
+            let param = `("I'm a super hero!")`;
+            let result = await fromInstance.call('sayHello', { "args": param, amount: 101 });
+		    let value = (await result.decode('string')).value;
+
+            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+        });
     });
 
     after(async () => {
         // stop node
+        let running = await waitForContainer();
+		if (running) {
+			await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+		}
+
+		fs.removeSync(`.${constants.deployTestsFolderPath}`)
     })
 });

@@ -89,7 +89,7 @@ const getFiles = async function (directory, regex) {
     });
 };
 
-const getClient = async function (network, keyPair = config.keypair) {
+const getClient = async function (network, keypair = config.keypair) {
     let client;
     let internalUrl = network.url;
 
@@ -110,7 +110,10 @@ const getClient = async function (network, keyPair = config.keypair) {
             //     secretKey: keyPair.secretKey
             // }
         })
-    })
+    });
+
+    // let result = await client.spend(10000000, 'ak_gLYH5tAexTCvvQA6NpXksrkPJKCkLnB9MTDFTVCBuHNDJ3uZv');
+    // console.log(result);
 
     return client;
 }
