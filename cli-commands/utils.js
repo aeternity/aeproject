@@ -89,7 +89,7 @@ const getFiles = async function (directory, regex) {
     });
 }
 
-const getClient = async function (network, keypair = config.keypair) {
+const getClient = async function (network, keyPair = config.keypair) {
     let client;
     let internalUrl = network.url;
 
@@ -101,14 +101,32 @@ const getClient = async function (network, keypair = config.keypair) {
         client = await Universal({
             url: network.url,
             process,
-            keypair,
             internalUrl,
+            keypair,
             nativeMode: true,
             networkId: network.networkId
+            // keypair: {
+            //     publicKey: keyPair.publicKey,
+            //     secretKey: keyPair.secretKey
+            // }
         })
     })
 
     return client;
+}
+
+const createLocalAccount = async function (keyPair) {
+    let tempAccount = await Universal({
+        networkId: config.localhostParams.networkId,
+        url: config.localhostParams.url,
+        internalUrl: config.localhostParams.url + "/internal",
+        keypair: {
+            publicKey: keyPair.publicKey,
+            secretKey: keyPair.secretKey
+        }
+    })
+
+    return tempAccount;
 }
 
 const getNetwork = (network) => {
@@ -250,5 +268,6 @@ module.exports = {
     forgaeExecute,
     isKeyPair,
     generatePublicKeyFromSecretKey,
-    decodedHexAddressToPublicAddress
+    decodedHexAddressToPublicAddress,
+    createLocalAccount
 }
