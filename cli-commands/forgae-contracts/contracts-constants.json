@@ -14,5 +14,5 @@
    "LOCALHOST_SUCCESS" : "Contracts web Aepp is running",
    "UPDATE_FLAG_CHECK_CONDITION" : "Installing Contracts web Aepp",
    "FORGAE_CLI_COMMAND" : "forgae",
-   "STARTING_AEPP_TIMEOUT" : 100000
+   "STARTING_AEPP_TIMEOUT" : 150000
 }

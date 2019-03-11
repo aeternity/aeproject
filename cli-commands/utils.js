@@ -23,7 +23,7 @@ const {
     spawn
 } = require('promisify-child-process');
 const Universal = AeSDK.Universal;
-const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
+// const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
 
 const config = {
   localhostParams: {
@@ -227,13 +227,6 @@ const generatePublicKeyFromSecretKey = (secretKey) => {
     return Crypto.aeEncodeKey(keys.publicKey)
 }
 
-function decodedHexAddressToPublicAddress(hexAddress) {
-
-	const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
-
-  return Crypto.aeEncodeKey(keys.publicKey)
-};
-
 const timeout = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
@@ -269,6 +262,5 @@ module.exports = {
   isKeyPair,
   generatePublicKeyFromSecretKey,
   timeout,
-  decodedHexAddressToPublicAddress,
   generateKeyPairFromSecretKey
 };

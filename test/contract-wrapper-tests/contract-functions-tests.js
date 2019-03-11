@@ -21,7 +21,11 @@ const ownerKeyPair = {
     publicKey: "ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU",
     privateKey: "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
 };
-const notOwnerKeyPair = wallets[8];
+// const notOwnerKeyPair = wallets[8];
+const notOwnerKeyPair = {
+    publicKey: 'ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ',
+    secretKey: '36595b50bf097cd19423c40ee66b117ed15fc5ec03d8676796bdf32bc8fe367d82517293a0f82362eb4f93d0de77af5724fba64cbcf55542328bc173dbe13d33'
+};
 
 const availableSmartContratsFunctions = [
     'sayHello',
