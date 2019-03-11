@@ -105,33 +105,11 @@ const getClient = async function (network, keypair = config.keypair) {
             keypair,
             nativeMode: true,
             networkId: network.networkId
-            // keypair: {
-            //     publicKey: keyPair.publicKey,
-            //     secretKey: keyPair.secretKey
-            // }
         })
     });
 
-    // let result = await client.spend(10000000, 'ak_gLYH5tAexTCvvQA6NpXksrkPJKCkLnB9MTDFTVCBuHNDJ3uZv');
-    // console.log(result);
-
     return client;
 }
-
-// const createLocalAccount = async function (keyPair) {
-//     let tempAccount = await Universal({
-//         networkId: config.localhostParams.networkId,
-//         url: config.localhostParams.url,
-//         internalUrl: config.localhostParams.url + "/internal",
-//         keypair: {
-//             publicKey: keyPair.publicKey,
-//             secretKey: keyPair.secretKey
-//         }
-//     })
-//   });
-
-//   return client;
-// };
 
 const getNetwork = (network) => {
   const networks = {
@@ -260,6 +238,20 @@ const timeout = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
+async function generateKeyPairFromSecretKey(secretKey) {
+    const hexStr = await Crypto.hexStringToByte(secretKey.trim());
+    const keys = await Crypto.generateKeyPairFromSecret(hexStr);
+
+    const publicKey = await Crypto.aeEncodeKey(keys.publicKey);
+
+    let keyPair = {
+        publicKey,
+        secretKey
+    }
+
+    return keyPair;
+}
+
 module.exports = {
   print,
   printError,
@@ -277,5 +269,6 @@ module.exports = {
   isKeyPair,
   generatePublicKeyFromSecretKey,
   timeout,
-  decodedHexAddressToPublicAddress
+  decodedHexAddressToPublicAddress,
+  generateKeyPairFromSecretKey
 };

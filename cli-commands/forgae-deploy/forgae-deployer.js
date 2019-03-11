@@ -1,5 +1,3 @@
-const Crypto = require('@aeternity/aepp-sdk').Crypto;
-
 const utils = require('./../utils')
 const fs = require('fs')
 const gasLimit = 20000000;
@@ -84,12 +82,9 @@ class Deployer {
 
         let deployedContract = await compiledContract.deploy(deployOptions);
 
-        //add smart contract's functions
-        let functions = await assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network); // contractPath, deployedContract, privateKey, byteCode, network)
+        // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance 
+        let functions = await generateFunctionsFromSmartContract(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network);
         deployedContract = addSmartContractFunctions(deployedContract, functions);
-
-        // add [from] functionality !!!!!!!!!!!
-        //deployedContract = addFromFunction(deployedContract, this.keypair);
 
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
@@ -116,53 +111,6 @@ class Deployer {
 
         return deployedContract;
 
-        function addFromFunction(contractInstance) {
-
-            const additionalFunctionality = {
-                from: function (secretKey) {
-
-                    if (!secretKey || !isNaN(secretKey) || secretKey.length !== 128) {
-                        throw new Error('Invalid secret key!');
-                    }
-
-                    return {
-                        call: async function (functionName, options) {
-
-                            const keyPair = await generateKeyPairFromSecretKey(secretKey);
-                            const newClient = await utils.getClient(self.network, keyPair);
-
-                            const clientConfiguration = {
-                                client: newClient,
-                                byteCode: compiledContract.bytecode,
-                                contractAddress: contractInstance.address
-                            }
-
-                            let configuration = {
-                                options: {
-                                    ttl: ttl
-                                },
-                                abi: ABI_TYPE,
-                            };
-
-                            if (options.args) {
-                                configuration.args = options.args
-                            }
-
-                            if (options.amount && options.amount > 0) {
-                                configuration.options.amount = options.amount;
-                            }
-
-                            return await clientConfiguration.client.contractCall(clientConfiguration.byteCode, ABI_TYPE, clientConfiguration.contractAddress, functionName, configuration);
-                        },
-                    }
-                }
-            }
-
-            const newInstanceWithAddedAdditionalFunctionality = Object.assign(additionalFunctionality, contractInstance);
-
-            return newInstanceWithAddedAdditionalFunctionality;
-        }
-
         function addSmartContractFunctions(deployedContract, functions) {
             let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
 
@@ -171,25 +119,9 @@ class Deployer {
     }
 }
 
-async function generateKeyPairFromSecretKey(secretKey) {
-    const hexStr = await Crypto.hexStringToByte(secretKey.trim());
-    const keys = await Crypto.generateKeyPairFromSecret(hexStr);
-
-    const publicKey = await Crypto.aeEncodeKey(keys.publicKey);
-
-    let keyPair = {
-        publicKey,
-        secretKey
-    }
-
-    return keyPair;
-}
-
-async function assignContractsFunctionToDeployedContractInstance(contractPath, deployedContract, privateKey, byteCode, network) {
+async function generateFunctionsFromSmartContract(contractPath, deployedContract, privateKey, byteCode, network) {
     let functionsDescription = getContractFunctions(contractPath);
     let functions = {};
-
-    // let wrapper = new FunctionWrapper(privateKey);
 
     let fNames = [];
     let fMap = new Map();
@@ -207,7 +139,7 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
             funcReturnType
         });
 
-        const keyPair = await generateKeyPairFromSecretKey(privateKey);
+        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
         let currentClient = await utils.getClient(network, keyPair);
 
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
@@ -310,7 +242,7 @@ async function assignContractsFunctionToDeployedContractInstance(contractPath, d
 
     functions['from'] = async function (privateKey) {
 
-        const keyPair = await generateKeyPairFromSecretKey(privateKey);
+        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
         const client = await utils.getClient(network, keyPair);
 
         let result = {};
@@ -411,30 +343,3 @@ function processArguments(args) {
 }
 
 module.exports = Deployer;
-
-// class FunctionWrapper {
-//     constructor(privateKey, byteCode, address, network) {
-//         this.privateKey = privateKey;
-//         this.funcs = [];
-//         this.originClient = undefined;
-//         this.fromClient = undefined;
-//         this.byteCode = byteCode;
-//         this.address = address;
-//         this.network = network;
-
-//         this._init();
-//     }
-
-//     async _init() {
-//         const keyPair = await generateKeyPairFromSecretKey(this.privateKey);
-//         this.originClient = await utils.getClient(this.network, keyPair);
-//     }
-
-//     addFunction(func) {
-//         this.funcs.push(func);
-//     }
-
-//     getFuncs() {
-//         return this.funcs;
-//     }
-// }
