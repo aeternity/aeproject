@@ -43,9 +43,6 @@ describe('ForgAE Node', () => {
 	})
 
 	it('Should check if the wallets are funded with the exact amount', async () => {
-
-
-
 		let client = await utils.getClient(utils.config.localhostParams);
 		for (let wallet in defaultWallets) {
 			let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
@@ -82,8 +79,8 @@ describe('ForgAE Node', () => {
 describe('ForgAE Node', async () => {
 	it('Process should stop when command is started at wrong folder.', async () => {
 		let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], { cwd: process.cwd() });
-		
-		if(result.indexOf('Process will be terminated!') < 0 ){
+
+		if (result.indexOf('Process will be terminated!') < 0) {
 			assert.isOk(false, "Process is still running in wrong folder.")
 		}
 	})
