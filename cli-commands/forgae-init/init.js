@@ -57,6 +57,7 @@ const createForgaeProjectStructure = async () => {
 
 	setupContracts();
 	setupTests();
+	setupIntegrations();
 	await setupDeploy();
 	setupDocker();
 
@@ -110,6 +111,13 @@ const setupContracts = () => {
 	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
 	createMissingFolder(constants.contractsDir);
 	copyFileOrDir(fileSource, constants.contractFileDestination)
+}
+
+const setupIntegrations = () => {
+	print(`===== Creating integrations directory =====`);
+	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contratsAeppSetting}`;
+	createMissingFolder(constants.integrationsDir);
+	copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination)
 }
 
 const setupTests = () => {
