@@ -191,7 +191,7 @@ There are three optional parameters to ```forgae contracts```:
 - --update - update the contracts aepp with the latest version;
 - --ignoreOpenInBrowser - ignoring opening of the browser;
 
-## deployed contract's instance has additional functionality
+## Access deployed smart contract functions
 You can execute function of smart contract from deployed instance
 
 Examples
