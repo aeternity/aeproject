@@ -105,6 +105,15 @@ const addContractsAeppIntegrationOption = (program) => {
     })
 };
 
+const addShapeOption = (program) => {
+  program
+    .command('shape')
+    .description('Initialize and run web Vue project.')
+    .action(async (options) => {
+      await contracts.run(options);
+    })
+};
+
 const initCommands = (program) => {
   addInitOption(program);
   addCompileOption(program);
@@ -113,6 +122,7 @@ const initCommands = (program) => {
   addDeployOption(program);
   addHistoryOption(program);
   addContractsAeppIntegrationOption(program)
+  addShapeOption(program);
 }
 
 module.exports = {
