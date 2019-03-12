@@ -128,7 +128,7 @@ const getNetwork = (network) => {
 
   const result = networks[network]
   if (!result) {
-    throw new Error(`Unrecognised network ${network}`)
+    throw new Error(`Unrecognized network ${network}`)
   }
 
   return result
@@ -161,7 +161,7 @@ const forgaeExecute = async (command, args = [], options = {}) => {
   return await execute("forgae", command, args, options)
 }
 
-const execute = async (cli, command, args, options = {}) => {
+const execute = async (cli, command, args = [], options = {}) => {
   const child = spawn(cli, [command, ...args], options)
   let result = '';
 

@@ -3,7 +3,6 @@ const fs = require('fs');
 class ShapeCommander {
     constructor() {
         this.subCommands = new Map();
-        this.name = 'al'
         this.init();
     }
 
@@ -14,7 +13,7 @@ class ShapeCommander {
             
             if(file.includes('-cmd.js') > 0){
                 const subCommand = require('./' + file);
-                this.subCommands.set(subCommand.subCommand, subCommand.run);
+                this.subCommands.set(subCommand.name, subCommand.run);
             }
         }
     }

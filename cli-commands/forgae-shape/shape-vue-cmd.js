@@ -3,29 +3,22 @@ const utils = require('./../utils');
 const forgaeExec = utils.forgaeExecute;
 const exec = utils.execute;
 
+const vueRepo = require('./constants.json').repos.vue;
+
 class VueSubCommand {
     constructor(){
         this.name = 'vue'
     }
 
     async run () {
-        console.log(process.cwd());
 
-        let cwd = process.cwd();
+        await forgaeExec('init');
+        await exec('git', 'clone', [vueRepo]);
 
-        let result = await forgaeExec('init');
-
-        console.log('====> <====');
-        console.log(result);
-
-        result = await exec('git', 'clone', )
-
+        console.log('Vue project successfully initialized.');
     } 
 }
 
 const subCommand = new VueSubCommand(); 
 
-module.exports = {
-    subCommand: subCommand.name,
-    run : subCommand.run
-}
+module.exports = subCommand;
