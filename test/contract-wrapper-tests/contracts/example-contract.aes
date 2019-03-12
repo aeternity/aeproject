@@ -1,0 +1,22 @@
+contract ExampleContract =
+
+  public function sayHello(name : string) : string = 
+    String.concat("Hello ", name)
+
+  public function sum(intA: int, intB: int) : int =
+    intA + intB
+
+  public function am_i_caller(caller: address) : bool =
+    caller == Call.caller
+
+  public function get_caller() : address =
+    Call.caller
+
+  private function multiply(x: int, y: int) : int =
+    x * y
+
+  private function prv_func(name: string) =
+    String.concat("Bye ", name)
+
+  public function show_my_param(param: bool) : bool =
+    param
