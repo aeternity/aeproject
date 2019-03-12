@@ -26,6 +26,7 @@ describe('ForgAE Init', () => {
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.testContractPath}`), "test contract doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.deployScriptsPath}`), "deploy scripts doesn't exists");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.contractsPath}`), "example contract doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.contractsAeppSettings}`), "contracts aepp settings file doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.nodeModules}`), "node modules folder doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerEntryPoint}`), "docker entrypoint.sh doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockernodeNode1}`), "docker node node1 doesn't exist");

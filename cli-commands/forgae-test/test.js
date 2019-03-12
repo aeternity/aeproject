@@ -35,10 +35,10 @@ const run = async (path) => {
 
   testDirectory = `${process.cwd()}/${path}`;
   const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\\.(js|es|es6|jsx|sol)$`);
-
+  
   await forgaeTest.run(files);
 }
 
 module.exports = {
   run
-}
+} 

@@ -18,7 +18,7 @@
  */
 'use strict'
 
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 const packageJson = require('./package.json')
 
 
