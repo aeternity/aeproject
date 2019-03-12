@@ -63,7 +63,6 @@ class Deployer {
      * @param {object} initArgs - Initial arguments that will be passed to init function.
      */
     async deploy(contractPath, gas = gasLimit, initState = "") {
-        let self = this;
         
         client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
