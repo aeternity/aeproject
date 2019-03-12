@@ -4,11 +4,17 @@ chai.use(chaiAsPromised);
 const assert = chai.assert;
 const execute = require('../../cli-commands/utils').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
-const constants = require('../constants.json')
-const fs = require('fs-extra')
+const constants = require('../constants.json');
+const fs = require('fs-extra');
+const path = require('path');
+
 let executeOptions = {
 	cwd: process.cwd() + constants.deployTestsFolderPath
 };
+
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+
 const Deployer = require("./../../cli-commands/forgae-deploy/forgae-deployer")
 describe('ForgAE Deploy', () => {
 	const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
@@ -130,11 +136,25 @@ describe('ForgAE Deploy', () => {
 		})
 
 		it('with network and secret on test network', async () => {
-			let testSecretKey = "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319"
-			let result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions)
+			let testSecretKey = constants.privateKeyTestnetDeploy;
+			let result = '';
+
+			const mainForgaeProjectDir = process.cwd();
+			process.chdir(executeOptions.cwd);
+
+			await exec(`npm link ${mainForgaeProjectDir}`);
+
+			try {
+				result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
+			} catch (err) {
+				console.log(err);
+				console.log(err.stdout.toString('utf8'));
+			}
+
+			process.chdir(mainForgaeProjectDir);
 
 			assert.include(result, expectedDeployResult)
-		})
+		});
 
 
 		it('with invalid network arguments', async () => {
@@ -165,3 +185,4 @@ describe('ForgAE Deploy', () => {
 		fs.removeSync(`.${constants.deployTestsFolderPath}`)
 	})
 })
+

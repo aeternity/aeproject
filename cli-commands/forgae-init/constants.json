@@ -12,7 +12,11 @@
 	"contractFileDestination": "./contracts/ExampleContract.aes",
 	"artifactsDir": "/artifacts",
 
-	"dockerDir": "./docker",
+    "integrationsDir": "./integrations",
+	"contratsAeppSetting": "contractsAeppSettings.js",
+    "contratsAeppSettingFileDestination": "./integrations/contractsAeppSettings.js",
+
+  "dockerDir": "./docker",
 	"dockerTemplateDir": "docker",
 	"dockerFilesDestination": "./docker",
 

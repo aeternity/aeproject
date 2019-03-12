@@ -1,0 +1,24 @@
+{
+    "extends": "standard",
+    "rules": {
+        "eqeqeq": "off",
+        "curly": "error",
+        "quotes": "off",
+        "semi": "off",
+        "no-trailing-spaces": "off",
+        "indent": [
+            "warn",
+            4
+        ],
+        "padded-blocks": "off",
+        "space-before-function-paren": "warn",
+        "spaced-comment": "warn",
+        "no-unused-vars": "warn",
+        "no-multiple-empty-lines": "warn",
+        "block-scoped-var": "warn",
+        "eol-last": "off",
+        "no-useless-return": "off",
+        "no-extra-boolean-cast": "off",
+        "no-unused-expressions": "off"
+    }
+}
