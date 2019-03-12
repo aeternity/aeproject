@@ -157,7 +157,7 @@ const sleep = (ms) => {
   }
 }
 
-const forgaeExecute = async (command, args, options = {}) => {
+const forgaeExecute = async (command, args = [], options = {}) => {
   return await execute("forgae", command, args, options)
 }
 
