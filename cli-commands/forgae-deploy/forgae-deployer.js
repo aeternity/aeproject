@@ -288,7 +288,7 @@ function getContractFunctions(contractPath) {
 
     let contract = fs.readFileSync(contractPath, 'utf-8');
 
-    let rgx = /public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w]+)\s*)*=/gm;
+    let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)]+)\s*)*=/gm;
 
     let matches = [];
 
