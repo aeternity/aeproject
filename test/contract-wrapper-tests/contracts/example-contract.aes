@@ -20,3 +20,11 @@ contract ExampleContract =
 
   public function show_my_param(param: bool) : bool =
     param
+
+  // this code is needed for a test
+  // public function commented_function() : list(string) =
+  //   // ["Name: first todo | Is completed: false", "Name: second todo | Is completed: true"]
+  //   let numberOfTodos = get_todo_count(Call.caller)
+  //   let collection = []
+  //   let allTodos = collectData(Call.caller, collection, 0, numberOfTodos)
+  //   allTodos

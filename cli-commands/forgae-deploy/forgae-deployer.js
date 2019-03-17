@@ -119,7 +119,9 @@ class Deployer {
 }
 
 async function generateFunctionsFromSmartContract(contractPath, deployedContract, privateKey, byteCode, network) {
-    let functionsDescription = getContractFunctions(contractPath);
+    const functionsDescription = getContractFunctions(contractPath);
+    const smartContractTypes = getContractTypes(contractPath);
+
     let functions = {};
 
     let fNames = [];
@@ -234,7 +236,17 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
 
             let resultFromExecution = await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, myName, configuration);
 
-            return (await resultFromExecution.decode(myReturnType)).value;
+            let returnType = myReturnType;
+            for (let _type of smartContractTypes.asList) {
+                if (myReturnType.indexOf(_type) >= 0) {
+                    const syntax = smartContractTypes.asMap.get(_type);
+                    returnType = myReturnType.trim().replace(_type, syntax);
+                } 
+            }
+
+            // console.log('==> returnType');
+            // console.log(returnType);
+            return (await resultFromExecution.decode(returnType.trim())).value;
         }
 
     }
@@ -283,12 +295,72 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
     return functions;
 }
 
+function getContractTypes(contractPath) {
+    let contract = fs.readFileSync(contractPath, 'utf-8');
+    let rgx = /^\s*record\s+([\w\d\_]+)\s+=\s(?:{([^}]+))/gm;
+
+    let asMap = new Map();
+    let asList = [];
+
+    let match = rgx.exec(contract);
+    while (match) {
+
+        // set type name
+        let temp = {
+            name: match[1],
+            syntax: '',
+        }
+
+        let isReservedName = temp.name.toLowerCase() === 'state'
+
+        // set syntax
+        if (match.length >= 2 && match[2] && !isReservedName) {
+            let syntax = processSyntax(match[2]);
+            temp.syntax = syntax;
+        }
+
+        if (!isReservedName) {
+            asMap.set(temp.name, temp.syntax);
+            asList.push(temp.name);
+        }
+        
+        match = rgx.exec(contract);
+    }
+
+    return {
+        asMap,
+        asList
+    };
+}
+
+function processSyntax(unprocessedSyntax) {
+
+    let propValues = unprocessedSyntax.split(',').map(x => x.trim());
+
+
+    let syntax = `(`;
+
+    for(let propValue of propValues) {
+
+        let tokens = propValue.split(':').map(x => x.trim());
+        if (tokens.length >= 2) {
+            syntax += tokens[1] + ','
+        }
+    }
+
+    // trim last comma
+    syntax = syntax.substr(0, syntax.length - 1);
+    syntax += ')';
+
+    return syntax;
+}
+
 function getContractFunctions(contractPath) {
     // add-contract-funcs-to-deployed-contract-instance-#59
 
     let contract = fs.readFileSync(contractPath, 'utf-8');
 
-    let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)]+)\s*)*=/gm;
+    let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)\,\s]+)\s*)*=/gm;
 
     let matches = [];
 
