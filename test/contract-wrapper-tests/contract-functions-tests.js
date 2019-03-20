@@ -11,6 +11,7 @@ const constants = require('./../constants.json');
 const Deployer = require('./../../cli-commands/forgae-deploy/forgae-deployer');
 const execute = require('./../../cli-commands/utils').forgaeExecute;
 const waitForContainer = require('./../utils').waitForContainer;
+const convertToPerson = require('./../utils').convertToPerson;
 
 const contractPath = './contracts/example-contract.aes';
 
@@ -22,19 +23,23 @@ const availableSmartContratsFunctions = [
     'sayHello',
     'sum',
     'am_i_caller',
-    'get_caller'
+    'get_caller',
+    'add_person',
+    'get_person_by_id'
 ];
 
 const unavailableSmartContratsFunctions = [
     'multiply',
-    'prv_func'
+    'prv_func',
+    'commented_function',
+    '_get_person_by_id'
 ];
 
 let executeOptions = {
 	cwd: process.cwd() + constants.deployTestsFolderPath
 };
 
-describe("Deployed contract instance additional functionality", async () => {
+describe.only("Deployed contract instance additional functionality", async () => {
 
     let deployedContract;
 
@@ -114,7 +119,7 @@ describe("Deployed contract instance additional functionality", async () => {
         it("Should execute function that accept AND 'amount/aettos' as second parameter", async () => {
             let parameter = "Aleks";
             
-            await assert.isFulfilled(deployedContract.sayHello(parameter, { value: 169}), "Function does not executed successfully!")
+            await assert.isFulfilled(deployedContract.sayHello(parameter, { value: 169}), "Function does not executed successfully!");
         });
 
         it("Should execute default [call] function.", async () => {
@@ -131,6 +136,31 @@ describe("Deployed contract instance additional functionality", async () => {
 		    let value = (await result.decode('string')).value;
 
             assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+        });
+
+        it('Should add person successfully', async () => {
+            await assert.isFulfilled(deployedContract.add_person("Ivan", 25), "Cannot add person successfully!")
+        });
+
+        it('Should get person and decode record person successfully', async () => {
+            // params
+            const NAME = "Ivan";
+            const AGE = 25;
+
+            let id = await deployedContract.add_person(NAME, AGE);
+            let encodedRecord = await deployedContract.get_person_by_id(id);
+            let person = convertToPerson(encodedRecord);
+
+            assert.equal(person.name, NAME, "Incorrect decoded data: 'Name'.")
+            assert.equal(person.age, AGE, "Incorrect decoded data: 'Age'.")
+        });
+
+        it('Should get empty person', async () => {
+            let encodedRecord = await deployedContract.get_person_by_id(91);
+            let person = convertToPerson(encodedRecord);
+
+            assert.equal(person.name, "", "Incorrect decoded data: 'Name'.")
+            assert.equal(person.age, 0, "Incorrect decoded data: 'Age'.")
         });
     });
 
@@ -201,6 +231,31 @@ describe("Deployed contract instance additional functionality", async () => {
 		    let value = (await result.decode('string')).value;
 
             assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+        });
+
+        it('Should add person successfully', async () => {
+            await assert.isFulfilled(fromInstance.add_person("Ivan", 25), "Cannot add person successfully!")
+        });
+
+        it('Should get person and decode record person successfully', async () => {
+            // params
+            const NAME = "Ivan";
+            const AGE = 25;
+
+            let id = await fromInstance.add_person(NAME, AGE);
+            let encodedRecord = await fromInstance.get_person_by_id(id);
+            let person = convertToPerson(encodedRecord);
+
+            assert.equal(person.name, NAME, "Incorrect decoded data: 'Name'.")
+            assert.equal(person.age, AGE, "Incorrect decoded data: 'Age'.")
+        });
+
+        it('Should get empty person', async () => {
+            let encodedRecord = await fromInstance.get_person_by_id(91);
+            let person = convertToPerson(encodedRecord);
+
+            assert.equal(person.name, "", "Incorrect decoded data: 'Name'.")
+            assert.equal(person.age, 0, "Incorrect decoded data: 'Age'.")
         });
     });
 
