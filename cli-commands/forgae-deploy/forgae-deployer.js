@@ -285,7 +285,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
             if (options.amount && options.amount > 0) {
                 configuration.options.amount = options.amount;
             }
-
+            
             return await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, functionName, configuration);
         }
 

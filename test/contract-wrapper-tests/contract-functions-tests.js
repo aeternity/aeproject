@@ -118,7 +118,7 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it("Should execute default [call] function.", async () => {
-            let param = `("I'm a super hero!")`;
+            let param = `("Im a super hero")`;
             let result = await deployedContract.call('sayHello', { "args": param });
             let value = (await result.decode('string')).value;
 
@@ -126,7 +126,7 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it("Should execute default [call] function with passed amount/aettos.", async () => {
-            let param = `("I'm a super hero!")`;
+            let param = `("Im a super hero!")`;
             let result = await deployedContract.call('sayHello', { "args": param, amount: 101 });
 		    let value = (await result.decode('string')).value;
 
@@ -188,7 +188,7 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it("Should execute default [call] function.", async () => {
-            let param = `("I'm a super hero!")`;
+            let param = `("Im a super hero!")`;
             let result = await fromInstance.call('sayHello', { "args": param });
             let value = (await result.decode('string')).value;
 
@@ -196,7 +196,7 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it("Should execute default [call] function with passed amount/aettos.", async () => {
-            let param = `("I'm a super hero!")`;
+            let param = `("Im a super hero!")`;
             let result = await fromInstance.call('sayHello', { "args": param, amount: 101 });
 		    let value = (await result.decode('string')).value;
 
