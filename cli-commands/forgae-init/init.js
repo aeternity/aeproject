@@ -29,14 +29,16 @@ const packageJson = require('../../package.json')
 const forgaeVersion = packageJson.version;
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
 
-async function run(update) {
+async function run(update, shape) {
+	console.log(shape);
+
 	if (update) {
 		await updateForgaeProjectLibraries(sdkVersion, forgaeVersion);
 		return;
 	}
 
 	try {
-		await createForgaeProjectStructure();
+		await createForgaeProjectStructure(shape);
 
 	} catch (e) {
 		printError(e.message)
@@ -44,17 +46,17 @@ async function run(update) {
 	}
 }
 
-const createForgaeProjectStructure = async () => {
+const createForgaeProjectStructure = async (shape) => {
 	print('===== Initializing ForgAE =====');
 
 	await installLibraries()
 
 	print(`===== Creating project file & dir structure =====`);
 
-	setupContracts();
-	setupTests();
+	setupContracts(shape);
+	setupTests(shape);
 	setupIntegrations();
-	await setupDeploy();
+	await setupDeploy(shape);
 	setupDocker();
 
 	print('===== ForgAE was successfully initialized! =====');
@@ -96,11 +98,11 @@ const installYarn = async () => {
 	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
-const setupContracts = () => {
+const setupContracts = (shape) => {
 	print(`===== Creating contracts directory =====`);
-	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
+	const fileSource = shape ? `${__dirname}${constants.shapeArtifactsDir}/${constants.shapeContractTemplateFile}` : `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
 	createMissingFolder(constants.contractsDir);
-	copyFileOrDir(fileSource, constants.contractFileDestination)
+	copyFileOrDir(fileSource, shape ? constants.shapeContractFileDestination : constants.contractFileDestination)
 }
 
 const setupIntegrations = () => {
@@ -110,17 +112,17 @@ const setupIntegrations = () => {
 	copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination)
 }
 
-const setupTests = () => {
+const setupTests = (shape) => {
 	print(`===== Creating tests directory =====`);
-	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.testTemplateFile}`;
+	const fileSource = shape ? `${__dirname}${constants.shapeArtifactsDir}/${constants.shapeTestTemplateFile}` : `${__dirname}${constants.artifactsDir}/${constants.testTemplateFile}`;
 	createMissingFolder(constants.testDir, "Creating tests file structure");
-	copyFileOrDir(fileSource, constants.testFileDestination)
+	copyFileOrDir(fileSource, shape ? constants.shapeTestFileDestination : constants.testFileDestination)
 }
 
-const setupDeploy = async () => {
+const setupDeploy = async (shape) => {
 
 	print(`===== Creating deploy directory =====`);
-	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
+	const fileSource = shape ? `${__dirname}${constants.shapeArtifactsDir}/${constants.shapeDeployTemplateFile}` : `${__dirname}${constants.artifactsDir}/${constants.deployTemplateFile}`;
 	createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
 	copyFileOrDir(fileSource, constants.deployFileDestination)
 }

@@ -15,7 +15,7 @@ chai.use(chaiFiles);
 describe('ForgAE Init', () => {
 	before(async () => {
 		fs.ensureDirSync(`.${constants.initTestsFolderPath}`)
-	})
+	});
 
 	it('Should init project successfully', async () => {
 		await execute(constants.cliCommands.INIT, [], executeOptions)
@@ -37,7 +37,7 @@ describe('ForgAE Init', () => {
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxDefault}`), "docker nginx-default doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxWs}`), "docker nginx-ws doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerKeys}`), "docker keys folder doesn't exist");
-	})
+	});
 
 
 	it('Should update project successfully', async () => {
@@ -80,7 +80,30 @@ describe('ForgAE Init', () => {
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxDefault}`), "docker nginx-default doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxWs}`), "docker nginx-ws doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerKeys}`), "docker keys folder doesn't exist");
-	})
+	});
+
+	it('Should init project successfully with shape parameter', async () => {
+		await execute(constants.cliCommands.INIT, ["--shape"], executeOptions)
+
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageJson}`), "package.json doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageLockJson}`), "package-lock.json doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerComposeYml}`), "docker-compose.yml doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.shapeTestContractPath}`), "test contract doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.deployScriptsPath}`), "deploy scripts doesn't exists");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.shapeContractsPath}`), "example contract doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.contractsAeppSettings}`), "contracts aepp settings file doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.nodeModules}`), "node modules folder doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.aeppForgaeShapeVue}`), "aepp-forgae-shape-vue folder doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerEntryPoint}`), "docker entrypoint.sh doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockernodeNode1}`), "docker node node1 doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockernodeNode2}`), "docker node node2 doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockernodeNode3}`), "docker node node3 doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerHealthCheck}`), "docker healtcheck.sh doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxCors}`), "docker nginx-cors.conf doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxDefault}`), "docker nginx-default doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxWs}`), "docker nginx-ws doesn't exist");
+		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerKeys}`), "docker keys folder doesn't exist");
+	});
 
 	after(async () => {
 		fs.removeSync(`.${constants.initTestsFolderPath}`);

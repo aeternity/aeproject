@@ -23,15 +23,16 @@ const config = require('./utils').config;
 const history = require('./forgae-history/log-store-service');
 const printReportTable = require('./forgae-history/utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
-const shape = require('./forgae-shape/shape-commander');
+const shape = require('./forgae-shapes/shape-commander');
 
 const addInitOption = (program) => {
 	program
 		.command('init')
 		.description('Initialize ForgAE')
 		.option('--update [update]', 'Update project files')
+		.option('--shape [shape]', 'Initialize shape project')
 		.action(async (option) => {
-			await init.run(option.update);
+			await init.run(option.update, option.shape);
 		})
 }
 
