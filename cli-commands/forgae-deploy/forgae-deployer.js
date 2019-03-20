@@ -151,17 +151,17 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
                 client = currentClient;
             }
 
-            const myName = funcName;
-            const myArgs = funcArgs;
-            const myReturnType = funcReturnType;
+            const thisFunctionName = funcName;
+            const thisFunctionArgs = funcArgs;
+            const thisFunctionReturnType = funcReturnType;
 
             let argsBuilder = '(';
 
             if (arguments.length > 0) {
 
-                for (let i = 0; i < myArgs.length; i++) {
+                for (let i = 0; i < thisFunctionArgs.length; i++) {
 
-                    let argType = myArgs[i].type.toLowerCase();
+                    let argType = thisFunctionArgs[i].type.toLowerCase();
 
                     switch (argType) {
                         case 'address':
@@ -196,7 +196,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
                     }
                 }
 
-                if (myArgs.length > 0) {
+                if (thisFunctionArgs.length > 0) {
                     // trim last 'comma'
                     argsBuilder = argsBuilder.substr(0, argsBuilder.length - 1);
                 }
@@ -208,7 +208,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
             // console.log(argsBuilder);
 
             let amount = 0;
-            if (arguments.length > myArgs.length) {
+            if (arguments.length > thisFunctionArgs.length) {
 
                 if (arguments[arguments.length - 1].value) {
                     let element = arguments[arguments.length - 1].value;
@@ -234,18 +234,16 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
                 abi: ABI_TYPE,
             };
 
-            let resultFromExecution = await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, myName, configuration);
+            let resultFromExecution = await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, thisFunctionName, configuration);
 
-            let returnType = myReturnType;
+            let returnType = thisFunctionReturnType;
             for (let _type of smartContractTypes.asList) {
-                if (myReturnType.indexOf(_type) >= 0) {
+                if (thisFunctionReturnType.indexOf(_type) >= 0) {
                     const syntax = smartContractTypes.asMap.get(_type);
-                    returnType = myReturnType.trim().replace(_type, syntax);
+                    returnType = thisFunctionReturnType.trim().replace(_type, syntax);
                 } 
             }
 
-            // console.log('==> returnType');
-            // console.log(returnType);
             return (await resultFromExecution.decode(returnType.trim())).value;
         }
 
