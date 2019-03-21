@@ -29,16 +29,14 @@ const packageJson = require('../../package.json')
 const forgaeVersion = packageJson.version;
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
 
-async function run(update, shape) {
-	console.log(shape);
-
+async function run(update) {
 	if (update) {
 		await updateForgaeProjectLibraries(sdkVersion, forgaeVersion);
 		return;
 	}
 
 	try {
-		await createForgaeProjectStructure(shape);
+		await createForgaeProjectStructure();
 
 	} catch (e) {
 		printError(e.message)
@@ -140,5 +138,6 @@ const setupDocker = () => {
 }
 
 module.exports = {
-	run
+	run,
+	createForgaeProjectStructure
 }

@@ -1,8 +1,6 @@
 const util = require('util');
 const childProcess = util.promisify(require('child_process').exec);
-
 const utils = require('./../utils');
-const forgaeExec = utils.forgaeExecute;
 const exec = utils.execute;
 
 const fs = require('fs-extra');
@@ -10,6 +8,8 @@ const fs = require('fs-extra');
 const vueRepo = require('./constants.json').repos.vue;
 const constants = require('../forgae-init/constants.json');
 const vueWebProjectPath = './aepp-forgae-shape-vue';
+
+const createForgaeProjectStructure = require('../forgae-init/init').createForgaeProjectStructure;
 
 let self;
 
@@ -20,16 +20,16 @@ class VueSubCommand {
 	}
 
 	async run() {
-		console.log('Preparation of a ready-to-use aepp with predefined Vue.js frontend framework and forgae integration');
-
-		await forgaeExec('init', ["--shape"]);
+		await createForgaeProjectStructure(true);
 
 		await self.prepareVueProject();
 
-		console.log('Vue project successfully initialized.');
+		console.log('===== Vue project successfully initialized. =====');
 	}
 
 	async prepareVueProject() {
+		console.log('===== Preparation of a ready-to-use aepp with predefined Vue.js frontend framework and forgae integration =====');
+
 		await exec('git', 'clone', [vueRepo]);
 
 		const currentDir = process.cwd();

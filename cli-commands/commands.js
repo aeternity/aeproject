@@ -30,9 +30,8 @@ const addInitOption = (program) => {
 		.command('init')
 		.description('Initialize ForgAE')
 		.option('--update [update]', 'Update project files')
-		.option('--shape [shape]', 'Initialize shape project')
 		.action(async (option) => {
-			await init.run(option.update, option.shape);
+			await init.run(option.update);
 		})
 }
 
