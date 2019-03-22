@@ -23,7 +23,7 @@ const config = require('./utils').config;
 const history = require('./forgae-history/log-store-service');
 const printReportTable = require('./forgae-history/utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
-const shape = require('./forgae-shape/shape-commander');
+const shape = require('./forgae-shapes/shape-commander');
 
 const addInitOption = (program) => {
 	program

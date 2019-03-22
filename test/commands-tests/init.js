@@ -15,7 +15,7 @@ chai.use(chaiFiles);
 describe('ForgAE Init', () => {
 	before(async () => {
 		fs.ensureDirSync(`.${constants.initTestsFolderPath}`)
-	})
+	});
 
 	it('Should init project successfully', async () => {
 		await execute(constants.cliCommands.INIT, [], executeOptions)
@@ -37,7 +37,7 @@ describe('ForgAE Init', () => {
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxDefault}`), "docker nginx-default doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxWs}`), "docker nginx-ws doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerKeys}`), "docker keys folder doesn't exist");
-	})
+	});
 
 
 	it('Should update project successfully', async () => {
@@ -80,7 +80,7 @@ describe('ForgAE Init', () => {
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxDefault}`), "docker nginx-default doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxWs}`), "docker nginx-ws doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerKeys}`), "docker keys folder doesn't exist");
-	})
+	});
 
 	after(async () => {
 		fs.removeSync(`.${constants.initTestsFolderPath}`);
