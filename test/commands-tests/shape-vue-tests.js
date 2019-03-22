@@ -34,7 +34,6 @@ describe('ForgAE Shape Vue', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeYml)), "docker-compose.yml doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.testContractPath)), "test contract doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.deployScriptsPath)), "deploy scripts doesn't exists");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.contractsPath)), "example contract doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.contractsAeppSettings)), "contracts aepp settings file doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.nodeModules)), "node modules folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerEntryPoint)), "docker entrypoint.sh doesn't exist");
@@ -48,8 +47,7 @@ describe('ForgAE Shape Vue', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerKeys)), "docker keys folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.forgaeStore)), "forgae store folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.vueWebProjectPath)), "vue web project folder doesn't exist");
-        // should uncomment after Vlad's branch is merge
-		//assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoContract)), "ToDo Manager contract doesn't exist");
+		assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoContract)), "ToDo Manager contract doesn't exist");
     });
 
     after(async () => {
