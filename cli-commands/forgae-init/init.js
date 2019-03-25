@@ -28,10 +28,6 @@ const execute = require('./../utils').execute;
 const packageJson = require('../../package.json')
 const forgaeVersion = packageJson.version;
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
-const fs = require('fs-extra');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const NODE_MODULES_LITERAL = './node_modules';
 
 async function run(update) {
 	if (update) {
@@ -57,6 +53,7 @@ const createForgaeProjectStructure = async () => {
 
 	setupContracts();
 	setupTests();
+	setupIntegrations();
 	await setupDeploy();
 	setupDocker();
 
@@ -65,12 +62,6 @@ const createForgaeProjectStructure = async () => {
 
 const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeVersion) => {
 	print(`===== Updating ForgAE files =====`);
-
-	if (fs.existsSync(NODE_MODULES_LITERAL)) {
-		fs.removeSync(NODE_MODULES_LITERAL)
-	}
-
-	await exec('npm install');
 
 	setupDocker();
 	await installForgae(_forgaeVersion)
@@ -110,6 +101,13 @@ const setupContracts = () => {
 	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contractTemplateFile}`;
 	createMissingFolder(constants.contractsDir);
 	copyFileOrDir(fileSource, constants.contractFileDestination)
+}
+
+const setupIntegrations = () => {
+	print(`===== Creating integrations directory =====`);
+	const fileSource = `${__dirname}${constants.artifactsDir}/${constants.contratsAeppSetting}`;
+	createMissingFolder(constants.integrationsDir);
+	copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination)
 }
 
 const setupTests = () => {

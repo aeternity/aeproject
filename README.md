@@ -190,3 +190,36 @@ There are three optional parameters to ```forgae contracts```:
     It defaults to the following url -  http://localhost:3001/; 
 - --update - update the contracts aepp with the latest version;
 - --ignoreOpenInBrowser - ignoring opening of the browser;
+
+## Access deployed smart contract functions
+You can execute function of smart contract from deployed instance
+
+Examples
+```
+contract ExampleContract =
+
+  public function sayHello(name : string) : string = 
+    String.concat("Hello, ", name)
+
+  public function donate() : int =
+    Call.value
+```
+
+```
+let deployer = new Deployer('local', privateKey);
+deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
+
+let result = await deployedContract.sayHello('World'); // result would be: "Hello, World"
+```
+
+or you can execute/call functions from another private/secret key
+```
+const fromInstance = await deployedContract.from(anotherSecretKey);
+let result = await fromInstance.sayHello('Friend'); // result would be: "Hello, Friend"
+```
+
+or you just want to donate some aettos
+```
+await deployedContract.donate({ value: 991 });
+```
+  

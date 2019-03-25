@@ -29,7 +29,6 @@ const nodeConfig = require('./../forgae-node/config.json')
 
 async function run(files) {
   try {
-
     print('===== Starting Tests =====');
 
     let mochaConfig = {

@@ -1,0 +1,68 @@
+contract ExampleContract =
+
+  record person = {
+    name: string,
+    age: int}
+
+  record state = {
+    current_id: int,
+    m_id_people: map(int, person)}
+
+  public stateful function init() =
+    { current_id = 0,
+      m_id_people = {}}
+
+  public function sayHello(name : string) : string = 
+    String.concat("Hello ", name)
+
+  public function sum(intA: int, intB: int) : int =
+    intA + intB
+
+  public function am_i_caller(caller: address) : bool =
+    caller == Call.caller
+
+  public function get_caller() : address =
+    Call.caller
+
+  private function multiply(x: int, y: int) : int =
+    x * y
+
+  private function prv_func(name: string) =
+    String.concat("Bye ", name)
+
+  public function show_my_param(param: bool) : bool =
+    param
+
+  public function add_person(_name: string, _age: int) : int =
+
+    let _person : person = {
+      name = _name,
+      age = _age}
+
+    let next_id = state.current_id + 1
+
+    put(state{m_id_people[next_id] = _person})
+    put(state{current_id = next_id})
+
+    next_id
+
+  public function get_person_by_id(id: int) : person =
+    _get_person_by_id(id)
+
+  private function _get_person_by_id(id: int) : person =
+      
+    let _person : person = {
+      name = "",
+      age = 0}
+
+    switch(Map.lookup(id, state.m_id_people))
+      Some(x) => x
+      None => _person
+
+  // this code is needed for a test
+  // public function commented_function() : list(string) =
+  //   // ["Name: first todo | Is completed: false", "Name: second todo | Is completed: true"]
+  //   let numberOfTodos = get_todo_count(Call.caller)
+  //   let collection = []
+  //   let allTodos = collectData(Call.caller, collection, 0, numberOfTodos)
+  //   allTodos

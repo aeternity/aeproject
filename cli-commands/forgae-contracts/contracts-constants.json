@@ -4,7 +4,7 @@
    "YARN_LITERAL" : "yarn",
    "CONTRACTS_AEPP_GITHUB_URL" : "git+https://github.com/aeternity/aepp-contracts#develop",
    "CONTRACTS_SETTINGS_PATH" : "/src/settings.js",
-   "FORGAE_SETTINGS_PATH" : "/cli-commands/forgae-contracts/settings.js",
+   "FORGAE_SETTINGS_PATH" : "./integrations/contractsAeppSettings.js",
    "DEFAULT_CONTRACTS_AEPP_URL" : "http://localhost:8080/",
    "DEFAULT_LOCAL_NODE_URL" : "http://localhost:3001/",
    "SPECIFIC_LOCAL_NODE_URL" : "http://localhost:3002/",
@@ -14,5 +14,5 @@
    "LOCALHOST_SUCCESS" : "Contracts web Aepp is running",
    "UPDATE_FLAG_CHECK_CONDITION" : "Installing Contracts web Aepp",
    "FORGAE_CLI_COMMAND" : "forgae",
-   "STARTING_AEPP_TIMEOUT" : 100000
+   "STARTING_AEPP_TIMEOUT" : 150000
 }
