@@ -1,10 +1,11 @@
 const utils = require('./../utils')
 const fs = require('fs')
 const gasLimit = 20000000;
-const ttl = 100;
 const logStoreService = require('./../forgae-history/log-store-service');
-
 const ABI_TYPE = 'sophia';
+const execute = require('./../utils').execute;
+const ttl = 100;
+const opts = { ttl: ttl };
 
 let client;
 
@@ -61,15 +62,13 @@ class Deployer {
      * @param {string} contractPath - Relative path to the contract
      * @param {int} gasLimit - Gas limit
      * @param {object} initArgs - Initial arguments that will be passed to init function.
+     * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy(contractPath, gas = gasLimit, initState = "") {
-        
+    async deploy(contractPath, gas = gasLimit, initState = "", options = opts) {
         client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
-            options: {
-                ttl
-            },
+            options: options,
             abi: "sophia"
         };
         if (initState != "") {
