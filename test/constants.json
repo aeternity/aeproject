@@ -9,6 +9,7 @@
 	"dockerFolderPath": "/cli-commands/forgae-init/artifacts",
 	"nodeStartingFolder": "/test/commands-tests/contractsTests/artifacts",
 	"historyTestsFolderPath": "/test/commands-tests/historyTest",
+	"shapeVueTestsFolderPath": "/test/commands-tests/shapeVueTestFolder",
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
@@ -16,7 +17,11 @@
 		"COMPILE": "compile",
 		"DEPLOY": "deploy",
 		"HISTORY": "history",
-		"CONTRACTS": "contracts"
+		"CONTRACTS": "contracts",
+		"SHAPE": "shape"
+	},
+	"cliSubCommands": {
+		"VUE": "vue"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",
@@ -44,7 +49,11 @@
 		"dockerNginxCors": "/docker/nginx-cors.conf",
 		"dockerNginxDefault": "/docker/nginx-default.conf",
 		"dockerNginxWs": "/docker/nginx-ws.conf",
-		"dockerKeys": "/docker/keys"
+		"dockerKeys": "/docker/keys",
+		"forgaeStore": "/.forgae-store",
+		"toDoContract": "/contracts/ToDoManager.aes",
+		"toDoTestContractPath": "/test/toDoManagerTests.js",
+		"vueWebProjectPath": "/aepp-forgae-shape-vue"
 	},
 	"privateKeyTestnetDeploy": "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319"
 }
