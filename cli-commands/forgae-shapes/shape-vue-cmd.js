@@ -9,10 +9,12 @@ const vueRepo = require('./constants.json').repos.vue;
 const constants = require('../forgae-init/constants.json');
 const vueWebProjectPath = './aepp-forgae-shape-vue';
 
+console.log('udri');
+
 const createForgaeProjectStructure = require('./../forgae-init/init').createForgaeProjectStructure;
 
-console.log('udri');
 console.log(createForgaeProjectStructure);
+
 
 let self;
 
