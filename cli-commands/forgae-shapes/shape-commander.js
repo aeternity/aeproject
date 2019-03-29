@@ -1,3 +1,5 @@
+require = require('esm')(module /*, options */) // use to handle es6 import/export
+
 const fs = require('fs');
 
 class ShapeCommander {
