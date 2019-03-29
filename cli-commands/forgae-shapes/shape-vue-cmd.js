@@ -1,5 +1,3 @@
-require = require('esm')(module /*, options */) // use to handle es6 import/export
-
 const util = require('util');
 const childProcess = util.promisify(require('child_process').exec);
 const utils = require('./../utils');
@@ -13,7 +11,9 @@ const vueWebProjectPath = './aepp-forgae-shape-vue';
 
 console.log('udri');
 
-import { createForgaeProjectStructure } from './../forgae-init/init';
+const init2 = require('./../forgae-init/init');
+console.log(init2);
+const createForgaeProjectStructure = init2.createForgaeProjectStructure;
 
 console.log(createForgaeProjectStructure);
 
