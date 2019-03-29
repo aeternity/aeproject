@@ -127,10 +127,10 @@ const getNetwork = (network) => {
     },
   };
 
-    const result = networks[network]
-    if (!result) {
-        throw new Error(`Unrecognised network ${network}`)
-    }
+  const result = networks[network]
+  if (!result) {
+    throw new Error(`Unrecognized network ${network}`)
+  }
 
   return result
 };
@@ -158,13 +158,13 @@ const sleep = (ms) => {
     }
 }
 
-const forgaeExecute = async (command, args, options = {}) => {
-    return await execute("forgae", command, args, options)
+const forgaeExecute = async (command, args = [], options = {}) => {
+  return await execute("forgae", command, args, options)
 }
 
-const execute = async (cli, command, args, options = {}) => {
-    const child = spawn(cli, [command, ...args], options)
-    let result = '';
+const execute = async (cli, command, args = [], options = {}) => {
+  const child = spawn(cli, [command, ...args], options)
+  let result = '';
 
   child.stdout.on('data', (data) => {
     result += data.toString();

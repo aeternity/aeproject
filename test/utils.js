@@ -20,7 +20,21 @@ async function waitUntilFundedBlocks(client, blocks = 8) {
 	await client.awaitHeight(blocks)
 }
 
+function convertToPerson(data) {
+	
+	let isNan = isNaN(data[1].value);
+	if (!Array.isArray(data) || data.length !== 2 || isNan  ) {
+		throw new Error('Cannot convert to "todo". Invalid data!');
+	}
+
+	return {
+		name: data[0].value,
+		age: data[1].value
+	}
+}
+
 module.exports = {
 	waitForContainer,
-	waitUntilFundedBlocks
+	waitUntilFundedBlocks,
+	convertToPerson
 }
