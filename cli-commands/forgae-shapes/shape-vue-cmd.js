@@ -11,6 +11,9 @@ const vueWebProjectPath = './aepp-forgae-shape-vue';
 
 const createForgaeProjectStructure = require('./../forgae-init/init').createForgaeProjectStructure;
 
+console.log('udri');
+console.log(createForgaeProjectStructure);
+
 let self;
 
 class VueSubCommand {
