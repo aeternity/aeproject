@@ -14,17 +14,12 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */) // use to handle es6 import/export
-
-import {
-	printError,
-	print,
-	createMissingFolder,
-	copyFileOrDir
-} from '../utils.js';
-
 const constants = require('./constants.json');
 const execute = require('./../utils').execute;
+const printError = require('./../utils').printError;
+const print = require('./../utils').print;
+const createMissingFolder = require('./../utils').createMissingFolder;
+const copyFileOrDir = require('./../utils').copyFileOrDir;
 const packageJson = require('../../package.json')
 const forgaeVersion = packageJson.version;
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
