@@ -1,3 +1,5 @@
+require = require('esm')(module /*, options */) // use to handle es6 import/export
+
 const util = require('util');
 const childProcess = util.promisify(require('child_process').exec);
 const utils = require('./../utils');
