@@ -10,6 +10,7 @@ const constants = require('../forgae-init/constants.json');
 const vueWebProjectPath = './aepp-forgae-shape-vue';
 
 console.log('udri');
+console.log(require);
 
 const init2 = require('./../forgae-init/init');
 console.log(init2);
