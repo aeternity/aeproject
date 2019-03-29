@@ -13,7 +13,6 @@ class ShapeCommander {
 
 			if (file.includes('-cmd.js') > 0) {
 				const subCommand = require('./' + file);
-				console.log(subCommand);
 				this.subCommands.set(subCommand.name, subCommand.run);
 			}
 		}
