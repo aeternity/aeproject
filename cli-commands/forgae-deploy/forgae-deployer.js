@@ -60,8 +60,7 @@ class Deployer {
      * Deploy command
      * @deploy
      * @param {string} contractPath - Relative path to the contract
-     * @param {int} gasLimit - Gas limit
-     * @param {object} initArgs - Initial arguments that will be passed to init function.
+     * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
     async deploy(contractPath, initState = [], options = opts) {
