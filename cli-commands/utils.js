@@ -26,50 +26,51 @@ const Universal = AeSDK.Universal;
 // const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
 
 const config = {
-  localhostParams: {
-    url: "http://localhost:3001",
-    networkId: 'ae_devnet'
-  },
-  testnetParams: {
-    url: "https://sdk-testnet.aepps.com",
-    networkId: 'ae_uat'
-  },
-  mainnetParams: {
-    url: 'https://sdk-mainnet.aepps.com',
-    networkId: 'ae_mainnet'
-  },
-  keypair: {
-    secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
-    publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
-  }
+    localhostParams: {
+        url: "http://localhost:3001",
+        networkId: 'ae_devnet'
+    },
+    testnetParams: {
+        url: "https://sdk-testnet.aepps.com",
+        networkId: 'ae_uat'
+    },
+    mainnetParams: {
+        url: 'https://sdk-mainnet.aepps.com',
+        networkId: 'ae_mainnet'
+    },
+    keypair: {
+        secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
+        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
+    },
+    compilerUrl: 'https://compiler.aepps.com'
 };
 
 // Print helper
 const print = (msg, obj) => {
-  if (obj) {
-    console.log(msg, obj)
-  } else {
-    console.log(msg)
-  }
+    if (obj) {
+        console.log(msg, obj)
+    } else {
+        console.log(msg)
+    }
 };
 
 // Print error helper
 const printError = (msg) => {
-  console.log(msg)
+    console.log(msg)
 };
 
 const createMissingFolder = (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
 };
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
-  if (fs.existsSync(`${destinationFileOrDir}`) && !copyOptions.overwrite) {
-    throw new Error(`${destinationFileOrDir} already exists.`);
-  }
+    if (fs.existsSync(`${ destinationFileOrDir }`) && !copyOptions.overwrite) {
+        throw new Error(`${ destinationFileOrDir } already exists.`);
+    }
 
-  fs.copySync(sourceFileOrDir, destinationFileOrDir, copyOptions)
+    fs.copySync(sourceFileOrDir, destinationFileOrDir, copyOptions)
 };
 
 const getFiles = async function (directory, regex) {
@@ -100,11 +101,11 @@ const getClient = async function (network, keypair = config.keypair) {
     await handleApiError(async () => {
         client = await Universal({
             url: network.url,
-            process,
             internalUrl,
-            keypair,
+            keypair: keypair,
             nativeMode: true,
-            networkId: network.networkId
+            networkId: network.networkId,
+            compilerUrl: config.compilerUrl
         })
     });
 
@@ -112,42 +113,42 @@ const getClient = async function (network, keypair = config.keypair) {
 }
 
 const getNetwork = (network) => {
-  const networks = {
-    local: {
-      url: config.localhostParams.url,
-      networkId: config.localhostParams.networkId
-    },
-    testnet: {
-      url: config.testnetParams.url,
-      networkId: config.testnetParams.networkId
-    },
-    mainnet: {
-      url: config.mainnetParams.url,
-      networkId: config.mainnetParams.networkId
-    },
-  };
+    const networks = {
+        local: {
+            url: config.localhostParams.url,
+            networkId: config.localhostParams.networkId
+        },
+        testnet: {
+            url: config.testnetParams.url,
+            networkId: config.testnetParams.networkId
+        },
+        mainnet: {
+            url: config.mainnetParams.url,
+            networkId: config.mainnetParams.networkId
+        },
+    };
 
-  const result = networks[network]
-  if (!result) {
-    throw new Error(`Unrecognized network ${network}`)
-  }
+    const result = networks[network]
+    if (!result) {
+        throw new Error(`Unrecognized network ${ network }`)
+    }
 
-  return result
+    return result
 };
 
 const handleApiError = async (fn) => {
     try {
 
-    return await fn()
-  } catch (e) {
-    const response = e.response
-    logApiError(response && response.data ? response.data.reason : e)
-    process.exit(1)
-  }
+        return await fn()
+    } catch (e) {
+        const response = e.response
+        logApiError(response && response.data ? response.data.reason : e)
+        process.exit(1)
+    }
 };
 
 function logApiError(error) {
-    printError(`API ERROR: ${error}`)
+    printError(`API ERROR: ${ error }`)
 }
 
 const sleep = (ms) => {
@@ -159,23 +160,23 @@ const sleep = (ms) => {
 }
 
 const forgaeExecute = async (command, args = [], options = {}) => {
-  return await execute("forgae", command, args, options)
+    return await execute("forgae", command, args, options)
 }
 
 const execute = async (cli, command, args = [], options = {}) => {
-  const child = spawn(cli, [command, ...args], options)
-  let result = '';
+    const child = spawn(cli, [command, ...args], options)
+    let result = '';
 
-  child.stdout.on('data', (data) => {
-    result += data.toString();
-  });
+    child.stdout.on('data', (data) => {
+        result += data.toString();
+    });
 
-  child.stderr.on('data', (data) => {
-    result += data.toString();
-  });
+    child.stderr.on('data', (data) => {
+        result += data.toString();
+    });
 
-  await child;
-  return result;
+    await child;
+    return result;
 };
 
 const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
@@ -217,7 +218,7 @@ const isKeyPair = (k) => {
         return false
     }
 
-  return true
+    return true
 };
 
 const generatePublicKeyFromSecretKey = (secretKey) => {
@@ -228,7 +229,7 @@ const generatePublicKeyFromSecretKey = (secretKey) => {
 }
 
 const timeout = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 };
 
 async function generateKeyPairFromSecretKey(secretKey) {
@@ -246,21 +247,21 @@ async function generateKeyPairFromSecretKey(secretKey) {
 }
 
 module.exports = {
-  print,
-  printError,
-  createMissingFolder,
-  copyFileOrDir,
-  getFiles,
-  getClient,
-  getNetwork,
-  sleep,
-  execute,
-  readFile,
-  config,
-  keyToHex,
-  forgaeExecute,
-  isKeyPair,
-  generatePublicKeyFromSecretKey,
-  timeout,
-  generateKeyPairFromSecretKey
+    print,
+    printError,
+    createMissingFolder,
+    copyFileOrDir,
+    getFiles,
+    getClient,
+    getNetwork,
+    sleep,
+    execute,
+    readFile,
+    config,
+    keyToHex,
+    forgaeExecute,
+    isKeyPair,
+    generatePublicKeyFromSecretKey,
+    timeout,
+    generateKeyPairFromSecretKey
 };

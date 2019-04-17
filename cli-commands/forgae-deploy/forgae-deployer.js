@@ -60,29 +60,26 @@ class Deployer {
      * Deploy command
      * @deploy
      * @param {string} contractPath - Relative path to the contract
-     * @param {int} gasLimit - Gas limit
-     * @param {object} initArgs - Initial arguments that will be passed to init function.
+     * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy(contractPath, gas = gasLimit, initState = "", options = opts) {
+    async deploy(contractPath, initState = [], options = opts) {
         client = await utils.getClient(this.network, this.keypair);
         let contract = await this.readFile(contractPath);
         let deployOptions = {
             options: options,
             abi: "sophia"
         };
-        if (initState != "") {
-            deployOptions.initState = initState
-        }
-        const compiledContract = await client.contractCompile(contract, {
-            gas
-        });
 
-        let deployedContract = await compiledContract.deploy(deployOptions);
+        const contractInstance = await client.getContractInstance(contract);
+        await contractInstance.compile();
 
-        // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance 
-        let functions = await generateFunctionsFromSmartContract(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network);
-        deployedContract = addSmartContractFunctions(deployedContract, functions);
+        let deployedContract = await contractInstance.deploy(initState, options);
+
+        // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
+        // ToDo: Implement abi
+        // let functions = await generateFunctionsFromSmartContract(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network);
+        // deployedContract = addSmartContractFunctions(deployedContract, functions);
 
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
@@ -105,7 +102,7 @@ class Deployer {
 
         logStoreService.logAction(info);
 
-        console.log(`===== Contract: ${contractFileName} has been deployed =====`);
+        console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
 
         return deployedContract;
 
@@ -164,11 +161,11 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
 
                     switch (argType) {
                         case 'address':
-                            argsBuilder += `${utils.keyToHex(arguments[i])},`
+                            argsBuilder += `${ utils.keyToHex(arguments[i]) },`
                             break;
 
                         case 'int':
-                            argsBuilder += `${arguments[i]},`
+                            argsBuilder += `${ arguments[i] },`
                             break;
 
                         case 'bool':
@@ -190,7 +187,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
 
                         case 'string':
                         default:
-                            argsBuilder += `"${arguments[i]}",`
+                            argsBuilder += `"${ arguments[i] }",`
                             break;
                     }
                 }
@@ -240,7 +237,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
                 if (thisFunctionReturnType.indexOf(_type) >= 0) {
                     const syntax = smartContractTypes.asMap.get(_type);
                     returnType = thisFunctionReturnType.trim().replace(_type, syntax);
-                } 
+                }
             }
 
             return (await resultFromExecution.decode(returnType.trim())).value;
@@ -282,7 +279,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
             if (options.amount && options.amount > 0) {
                 configuration.options.amount = options.amount;
             }
-            
+
             return await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, functionName, configuration);
         }
 
@@ -320,7 +317,7 @@ function getContractTypes(contractPath) {
             asMap.set(temp.name, temp.syntax);
             asList.push(temp.name);
         }
-        
+
         match = rgx.exec(contract);
     }
 
@@ -337,7 +334,7 @@ function processSyntax(unprocessedSyntax) {
 
     let syntax = `(`;
 
-    for(let propValue of propValues) {
+    for (let propValue of propValues) {
 
         let tokens = propValue.split(':').map(x => x.trim());
         if (tokens.length >= 2) {
