@@ -4,7 +4,7 @@
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "scripts": {
-    "test": "mocha './test/**/*.js' --timeout 0 --exit"
+    "test": "mocha './test/contract-wrapper-tests/*.js' --timeout 0 --exit"
   },
   "bin": {
     "forgae": "./forgae-cli.js"
@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "2.4.1",
+    "@aeternity/aepp-sdk": "3.0.0",
     "await-spawn": "^2.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",

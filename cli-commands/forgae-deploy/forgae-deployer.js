@@ -5,9 +5,12 @@ const logStoreService = require('./../forgae-history/log-store-service');
 const ABI_TYPE = 'sophia';
 const execute = require('./../utils').execute;
 const ttl = 100;
-const opts = { ttl: ttl };
+const opts = {
+    ttl: ttl
+};
 
 let client;
+let contract;
 
 logStoreService.initHistoryRecord();
 
@@ -65,21 +68,21 @@ class Deployer {
      */
     async deploy(contractPath, initState = [], options = opts) {
         client = await utils.getClient(this.network, this.keypair);
-        let contract = await this.readFile(contractPath);
+        contract = await this.readFile(contractPath);
         let deployOptions = {
             options: options,
             abi: "sophia"
         };
 
         const contractInstance = await client.getContractInstance(contract);
-        await contractInstance.compile();
+        let compiledContract = await contractInstance.compile();
 
         let deployedContract = await contractInstance.deploy(initState, options);
 
         // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
         // ToDo: Implement abi
-        // let functions = await generateFunctionsFromSmartContract(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network);
-        // deployedContract = addSmartContractFunctions(deployedContract, functions);
+        let functions = await generateFunctionsFromSmartContract(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network);
+        deployedContract = addSmartContractFunctions(deployedContract, functions);
 
         let regex = new RegExp(/[\w]+.aes$/);
         let contractFileName = regex.exec(contractPath);
@@ -177,13 +180,13 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
 
                             break;
 
-                        //     // TODO
-                        // case 'list(int)':
-                        //     break;
-                        // case 'list(string)':
-                        //     break;
-                        // case 'list(bool)':
-                        //     break;
+                            //     // TODO
+                            // case 'list(int)':
+                            //     break;
+                            // case 'list(string)':
+                            //     break;
+                            // case 'list(bool)':
+                            //     break;
 
                         case 'string':
                         default:
@@ -230,7 +233,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
                 abi: ABI_TYPE,
             };
 
-            let resultFromExecution = await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, thisFunctionName, configuration);
+            let resultFromExecution = await client.contractCall(contract, deployedContract.address, thisFunctionName, configuration);
 
             let returnType = thisFunctionReturnType;
             for (let _type of smartContractTypes.asList) {
@@ -280,7 +283,7 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
                 configuration.options.amount = options.amount;
             }
 
-            return await client.contractCall(byteCode, ABI_TYPE, deployedContract.address, functionName, configuration);
+            return await client.contractCall(contract, deployedContract.address, functionName, configuration);
         }
 
         return result;
