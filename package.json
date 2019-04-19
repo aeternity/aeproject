@@ -4,7 +4,7 @@
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "scripts": {
-    "test": "mocha './test/**/*.js' --timeout 0 --exit"
+    "test": "mocha './test/commands-tests/history.js' --timeout 0 --exit"
   },
   "bin": {
     "forgae": "./forgae-cli.js"
@@ -38,6 +38,10 @@
   "devDependencies": {
     "eslint": "^5.15.1",
     "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
     "sinon": "^7.1.1",
     "yarn": "^1.13.0"
   }
