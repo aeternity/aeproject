@@ -23,7 +23,7 @@ class LogStoreService {
 		if (this.isInitied) {
 			return false;
 		}
-		
+
 		const initialRecord = {
 			actions: new Array()
 		}
@@ -61,13 +61,21 @@ class LogStoreService {
 	 * Add a record to the history of deployments
 	 * @param {*} actionInfo should have those properties: 'deployerType' type of deployer, 'nameOrLabel' name of the contract or label of the transaction, 
 	 * 'transactionHash' transaction hash if available, 'status' 1 - success, 0 - failure, 'result' arbitrary result text
-	*/
+	 */
 	logAction(actionInfo) {
 		if (!this.isInitied) {
 			return;
 		}
-
-		let {deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result} = actionInfo;
+		let {
+			deployerType,
+			nameOrLabel,
+			transactionHash,
+			status,
+			gasPrice,
+			gasUsed,
+			result,
+			networkId
+		} = actionInfo;
 
 		const now = Date.now();
 		const record = {
@@ -78,9 +86,10 @@ class LogStoreService {
 			status,
 			gasPrice,
 			gasUsed,
-			result
+			result,
+			networkId
 		}
-		
+
 		const currentRecord = this.getCurrentWorkingRecord();
 		currentRecord.actions.push(record);
 		this._historyStore.set(this._HISTORY_ID, currentRecord);
@@ -89,8 +98,7 @@ class LogStoreService {
 
 class WindowCompatibleLogStore {
 
-	constructor() {
-	}
+	constructor() {}
 	initHistoryRecord() {
 		return;
 	}
@@ -107,7 +115,7 @@ class WindowCompatibleLogStore {
 		return;
 	}
 
-	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result, networkId) {
 		return;
 
 	}

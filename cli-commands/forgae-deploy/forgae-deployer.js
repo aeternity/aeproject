@@ -6,7 +6,7 @@ const execute = utils.execute;
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
-	ttl: ttl
+    ttl: ttl
 };
 
 let client;
@@ -15,393 +15,411 @@ let contract;
 logStoreService.initHistoryRecord();
 
 function getContractName(contract) {
-	let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
-	var match = rgx.exec(contract);
+    let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
+    var match = rgx.exec(contract);
 
-	return match[1];
+    return match[1];
 }
 
 async function getTxInfo(txHash) {
-	let result;
-	try {
-		result = await client.getTxInfo(txHash)
-	} catch (error) {
-		let info = {
-			gasUsed: 0,
-			gasPrice: 0
-		};
+    let result;
+    try {
+        result = await client.getTxInfo(txHash)
+    } catch (error) {
+        let info = {
+            gasUsed: 0,
+            gasPrice: 0
+        };
 
-		return info;
-	}
-	return result;
+        return info;
+    }
+    return result;
 }
 
 class Deployer {
 
-	constructor(network = "local", keypairOrSecret = utils.config.keypair) {
-		this.network = utils.getNetwork(network);
-		if (utils.isKeyPair(keypairOrSecret)) {
-			this.keypair = keypairOrSecret;
-			return
-		}
-		if (typeof keypairOrSecret === 'string' || keypairOrSecret instanceof String) {
-			this.keypair = {
-				publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
-				secretKey: keypairOrSecret
-			}
-			return
-		}
+    constructor(network = "local", keypairOrSecret = utils.config.keypair) {
+        this.network = utils.getNetwork(network);
+        if (utils.isKeyPair(keypairOrSecret)) {
+            this.keypair = keypairOrSecret;
+            return
+        }
+        if (typeof keypairOrSecret === 'string' || keypairOrSecret instanceof String) {
+            this.keypair = {
+                publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
+                secretKey: keypairOrSecret
+            }
+            return
+        }
 
-		throw new Error("Incorrect keypair or secret key passed")
-	}
+        throw new Error("Incorrect keypair or secret key passed")
+    }
 
-	async readFile(path) {
-		return await fs.readFileSync(path, "utf-8")
-	}
+    async readFile(path) {
+        return await fs.readFileSync(path, "utf-8")
+    }
 
-	/**
-	 * Deploy command
-	 * @deploy
-	 * @param {string} contractPath - Relative path to the contract
-	 * @param {object} initState - Initial arguments that will be passed to init function.
-	 * @param {object} options - Initial options that will be passed to init function.
-	 */
-	async deploy(contractPath, initState = [], options = opts) {
-		client = await utils.getClient(this.network, this.keypair);
+    /**
+     * Deploy command
+     * @deploy
+     * @param {string} contractPath - Relative path to the contract
+     * @param {object} initState - Initial arguments that will be passed to init function.
+     * @param {object} options - Initial options that will be passed to init function.
+     */
+    async deploy(contractPath, initState = [], options = opts) {
+        client = await utils.getClient(this.network, this.keypair);
+        let contract = await this.readFile(contractPath);
+        let deployOptions = {
+            options: options,
+            abi: "sophia"
+        };
 
-		contract = await this.readFile(contractPath);
+        const contractInstance = await client.getContractInstance(contract);
+        await contractInstance.compile();
 
-		const contractInstance = await client.getContractInstance(contract);
-		let deployedContract = await contractInstance.deploy(initState, options);
+        let deployedContract = await contractInstance.deploy(initState, options);
 
-		// extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-		let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
-		deployedContract = addSmartContractFunctions(deployedContract, functions);
+        // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
+        // ToDo: Implement abi
+        // let functions = await generateFunctionsFromSmartContract(contractPath, deployedContract, this.keypair.secretKey, compiledContract.bytecode, this.network);
+        // deployedContract = addSmartContractFunctions(deployedContract, functions);
 
-		let regex = new RegExp(/[\w]+.aes$/);
-		let contractFileName = regex.exec(contractPath);
+        let regex = new RegExp(/[\w]+.aes$/);
+        let contractFileName = regex.exec(contractPath);
 
-		let txInfo = await getTxInfo(deployedContract.transaction);
-		let isSuccess = false;
-		if (deployedContract.transaction) {
-			isSuccess = true;
-		}
+        let txInfo = await getTxInfo(deployedContract.transaction);
+        let isSuccess = false;
+        if (deployedContract.transaction) {
+            isSuccess = true;
+        }
 
-		let info = {
-			deployerType: this.constructor.name,
-			nameOrLabel: getContractName(contract),
-			transactionHash: deployedContract.transaction,
-			status: isSuccess,
-			gasPrice: txInfo.gasPrice,
-			gasUsed: txInfo.gasUsed,
-			result: deployedContract.address
-		}
+        let info = {
+            deployerType: this.constructor.name,
+            nameOrLabel: getContractName(contract),
+            transactionHash: deployedContract.transaction,
+            status: isSuccess,
+            gasPrice: txInfo.gasPrice,
+            gasUsed: txInfo.gasUsed,
+            result: deployedContract.address,
+            networkId: this.network.networkId
+        }
+        logStoreService.logAction(info);
 
-		logStoreService.logAction(info);
+        console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
 
-		console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
+        return deployedContract;
 
-		return deployedContract;
+        function addSmartContractFunctions(deployedContract, functions) {
+            let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
 
-		function addSmartContractFunctions(deployedContract, functions) {
-			let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
-
-			return newInstanceWithAddedAdditionalFunctionality;
-		}
-	}
+            return newInstanceWithAddedAdditionalFunctionality;
+        }
+    }
 }
 
 async function generateFunctionsFromSmartContract(contractSource, deployedContract, privateKey, network) {
-	const functionsDescription = getContractFunctions(contractSource);
-	const smartContractTypes = getContractTypes(contractSource);
+    const functionsDescription = getContractFunctions(contractSource);
+    const smartContractTypes = getContractTypes(contractSource);
 
-	let functions = {};
+    let functions = {};
 
-	let fNames = [];
-	let fMap = new Map();
+    let fNames = [];
+    let fMap = new Map();
 
-	for (func of functionsDescription) {
+    for (func of functionsDescription) {
 
-		const funcName = func.name;
-		const funcArgs = func.args;
-		const funcReturnType = func.returnType;
+        const funcName = func.name;
+        const funcArgs = func.args;
+        const funcReturnType = func.returnType;
 
-		fNames.push(funcName);
-		fMap.set(funcName, {
-			funcName,
-			funcArgs,
-			funcReturnType
-		});
+        fNames.push(funcName);
+        fMap.set(funcName, {
+            funcName,
+            funcArgs,
+            funcReturnType
+        });
 
-		const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
-		let currentClient = await utils.getClient(network, keyPair);
+        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
+        let currentClient = await utils.getClient(network, keyPair);
 
-		functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
+        functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
 
-			let client;
-			if (arguments.length > 0 && arguments[arguments.length - 1].Chain && arguments[arguments.length - 1].Ae) {
-				client = arguments[arguments.length - 1];
-			} else {
-				client = currentClient;
-			}
+                let client;
+                if (arguments.length > 0 && arguments[arguments.length - 1].Chain && arguments[arguments.length - 1].Ae) {
+                    client = arguments[arguments.length - 1];
+                } else {
+                    client = currentClient;
+                }
 
-			const thisFunctionName = funcName;
-			const thisFunctionArgs = funcArgs;
-			const thisFunctionReturnType = funcReturnType;
+                const thisFunctionName = funcName;
+                const thisFunctionArgs = funcArgs;
+                const thisFunctionReturnType = funcReturnType;
 
-			let argsArr = [];
+                let argsArr = [];
 
-			if (arguments.length > 0) {
+                if (arguments.length > 0) {
 
-				for (let i = 0; i < thisFunctionArgs.length; i++) {
+                    for (let i = 0; i < thisFunctionArgs.length; i++) {
 
-					let argType = thisFunctionArgs[i].type.toLowerCase();
+                        let argType = thisFunctionArgs[i].type.toLowerCase();
 
-					switch (argType) {
-						case 'address':
-							argsArr.push(`${ utils.keyToHex(arguments[i]) }`);
-							break;
+                        switch (argType) {
+                            case 'address':
+                                argsArr.push(`${ utils.keyToHex(arguments[i]) }`);
+                                break;
 
-						case 'int':
-							argsArr.push(`${arguments[i]}`);
-							break;
+                            case 'int':
+                                argsArr.push(`${arguments[i]}`);
+                                break;
 
-						case 'bool':
-							argsArr.push(`${arguments[i]}`);
-							break;
+                            case 'bool':
+                                argsArr.push(`${arguments[i]}`);
+                                break;
 
-							//     // TODO
-							// case 'list(int)':
-							//     break;
-							// case 'list(string)':
-							//     break;
-							// case 'list(bool)':
-							//     break;
+                                //     // TODO
+                                // case 'list(int)':
+                                //     break;
+                                // case 'list(string)':
+                                //     break;
+                                // case 'list(bool)':
+                                //     break;
 
-						case 'string':
-						default:
-							argsArr.push(`"${arguments[i]}"`);
-							break;
-					}
-				}
+                            case 'string':
+                            default:
+                                argsArr.push(`"${arguments[i]}"`);
+                                break;
+                        }
+                    }
 
-			}
+                }
 
-			let amount = 0;
-			if (arguments.length > thisFunctionArgs.length) {
+                let amount = 0;
+                if (arguments.length > thisFunctionArgs.length) {
 
-				// check is there passed amount/value
-				if (arguments[arguments.length - 1].value) {
-					let element = arguments[arguments.length - 1].value;
-					if (element && !isNaN(element)) {
-						amount = parseInt(element);
-					}
-				}
+                    // check is there passed amount/value
+                    if (arguments[arguments.length - 1].value) {
+                        let element = arguments[arguments.length - 1].value;
+                        if (element && !isNaN(element)) {
+                            amount = parseInt(element);
+                        }
+                    }
 
-				if (arguments.length > 1 && arguments[arguments.length - 2].value) {
-					element = arguments[arguments.length - 2].value;
-					if (element && !isNaN(element)) {
-						amount = parseInt(element);
-					}
-				}
+                    if (arguments.length > 1 && arguments[arguments.length - 2].value) {
+                        element = arguments[arguments.length - 2].value;
+                        if (element && !isNaN(element)) {
+                            amount = parseInt(element);
+                        }
+                    }
 
-				// check is there passed ttl
-				if (arguments[arguments.length - 1].ttl) {
-					let element = arguments[arguments.length - 1].ttl;
-					if (element && !isNaN(element)) {
-						ttl = parseInt(element);
-					}
-				}
+                    // check is there passed ttl
+                    if (arguments[arguments.length - 1].ttl) {
+                        let element = arguments[arguments.length - 1].ttl;
+                        if (element && !isNaN(element)) {
+                            ttl = parseInt(element);
+                        }
+                    }
 
-				if (arguments.length > 1 && arguments[arguments.length - 2].ttl) {
-					element = arguments[arguments.length - 2].ttl;
-					if (element && !isNaN(element)) {
-						ttl = parseInt(element);
-					}
-				}
-			}
+                    if (arguments.length > 1 && arguments[arguments.length - 2].ttl) {
+                        element = arguments[arguments.length - 2].ttl;
+                        if (element && !isNaN(element)) {
+                            ttl = parseInt(element);
+                        }
+                    }
+                }
 
-			let options = {
-				amount: amount,
-				ttl: ttl
-			}
+                let options = {
+                    amount: amount,
+                    ttl: ttl
+                }
 
-			let resultFromExecution = await client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
-			let returnType = thisFunctionReturnType;
-			for (let _type of smartContractTypes.asList) {
-				if (thisFunctionReturnType.indexOf(_type) >= 0) {
-					const syntax = smartContractTypes.asMap.get(_type);
-					returnType = thisFunctionReturnType.trim().replace(_type, syntax);
-				}
-			}
+                let resultFromExecution = await client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
+                let returnType = thisFunctionReturnType;
+                for (let _type of smartContractTypes.asList) {
+                    if (thisFunctionReturnType.indexOf(_type) >= 0) {
+                        const syntax = smartContractTypes.asMap.get(_type);
+                        returnType = thisFunctionReturnType.trim().replace(_type, syntax);
+                    }
+                }
 
-			let decodedValue = await resultFromExecution.decode(returnType.trim());
+                <<
+                << << < HEAD
+                let decodedValue = await resultFromExecution.decode(returnType.trim());
 
-			if (returnType.trim() === 'address') {
-				decodedValue.value = decodedHexAddressToPublicAddress(decodedValue.value);
-			}
+                if (returnType.trim() === 'address') {
+                    decodedValue.value = decodedHexAddressToPublicAddress(decodedValue.value);
+                }
 
-			return decodedValue.value;
-		}
+                return decodedValue.value;
+            } ===
+            === =
+            //     // TODO
+            // case 'list(int)':
+            //     break;
+            // case 'list(string)':
+            //     break;
+            // case 'list(bool)':
+            //     break;
+            >>>
+            >>> > develop
 
-	}
+    }
 
-	functions['from'] = async function (privateKey) {
+    functions['from'] = async function (privateKey) {
 
-		const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
-		const client = await utils.getClient(network, keyPair);
+        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
+        const client = await utils.getClient(network, keyPair);
 
-		let result = {};
-		for (fName of fNames) {
+        let result = {};
+        for (fName of fNames) {
 
-			const name = fName;
+            const name = fName;
 
-			result[name] = async function () {
+            result[name] = async function () {
 
-				const f = functions[name];
+                const f = functions[name];
 
-				return await f(...arguments, client);
-			}
-		}
+                return await f(...arguments, client);
+            }
+        }
 
-		result['call'] = async function (functionName, options) {
+        result['call'] = async function (functionName, options) {
 
-			// new
-			let args = [];
-			if (options.args) {
-				args = options.args;
-			}
+            // new
+            let args = [];
+            if (options.args) {
+                args = options.args;
+            }
 
-			let opts = {};
-			if (options.amount && options.amount > 0) {
-				opts.amount = options.amount;
-			}
+            let opts = {};
+            if (options.amount && options.amount > 0) {
+                opts.amount = options.amount;
+            }
 
-			if (options.ttl && options.ttl > 0) {
-				opts.ttl = options.ttl;
-			}
+            if (options.ttl && options.ttl > 0) {
+                opts.ttl = options.ttl;
+            }
 
-			return await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
-		}
+            return await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	return functions;
+    return functions;
 }
 
 function getContractTypes(contractSource) {
-	let rgx = /^\s*record\s+([\w\d\_]+)\s+=\s(?:{([^}]+))/gm;
+    let rgx = /^\s*record\s+([\w\d\_]+)\s+=\s(?:{([^}]+))/gm;
 
-	let asMap = new Map();
-	let asList = [];
+    let asMap = new Map();
+    let asList = [];
 
-	let match = rgx.exec(contractSource);
-	while (match) {
+    let match = rgx.exec(contractSource);
+    while (match) {
 
-		// set type name
-		let temp = {
-			name: match[1],
-			syntax: '',
-		}
+        // set type name
+        let temp = {
+            name: match[1],
+            syntax: '',
+        }
 
-		let isReservedName = temp.name.toLowerCase() === 'state'
+        let isReservedName = temp.name.toLowerCase() === 'state'
 
-		// set syntax
-		if (match.length >= 2 && match[2] && !isReservedName) {
-			let syntax = processSyntax(match[2]);
-			temp.syntax = syntax;
-		}
+        // set syntax
+        if (match.length >= 2 && match[2] && !isReservedName) {
+            let syntax = processSyntax(match[2]);
+            temp.syntax = syntax;
+        }
 
-		if (!isReservedName) {
-			asMap.set(temp.name, temp.syntax);
-			asList.push(temp.name);
-		}
+        if (!isReservedName) {
+            asMap.set(temp.name, temp.syntax);
+            asList.push(temp.name);
+        }
 
-		match = rgx.exec(contractSource);
-	}
+        match = rgx.exec(contractSource);
+    }
 
-	return {
-		asMap,
-		asList
-	};
+    return {
+        asMap,
+        asList
+    };
 }
 
 function processSyntax(unprocessedSyntax) {
 
-	let propValues = unprocessedSyntax.split(',').map(x => x.trim());
+    let propValues = unprocessedSyntax.split(',').map(x => x.trim());
 
 
-	let syntax = `(`;
+    let syntax = `(`;
 
-	for (let propValue of propValues) {
+    for (let propValue of propValues) {
 
-		let tokens = propValue.split(':').map(x => x.trim());
-		if (tokens.length >= 2) {
-			syntax += tokens[1] + ','
-		}
-	}
+        let tokens = propValue.split(':').map(x => x.trim());
+        if (tokens.length >= 2) {
+            syntax += tokens[1] + ','
+        }
+    }
 
-	// trim last comma
-	syntax = syntax.substr(0, syntax.length - 1);
-	syntax += ')';
+    // trim last comma
+    syntax = syntax.substr(0, syntax.length - 1);
+    syntax += ')';
 
-	return syntax;
+    return syntax;
 }
 
 function getContractFunctions(contractSource) {
 
-	let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)\,\s]+)\s*)*=/gm;
+    let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)\,\s]+)\s*)*=/gm;
 
-	let matches = [];
+    let matches = [];
 
-	let match = rgx.exec(contractSource);
-	while (match) {
+    let match = rgx.exec(contractSource);
+    while (match) {
 
-		// set function name
-		let temp = {
-			name: match[1],
-			args: [],
-			returnType: '()'
-		}
+        // set function name
+        let temp = {
+            name: match[1],
+            args: [],
+            returnType: '()'
+        }
 
-		// set functions args
-		if (match.length >= 3 && match[2]) {
-			let args = processArguments(match[2]);
-			temp.args = args;
-		}
+        // set functions args
+        if (match.length >= 3 && match[2]) {
+            let args = processArguments(match[2]);
+            temp.args = args;
+        }
 
-		// set functions returned type
-		if (match.length >= 4 && match[3]) {
-			temp.returnType = match[3]
-		}
+        // set functions returned type
+        if (match.length >= 4 && match[3]) {
+            temp.returnType = match[3]
+        }
 
-		matches.push(temp);
-		match = rgx.exec(contractSource);
-	}
+        matches.push(temp);
+        match = rgx.exec(contractSource);
+    }
 
-	return matches;
+    return matches;
 }
 
 function processArguments(args) {
-	let splittedArgs = args.split(',').map(x => x.trim());
-	let processedArgs = [];
+    let splittedArgs = args.split(',').map(x => x.trim());
+    let processedArgs = [];
 
-	for (let i = 0; i < splittedArgs.length; i++) {
-		let tokens = splittedArgs[i].split(':').map(x => x.trim());
-		let processedArg = {
-			name: tokens[0],
-			type: null
-		};
+    for (let i = 0; i < splittedArgs.length; i++) {
+        let tokens = splittedArgs[i].split(':').map(x => x.trim());
+        let processedArg = {
+            name: tokens[0],
+            type: null
+        };
 
-		if (tokens.length > 1) {
-			processedArg.type = tokens[1];
-		}
+        if (tokens.length > 1) {
+            processedArg.type = tokens[1];
+        }
 
-		processedArgs.push(processedArg);
-	}
+        processedArgs.push(processedArg);
+    }
 
-	return processedArgs;
+    return processedArgs;
 }
 
 module.exports = Deployer;

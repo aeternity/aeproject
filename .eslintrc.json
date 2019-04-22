@@ -1,24 +1,42 @@
 {
-    "extends": "standard",
-    "rules": {
-        "eqeqeq": "off",
-        "curly": "error",
-        "quotes": "off",
-        "semi": "off",
-        "no-trailing-spaces": "off",
-        "indent": [
-            "warn",
-            4
-        ],
-        "padded-blocks": "off",
-        "space-before-function-paren": "warn",
-        "spaced-comment": "warn",
-        "no-unused-vars": "warn",
-        "no-multiple-empty-lines": "warn",
-        "block-scoped-var": "warn",
-        "eol-last": "off",
-        "no-useless-return": "off",
-        "no-extra-boolean-cast": "off",
-        "no-unused-expressions": "off"
-    }
+  "extends": "standard",
+  "rules": {
+    "eqeqeq": "off",
+    "curly": "error",
+    "quotes": "off",
+    "semi": "off",
+    "no-trailing-spaces": "off",
+    "indent": [
+      "error",
+      4
+    ],
+    "padded-blocks": "off",
+    "space-before-function-paren": "warn",
+    "spaced-comment": "warn",
+    "no-unused-vars": "warn",
+    "no-multiple-empty-lines": "warn",
+    "block-scoped-var": "warn",
+    "eol-last": "off",
+    "no-useless-return": "off",
+    "no-extra-boolean-cast": "off",
+    "no-unused-expressions": "off",
+    "smart-tabs": true,
+    "allowTemplateLiterals": true,
+    "template-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "no-unneeded-ternary": [
+      "error",
+      {
+        "defaultAssignment": true
+      }
+    ]
+  },
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  }
 }
