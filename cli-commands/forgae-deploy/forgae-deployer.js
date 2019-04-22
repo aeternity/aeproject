@@ -5,7 +5,9 @@ const logStoreService = require('./../forgae-history/log-store-service');
 const ABI_TYPE = 'sophia';
 const execute = require('./../utils').execute;
 const ttl = 100;
-const opts = { ttl: ttl };
+const opts = {
+    ttl: ttl
+};
 
 let client;
 
@@ -97,9 +99,9 @@ class Deployer {
             status: isSuccess,
             gasPrice: txInfo.gasPrice,
             gasUsed: txInfo.gasUsed,
-            result: deployedContract.address
+            result: deployedContract.address,
+            networkId: this.network.networkId
         }
-
         logStoreService.logAction(info);
 
         console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
@@ -177,13 +179,13 @@ async function generateFunctionsFromSmartContract(contractPath, deployedContract
 
                             break;
 
-                        //     // TODO
-                        // case 'list(int)':
-                        //     break;
-                        // case 'list(string)':
-                        //     break;
-                        // case 'list(bool)':
-                        //     break;
+                            //     // TODO
+                            // case 'list(int)':
+                            //     break;
+                            // case 'list(string)':
+                            //     break;
+                            // case 'list(bool)':
+                            //     break;
 
                         case 'string':
                         default:
