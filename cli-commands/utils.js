@@ -15,15 +15,18 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
+require = require('esm')(module /*, options */) // use to handle es6 import/export
+
 const fs = require('fs-extra');
 const dir = require('node-dir');
 const AeSDK = require('@aeternity/aepp-sdk');
 const Crypto = AeSDK.Crypto;
+const Universal = AeSDK.Universal;
+const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
+
 const {
     spawn
 } = require('promisify-child-process');
-const Universal = AeSDK.Universal;
-// const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
 
 const config = {
     localhostParams: {
@@ -198,7 +201,7 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
 
 function keyToHex(publicKey) {
     let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
-    let asHex = '0x' + byteArray.toString('hex');
+    let asHex = '#' + byteArray.toString('hex');
     return asHex;
 }
 
@@ -246,6 +249,13 @@ async function generateKeyPairFromSecretKey(secretKey) {
     return keyPair;
 }
 
+function decodedHexAddressToPublicAddress(hexAddress) {
+
+    const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
+
+    return publicKey;
+}
+
 module.exports = {
     print,
     printError,
@@ -263,5 +273,6 @@ module.exports = {
     isKeyPair,
     generatePublicKeyFromSecretKey,
     timeout,
-    generateKeyPairFromSecretKey
+    generateKeyPairFromSecretKey,
+    decodedHexAddressToPublicAddress
 };

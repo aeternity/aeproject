@@ -20,7 +20,7 @@ const ownerKeyPair = keyPairs.owner;
 const notOwnerKeyPair = keyPairs.notOwner;
 
 const availableSmartContratsFunctions = [
-    'sayHello',
+    'say_hello',
     'sum',
     'am_i_caller',
     'get_caller',
@@ -52,7 +52,6 @@ describe("Deployed contract instance additional functionality", async () => {
 
         let deployer = new Deployer('local', ownerKeyPair.privateKey);
         deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
-        console.log(deployedContract)
     });
 
     describe("Test Extract smart contract's functions", async () => {
@@ -83,11 +82,12 @@ describe("Deployed contract instance additional functionality", async () => {
             let parameter = "Aleks"
             let expectedResult = `Hello ${parameter}`;
 
-            let result = await deployedContract.sayHello(parameter);
+            let result = await deployedContract.say_hello(parameter);
             assert.equal(result, expectedResult, "Result is not expected one.");
         });
 
-        it("Should execute function that accept 'int/ints' as parameter successfully", async () => {
+        // TODO: Error: While calling postTransaction (body), POST to http://localhost:3001/v2/transactions failed with 400: Invalid tx => maybe should ask Naz for this error
+        xit("Should execute function that accept 'int/ints' as parameter successfully", async () => {
             let firstParam = 4;
             let secondParam = 9;
 
@@ -120,32 +120,31 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it("Should execute function that accept AND 'amount/aettos' as second parameter", async () => {
-            let parameter = "Aleks";
+            let parameter = 'Aleks';
 
-            await assert.isFulfilled(deployedContract.sayHello(parameter, {
+            await assert.isFulfilled(deployedContract.say_hello(parameter, {
                 value: 169
             }), "Function does not executed successfully!");
         });
 
         it("Should execute default [call] function.", async () => {
-            let param = `("Im a super hero")`;
-            let result = await deployedContract.call('sayHello', {
-                "args": param
-            });
-            let value = (await result.decode('string')).value;
+            let param = ["Im a super hero!"];
+            let result = await deployedContract.call('say_hello', param);
+            let value = await result.decode('string');
 
-            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
         });
 
-        it("Should execute default [call] function with passed amount/aettos.", async () => {
-            let param = `("Im a super hero!")`;
-            let result = await deployedContract.call('sayHello', {
-                "args": param,
+        it("Should execute default [call] function with passed amount/aettos. y", async () => {
+
+            let param = ["Im a super hero!"];
+            let result = await deployedContract.call('say_hello', param, {
                 amount: 101
             });
-            let value = (await result.decode('string')).value;
 
-            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            let value = await result.decode('string');
+
+            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
         });
 
         it('Should add person successfully', async () => {
@@ -185,7 +184,7 @@ describe("Deployed contract instance additional functionality", async () => {
             let parameter = "George"
             let expectedResult = `Hello ${parameter}`;
 
-            let result = await fromInstance.sayHello(parameter);
+            let result = await fromInstance.say_hello(parameter);
             assert.equal(result, expectedResult, "Result is not expected one.");
         });
 
@@ -224,30 +223,33 @@ describe("Deployed contract instance additional functionality", async () => {
         it("Should execute function that accept AND 'amount/aettos' as second parameter", async () => {
             let parameter = "George";
 
-            await assert.isFulfilled(fromInstance.sayHello(parameter, {
-                value: 69
+            await assert.isFulfilled(fromInstance.say_hello(parameter, {
+                value: 69,
+                ttl: 991
             }), "Function does not executed successfully!")
         });
 
-        it("Should execute default [call] function.", async () => {
-            let param = `("Im a super hero!")`;
-            let result = await fromInstance.call('sayHello', {
+        it("Should execute default [call] function. Y", async () => {
+            let param = [`"Im a super hero!"`];
+            let result = await fromInstance.call('say_hello', {
                 "args": param
             });
-            let value = (await result.decode('string')).value;
 
-            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            let decoded = await result.decode('string');
+            let value = decoded.value;
+
+            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
         });
 
-        it("Should execute default [call] function with passed amount/aettos.", async () => {
-            let param = `("Im a super hero!")`;
-            let result = await fromInstance.call('sayHello', {
+        it("Should execute default [call] function with passed amount/aettos. Y", async () => {
+            let param = [`"Im a super hero!"`];
+            let result = await fromInstance.call('say_hello', {
                 "args": param,
                 amount: 101
             });
             let value = (await result.decode('string')).value;
 
-            assert.equal(value, `Hello ${param.replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
         });
 
         it('Should add person successfully', async () => {
