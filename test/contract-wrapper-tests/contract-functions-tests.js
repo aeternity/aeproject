@@ -39,7 +39,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.contractWrapperTestsFolderPath
 };
 
-describe("Deployed contract instance additional functionality", async () => {
+describe.only("Deployed contract instance additional functionality", async () => {
 
     let deployedContract;
 
@@ -48,7 +48,7 @@ describe("Deployed contract instance additional functionality", async () => {
         // start node 
         fs.ensureDirSync(`.${ constants.contractWrapperTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
-        // await execute(constants.cliCommands.NODE, [], executeOptions);
+        await execute(constants.cliCommands.NODE, [], executeOptions);
 
         let deployer = new Deployer('local', ownerKeyPair.privateKey);
         deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
@@ -85,8 +85,7 @@ describe("Deployed contract instance additional functionality", async () => {
             assert.equal(result, expectedResult, "Result is not expected one.");
         });
 
-        // TODO: Error: While calling postTransaction (body), POST to http://localhost:3001/v2/transactions failed with 400: Invalid tx => maybe should ask Naz for this error
-        xit("Should execute function that accept 'int/ints' as parameter successfully", async () => {
+        it("Should execute function that accept 'int/ints' as parameter successfully", async () => {
             let firstParam = 4;
             let secondParam = 9;
 
@@ -127,16 +126,16 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it.only("Should execute default [call] function.", async () => {
-            let param = ["Im a super hero!"];
-            let result = await deployedContract.call('say_hello', param);
-            let value = await result.decode('string');
+            let param = [ 5, 3 ];
+            let result = await deployedContract.call('sum', param);
+            let value = await result.decode();
 
-            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
+            assert.equal(value, 8, "Result is incorrect!");
         });
 
-        it.only("Should execute default [call] function with passed amount/aettos. y", async () => {
+        it("Should execute default [call] function with passed amount/aettos.", async () => {
 
-            let param = ["Im a super hero!"];
+            let param = ['Im a super hero!'];
             let result = await deployedContract.call('say_hello', param, {
                 amount: 101
             });
@@ -228,25 +227,25 @@ describe("Deployed contract instance additional functionality", async () => {
             }), "Function does not executed successfully!")
         });
 
-        it.only("Should execute default [call] function. Y", async () => {
+        it("Should execute default [call] function.", async () => {
             let params = [`"Im a super hero!"`];
             let result = await fromInstance.call('say_hello', params);
 
-            let decoded = await result.decode('string');
-            let value = decoded;
+            let value = (await result.decode('string')).value;
 
             assert.equal(value, `Hello ${ params[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
 
-        it.only("Should execute default [call] function with passed amount/aettos. ", async () => {
-            let params = [1, 5];
+        it("Should execute default [call] function with passed amount/aettos.", async () => {
+            let params = ['1', '5'];
             let options = {
                 amount: 101
-            }
-            let result = await fromInstance.call('sum', params, options);
-            let value = await result.decode('string');
+            };
 
-            assert.equal(value, `Hello ${ params[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
+            let result = await fromInstance.call('sum', params, options);
+            let value = (await result.decode('int')).value;
+
+            assert.equal(value, 6, "Result is incorrect!");
         });
 
         it('Should add person successfully', async () => {

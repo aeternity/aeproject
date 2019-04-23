@@ -14,14 +14,14 @@ let contract;
 
 logStoreService.initHistoryRecord();
 
-function getContractName (contract) {
+function getContractName(contract) {
     let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
     var match = rgx.exec(contract);
 
     return match[1];
 }
 
-async function getTxInfo (txHash) {
+async function getTxInfo(txHash) {
     let result;
     try {
         result = await client.getTxInfo(txHash)
@@ -38,7 +38,7 @@ async function getTxInfo (txHash) {
 
 class Deployer {
 
-    constructor (network = "local", keypairOrSecret = utils.config.keypair) {
+    constructor(network = "local", keypairOrSecret = utils.config.keypair) {
         this.network = utils.getNetwork(network);
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
@@ -55,7 +55,7 @@ class Deployer {
         throw new Error("Incorrect keypair or secret key passed")
     }
 
-    async readFile (path) {
+    async readFile(path) {
         return await fs.readFileSync(path, "utf-8")
     }
 
@@ -66,7 +66,7 @@ class Deployer {
      * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy (contractPath, initState = [], options = opts) {
+    async deploy(contractPath, initState = [], options = opts) {
         client = await utils.getClient(this.network, this.keypair);
 
         contract = await this.readFile(contractPath);
@@ -105,17 +105,20 @@ class Deployer {
 
         return deployedContract;
 
-        function addSmartContractFunctions (deployedContract, functions) {
-            let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
+        function addSmartContractFunctions(deployedContract, functions) {
+            let newInstanceWithAddedAdditionalFunctionality = Object.assign(deployedContract, functions);
 
             return newInstanceWithAddedAdditionalFunctionality;
         }
     }
 }
 
-async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
+async function generateFunctionsFromSmartContract(contractSource, deployedContract, privateKey, network) {
     const functionsDescription = getContractFunctions(contractSource);
     const smartContractTypes = getContractTypes(contractSource);
+
+    const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
+    const currentClient = await utils.getClient(network, keyPair);
 
     let functions = {};
 
@@ -135,8 +138,16 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
             funcReturnType
         });
 
-        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
-        let currentClient = await utils.getClient(network, keyPair);
+        // const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
+        // let currentClient = await utils.getClient(network, keyPair);
+        
+        // functions['call'] = async function (functionName, args = [], options = {}) {
+        //     let callResult = await currentClient.contractCall(contractSource, deployedContract.deployInfo.address, functionName, args, options);
+    
+        //     let a =  (await callResult.decode(fMap.get(functionName).funcReturnType)).value;
+        //     console.log('==> a:', a);
+        //     return a;
+        // }
 
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
 
@@ -268,31 +279,9 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
         result['call'] = async function (functionName, args = [], options = {}) {
 
-            // new
-            // let args = [];
-            // if (options.args) {
-            //     args = options.args;
-            // }
+            let callResult = await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, options);
 
-            // let opts = {};
-            // if (options.amount && options.amount > 0) {
-            //     opts.amount = options.amount;
-            // }
-
-            // if (options.ttl && options.ttl > 0) {
-            //     opts.ttl = options.ttl;
-            // }
-
-            let r = await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, options);
-            console.log('result 991');
-            console.log(functionName);
-            
-            console.log('r.decode()');
-            let val = await r.decode();
-            console.log(val);
-            console.log('997')
-
-            return val;
+            return callResult;
         }
 
         return result;
@@ -301,7 +290,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     return functions;
 }
 
-function getContractTypes (contractSource) {
+function getContractTypes(contractSource) {
     let rgx = /^\s*record\s+([\w\d\_]+)\s+=\s(?:{([^}]+))/gm;
 
     let asMap = new Map();
@@ -338,7 +327,7 @@ function getContractTypes (contractSource) {
     };
 }
 
-function processSyntax (unprocessedSyntax) {
+function processSyntax(unprocessedSyntax) {
 
     let propValues = unprocessedSyntax.split(',').map(x => x.trim());
 
@@ -359,7 +348,7 @@ function processSyntax (unprocessedSyntax) {
     return syntax;
 }
 
-function getContractFunctions (contractSource) {
+function getContractFunctions(contractSource) {
 
     let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)\,\s]+)\s*)*=/gm;
 
@@ -393,7 +382,7 @@ function getContractFunctions (contractSource) {
     return matches;
 }
 
-function processArguments (args) {
+function processArguments(args) {
     let splittedArgs = args.split(',').map(x => x.trim());
     let processedArgs = [];
 
