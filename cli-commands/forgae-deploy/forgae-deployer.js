@@ -254,7 +254,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
         const client = await utils.getClient(network, keyPair);
 
         let result = {};
-        for (fName of fNames) {
+        for (let fName of fNames) {
 
             const name = fName;
 
@@ -262,28 +262,37 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
                 const f = functions[name];
 
-                return await f(...arguments, client);
+                return f(...arguments, client);
             }
         }
 
-        result['call'] = async function (functionName, options) {
+        result['call'] = async function (functionName, args = [], options = {}) {
 
             // new
-            let args = [];
-            if (options.args) {
-                args = options.args;
-            }
+            // let args = [];
+            // if (options.args) {
+            //     args = options.args;
+            // }
 
-            let opts = {};
-            if (options.amount && options.amount > 0) {
-                opts.amount = options.amount;
-            }
+            // let opts = {};
+            // if (options.amount && options.amount > 0) {
+            //     opts.amount = options.amount;
+            // }
 
-            if (options.ttl && options.ttl > 0) {
-                opts.ttl = options.ttl;
-            }
+            // if (options.ttl && options.ttl > 0) {
+            //     opts.ttl = options.ttl;
+            // }
 
-            return await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+            let r = await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, options);
+            console.log('result 991');
+            console.log(functionName);
+            
+            console.log('r.decode()');
+            let val = await r.decode();
+            console.log(val);
+            console.log('997')
+
+            return val;
         }
 
         return result;
