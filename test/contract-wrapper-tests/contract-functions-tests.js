@@ -36,7 +36,7 @@ const unavailableSmartContratsFunctions = [
 ];
 
 let executeOptions = {
-    cwd: process.cwd() + constants.deployTestsFolderPath
+    cwd: process.cwd() + constants.contractWrapperTestsFolderPath
 };
 
 describe("Deployed contract instance additional functionality", async () => {
@@ -46,7 +46,7 @@ describe("Deployed contract instance additional functionality", async () => {
     before(async () => {
 
         // start node 
-        fs.ensureDirSync(`.${constants.deployTestsFolderPath}`);
+        fs.ensureDirSync(`.${ constants.contractWrapperTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
         await execute(constants.cliCommands.NODE, [], executeOptions);
 
@@ -59,7 +59,6 @@ describe("Deployed contract instance additional functionality", async () => {
         it("Are all public functions available in contract's instance", async () => {
             for (functionName of availableSmartContratsFunctions) {
                 if (!deployedContract[functionName]) {
-                    console.log(functionName)
                     assert.isOk(false, 'Function is not extracted from smart contract');
 
                 }
@@ -69,7 +68,7 @@ describe("Deployed contract instance additional functionality", async () => {
         it("Private functions should not be extracted", async () => {
             for (functionName of unavailableSmartContratsFunctions) {
                 if (deployedContract[functionName]) {
-                    assert.isOk(false, `Function [${functionName}] is extracted from smart contract`);
+                    assert.isOk(false, `Function [${ functionName }] is extracted from smart contract`);
                 }
             }
         });
@@ -80,7 +79,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
         it("Should execute function that accept 'string' as parameter successfully", async () => {
             let parameter = "Aleks"
-            let expectedResult = `Hello ${parameter}`;
+            let expectedResult = `Hello ${ parameter }`;
 
             let result = await deployedContract.say_hello(parameter);
             assert.equal(result, expectedResult, "Result is not expected one.");
@@ -132,7 +131,7 @@ describe("Deployed contract instance additional functionality", async () => {
             let result = await deployedContract.call('say_hello', param);
             let value = await result.decode('string');
 
-            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
 
         it("Should execute default [call] function with passed amount/aettos. y", async () => {
@@ -144,7 +143,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
             let value = await result.decode('string');
 
-            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
 
         it('Should add person successfully', async () => {
@@ -182,7 +181,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
         it("Should execute function that accept 'string' as parameter successfully", async () => {
             let parameter = "George"
-            let expectedResult = `Hello ${parameter}`;
+            let expectedResult = `Hello ${ parameter }`;
 
             let result = await fromInstance.say_hello(parameter);
             assert.equal(result, expectedResult, "Result is not expected one.");
@@ -238,10 +237,10 @@ describe("Deployed contract instance additional functionality", async () => {
             let decoded = await result.decode('string');
             let value = decoded.value;
 
-            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
 
-        it("Should execute default [call] function with passed amount/aettos. Y", async () => {
+        it("Should execute default [call] function with passed amount/aettos. ", async () => {
             let param = [`"Im a super hero!"`];
             let result = await fromInstance.call('say_hello', {
                 "args": param,
@@ -249,7 +248,7 @@ describe("Deployed contract instance additional functionality", async () => {
             });
             let value = (await result.decode('string')).value;
 
-            assert.equal(value, `Hello ${param[0].replace(/[\(\)\")]+/g, '')}`, "Result is incorrect!");
+            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
 
         it('Should add person successfully', async () => {
@@ -285,6 +284,6 @@ describe("Deployed contract instance additional functionality", async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 
-        fs.removeSync(`.${constants.deployTestsFolderPath}`)
+        fs.removeSync(`.${ constants.contractWrapperTestsFolderPath }`)
     })
 });
