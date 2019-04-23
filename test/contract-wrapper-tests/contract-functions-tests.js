@@ -75,7 +75,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
     });
 
-    describe.only("Test extracted functions", async () => {
+    describe("Test extracted functions", async () => {
 
         it("Should execute function that accept 'string' as parameter successfully", async () => {
             let parameter = "Aleks"
