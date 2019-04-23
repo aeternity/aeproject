@@ -75,7 +75,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
     });
 
-    describe("Test extracted functions", async () => {
+    describe.only("Test extracted functions", async () => {
 
         it("Should execute function that accept 'string' as parameter successfully", async () => {
             let parameter = "Aleks"
@@ -86,7 +86,7 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         // TODO: Error: While calling postTransaction (body), POST to http://localhost:3001/v2/transactions failed with 400: Invalid tx => maybe should ask Naz for this error
-        xit("Should execute function that accept 'int/ints' as parameter successfully", async () => {
+        it("Should execute function that accept 'int/ints' as parameter successfully", async () => {
             let firstParam = 4;
             let secondParam = 9;
 
