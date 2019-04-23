@@ -12,7 +12,7 @@ contract ExampleContract =
     { current_id = 0,
       m_id_people = {}}
 
-  public function sayHello(name : string) : string = 
+  public function say_hello(name : string) : string = 
     String.concat("Hello ", name)
 
   public function sum(intA: int, intB: int) : int =
@@ -23,6 +23,9 @@ contract ExampleContract =
 
   public function get_caller() : address =
     Call.caller
+
+  public function return_string() : string =
+    "Call.caller"
 
   private function multiply(x: int, y: int) : int =
     x * y

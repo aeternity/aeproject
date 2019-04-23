@@ -12,8 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "2.4.1",
+    "@aeternity/aepp-sdk": "3.0.0",
     "await-spawn": "^2.1.1",
+    "bignumber.js": "^8.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-files": "^1.4.0",
