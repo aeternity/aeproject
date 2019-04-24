@@ -39,7 +39,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.contractWrapperTestsFolderPath
 };
 
-describe.only("Deployed contract instance additional functionality", async () => {
+describe("Deployed contract instance additional functionality", async () => {
 
     let deployedContract;
 
@@ -125,8 +125,8 @@ describe.only("Deployed contract instance additional functionality", async () =>
             }), "Function does not executed successfully!");
         });
 
-        it.only("Should execute default [call] function.", async () => {
-            let param = [ 5, 3 ];
+        it("Should execute default [call] function.", async () => {
+            let param = [5, 3];
             let result = await deployedContract.call('sum', param);
             let value = await result.decode();
 
@@ -140,7 +140,7 @@ describe.only("Deployed contract instance additional functionality", async () =>
                 amount: 101
             });
 
-            let value = await result.decode('string');
+            let value = await result.decode();
 
             assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
