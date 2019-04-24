@@ -138,17 +138,6 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
             funcReturnType
         });
 
-        // const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
-        // let currentClient = await utils.getClient(network, keyPair);
-        
-        // functions['call'] = async function (functionName, args = [], options = {}) {
-        //     let callResult = await currentClient.contractCall(contractSource, deployedContract.deployInfo.address, functionName, args, options);
-    
-        //     let a =  (await callResult.decode(fMap.get(functionName).funcReturnType)).value;
-        //     console.log('==> a:', a);
-        //     return a;
-        // }
-
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
 
             let client;
