@@ -8,7 +8,10 @@
     "no-trailing-spaces": "off",
     "indent": [
       "error",
-      4
+      4,
+      {
+        "SwitchCase": 1
+      }
     ],
     "padded-blocks": "off",
     "space-before-function-paren": "warn",
