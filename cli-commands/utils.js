@@ -249,7 +249,7 @@ async function generateKeyPairFromSecretKey (secretKey) {
     return keyPair;
 }
 
-function decodedHexAddressToPublicAddress (hexAddress) {
+function decodedHexAddressToPublicAddress(hexAddress) {
 
     const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
 

@@ -92,17 +92,11 @@ class Deployer {
             status: isSuccess,
             gasPrice: txInfo.gasPrice,
             gasUsed: txInfo.gasUsed,
-            <<
-            << << < HEAD
             result: deployedContract.address,
-            networkId: this.network.networkId ===
-                === =
-                result: deployedContract.deployInfo.address,
             networkId: this.network.networkId
 
-                >>>
-                >>> > master
         }
+
         logStoreService.logAction(info);
 
         console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
