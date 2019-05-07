@@ -17,42 +17,43 @@
 const Ae = require('@aeternity/aepp-sdk').Universal;
 
 const config = {
-  host: "http://localhost:3001/",
-  internalHost: "http://localhost:3001/internal/",
-  gas: 200000,
-  ttl: 55
+    host: "http://localhost:3001/",
+    internalHost: "http://localhost:3001/internal/",
+    gas: 200000,
+    ttl: 55,
+    compilerUrl: 'https://compiler.aepps.com'
 }
 
 describe('Example Contract', () => {
 
-  let owner;
+    let owner;
+    let options = {
+        ttl: config.ttl
+    }
 
-  before(async () => {
-    const ownerKeyPair = wallets[0];
-    owner = await Ae({
-      url: config.host,
-      internalUrl: config.internalHost,
-      keypair: ownerKeyPair,
-      nativeMode: true,
-      networkId: 'ae_devnet'
-    });
+    before(async () => {
+        const ownerKeyPair = wallets[0];
+        owner = await Ae({
+            url: config.host,
+            internalUrl: config.internalHost,
+            keypair: ownerKeyPair,
+            nativeMode: true,
+            networkId: 'ae_devnet',
+            compilerUrl: config.compilerUrl
+        });
 
-  })
-
-  it('Deploying Example Contract', async () => {
-    let contractSource = utils.readFileRelative('./contracts/ExampleContract.aes', "utf-8"); // Read the aes file
-
-    const compiledContract = await owner.contractCompile(contractSource, { // Compile it
-      gas: config.gas
     })
 
-    const deployPromise = compiledContract.deploy({ // Deploy it
-      options: {
-        ttl: config.ttl,
-      }
-    });
+    it('Deploying Example Contract', async () => {
+        let contractSource = utils.readFileRelative('./contracts/ExampleContract.aes', "utf-8"); // Read the aes file
 
-    await assert.isFulfilled(deployPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check it is deployed
-  })
+        const compiledContract = await owner.contractCompile(contractSource, { // Compile it
+        })
+        // Deploy it
+        // [] - empty init state object
+        const deployPromise = compiledContract.deploy([], options);
+
+        await assert.isFulfilled(deployPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check it is deployed
+    })
 
 })

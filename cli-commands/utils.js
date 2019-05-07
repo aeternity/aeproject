@@ -128,7 +128,7 @@ const getNetwork = (network) => {
         mainnet: {
             url: config.mainnetParams.url,
             networkId: config.mainnetParams.networkId
-        },
+        }
     };
 
     const result = networks[network]
@@ -150,7 +150,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -199,7 +199,7 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
     }
 };
 
-function keyToHex(publicKey) {
+function keyToHex (publicKey) {
     let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
     let asHex = '#' + byteArray.toString('hex');
     return asHex;
@@ -235,7 +235,7 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-async function generateKeyPairFromSecretKey(secretKey) {
+async function generateKeyPairFromSecretKey (secretKey) {
     const hexStr = await Crypto.hexStringToByte(secretKey.trim());
     const keys = await Crypto.generateKeyPairFromSecret(hexStr);
 

@@ -278,7 +278,7 @@ describe("Deployed contract instance additional functionality", async () => {
         // stop node
         let running = await waitForContainer();
         if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
         }
 
         fs.removeSync(`.${ constants.contractWrapperTestsFolderPath }`)
