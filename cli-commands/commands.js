@@ -62,6 +62,7 @@ const addNodeOption = (program) => {
 		.description('Running a local node. Without any argument node will be runned with --start argument')
 		.option('--stop', 'Stop the node')
 		.option('--start', 'Start the node')
+		.option('--only', 'Start only the node without local compiler')
 		.action(async (options) => {
 			await node.run(options);
 		})

@@ -14,15 +14,15 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 
 const {
-  printError,
-  print
+    printError,
+    print
 } = require('./../utils');
 const utils = require('../utils');
 const {
-  spawn
+    spawn
 } = require('promisify-child-process');
 const fs = require('fs');
 const path = require('path');
@@ -31,145 +31,203 @@ const docker = new dockerCLI.Docker();
 const nodeConfig = require('./config.json')
 const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
+const localCompilerConfig = nodeConfig.localCompiler;
+const dockerConfiguration = nodeConfig.dockerConfiguration;
 
 let balanceOptions = {
-  format: false
+    format: false
 }
 
-async function waitForContainer() {
-  let running = false
+async function waitForContainer () {
+    let running = false
 
-  await docker.command('ps', function (err, data) {
-    if (err) {
-      throw new Error(err);
+    await docker.command('ps', function (err, data) {
+        if (err) {
+            throw new Error(err);
+        }
+
+        data.containerList.forEach(function (container) {
+            if (container.image.startsWith(dockerConfiguration.dockerImage) && container.status.indexOf("healthy") != -1) {
+                running = true;
+            }
+        })
+    });
+    return running;
+}
+
+async function fundWallets () {
+    await waitToMineCoins()
+
+    let walletIndex = 0;
+    let client = await utils.getClient(utils.config.localhostParams);
+    await printBeneficiaryKey(client);
+    for (let wallet in defaultWallets) {
+
+        await fundWallet(client, defaultWallets[wallet].publicKey)
+        await printWallet(client, defaultWallets[wallet], `#${ walletIndex++ }`)
+    }
+}
+
+async function printBeneficiaryKey (client) {
+    await printWallet(client, config.keyPair, "Miner")
+}
+
+async function printWallet (client, keyPair, label) {
+    let keyPairBalance = await client.balance(keyPair.publicKey, balanceOptions)
+
+    print(`${ label } ------------------------------------------------------------`)
+    print(`public key: ${ keyPair.publicKey }`)
+    print(`private key: ${ keyPair.secretKey }`)
+    print(`Wallet's balance is ${ keyPairBalance }`);
+}
+
+async function waitToMineCoins () {
+    let client = await utils.getClient(utils.config.localhostParams);
+    let heightOptions = {
+        interval: 8000,
+        attempts: 300
+    }
+    await client.awaitHeight(10, heightOptions)
+}
+
+async function fundWallet (client, recipient) {
+
+    client.setKeypair(config.keyPair)
+    await client.spend(config.amountToFund, recipient)
+
+}
+
+function hasNodeConfigFiles () {
+    const neededConfigFile = nodeConfig.dockerConfiguration.configFileName;
+    const configFilePath = path.resolve(process.cwd(), neededConfigFile);
+    let isDockerConfigFileExists = fs.existsSync(configFilePath);
+
+    if (!isDockerConfigFileExists) {
+        console.log(`Missing ${ neededConfigFile } file!`);
+        return false;
     }
 
-    data.containerList.forEach(function (container) {
-      if (container.image.startsWith("aeternity") && container.status.indexOf("healthy") != -1) {
-        running = true;
-      }
-    })
-  });
-  return running;
+    let fileContent = fs.readFileSync(configFilePath, 'utf-8');
+
+    if (fileContent.indexOf(nodeConfig.dockerConfiguration.textToSearch) < 0) {
+        console.log(`Invalid ${ neededConfigFile } file! Missing docker Ae node configuration.`);
+        return false;
+    }
+
+    return true;
 }
 
-async function fundWallets() {
-  await waitToMineCoins()
+function stopLocalCompiler () {
 
-  let walletIndex = 0;
-  let client = await utils.getClient(utils.config.localhostParams);
-  await printBeneficiaryKey(client);
-  for (let wallet in defaultWallets) {
+    // get docker container ID - compiler
+    let tempOutput = [];
+    let dockerPs = spawn('docker', [
+        'ps'
+    ]);
 
-    await fundWallet(client, defaultWallets[wallet].publicKey)
-    await printWallet(client, defaultWallets[wallet], `#${walletIndex++}`)
-  }
+    dockerPs.stdout.on('data', (data) => {
+        tempOutput.push(data.toString());
+    });
+
+    setTimeout(function () {
+        
+        let containerId = '';
+        tempOutput.forEach(x => {
+            let rgx = /(?:\s+|\n)([a-zA-Z0-9]+)\s+(?=aeternity\/aesophia_http)/gm
+            let match = rgx.exec(x);
+            while (match) {
+                if (match[1]) {
+                    containerId = match[1]
+                }
+
+                match = rgx.exec(x);
+            }
+        })
+
+        if (containerId) {
+            spawn('docker', [
+                'stop',
+                containerId
+            ]);
+
+            print('===== Local Compiler was successfully stopped! =====');
+        }
+    }, 1000);
 }
 
-async function printBeneficiaryKey(client) {
-  await printWallet(client, config.keyPair, "Miner")
-}
+async function run (option) {
 
-async function printWallet(client, keyPair, label) {
-  let keyPairBalance = await client.balance(keyPair.publicKey, balanceOptions)
+    try {
+        let dockerProcess;
+        let running = await waitForContainer();
 
-  print(`${label} ------------------------------------------------------------`)
-  print(`public key: ${keyPair.publicKey}`)
-  print(`private key: ${keyPair.secretKey}`)
-  print(`Wallet's balance is ${keyPairBalance}`);
-}
+        if (option.stop) {
+            if (!running) {
+                print('===== Node is not running! =====');
+                return
+            }
 
-async function waitToMineCoins() {
-  let client = await utils.getClient(utils.config.localhostParams);
-  let heightOptions = {
-    interval: 8000,
-    attempts: 300
-  }
-  await client.awaitHeight(10, heightOptions)
-}
+            print('===== Stopping node =====');
 
-async function fundWallet(client, recipient) {
+            dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
 
-  client.setKeypair(config.keyPair)
-  await client.spend(config.amountToFund, recipient)
+            print('===== Node was successfully stopped! =====');
 
-}
+            stopLocalCompiler();
 
-function hasNodeConfigFiles() {
-  const neededConfigFile = nodeConfig.dockerConfiguration.configFileName;
-  const configFilePath = path.resolve(process.cwd(), neededConfigFile);
-  let isDockerConfigFileExists = fs.existsSync(configFilePath);
+            return;
+        }
 
-  if (!isDockerConfigFileExists) {
-    console.log(`Missing ${neededConfigFile} file!`);
-    return false;
-  }
+        if (!hasNodeConfigFiles()) {
+            console.log('Process will be terminated!');
+            return;
+        }
 
-  let fileContent = fs.readFileSync(configFilePath, 'utf-8');
+        if (running) {
+            print('\r\n===== Node already started and healthy! =====');
+            return;
+        }
 
-  if (fileContent.indexOf(nodeConfig.dockerConfiguration.textToSearch) < 0) {
-    console.log(`Invalid ${neededConfigFile} file! Missing docker Ae node configuration.`);
-    return false;
-  }
+        print('===== Starting node =====');
+        dockerProcess = spawn('docker-compose', ['up', '-d']);
 
-  return true;
-}
+        dockerProcess.stderr.on('data', (data) => {
+            print(data.toString());
+        });
 
-async function run(option) {
+        if (!option.only) {
 
-  try {
-    let dockerProcess;
-    let running = await waitForContainer();
+            let dockerCompilerProcess = spawn('docker', [
+                'run',
+                '-d',
+                '-p',
+                `${ localCompilerConfig.port }:3080`,
+                `${ localCompilerConfig.dockerImage }:${ localCompilerConfig.imageVersion }`
+            ]);
 
-    if (option.stop) {
-      if (!running) {
-        print('===== Node is not running! =====');
+            dockerCompilerProcess.stderr.on('data', (data) => {
+                print(data.toString());
+            });
+        }
+
+        while (!(await waitForContainer())) {
+            process.stdout.write(".");
+            utils.sleep(1000);
+        }
+
+        print('\n\r===== Node was successfully started! =====');
+        print('===== Funding default wallets! =====');
+
+        await fundWallets();
+
+        print('\r\n===== Default wallets was successfully funded! =====');
         return
-      }
 
-      print('===== Stopping node =====');
-
-      dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
-
-      print('===== Node was successfully stopped! =====');
-      return;
+    } catch (e) {
+        printError(e.message)
     }
-
-    if (!hasNodeConfigFiles()) {
-      console.log('Process will be terminated!');
-      return;
-    }
-
-    if (running) {
-      print('\r\n===== Node already started and healthy! =====');
-      return;
-    }
-
-    print('===== Starting node =====');
-    dockerProcess = spawn('docker-compose', ['up', '-d']);
-
-    dockerProcess.stderr.on('data', (data) => {
-      print(data.toString());
-    })
-
-    while (!(await waitForContainer())) {
-      process.stdout.write(".");
-      utils.sleep(1000);
-    }
-
-    print('\n\r===== Node was successfully started! =====');
-    print('===== Funding default wallets! =====');
-
-    await fundWallets();
-
-    print('\r\n===== Default wallets was successfully funded! =====');
-    return
-
-  } catch (e) {
-    printError(e.message)
-  }
 }
 
 module.exports = {
-  run
+    run
 }
