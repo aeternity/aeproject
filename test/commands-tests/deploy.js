@@ -6,7 +6,6 @@ const execute = require('../../cli-commands/utils').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
-const path = require('path');
 
 let executeOptions = {
     cwd: process.cwd() + constants.deployTestsFolderPath

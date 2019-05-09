@@ -10,7 +10,7 @@ const printReportTable = (recordActions) => {
     for (const action of recordActions) {
         actionIndex++;
         table.push(
-            { 'Event Time': `${moment(action.eventTimestamp).format('D MMM, HH:MM:ss')}` },
+            { 'Event Time': `${moment(action.eventTimestamp).format('D MMM, HH:mm:ss')}` },
             { 'Executor': `${action.deployerType}` },
             { 'Name or Label': `${colors.colorName(action.nameOrLabel)}` },
             { 'Tx Hash': `${action.transactionHash}` },
@@ -20,6 +20,15 @@ const printReportTable = (recordActions) => {
             { 'Result': `${action.result}` },
             { 'Network ID': `${action.networkId}` }
         );
+
+        if (action.error) {
+            table.push(
+                { 'Public Key': `${action.publicKey}` },
+                { 'Error': `${action.error}` },
+                { 'Init State': `${action.initState}` },
+                { 'Options': `${action.options}` }
+            )
+        }
 
         if (recordActions.length > 1 && actionIndex < recordActions.length) {
             table.push({ '': '' });
