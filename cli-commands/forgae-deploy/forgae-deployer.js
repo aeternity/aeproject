@@ -1,8 +1,6 @@
 const utils = require('./../utils')
 const fs = require('fs');
 const logStoreService = require('./../forgae-history/log-store-service');
-const ABI_TYPE = 'sophia';
-const execute = utils.execute;
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -14,14 +12,14 @@ let contract;
 
 logStoreService.initHistoryRecord();
 
-function getContractName(contract) {
+function getContractName (contract) {
     let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
     var match = rgx.exec(contract);
 
     return match[1];
 }
 
-async function getTxInfo(txHash) {
+async function getTxInfo (txHash) {
     let result;
     try {
         result = await client.getTxInfo(txHash)
@@ -38,7 +36,7 @@ async function getTxInfo(txHash) {
 
 class Deployer {
 
-    constructor(network = "local", keypairOrSecret = utils.config.keypair) {
+    constructor (network = "local", keypairOrSecret = utils.config.keypair) {
         this.network = utils.getNetwork(network);
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
@@ -55,7 +53,7 @@ class Deployer {
         throw new Error("Incorrect keypair or secret key passed")
     }
 
-    async readFile(path) {
+    async readFile (path) {
         return await fs.readFileSync(path, "utf-8")
     }
 
@@ -66,7 +64,7 @@ class Deployer {
      * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy(contractPath, initState = [], options = opts) {
+    async deploy (contractPath, initState = [], options = opts) {
         client = await utils.getClient(this.network, this.keypair);
 
         contract = await this.readFile(contractPath);
@@ -103,24 +101,27 @@ class Deployer {
 
         return deployedContract;
 
-        function addSmartContractFunctions(deployedContract, functions) {
-            let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
+        function addSmartContractFunctions (deployedContract, functions) {
+            let newInstanceWithAddedAdditionalFunctionality = Object.assign(deployedContract, functions);
 
             return newInstanceWithAddedAdditionalFunctionality;
         }
     }
 }
 
-async function generateFunctionsFromSmartContract(contractSource, deployedContract, privateKey, network) {
+async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
     const functionsDescription = getContractFunctions(contractSource);
     const smartContractTypes = getContractTypes(contractSource);
+
+    const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
+    const currentClient = await utils.getClient(network, keyPair);
 
     let functions = {};
 
     let fNames = [];
     let fMap = new Map();
 
-    for (func of functionsDescription) {
+    for (let func of functionsDescription) {
 
         const funcName = func.name;
         const funcArgs = func.args;
@@ -132,9 +133,6 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
             funcArgs,
             funcReturnType
         });
-
-        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
-        let currentClient = await utils.getClient(network, keyPair);
 
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
 
@@ -199,7 +197,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
                 }
 
                 if (arguments.length > 1 && arguments[arguments.length - 2].value) {
-                    element = arguments[arguments.length - 2].value;
+                    let element = arguments[arguments.length - 2].value;
                     if (element && !isNaN(element)) {
                         amount = parseInt(element);
                     }
@@ -214,7 +212,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
                 }
 
                 if (arguments.length > 1 && arguments[arguments.length - 2].ttl) {
-                    element = arguments[arguments.length - 2].ttl;
+                    let element = arguments[arguments.length - 2].ttl;
                     if (element && !isNaN(element)) {
                         ttl = parseInt(element);
                     }
@@ -252,7 +250,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
         const client = await utils.getClient(network, keyPair);
 
         let result = {};
-        for (fName of fNames) {
+        for (let fName of fNames) {
 
             const name = fName;
 
@@ -260,28 +258,15 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
 
                 const f = functions[name];
 
-                return await f(...arguments, client);
+                return f(...arguments, client);
             }
         }
 
-        result['call'] = async function (functionName, options) {
+        result['call'] = async function (functionName, args = [], options = {}) {
 
-            // new
-            let args = [];
-            if (options.args) {
-                args = options.args;
-            }
+            let callResult = await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, options);
 
-            let opts = {};
-            if (options.amount && options.amount > 0) {
-                opts.amount = options.amount;
-            }
-
-            if (options.ttl && options.ttl > 0) {
-                opts.ttl = options.ttl;
-            }
-
-            return await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+            return callResult;
         }
 
         return result;
@@ -290,7 +275,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
     return functions;
 }
 
-function getContractTypes(contractSource) {
+function getContractTypes (contractSource) {
     let rgx = /^\s*record\s+([\w\d\_]+)\s+=\s(?:{([^}]+))/gm;
 
     let asMap = new Map();
@@ -327,7 +312,7 @@ function getContractTypes(contractSource) {
     };
 }
 
-function processSyntax(unprocessedSyntax) {
+function processSyntax (unprocessedSyntax) {
 
     let propValues = unprocessedSyntax.split(',').map(x => x.trim());
 
@@ -348,7 +333,7 @@ function processSyntax(unprocessedSyntax) {
     return syntax;
 }
 
-function getContractFunctions(contractSource) {
+function getContractFunctions (contractSource) {
 
     let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)\,\s]+)\s*)*=/gm;
 
@@ -382,7 +367,7 @@ function getContractFunctions(contractSource) {
     return matches;
 }
 
-function processArguments(args) {
+function processArguments (args) {
     let splittedArgs = args.split(',').map(x => x.trim());
     let processedArgs = [];
 
