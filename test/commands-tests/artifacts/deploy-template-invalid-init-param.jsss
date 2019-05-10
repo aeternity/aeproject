@@ -1,3 +1,4 @@
+
 /*
  * ISC License (ISC)
  * Copyright (c) 2018 aeternity developers
@@ -14,12 +15,16 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
+
+const path = require('path');
+
 const Deployer = require('forgae').Deployer;
 
-const deploy = async (network, privateKey) => {
-    let deployer = new Deployer(network, privateKey)
+let contractPath = './../contracts/ExampleContract2.aes';
 
-    await deployer.deploy("./contracts/ExampleContract.aes")
+const deploy = async (network, privateKey) => {
+    let deployer = new Deployer(network, privateKey);
+    await deployer.deploy(path.resolve(__dirname, contractPath), ['"asd"']);
 };
 
 module.exports = {
