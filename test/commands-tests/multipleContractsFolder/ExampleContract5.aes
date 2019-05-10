@@ -1,0 +1,9 @@
+contract ExampleContract =
+    record state = {
+        index : int}
+        
+    public stateful function init(start_index: int) = 
+        { index = start_index}
+
+    function get_index() =
+        state.index
