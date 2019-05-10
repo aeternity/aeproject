@@ -139,6 +139,9 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     const functionsDescription = getContractFunctions(contractSource);
     const smartContractTypes = getContractTypes(contractSource);
 
+    const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
+    const currentClient = await utils.getClient(network, keyPair);
+
     let functions = {};
 
     let fNames = [];
@@ -156,9 +159,6 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
             funcArgs,
             funcReturnType
         });
-
-        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
-        let currentClient = await utils.getClient(network, keyPair);
 
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
 
@@ -288,24 +288,11 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
             }
         }
 
-        result['call'] = async function (functionName, options) {
+        result['call'] = async function (functionName, args = [], options = {}) {
 
-            // new
-            let args = [];
-            if (options.args) {
-                args = options.args;
-            }
+            let callResult = await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, options);
 
-            let opts = {};
-            if (options.amount && options.amount > 0) {
-                opts.amount = options.amount;
-            }
-
-            if (options.ttl && options.ttl > 0) {
-                opts.ttl = options.ttl;
-            }
-
-            return client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+            return callResult;
         }
 
         return result;
