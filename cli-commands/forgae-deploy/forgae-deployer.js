@@ -68,7 +68,7 @@ class Deployer {
         client = await utils.getClient(this.network, this.keypair);
 
         contract = await this.readFile(contractPath);
-
+        
         let contractInstance;
         let deployedContract;
         let contractFileName;
@@ -78,6 +78,7 @@ class Deployer {
         let isSuccess = true;
         let info = {
             deployerType: this.constructor.name,
+            publicKey: this.keypair.publicKey,
             nameOrLabel: getContractName(contract),
             transactionHash: '',
             status: false,
@@ -114,7 +115,6 @@ class Deployer {
             isSuccess = false;
             error = e;
             info.error = e.message;
-            info.publicKey = this.keypair.publicKey;
             info.initState = initState;
             info.options = JSON.stringify(options);
         }

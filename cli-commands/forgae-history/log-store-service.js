@@ -16,8 +16,8 @@ class LogStoreService {
     }
 
     /**
-	 * Initializes the history store with default empty array value
-	 */
+     * Initializes the history store with default empty array value
+     */
     initHistoryRecord () {
 
         if (this.isInitied) {
@@ -35,33 +35,33 @@ class LogStoreService {
     }
 
     /**
-	 * Gets all stored historical records of deployments
-	 */
+     * Gets all stored historical records of deployments
+     */
     getHistory () {
         return this._historyStore.list();
     }
 
     /**
-	 * Gets the record that logAction is going to be writing at.
-	 */
+     * Gets the record that logAction is going to be writing at.
+     */
     getCurrentWorkingRecord () {
         return this._historyStore.get(this._HISTORY_ID);
     }
 
     /**
-	 * Gets the last written record.
-	 */
+     * Gets the last written record.
+     */
     getLastWorkingRecord () {
         const history = this.getHistory();
         return this._historyStore.get('' + (history.length - 1));
     }
 
     /**
-	 * 
-	 * Add a record to the history of deployments
-	 * @param {*} actionInfo should have those properties: 'deployerType' type of deployer, 'nameOrLabel' name of the contract or label of the transaction, 
-	 * 'transactionHash' transaction hash if available, 'status' 1 - success, 0 - failure, 'result' arbitrary result text
-	 */
+     * 
+     * Add a record to the history of deployments
+     * @param {*} actionInfo should have those properties: 'deployerType' type of deployer, 'nameOrLabel' name of the contract or label of the transaction, 
+     * 'transactionHash' transaction hash if available, 'status' 1 - success, 0 - failure, 'result' arbitrary result text
+     */
     logAction (actionInfo) {
         if (!this.isInitied) {
             return;

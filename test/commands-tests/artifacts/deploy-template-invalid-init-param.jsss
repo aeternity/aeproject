@@ -16,9 +16,11 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
+
 const path = require('path');
 
 const Deployer = require('forgae').Deployer;
+// const Deployer = require('./../../../../cli-commands/forgae-deploy/forgae-deployer'); // use this path if you want to test it locally
 
 let contractPath = './../contracts/ExampleContract2.aes';
 
