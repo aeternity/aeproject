@@ -15,7 +15,11 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require("./../../cli-commands/forgae-deploy/forgae-deployer")
+const Deployer = require("./../../cli-commands/forgae-deploy/forgae-deployer");
+const config = require('./../constants.json');
+
+const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
+
 describe('ForgAE Deploy', () => {
     const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
     before(async () => {
@@ -166,6 +170,19 @@ describe('ForgAE Deploy', () => {
             let executePromise = execute(constants.cliCommands.DEPLOY, ["--path", "wrongPath"], executeOptions)
 
             await assert.isFulfilled(executePromise, "wrongPath");
+        })
+
+        it('Deploy with additional parameter --compiler', async () => {
+            let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", config.GLOBAL_AE_COMPILER_URL], executeOptions)
+
+            assert.include(result, expectedDeployResult)
+        })
+
+        it('Should NOT deploy with invalid additional parameter --compiler', async () => {
+            
+            let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
+
+            assert.include(result, `Error: getaddrinfo ENOTFOUND ${ INVALID_COMPILER_URL.replace('http://', '') }`);
         })
     })
 

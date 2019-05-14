@@ -1,8 +1,7 @@
 const utils = require('./../utils')
 const fs = require('fs');
 const logStoreService = require('./../forgae-history/log-store-service');
-const ABI_TYPE = 'sophia';
-const execute = utils.execute;
+const config = require('./../config.json');
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -38,12 +37,15 @@ async function getTxInfo(txHash) {
 
 class Deployer {
 
-    constructor(network = "local", keypairOrSecret = utils.config.keypair) {
+    constructor(network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl) {
         this.network = utils.getNetwork(network);
+        this.compilerUrl = compilerUrl;
+
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
             return
         }
+
         if (typeof keypairOrSecret === 'string' || keypairOrSecret instanceof String) {
             this.keypair = {
                 publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
@@ -56,7 +58,7 @@ class Deployer {
     }
 
     async readFile(path) {
-        return await fs.readFileSync(path, "utf-8")
+        return fs.readFileSync(path, "utf-8")
     }
 
     /**
@@ -67,8 +69,8 @@ class Deployer {
      * @param {object} options - Initial options that will be passed to init function.
      */
     async deploy(contractPath, initState = [], options = opts) {
+        this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
-
         contract = await this.readFile(contractPath);
 
         const contractInstance = await client.getContractInstance(contract);
@@ -120,7 +122,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
     let fNames = [];
     let fMap = new Map();
 
-    for (func of functionsDescription) {
+    for (let func of functionsDescription) {
 
         const funcName = func.name;
         const funcArgs = func.args;
@@ -199,7 +201,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
                 }
 
                 if (arguments.length > 1 && arguments[arguments.length - 2].value) {
-                    element = arguments[arguments.length - 2].value;
+                    let element = arguments[arguments.length - 2].value;
                     if (element && !isNaN(element)) {
                         amount = parseInt(element);
                     }
@@ -214,7 +216,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
                 }
 
                 if (arguments.length > 1 && arguments[arguments.length - 2].ttl) {
-                    element = arguments[arguments.length - 2].ttl;
+                    let element = arguments[arguments.length - 2].ttl;
                     if (element && !isNaN(element)) {
                         ttl = parseInt(element);
                     }
@@ -252,7 +254,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
         const client = await utils.getClient(network, keyPair);
 
         let result = {};
-        for (fName of fNames) {
+        for (let fName of fNames) {
 
             const name = fName;
 
@@ -260,7 +262,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
 
                 const f = functions[name];
 
-                return await f(...arguments, client);
+                return f(...arguments, client);
             }
         }
 
@@ -281,7 +283,7 @@ async function generateFunctionsFromSmartContract(contractSource, deployedContra
                 opts.ttl = options.ttl;
             }
 
-            return await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+            return client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
         }
 
         return result;

@@ -76,8 +76,9 @@ const addDeployOption = (program) => {
         .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
         .option('-n --network [network]', 'Select network', "local")
         .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)')
+        .option('--compiler [compiler_url]', 'https://compiler.aepps.com')
         .action(async (options) => {
-            await deploy.run(options.path, options.network, options.secretKey);
+            await deploy.run(options.path, options.network, options.secretKey, options.compiler);
         })
 }
 
