@@ -5,15 +5,40 @@ const assert = chai.assert;
 
 const cliUtils = require('../../cli-commands/utils.js');
 const execute = cliUtils.forgaeExecute;
-const exec = cliUtils.execute;
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
 const _store = require('./../../cli-commands/forgae-history/log-store-service');
 
 const constants = require('../constants.json');
-const TEMP_TEST_PATH = 'temp-test';
+const TEMP_TEST_PATH = constants.historyTestsFolderPath;
 const PATH_TO_STORE_DIRECTORY = '.forgae-store';
+
+const deployerPublicKey = 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU';
+
+const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
+const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
+const additionalSCPath = 'contracts/ExampleContract2.aes';
+
+function insertAdditionalFiles(oldCWD) {
+
+    // copy needed files into test folder to run the specific tests
+    let cwd = process.cwd();
+
+    let testFolder = path.join(oldCWD, TEMP_TEST_PATH);
+
+    process.chdir(oldCWD)
+
+    const invalidParamDeploymentScript = './test/commands-tests/artifacts/deploy-template-invalid-init-param.jsss';
+    const missingParamDeploymentScript = './test/commands-tests/artifacts/deploy-template-missing-init-param.jsss';
+    const additionalSC = './test/commands-tests/multipleContractsFolder/ExampleContract5.aes';
+
+    fs.copyFileSync(invalidParamDeploymentScript, `${ testFolder }/${ invalidParamDeploymentScriptPath }`);
+    fs.copyFileSync(missingParamDeploymentScript, `${ testFolder }/${ missingParamDeploymentScriptPath }`);
+    fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
+
+    process.chdir(cwd);
+}
 
 function countHistoryLogs(result) {
     let counter = 0;
@@ -53,8 +78,8 @@ describe('ForgAE History', async () => {
             result,
             gasPrice: 1,
             gasUsed: 1,
-            result,
-            networkId: "ae_devnet"
+            networkId: "ae_devnet",
+            publicKey: deployerPublicKey
         }
 
         let store;
@@ -104,6 +129,7 @@ describe('ForgAE History', async () => {
             assert(lastAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
             assert(lastAction.status == status, 'status not set correctly');
             assert(lastAction.eventTimestamp >= now, 'timestamp set was not correct');
+            assert(lastAction.publicKey === deployerPublicKey, 'Public key not set correctly');
 
             const currentRecord = store.getLastWorkingRecord();
             const currentAction = currentRecord.actions[currentRecord.actions.length - 1];
@@ -132,7 +158,7 @@ describe('ForgAE History', async () => {
 
     describe('History', async () => {
         let currentCwd;
-        let tempTestPath = path.resolve(process.cwd(), TEMP_TEST_PATH);
+        let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
         before('', async () => {
             if (!fs.existsSync(tempTestPath)) {
@@ -197,6 +223,84 @@ describe('ForgAE History', async () => {
         });
 
         after(async () => {
+
+            await execute(constants.cliCommands.NODE, ['--stop']);
+
+            fsExtra.removeSync(tempTestPath);
+            process.chdir(currentCwd);
+        });
+    });
+
+    describe('History - test deployment failures', async () => {
+        let currentCwd;
+        let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
+
+        beforeEach('', async () => {
+            if (!fs.existsSync(tempTestPath)) {
+                fs.mkdirSync(tempTestPath);
+            }
+
+            currentCwd = process.cwd();
+            process.chdir(tempTestPath);
+
+            await execute(constants.cliCommands.INIT, []);
+            await execute(constants.cliCommands.NODE, ['--start']);
+        });
+
+        it('log should have additional info like error, init state and options', async () => {
+
+            insertAdditionalFiles(currentCwd);
+
+            await execute(constants.cliCommands.DEPLOY, [
+                "--path",
+                `${ invalidParamDeploymentScriptPath }`
+            ]);
+
+            let result = await execute(constants.cliCommands.HISTORY, []);
+
+            let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
+            let hasError = result.indexOf('│ Error         │') > 0;
+            let hasInitState = result.indexOf('│ Init State    │') > 0;
+            let hasOptions = result.indexOf('│ Options       │') > 0;
+
+            assert.isOk(hasFail && hasError && hasInitState && hasOptions, 'Missing additional error info!');
+        });
+
+        it('With invalid init state, log should be unsuccessful and should has an error', async () => {
+
+            insertAdditionalFiles(currentCwd);
+
+            await execute(constants.cliCommands.DEPLOY, [
+                "--path",
+                `${ invalidParamDeploymentScriptPath }`
+            ]);
+
+            let result = await execute(constants.cliCommands.HISTORY, []);
+
+            let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
+            let hasError = result.indexOf('│ Error         │ Validation error:') > 0;
+
+            assert.isOk(hasFail && hasError, 'History log is not correct!');
+        });
+
+        it('With missing init state, log should be unsuccessful and should has an error', async () => {
+
+            insertAdditionalFiles(currentCwd);
+
+            await execute(constants.cliCommands.DEPLOY, [
+                "--path",
+                `${ missingParamDeploymentScriptPath }`
+            ]);
+
+            let result = await execute(constants.cliCommands.HISTORY, []);
+
+            let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
+            let hasError = result.indexOf('│ Error         │ Validation error:') > 0;
+
+            assert.isOk(hasFail && hasError, 'History log is not correct!');
+        });
+
+        afterEach(async () => {
 
             await execute(constants.cliCommands.NODE, ['--stop']);
 
