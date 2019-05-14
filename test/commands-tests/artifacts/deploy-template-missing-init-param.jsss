@@ -14,12 +14,17 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
+
+const path = require('path');
+
 const Deployer = require('forgae').Deployer;
+// const Deployer = require('./../../../../cli-commands/forgae-deploy/forgae-deployer'); // use this path if you want to test it locally
+
+let contractPath = './../contracts/ExampleContract2.aes';
 
 const deploy = async (network, privateKey) => {
-    let deployer = new Deployer(network, privateKey)
-
-    await deployer.deploy("./contracts/ExampleContract.aes")
+    let deployer = new Deployer(network, privateKey);
+    await deployer.deploy(path.resolve(__dirname, contractPath), []);
 };
 
 module.exports = {

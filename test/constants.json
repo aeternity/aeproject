@@ -8,7 +8,7 @@
 	"exampleContractTests": "/exampleTests.js",
 	"dockerFolderPath": "/cli-commands/forgae-init/artifacts",
 	"nodeStartingFolder": "/test/commands-tests/contractsTests/artifacts",
-	"historyTestsFolderPath": "/test/commands-tests/historyTest",
+	"historyTestsFolderPath": "/test/commands-tests/historyTestFolder",
 	"shapeVueTestsFolderPath": "/test/commands-tests/shapeVueTestFolder",
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
 	"cliCommands": {

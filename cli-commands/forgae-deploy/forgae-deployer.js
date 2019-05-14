@@ -54,7 +54,7 @@ class Deployer {
     }
 
     async readFile (path) {
-        return await fs.readFileSync(path, "utf-8")
+        return fs.readFileSync(path, "utf-8")
     }
 
     /**
@@ -68,41 +68,67 @@ class Deployer {
         client = await utils.getClient(this.network, this.keypair);
 
         contract = await this.readFile(contractPath);
+        
+        let contractInstance;
+        let deployedContract;
+        let contractFileName;
+        let txInfo;
 
-        const contractInstance = await client.getContractInstance(contract);
-        let deployedContract = await contractInstance.deploy(initState, options);
-
-        // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-        let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
-        deployedContract = addSmartContractFunctions(deployedContract, functions);
-
-        let regex = new RegExp(/[\w]+.aes$/);
-        let contractFileName = regex.exec(contractPath);
-        let txInfo = await getTxInfo(deployedContract.deployInfo.transaction);
-        let isSuccess = false;
-        if (deployedContract.deployInfo.transaction) {
-            isSuccess = true;
-        }
+        let error;
+        let isSuccess = true;
         let info = {
             deployerType: this.constructor.name,
+            publicKey: this.keypair.publicKey,
             nameOrLabel: getContractName(contract),
-            transactionHash: deployedContract.transaction,
-            status: isSuccess,
-            gasPrice: txInfo.gasPrice,
-            gasUsed: txInfo.gasUsed,
-            result: deployedContract.address,
+            transactionHash: '',
+            status: false,
+            gasPrice: '',
+            gasUsed: '',
+            result: '',
             networkId: this.network.networkId
+        }
 
+        try {
+            contractInstance = await client.getContractInstance(contract);
+            deployedContract = await contractInstance.deploy(initState, options);
+
+            // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
+            let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
+            deployedContract = addSmartContractFunctions(deployedContract, functions);
+
+            let regex = new RegExp(/[\w]+.aes$/);
+            contractFileName = regex.exec(contractPath);
+            txInfo = await getTxInfo(deployedContract.deployInfo.transaction);
+
+            if (deployedContract && deployedContract.deployInfo && deployedContract.deployInfo.transaction) {
+
+                info.transactionHash = deployedContract.deployInfo.transaction;
+                info.gasPrice = txInfo.gasPrice;
+                info.gasUsed = txInfo.gasUsed;
+                info.result = deployedContract.deployInfo.address;
+                info.status = true;
+                
+                console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
+            }
+
+        } catch (e) {
+            isSuccess = false;
+            error = e;
+            info.error = e.message;
+            info.initState = initState;
+            info.options = JSON.stringify(options);
         }
 
         logStoreService.logAction(info);
 
-        console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
+        if (!isSuccess) {
+            throw new Error(error);
+        }
 
         return deployedContract;
 
         function addSmartContractFunctions (deployedContract, functions) {
-            let newInstanceWithAddedAdditionalFunctionality = Object.assign(deployedContract, functions);
+            let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
 
             return newInstanceWithAddedAdditionalFunctionality;
         }
