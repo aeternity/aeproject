@@ -231,7 +231,7 @@ describe('ForgAE History', async () => {
         });
     });
 
-    describe.only('History', async () => {
+    describe('History - test deployment failures', async () => {
         let currentCwd;
         let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
