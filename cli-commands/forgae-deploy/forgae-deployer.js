@@ -92,8 +92,36 @@ class Deployer {
             contractInstance = await client.getContractInstance(contract);
             deployedContract = await contractInstance.deploy(initState, options);
 
+            let length = deployedContract.aci.functions.length;
+
+            // console.log(deployedContract.aci);
+            // console.log(deployedContract.aci.functions[2].arguments);
+            // console.log();
+
+            console.log('f.arguments');
+
+            for (let f of deployedContract.aci.functions) {
+                console.log(f.arguments);
+                console.log();
+            }
+
+            // console.log(deployedContract.aci.functions[length - 3].arguments);
+            // console.log(deployedContract.aci.functions[length - 2].arguments);
+            // console.log(deployedContract.aci.functions[length - 1]);
+            // console.log();
+            // console.log(deployedContract.aci.functions[length - 1].arguments);
+            // console.log(deployedContract.aci.functions[length - 1].arguments[0].type[0]);
+            // console.log(deployedContract.aci.functions[length - 1].arguments[0].type[0].record);
+
+            // console.log();
+            // console.log(deployedContract.aci.functions[length - 1].arguments[1].type[0]);
+            // console.log(deployedContract.aci.functions[length - 1].arguments[1].type[0].record);
+
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
+
+            
+            return;
             deployedContract = addSmartContractFunctions(deployedContract, functions);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -136,7 +164,8 @@ class Deployer {
 }
 
 async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
-    const functionsDescription = getContractFunctions(contractSource);
+    // const functionsDescription = getContractFunctions(contractSource);
+    const functionsDescription = parseContractFunctionsFromACI(deployedContract.aci);
     const smartContractTypes = getContractTypes(contractSource);
 
     const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
@@ -147,11 +176,19 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     let fNames = [];
     let fMap = new Map();
 
+    console.log();
+    console.log('=>> old way');
+    
     for (let func of functionsDescription) {
 
         const funcName = func.name;
         const funcArgs = func.args;
         const funcReturnType = func.returnType;
+
+        console.log(funcName);
+        console.log(funcArgs);
+        console.log(funcReturnType);
+        console.log();
 
         fNames.push(funcName);
         fMap.set(funcName, {
@@ -179,7 +216,8 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
                 for (let i = 0; i < thisFunctionArgs.length; i++) {
 
-                    let argType = thisFunctionArgs[i].type.toLowerCase();
+                    // let argType = thisFunctionArgs[i].type.toLowerCase(); // old
+                    let argType = thisFunctionArgs[i];
 
                     switch (argType) {
                         case 'address':
@@ -357,6 +395,136 @@ function processSyntax (unprocessedSyntax) {
     syntax += ')';
 
     return syntax;
+}
+
+function parseContractFunctionsFromACI(aci) {
+    let functions = [];
+    const reservedFunctionNames = [
+        'init'
+    ]
+    
+    for (let func of aci.functions) {
+        
+        if (reservedFunctionNames.includes(func.name)) {
+            continue;
+        }
+        
+        let argsArr = func.arguments;
+
+        if (argsArr && argsArr.length !== 0) {
+            let tempArgArr = [];
+            for (let argInfo of argsArr) {
+                for (let argType of argInfo.type) {
+                    if (typeof argType === 'string') {
+                        tempArgArr.push(argType);
+                        // console.log('<==');
+                        // console.log(argType);
+                        // console.log();
+                    } else {
+                        // console.log('==>');
+                        // console.log(argType);
+                        // console.log();
+
+                        if (argType.record) {
+                            let temp = [];
+                            for (let recordInfo of argType.record) {
+                                // console.log('recordInfo.type');
+                                // console.log(recordInfo.type);
+                                // console.log();
+
+                                if (recordInfo.type.length === 1 && typeof recordInfo.type[0] === 'string') {
+                                    temp.push(recordInfo.type);
+                                } else {
+                                    let tempSubArr = [];
+                                    for (let arg of recordInfo.type) {
+                                        if (typeof arg === 'string') {
+                                            tempSubArr.push(arg);
+                                        } else {
+                                            throw new Error('Argument not supported!');
+                                        }
+                                    }
+
+                                    temp.push(`(${ tempSubArr.toString() })`);
+                                } 
+                            }
+
+                            tempArgArr.push(`(${ temp.toString() })`);
+                            // console.log('argType.record');
+                            // console.log(tempArgArr);
+                            // console.log();
+                        }
+
+                        if (argType.tuple) {
+                            // let tuple = argType.tuple;
+                            // console.log('tuple.toString()');
+                            // console.log(tuple.toString());
+                            tempArgArr.push(`(${ argType.tuple.toString() })`);
+                            // console.log(tempArgArr);
+                            // console.log('argType.tuple');
+                            // console.log(tempArgArr);
+                            // console.log();
+                        }
+
+                        if (argType.list) {
+                            throw new Error('List. Argument not supported!');
+                        }
+                    }
+                }
+            }
+
+            // argsArr = `(${ tempArgArr.toString() })`;
+            argsArr = tempArgArr;
+        }
+
+        let returnType = [];
+        if (typeof func.returns === 'string') {
+            returnType = func.returns;
+        }
+
+        if (typeof func.returns !== 'string') {
+            // TODO: parse return type
+            if (func.returns.tuple) {
+                if (Array.isArray(func.returns.tuple) && func.returns.tuple.length === 0) {
+                    returnType = func.returns.tuple;
+                } else {
+                    console.log('--->', func.returns);
+                    //TODO: iterate
+                }
+                
+            }
+
+            if (func.returns.record) {
+                if (Array.isArray(func.returns.record) && func.returns.record.length !== 0) {
+                    //returnType = func.returns.record;
+                } else {
+                    console.log('--->', func.returns);
+                }
+            }
+
+            if (func.returns.list) {
+                if (Array.isArray(func.returns.record) && func.returns.record.length !== 0) {
+                    //returnType = func.returns.record;
+                } else {
+                    console.log('--->', func.returns);
+                }
+            }
+        }
+
+        let parsedFunc = {
+            name: func.name,
+            args: argsArr,
+            returnType: returnType
+        }
+
+        functions.push(parsedFunc);
+    }
+
+    console.log();
+    console.log('functions');
+    console.log(functions);
+    console.log();
+
+    return functions;
 }
 
 function getContractFunctions (contractSource) {
