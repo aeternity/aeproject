@@ -68,7 +68,7 @@ class Deployer {
         client = await utils.getClient(this.network, this.keypair);
 
         contract = await this.readFile(contractPath);
-        
+
         let contractInstance;
         let deployedContract;
         let contractFileName;
@@ -98,11 +98,11 @@ class Deployer {
             // console.log(deployedContract.aci.functions[2].arguments);
             // console.log();
 
-            console.log('f.arguments');
+            // console.log('f.arguments');
 
             for (let f of deployedContract.aci.functions) {
-                console.log(f.arguments);
-                console.log();
+                // console.log(f.arguments);
+                // console.log();
             }
 
             // console.log(deployedContract.aci.functions[length - 3].arguments);
@@ -120,7 +120,6 @@ class Deployer {
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
 
-            
             return;
             deployedContract = addSmartContractFunctions(deployedContract, functions);
 
@@ -135,7 +134,7 @@ class Deployer {
                 info.gasUsed = txInfo.gasUsed;
                 info.result = deployedContract.deployInfo.address;
                 info.status = true;
-                
+
                 console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
             }
 
@@ -176,19 +175,19 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     let fNames = [];
     let fMap = new Map();
 
-    console.log();
-    console.log('=>> old way');
-    
+    // console.log();
+    // console.log('=>> old way');
+
     for (let func of functionsDescription) {
 
         const funcName = func.name;
         const funcArgs = func.args;
         const funcReturnType = func.returnType;
 
-        console.log(funcName);
-        console.log(funcArgs);
-        console.log(funcReturnType);
-        console.log();
+        // console.log(funcName);
+        // console.log(funcArgs);
+        // console.log(funcReturnType);
+        // console.log();
 
         fNames.push(funcName);
         fMap.set(funcName, {
@@ -397,18 +396,18 @@ function processSyntax (unprocessedSyntax) {
     return syntax;
 }
 
-function parseContractFunctionsFromACI(aci) {
+function parseContractFunctionsFromACI (aci) {
     let functions = [];
     const reservedFunctionNames = [
         'init'
     ]
-    
+
     for (let func of aci.functions) {
-        
+
         if (reservedFunctionNames.includes(func.name)) {
             continue;
         }
-        
+
         let argsArr = func.arguments;
 
         if (argsArr && argsArr.length !== 0) {
@@ -445,7 +444,7 @@ function parseContractFunctionsFromACI(aci) {
                                     }
 
                                     temp.push(`(${ tempSubArr.toString() })`);
-                                } 
+                                }
                             }
 
                             tempArgArr.push(`(${ temp.toString() })`);
@@ -477,37 +476,90 @@ function parseContractFunctionsFromACI(aci) {
         }
 
         let returnType = [];
+
+        console.log('func.returns');
+        console.log(func.returns);
+        console.log();
+
         if (typeof func.returns === 'string') {
             returnType = func.returns;
         }
 
+        function aa () {
+            if (Array.isArray(func.returns.map) && func.returns.map.length > 0) {
+
+                let temp = [];
+
+                for (let mapReturnType of func.returns.map) {
+                    if (typeof mapReturnType === 'string') {
+                        temp.push(mapReturnType)
+                    } else {
+                        // map
+                        // list
+                        // tuple
+                    }
+                }
+
+                returnType = `(${ temp.toString() })`;
+            }
+        }
+
         if (typeof func.returns !== 'string') {
             // TODO: parse return type
-            if (func.returns.tuple) {
-                if (Array.isArray(func.returns.tuple) && func.returns.tuple.length === 0) {
-                    returnType = func.returns.tuple;
-                } else {
-                    console.log('--->', func.returns);
-                    //TODO: iterate
+            if (func.returns.map) {
+                if (Array.isArray(func.returns.map) && func.returns.map.length > 0) {
+
+                    let temp = [];
+
+                    for (let mapReturnType of func.returns.map) {
+                        if (typeof mapReturnType === 'string') {
+                            temp.push(mapReturnType)
+                        } else {
+                            // map
+                            // list
+                            // tuple
+                        }
+                    }
+
+                    returnType = `(${ temp.toString() })`;
                 }
-                
+            }
+
+            if (func.returns.tuple) {
+                if (Array.isArray(func.returns.tuple) && func.returns.tuple.length > 0) {
+                    let temp = [];
+
+                    for (let mapReturnType of func.returns.tuple) {
+                        if (typeof mapReturnType === 'string') {
+                            temp.push(mapReturnType)
+                        } else {
+                            // map
+                            // list
+                            // tuple
+                        }
+                    }
+
+                    returnType = `(${ temp.toString() })`;
+                }
             }
 
             if (func.returns.record) {
-                if (Array.isArray(func.returns.record) && func.returns.record.length !== 0) {
-                    //returnType = func.returns.record;
-                } else {
-                    console.log('--->', func.returns);
+                if (Array.isArray(func.returns.record) && func.returns.record.length > 0) {
+                    // TODO : { record: 
+                    //               [ { name: 'name', type: [Array] },
+                    //               { name: 'is_completed', type: [Array] } ] }
                 }
             }
 
             if (func.returns.list) {
-                if (Array.isArray(func.returns.record) && func.returns.record.length !== 0) {
-                    //returnType = func.returns.record;
-                } else {
-                    console.log('--->', func.returns);
+                if (Array.isArray(func.returns.record) && func.returns.record.length > 0) {
+                    // TODO: { list: [ { tuple: [Array] } ] }
                 }
             }
+
+            console.log('=-=-> processed return type');
+            console.log(returnType);
+            console.log();
         }
 
         let parsedFunc = {
@@ -519,10 +571,10 @@ function parseContractFunctionsFromACI(aci) {
         functions.push(parsedFunc);
     }
 
-    console.log();
-    console.log('functions');
-    console.log(functions);
-    console.log();
+    // console.log();
+    // console.log('functions');
+    // console.log(functions);
+    // console.log();
 
     return functions;
 }
