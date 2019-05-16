@@ -15,7 +15,6 @@ let executeOptions = {
 };
 chai.use(chaiAsPromised);
 
-const GLOBAL_AE_COMPILER_URL = constants.GLOBAL_AE_COMPILER_URL;
 const LOCAL_COMPILER_URL = constants.LOCAL_COMPILER_URL;
 const INVALID_COMPILER_URL = 'https://compiler.somewhere.com';
 
@@ -81,12 +80,6 @@ describe('ForgAE Compile', () => {
         it('Should compile contracts with --compiler argument - localhost ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", LOCAL_COMPILER_URL], executeOptions)
 
-            assert.include(result, expectedCompileResultExampleContract);
-        })
-
-        it('Should compile contracts with --compiler argument - official compiler ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["--compiler", GLOBAL_AE_COMPILER_URL], executeOptions)
-            
             assert.include(result, expectedCompileResultExampleContract);
         })
 

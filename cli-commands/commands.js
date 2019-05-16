@@ -40,7 +40,7 @@ const addCompileOption = (program) => {
         .command('compile')
         .option('-n --network [network]', 'Network to connect to', "local")
         .option('--path [compile path]', 'Path to contract files', './contracts')
-        .option('--compiler [compiler url]', 'Path to contract files', config.compilerUrl)
+        .option('--compiler [compiler url]', 'Compiling contracts and generating ACI data for contract', config.compilerUrl)
         .description('Compile contracts')
         .action(async (option) => {
             await compile.run(option.path, option.network, option.compiler);
@@ -76,7 +76,7 @@ const addDeployOption = (program) => {
         .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
         .option('-n --network [network]', 'Select network', "local")
         .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)')
-        .option('--compiler [compiler_url]', 'https://compiler.aepps.com')
+        .option('--compiler [compiler_url]', 'Compiling contracts and generating ACI data for contract')
         .action(async (options) => {
             await deploy.run(options.path, options.network, options.secretKey, options.compiler);
         })

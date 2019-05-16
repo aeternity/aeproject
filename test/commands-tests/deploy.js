@@ -15,7 +15,7 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require("./../../cli-commands/forgae-deploy/forgae-deployer");
+const Deployer = require('forgae').Deployer;
 const config = require('./../constants.json');
 
 const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
@@ -188,12 +188,6 @@ describe('ForgAE Deploy', () => {
             let executePromise = execute(constants.cliCommands.DEPLOY, ["--path", "wrongPath"], executeOptions)
 
             await assert.isFulfilled(executePromise, "wrongPath");
-        })
-
-        it('Deploy with additional parameter --compiler', async () => {
-            let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", config.GLOBAL_AE_COMPILER_URL], executeOptions)
-
-            assert.include(result, expectedDeployResult)
         })
 
         it('Should NOT deploy with invalid additional parameter --compiler', async () => {

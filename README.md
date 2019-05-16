@@ -69,10 +69,10 @@ Example:
 forgae compile -n testnet
 ```
 You can specify compiler using the **--compiler** parameter.
-- "--compiler https://compiler.aepps.com" // global AE compiler
+- "--compiler http://localhost:3080" // AE compiler
 Example:
 ```
-forgae compile --compiler https://compiler.aepps.com
+forgae compile --compiler http://localhost:3080
 ```
 
 ## Run deploy script
@@ -101,7 +101,7 @@ The **-s** is used for adding a secretKey that will be used to deploy and call c
 Additional **--compiler** parameter is available, which can specify compiler to be used.
 Example:
 ```
-forgae deploy --compiler https://compiler.aepps.com
+forgae deploy --compiler http://localhost:3080
 ```
 
 **Deployer.deploy(path, gasLimit, initState)** function can take up to 2 arguments:
