@@ -16,8 +16,8 @@
  */
 const Deployer = require('forgae').Deployer;
 
-const deploy = async (network, privateKey) => {
-    let deployer = new Deployer(network, privateKey)
+const deploy = async (network, privateKey, compiler) => {
+    let deployer = new Deployer(network, privateKey, compiler)
 
     await deployer.deploy("./contracts/ExampleContract.aes")
 };

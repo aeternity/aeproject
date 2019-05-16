@@ -15,7 +15,7 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 const {
     printError,
     print,
@@ -25,18 +25,19 @@ const utils = require('./../utils');
 const {
     spawn
 } = require('promisify-child-process');
+const config = require('./../config.json');
 
-async function compileAndPrint(file, client) {
+async function compileAndPrint (file, client) {
     print('\r')
 
     try {
         let code = await readFile(file)
         let contract = await client.contractCompile(code.toString());
 
-        print(`Contract '${file} has been successfully compiled'`)
-        print(`Contract bytecode: ${contract.bytecode}`)
+        print(`Contract '${ file } has been successfully compiled'`)
+        print(`Contract bytecode: ${ contract.bytecode }`)
     } catch (error) {
-        printError(`Contract '${file} has not been compiled'`)
+        printError(`Contract '${ file } has not been compiled'`)
         printError(`reason:`)
         printError(error)
     }
@@ -44,15 +45,18 @@ async function compileAndPrint(file, client) {
     print('\r')
 }
 
-async function run(path, network = "local") {
+async function run (path, network = "local", compiler = config.compilerUrl) {
+
     print('===== Compiling contracts =====');
-    let currentNetwork = utils.getNetwork(network)
+    let currentNetwork = utils.getNetwork(network);
+    currentNetwork.compilerUrl = compiler;
+
     let client = await utils.getClient(currentNetwork);
 
     if (path.includes('.aes')) {
         compileAndPrint(path, client)
     } else {
-        const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\.(aes)`);
+        const files = await utils.getFiles(`${ process.cwd() }/${ path }/`, `.*\.(aes)`);
 
         files.forEach(async (file) => {
             compileAndPrint(file, client)

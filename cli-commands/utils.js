@@ -15,7 +15,7 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-require = require('esm')(module /*, options */) // use to handle es6 import/export
+require = require('esm')(module /*, options */ ) // use to handle es6 import/export
 
 const fs = require('fs-extra');
 const dir = require('node-dir');
@@ -28,25 +28,7 @@ const {
     spawn
 } = require('promisify-child-process');
 
-const config = {
-    localhostParams: {
-        url: "http://localhost:3001",
-        networkId: 'ae_devnet'
-    },
-    testnetParams: {
-        url: "https://sdk-testnet.aepps.com",
-        networkId: 'ae_uat'
-    },
-    mainnetParams: {
-        url: 'https://sdk-mainnet.aepps.com',
-        networkId: 'ae_mainnet'
-    },
-    keypair: {
-        secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca',
-        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
-    },
-    compilerUrl: 'https://compiler.aepps.com'
-};
+const config = require('./config.json');
 
 // Print helper
 const print = (msg, obj) => {
@@ -108,7 +90,7 @@ const getClient = async function (network, keypair = config.keypair) {
             keypair: keypair,
             nativeMode: true,
             networkId: network.networkId,
-            compilerUrl: config.compilerUrl
+            compilerUrl: network.compilerUrl
         })
     });
 
@@ -150,7 +132,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError (error) {
+function logApiError(error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -163,10 +145,11 @@ const sleep = (ms) => {
 }
 
 const forgaeExecute = async (command, args = [], options = {}) => {
-    return await execute("forgae", command, args, options)
+    return execute("forgae", command, args, options)
 }
 
 const execute = async (cli, command, args = [], options = {}) => {
+
     const child = spawn(cli, [command, ...args], options)
     let result = '';
 
@@ -192,14 +175,13 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
         switch (e.code) {
             case 'ENOENT':
                 throw new Error('File not found')
-                break
             default:
                 throw e
         }
     }
 };
 
-function keyToHex (publicKey) {
+function keyToHex(publicKey) {
     let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
     let asHex = '#' + byteArray.toString('hex');
     return asHex;
@@ -235,7 +217,7 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-async function generateKeyPairFromSecretKey (secretKey) {
+async function generateKeyPairFromSecretKey(secretKey) {
     const hexStr = await Crypto.hexStringToByte(secretKey.trim());
     const keys = await Crypto.generateKeyPairFromSecret(hexStr);
 
