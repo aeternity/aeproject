@@ -127,7 +127,7 @@ owner = await Ae({
 	keypair: wallets[0],
 	nativeMode: true,
 	networkId: 'ae_devnet',
-	compilerUrl: 'http://localhost:3001/'
+	compilerUrl: 'http://localhost:3080/'
 });
 
 nonOwner = await Ae({
@@ -136,7 +136,7 @@ nonOwner = await Ae({
 	keypair: wallets[1],
 	nativeMode: true,
 	networkId: 'ae_devnet',
-	compilerUrl: 'http://localhost:3001/'
+	compilerUrl: 'http://localhost:3080/'
 });
 ```
 #### minerWallet
@@ -151,7 +151,7 @@ miner = await Ae({
 	keypair: minerWallet,
 	nativeMode: true,
 	networkId: 'ae_devnet',
-	compilerUrl: 'http://localhost:3001/'
+	compilerUrl: 'http://localhost:3080/'
 });
 ```
 
