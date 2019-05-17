@@ -39,7 +39,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.contractWrapperTestsFolderPath
 };
 
-describe("Deployed contract instance additional functionality", async () => {
+describe.only("Deployed contract instance additional functionality", async () => {
 
     let deployedContract;
 

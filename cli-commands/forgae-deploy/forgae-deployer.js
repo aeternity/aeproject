@@ -69,6 +69,7 @@ class Deployer {
      * @param {object} options - Initial options that will be passed to init function.
      */
     async deploy(contractPath, initState = [], options = opts) {
+        
         this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
         contract = await this.readFile(contractPath);
@@ -124,7 +125,8 @@ class Deployer {
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
 
-            return;
+            // return;
+            
             deployedContract = addSmartContractFunctions(deployedContract, functions);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -168,6 +170,9 @@ class Deployer {
 
 async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
     // const functionsDescription = getContractFunctions(contractSource);
+    console.log('-----------------------------------------');
+    console.log(deployedContract.aci);
+    console.log('-----------------------------------------');
     const functionsDescription = parseContractFunctionsFromACI(deployedContract.aci);
     const smartContractTypes = getContractTypes(contractSource);
 

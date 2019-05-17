@@ -15,7 +15,7 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require('forgae').Deployer;
+const Deployer = require('./../../cli-commands/forgae-deploy/forgae-deployer');
 const config = require('./../constants.json');
 
 const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
