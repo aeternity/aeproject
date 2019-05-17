@@ -485,44 +485,57 @@ function parseContractFunctionsFromACI (aci) {
             returnType = func.returns;
         }
 
-        function aa () {
-            if (Array.isArray(func.returns.map) && func.returns.map.length > 0) {
-
-                let temp = [];
-
-                for (let mapReturnType of func.returns.map) {
-                    if (typeof mapReturnType === 'string') {
-                        temp.push(mapReturnType)
+        function aa (array) {
+            let temp = [];
+            if (Array.isArray(array) && array.length > 0) {
+                console.log('=======>');
+                console.log(array);
+                console.log();
+                for (let element of array) {
+                    if (typeof element === 'string') {
+                        temp.push(element)
                     } else {
-                        // map
-                        // list
-                        // tuple
+                        // map, list, tuple
+                        if (element.map) {
+                            temp.push(`( ${ aa(element.map) })`);
+                        } else if (element.tuple) {
+                            temp.push(`( ${ aa(element.tuple) })`);
+                        } else if (element.list) {
+                            temp.push(`( ${ aa(element.list) })`);
+                        } else if (element.record) {
+                            console.log('==> RECORD');
+                            console.log(record);
+                        }
+                        
                     }
                 }
 
-                returnType = `(${ temp.toString() })`;
+                return `(${ temp.toString() })`;
             }
+
+            return temp;
         }
 
         if (typeof func.returns !== 'string') {
             // TODO: parse return type
             if (func.returns.map) {
-                if (Array.isArray(func.returns.map) && func.returns.map.length > 0) {
+                returnType = aa(func.returns.map);
+                // if (Array.isArray(func.returns.map) && func.returns.map.length > 0) {
 
-                    let temp = [];
+                //     let temp = [];
 
-                    for (let mapReturnType of func.returns.map) {
-                        if (typeof mapReturnType === 'string') {
-                            temp.push(mapReturnType)
-                        } else {
-                            // map
-                            // list
-                            // tuple
-                        }
-                    }
+                //     for (let mapReturnType of func.returns.map) {
+                //         if (typeof mapReturnType === 'string') {
+                //             temp.push(mapReturnType)
+                //         } else {
+                //             // map
+                //             // list
+                //             // tuple
+                //         }
+                //     }
 
-                    returnType = `(${ temp.toString() })`;
-                }
+                //     returnType = `(${ temp.toString() })`;
+                // }
             }
 
             if (func.returns.tuple) {
