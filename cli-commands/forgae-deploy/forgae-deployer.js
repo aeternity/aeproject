@@ -398,6 +398,10 @@ function processSyntax (unprocessedSyntax) {
     return syntax;
 }
 
+
+
+
+
 function parseContractFunctionsFromACI (aci) {
     let functions = [];
     const reservedFunctionNames = [
@@ -406,176 +410,19 @@ function parseContractFunctionsFromACI (aci) {
 
     for (let func of aci.functions) {
 
+        // skip reserved function's name
         if (reservedFunctionNames.includes(func.name)) {
             continue;
         }
 
-        let argsArr = func.arguments;
+        // if (func.name === 'get_todo_by_id') {
+        //     console.log('>>>>> get_todo_by_id <<<<<<');
+        //     console.log(func);
+        //     console.log();
+        // }
 
-        if (argsArr && argsArr.length !== 0) {
-            let tempArgArr = [];
-            for (let argInfo of argsArr) {
-                for (let argType of argInfo.type) {
-                    if (typeof argType === 'string') {
-                        tempArgArr.push(argType);
-                        // console.log('<==');
-                        // console.log(argType);
-                        // console.log();
-                    } else {
-                        // console.log('==>');
-                        // console.log(argType);
-                        // console.log();
-
-                        if (argType.record) {
-                            let temp = [];
-                            for (let recordInfo of argType.record) {
-                                // console.log('recordInfo.type');
-                                // console.log(recordInfo.type);
-                                // console.log();
-
-                                if (recordInfo.type.length === 1 && typeof recordInfo.type[0] === 'string') {
-                                    temp.push(recordInfo.type);
-                                } else {
-                                    let tempSubArr = [];
-                                    for (let arg of recordInfo.type) {
-                                        if (typeof arg === 'string') {
-                                            tempSubArr.push(arg);
-                                        } else {
-                                            throw new Error('Argument not supported!');
-                                        }
-                                    }
-
-                                    temp.push(`(${ tempSubArr.toString() })`);
-                                }
-                            }
-
-                            tempArgArr.push(`(${ temp.toString() })`);
-                            // console.log('argType.record');
-                            // console.log(tempArgArr);
-                            // console.log();
-                        }
-
-                        if (argType.tuple) {
-                            // let tuple = argType.tuple;
-                            // console.log('tuple.toString()');
-                            // console.log(tuple.toString());
-                            tempArgArr.push(`(${ argType.tuple.toString() })`);
-                            // console.log(tempArgArr);
-                            // console.log('argType.tuple');
-                            // console.log(tempArgArr);
-                            // console.log();
-                        }
-
-                        if (argType.list) {
-                            throw new Error('List. Argument not supported!');
-                        }
-                    }
-                }
-            }
-
-            // argsArr = `(${ tempArgArr.toString() })`;
-            argsArr = tempArgArr;
-        }
-
-        let returnType = [];
-
-        console.log('func.returns');
-        console.log(func.returns);
-        console.log();
-
-        if (typeof func.returns === 'string') {
-            returnType = func.returns;
-        }
-
-        function aa (array) {
-            let temp = [];
-            if (Array.isArray(array) && array.length > 0) {
-                console.log('=======>');
-                console.log(array);
-                console.log();
-                for (let element of array) {
-                    if (typeof element === 'string') {
-                        temp.push(element)
-                    } else {
-                        // map, list, tuple
-                        if (element.map) {
-                            temp.push(`( ${ aa(element.map) })`);
-                        } else if (element.tuple) {
-                            temp.push(`( ${ aa(element.tuple) })`);
-                        } else if (element.list) {
-                            temp.push(`( ${ aa(element.list) })`);
-                        } else if (element.record) {
-                            console.log('==> RECORD');
-                            console.log(record);
-                        }
-                        
-                    }
-                }
-
-                return `(${ temp.toString() })`;
-            }
-
-            return temp;
-        }
-
-        if (typeof func.returns !== 'string') {
-            // TODO: parse return type
-            if (func.returns.map) {
-                returnType = aa(func.returns.map);
-                // if (Array.isArray(func.returns.map) && func.returns.map.length > 0) {
-
-                //     let temp = [];
-
-                //     for (let mapReturnType of func.returns.map) {
-                //         if (typeof mapReturnType === 'string') {
-                //             temp.push(mapReturnType)
-                //         } else {
-                //             // map
-                //             // list
-                //             // tuple
-                //         }
-                //     }
-
-                //     returnType = `(${ temp.toString() })`;
-                // }
-            }
-
-            if (func.returns.tuple) {
-                if (Array.isArray(func.returns.tuple) && func.returns.tuple.length > 0) {
-                    let temp = [];
-
-                    for (let mapReturnType of func.returns.tuple) {
-                        if (typeof mapReturnType === 'string') {
-                            temp.push(mapReturnType)
-                        } else {
-                            // map
-                            // list
-                            // tuple
-                        }
-                    }
-
-                    returnType = `(${ temp.toString() })`;
-                }
-            }
-
-            if (func.returns.record) {
-                if (Array.isArray(func.returns.record) && func.returns.record.length > 0) {
-                    // TODO : { record: 
-                    //               [ { name: 'name', type: [Array] },
-                    //               { name: 'is_completed', type: [Array] } ] }
-                }
-            }
-
-            if (func.returns.list) {
-                if (Array.isArray(func.returns.record) && func.returns.record.length > 0) {
-                    // TODO: { list: [ { tuple: [Array] } ] }
-                }
-            }
-
-            console.log('=-=-> processed return type');
-            console.log(returnType);
-            console.log();
-        }
+        let argsArr = parseACIFunctionArguments(func.arguments);
+        let returnType = parseACIFunctionReturnType(func.returns);
 
         let parsedFunc = {
             name: func.name,
@@ -592,6 +439,155 @@ function parseContractFunctionsFromACI (aci) {
     // console.log();
 
     return functions;
+}
+
+function parseACIFunctionArguments(functionArguments) {
+    let argsArr = functionArguments;
+
+    if (argsArr && argsArr.length !== 0) {
+        let tempArgArr = [];
+
+        for (let argInfo of argsArr) {
+            
+            for (let argType of argInfo.type) {
+
+                let result = _parseACIFunctionArguments(argType);
+                tempArgArr.push(result);
+            }
+        }
+
+        argsArr = tempArgArr;
+    }
+
+    return argsArr;
+}
+
+function _parseACIFunctionArguments(argument) {
+    if (typeof argument === 'string') {
+        return argument;
+    } else {
+
+        if (argument.record) {
+            let result = parseACIFunctionArgumentsRecord(argument.record);
+            return result;
+        } else if (argument.tuple) {
+            return `(${ argument.tuple.toString() })`;
+        } else if (argument.list) {
+            let result = parseACIFunctionArgumentsList(argument.list);
+            return result;
+        }
+    }
+}
+
+function parseACIFunctionArgumentsList(list) {
+
+    let temp = [];
+
+    if (list.length === 1 && typeof list[0] === 'string') {
+        temp.push(list[0]);
+    } else {
+
+        for (let element of list) {
+            let result = _parseACIFunctionArguments(element);
+            temp.push(result);
+        }
+    }
+
+    return `list(${ temp.toString() })`;
+}
+
+function parseACIFunctionArgumentsRecord(record) {
+    let temp = [];
+    for (let value of record) {
+
+        if (value.type.length === 1 && typeof value.type[0] === 'string') {
+            temp.push(value.type);
+        } else {
+            let tempSubArr = [];
+            for (let arg of value.type) {
+                if (typeof arg === 'string') {
+                    tempSubArr.push(arg);
+                } else {
+                    
+                    let result = parseACIFunctionArgumentsRecord(arg.record);
+                    // remove brackets
+                    result = result.substr(1, result.length - 2);
+                    tempSubArr.push(result);
+                }
+            }
+
+            temp.push(`(${ tempSubArr.toString() })`);
+        }
+    }
+
+    return `(${ temp.toString() })`;
+}
+
+function parseACIFunctionReturnType (functionReturns = []) {
+    
+    let returnType = functionReturns;
+    if (typeof functionReturns !== 'string') {
+        if (functionReturns.map) {
+            returnType = processReturnType(functionReturns.map);
+        } else if (functionReturns.tuple) {
+            returnType = processReturnType(functionReturns.tuple);
+        } else if (functionReturns.record) {
+            returnType = processReturnTypeRecord(functionReturns.record);
+        } else if (functionReturns.list) {
+            let result = processReturnType(functionReturns.list);
+            result = 'list' + result;
+
+            returnType = result;
+        }
+    }
+
+    return returnType;
+}
+
+// depth is just debug helper
+function processReturnType (array, depth = 1) {
+    let temp = [];
+    if (Array.isArray(array) && array.length > 0) {
+
+        for (let element of array) {
+            if (typeof element === 'string') {
+                temp.push(element)
+            } else {
+                if (element.map) {
+                    temp.push(`${ processReturnType(element.map, depth + 1) }`);
+                } else if (element.tuple) {
+                    temp.push(`${ processReturnType(element.tuple, depth + 1) }`);
+                } else if (element.list) {
+                    temp.push(`${ processReturnType(element.list, depth + 1) }`);
+                } else if (element.record) {
+                    let result = processReturnTypeRecord(element.record);
+                    temp.push(result);
+                }
+            }
+        }
+
+        return `(${ temp.toString() })`;
+    }
+
+    return temp;
+}
+
+// process record
+function processReturnTypeRecord (record) {
+    let recordTemp = [];
+    for (let element of record) {
+
+        for (let recordElement of element.type) {
+            if (typeof recordElement === 'string') {
+                recordTemp.push(recordElement);
+            } else {
+                let result = processReturnTypeRecord(recordElement.record);
+                recordTemp.push(result);
+            }
+        }
+    }
+
+    return `(${ recordTemp.toString() })`;
 }
 
 function getContractFunctions (contractSource) {
