@@ -15,7 +15,10 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require("./../../cli-commands/forgae-deploy/forgae-deployer");
+const Deployer = require('forgae').Deployer;
+const config = require('./../constants.json');
+
+const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
 
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
@@ -187,6 +190,13 @@ describe('ForgAE Deploy', () => {
             await assert.isFulfilled(executePromise, "wrongPath");
         })
 
+        it('Should NOT deploy with invalid additional parameter --compiler', async () => {
+            
+            let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
+
+            assert.include(result, `Error: getaddrinfo ENOTFOUND ${ INVALID_COMPILER_URL.replace('http://', '') }`);
+        })
+        
         it('with secret key arguments that have 0 (AEs) balance', async () => {
 
             const zeroBalanceSecretKey = '922bf2635813fb51827dcdb8fff38d0c16c447594b60bc523f5e5c10a876d1b14701787d0fe30d8f50cf340262daee1204f3c881a9ce8c5c9adccfb0e1de40e5';

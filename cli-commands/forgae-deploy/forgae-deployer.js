@@ -1,6 +1,7 @@
 const utils = require('./../utils')
 const fs = require('fs');
 const logStoreService = require('./../forgae-history/log-store-service');
+const config = require('./../config.json');
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -36,12 +37,15 @@ async function getTxInfo (txHash) {
 
 class Deployer {
 
-    constructor (network = "local", keypairOrSecret = utils.config.keypair) {
+    constructor(network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl) {
         this.network = utils.getNetwork(network);
+        this.compilerUrl = compilerUrl;
+
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
             return
         }
+
         if (typeof keypairOrSecret === 'string' || keypairOrSecret instanceof String) {
             this.keypair = {
                 publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
@@ -64,9 +68,9 @@ class Deployer {
      * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy (contractPath, initState = [], options = opts) {
+    async deploy(contractPath, initState = [], options = opts) {
+        this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
-
         contract = await this.readFile(contractPath);
 
         let contractInstance;
@@ -327,9 +331,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
         result['call'] = async function (functionName, args = [], options = {}) {
 
-            let callResult = await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, options);
-
-            return callResult;
+            return client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
         }
 
         return result;
