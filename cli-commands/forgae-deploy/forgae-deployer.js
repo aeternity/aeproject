@@ -97,36 +97,9 @@ class Deployer {
             contractInstance = await client.getContractInstance(contract);
             deployedContract = await contractInstance.deploy(initState, options);
 
-            let length = deployedContract.aci.functions.length;
-
-            // console.log(deployedContract.aci);
-            // console.log(deployedContract.aci.functions[2].arguments);
-            // console.log();
-
-            // console.log('f.arguments');
-
-            for (let f of deployedContract.aci.functions) {
-                // console.log(f.arguments);
-                // console.log();
-            }
-
-            // console.log(deployedContract.aci.functions[length - 3].arguments);
-            // console.log(deployedContract.aci.functions[length - 2].arguments);
-            // console.log(deployedContract.aci.functions[length - 1]);
-            // console.log();
-            // console.log(deployedContract.aci.functions[length - 1].arguments);
-            // console.log(deployedContract.aci.functions[length - 1].arguments[0].type[0]);
-            // console.log(deployedContract.aci.functions[length - 1].arguments[0].type[0].record);
-
-            // console.log();
-            // console.log(deployedContract.aci.functions[length - 1].arguments[1].type[0]);
-            // console.log(deployedContract.aci.functions[length - 1].arguments[1].type[0].record);
-
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
 
-            // return;
-            
             deployedContract = addSmartContractFunctions(deployedContract, functions);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -169,12 +142,7 @@ class Deployer {
 }
 
 async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
-    // const functionsDescription = getContractFunctions(contractSource);
-    console.log('-----------------------------------------');
-    console.log(deployedContract.aci);
-    console.log('-----------------------------------------');
     const functionsDescription = parseContractFunctionsFromACI(deployedContract.aci);
-    const smartContractTypes = getContractTypes(contractSource);
 
     const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
     const currentClient = await utils.getClient(network, keyPair);
@@ -184,19 +152,11 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     let fNames = [];
     let fMap = new Map();
 
-    // console.log();
-    // console.log('=>> old way');
-
     for (let func of functionsDescription) {
 
         const funcName = func.name;
         const funcArgs = func.args;
         const funcReturnType = func.returnType;
-
-        // console.log(funcName);
-        // console.log(funcArgs);
-        // console.log(funcReturnType);
-        // console.log();
 
         fNames.push(funcName);
         fMap.set(funcName, {
@@ -224,7 +184,6 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
                 for (let i = 0; i < thisFunctionArgs.length; i++) {
 
-                    // let argType = thisFunctionArgs[i].type.toLowerCase(); // old
                     let argType = thisFunctionArgs[i];
 
                     switch (argType) {
@@ -298,12 +257,6 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
             let resultFromExecution = await client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
             let returnType = thisFunctionReturnType;
-            for (let _type of smartContractTypes.asList) {
-                if (thisFunctionReturnType.indexOf(_type) >= 0) {
-                    const syntax = smartContractTypes.asMap.get(_type);
-                    returnType = thisFunctionReturnType.trim().replace(_type, syntax);
-                }
-            }
 
             let decodedValue = await resultFromExecution.decode(returnType.trim());
 
@@ -345,68 +298,6 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     return functions;
 }
 
-function getContractTypes (contractSource) {
-    let rgx = /^\s*record\s+([\w\d\_]+)\s+=\s(?:{([^}]+))/gm;
-
-    let asMap = new Map();
-    let asList = [];
-
-    let match = rgx.exec(contractSource);
-    while (match) {
-
-        // set type name
-        let temp = {
-            name: match[1],
-            syntax: ''
-        }
-
-        let isReservedName = temp.name.toLowerCase() === 'state'
-
-        // set syntax
-        if (match.length >= 2 && match[2] && !isReservedName) {
-            let syntax = processSyntax(match[2]);
-            temp.syntax = syntax;
-        }
-
-        if (!isReservedName) {
-            asMap.set(temp.name, temp.syntax);
-            asList.push(temp.name);
-        }
-
-        match = rgx.exec(contractSource);
-    }
-
-    return {
-        asMap,
-        asList
-    };
-}
-
-function processSyntax (unprocessedSyntax) {
-
-    let propValues = unprocessedSyntax.split(',').map(x => x.trim());
-
-    let syntax = `(`;
-
-    for (let propValue of propValues) {
-
-        let tokens = propValue.split(':').map(x => x.trim());
-        if (tokens.length >= 2) {
-            syntax += tokens[1] + ','
-        }
-    }
-
-    // trim last comma
-    syntax = syntax.substr(0, syntax.length - 1);
-    syntax += ')';
-
-    return syntax;
-}
-
-
-
-
-
 function parseContractFunctionsFromACI (aci) {
     let functions = [];
     const reservedFunctionNames = [
@@ -420,12 +311,6 @@ function parseContractFunctionsFromACI (aci) {
             continue;
         }
 
-        // if (func.name === 'get_todo_by_id') {
-        //     console.log('>>>>> get_todo_by_id <<<<<<');
-        //     console.log(func);
-        //     console.log();
-        // }
-
         let argsArr = parseACIFunctionArguments(func.arguments);
         let returnType = parseACIFunctionReturnType(func.returns);
 
@@ -437,11 +322,6 @@ function parseContractFunctionsFromACI (aci) {
 
         functions.push(parsedFunc);
     }
-
-    // console.log();
-    // console.log('functions');
-    // console.log(functions);
-    // console.log();
 
     return functions;
 }
@@ -593,61 +473,6 @@ function processReturnTypeRecord (record) {
     }
 
     return `(${ recordTemp.toString() })`;
-}
-
-function getContractFunctions (contractSource) {
-
-    let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)\,\s]+)\s*)*=/gm;
-
-    let matches = [];
-
-    let match = rgx.exec(contractSource);
-    while (match) {
-
-        // set function name
-        let temp = {
-            name: match[1],
-            args: [],
-            returnType: '()'
-        }
-
-        // set functions args
-        if (match.length >= 3 && match[2]) {
-            let args = processArguments(match[2]);
-            temp.args = args;
-        }
-
-        // set functions returned type
-        if (match.length >= 4 && match[3]) {
-            temp.returnType = match[3]
-        }
-
-        matches.push(temp);
-        match = rgx.exec(contractSource);
-    }
-
-    return matches;
-}
-
-function processArguments (args) {
-    let splittedArgs = args.split(',').map(x => x.trim());
-    let processedArgs = [];
-
-    for (let i = 0; i < splittedArgs.length; i++) {
-        let tokens = splittedArgs[i].split(':').map(x => x.trim());
-        let processedArg = {
-            name: tokens[0],
-            type: null
-        };
-
-        if (tokens.length > 1) {
-            processedArg.type = tokens[1];
-        }
-
-        processedArgs.push(processedArg);
-    }
-
-    return processedArgs;
 }
 
 module.exports = Deployer;
