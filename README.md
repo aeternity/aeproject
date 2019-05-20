@@ -1,7 +1,7 @@
 # ForgAE
 
 **ForgAE** is an aeternity framework which helps with setting up a project.
-The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands for compilation, deployment of smart contracts, running a local node and unit testing the contracts.
+The framework makes the development of smart contracts in the aeternity network pretty easy. It provides commands for compilation, deployment of smart contracts, running a local node, local compiler and unit testing the contracts.
 
 The framework can be installed via npm:
 ```
@@ -144,7 +144,8 @@ owner = await Ae({
 	internalUrl: internalHost,
 	keypair: wallets[0],
 	nativeMode: true,
-	networkId: 'ae_devnet'
+	networkId: 'ae_devnet',
+	compilerUrl: 'http://localhost:3080/'
 });
 
 nonOwner = await Ae({
@@ -152,7 +153,8 @@ nonOwner = await Ae({
 	internalUrl: internalHost,
 	keypair: wallets[1],
 	nativeMode: true,
-	networkId: 'ae_devnet'
+	networkId: 'ae_devnet',
+	compilerUrl: 'http://localhost:3080/'
 });
 ```
 #### minerWallet
@@ -166,7 +168,8 @@ miner = await Ae({
 	internalUrl: internalHost,
 	keypair: minerWallet,
 	nativeMode: true,
-	networkId: 'ae_devnet'
+	networkId: 'ae_devnet',
+	compilerUrl: 'http://localhost:3080/'
 });
 ```
 
@@ -225,7 +228,7 @@ contract ExampleContract =
 
 ```
 let deployer = new Deployer('local', privateKey);
-deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
+deployedContract = await deployer.deploy( contractPath, []); // empty array for init params
 
 let result = await deployedContract.sayHello('World'); // result would be: "Hello, World"
 ```
