@@ -278,7 +278,7 @@ describe('ForgAE History', async () => {
             let result = await execute(constants.cliCommands.HISTORY, []);
 
             let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
-            let hasError = result.indexOf('│ Error         │ Validation error:') > 0;
+            let hasError = result.indexOf('│ Error') > 0;
 
             assert.isOk(hasFail && hasError, 'History log is not correct!');
         });
@@ -295,7 +295,7 @@ describe('ForgAE History', async () => {
             let result = await execute(constants.cliCommands.HISTORY, []);
 
             let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
-            let hasError = result.indexOf('│ Error         │ Validation error:') > 0;
+            let hasError = result.indexOf('│ Error') > 0;
 
             assert.isOk(hasFail && hasError, 'History log is not correct!');
         });
