@@ -23,7 +23,7 @@ const packageJson = require('./package.json')
 
 
 const program = require('commander')
-const commands = require('./cli-commands/commands')
+const commands = require('./packages/commands')
 
 const setupVersion = () => {
   program.version(packageJson.version)
