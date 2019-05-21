@@ -1,0 +1,15 @@
+{
+  "name": "forgae-shapes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "shape-commander.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "forgae-utils": "1.0.0"
+  }
+}

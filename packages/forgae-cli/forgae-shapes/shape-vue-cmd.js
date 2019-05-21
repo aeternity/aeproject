@@ -1,6 +1,6 @@
 const util = require('util');
 const childProcess = util.promisify(require('child_process').exec);
-const utils = require('forgae-utils/utils');
+const utils = require('forgae-utils');
 const exec = utils.execute;
 
 const fs = require('fs-extra');
