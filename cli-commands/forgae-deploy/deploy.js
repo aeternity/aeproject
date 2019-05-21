@@ -1,6 +1,5 @@
 const fs = require('fs');
 const defaultDeploymentFilePath = `deployment/deploy.js`;
-const AeSDK = require('@aeternity/aepp-sdk');
 const path = require('path');
 
 const verifyDeploymentFile = (deploymentFile) => {
@@ -19,11 +18,11 @@ const getDeployMethod = (deploymentFilePath) => {
     return deployModule.deploy;
 };
 
-const run = async (deploymentFilePath, network, secretKey) => {
+const run = async (deploymentFilePath, network, secretKey, compiler) => {
     const deployMethod = getDeployMethod(deploymentFilePath);
-
+    
     try {
-        await deployMethod(network, secretKey);
+        await deployMethod(network, secretKey, compiler);
 
         console.log(`Your deployment script finished successfully!`);
     } catch (e) {

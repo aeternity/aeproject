@@ -1,8 +1,7 @@
 const utils = require('./../utils')
 const fs = require('fs');
 const logStoreService = require('./../forgae-history/log-store-service');
-const ABI_TYPE = 'sophia';
-const execute = utils.execute;
+const config = require('./../config.json');
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -38,12 +37,15 @@ async function getTxInfo (txHash) {
 
 class Deployer {
 
-    constructor (network = "local", keypairOrSecret = utils.config.keypair) {
+    constructor(network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl) {
         this.network = utils.getNetwork(network);
+        this.compilerUrl = compilerUrl;
+
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
             return
         }
+
         if (typeof keypairOrSecret === 'string' || keypairOrSecret instanceof String) {
             this.keypair = {
                 publicKey: utils.generatePublicKeyFromSecretKey(keypairOrSecret),
@@ -56,7 +58,7 @@ class Deployer {
     }
 
     async readFile (path) {
-        return await fs.readFileSync(path, "utf-8")
+        return fs.readFileSync(path, "utf-8")
     }
 
     /**
@@ -66,40 +68,68 @@ class Deployer {
      * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy (contractPath, initState = [], options = opts) {
+    async deploy(contractPath, initState = [], options = opts) {
+        
+        this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
-
         contract = await this.readFile(contractPath);
 
-        const contractInstance = await client.getContractInstance(contract);
-        let deployedContract = await contractInstance.deploy(initState, options);
+        let contractInstance;
+        let deployedContract;
+        let contractFileName;
+        let txInfo;
 
-        // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-        let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
-        deployedContract = addSmartContractFunctions(deployedContract, functions);
-
-        let regex = new RegExp(/[\w]+.aes$/);
-        let contractFileName = regex.exec(contractPath);
-        let txInfo = await getTxInfo(deployedContract.deployInfo.transaction);
-        let isSuccess = false;
-        if (deployedContract.deployInfo.transaction) {
-            isSuccess = true;
-        }
+        let error;
+        let isSuccess = true;
         let info = {
             deployerType: this.constructor.name,
+            publicKey: this.keypair.publicKey,
             nameOrLabel: getContractName(contract),
-            transactionHash: deployedContract.transaction,
-            status: isSuccess,
-            gasPrice: txInfo.gasPrice,
-            gasUsed: txInfo.gasUsed,
-            result: deployedContract.deployInfo.address,
+            transactionHash: '',
+            status: false,
+            gasPrice: '',
+            gasUsed: '',
+            result: '',
             networkId: this.network.networkId
+        }
 
+        try {
+            contractInstance = await client.getContractInstance(contract);
+            deployedContract = await contractInstance.deploy(initState, options);
+
+            // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
+            let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
+
+            deployedContract = addSmartContractFunctions(deployedContract, functions);
+
+            let regex = new RegExp(/[\w]+.aes$/);
+            contractFileName = regex.exec(contractPath);
+            txInfo = await getTxInfo(deployedContract.deployInfo.transaction);
+
+            if (deployedContract && deployedContract.deployInfo && deployedContract.deployInfo.transaction) {
+
+                info.transactionHash = deployedContract.deployInfo.transaction;
+                info.gasPrice = txInfo.gasPrice;
+                info.gasUsed = txInfo.gasUsed;
+                info.result = deployedContract.deployInfo.address;
+                info.status = true;
+
+                console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
+            }
+
+        } catch (e) {
+            isSuccess = false;
+            error = e;
+            info.error = e.message;
+            info.initState = initState;
+            info.options = JSON.stringify(options);
         }
 
         logStoreService.logAction(info);
 
-        console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
+        if (!isSuccess) {
+            throw new Error(error);
+        }
 
         return deployedContract;
 
@@ -112,15 +142,17 @@ class Deployer {
 }
 
 async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
-    const functionsDescription = getContractFunctions(contractSource);
-    const smartContractTypes = getContractTypes(contractSource);
+    const functionsDescription = parseContractFunctionsFromACI(deployedContract.aci);
+
+    const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
+    const currentClient = await utils.getClient(network, keyPair);
 
     let functions = {};
 
     let fNames = [];
     let fMap = new Map();
 
-    for (func of functionsDescription) {
+    for (let func of functionsDescription) {
 
         const funcName = func.name;
         const funcArgs = func.args;
@@ -132,9 +164,6 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
             funcArgs,
             funcReturnType
         });
-
-        const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
-        let currentClient = await utils.getClient(network, keyPair);
 
         functions[funcName] = async function (args) { // this 'args' is for a hint when user is typing, if it is seeing
 
@@ -155,7 +184,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
                 for (let i = 0; i < thisFunctionArgs.length; i++) {
 
-                    let argType = thisFunctionArgs[i].type.toLowerCase();
+                    let argType = thisFunctionArgs[i];
 
                     switch (argType) {
                         case 'address':
@@ -199,7 +228,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
                 }
 
                 if (arguments.length > 1 && arguments[arguments.length - 2].value) {
-                    element = arguments[arguments.length - 2].value;
+                    let element = arguments[arguments.length - 2].value;
                     if (element && !isNaN(element)) {
                         amount = parseInt(element);
                     }
@@ -214,7 +243,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
                 }
 
                 if (arguments.length > 1 && arguments[arguments.length - 2].ttl) {
-                    element = arguments[arguments.length - 2].ttl;
+                    let element = arguments[arguments.length - 2].ttl;
                     if (element && !isNaN(element)) {
                         ttl = parseInt(element);
                     }
@@ -228,12 +257,6 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
             let resultFromExecution = await client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
             let returnType = thisFunctionReturnType;
-            for (let _type of smartContractTypes.asList) {
-                if (thisFunctionReturnType.indexOf(_type) >= 0) {
-                    const syntax = smartContractTypes.asMap.get(_type);
-                    returnType = thisFunctionReturnType.trim().replace(_type, syntax);
-                }
-            }
 
             let decodedValue = await resultFromExecution.decode(returnType.trim());
 
@@ -252,7 +275,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
         const client = await utils.getClient(network, keyPair);
 
         let result = {};
-        for (fName of fNames) {
+        for (let fName of fNames) {
 
             const name = fName;
 
@@ -260,28 +283,13 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
                 const f = functions[name];
 
-                return await f(...arguments, client);
+                return f(...arguments, client);
             }
         }
 
-        result['call'] = async function (functionName, options) {
+        result['call'] = async function (functionName, args = [], options = {}) {
 
-            // new
-            let args = [];
-            if (options.args) {
-                args = options.args;
-            }
-
-            let opts = {};
-            if (options.amount && options.amount > 0) {
-                opts.amount = options.amount;
-            }
-
-            if (options.ttl && options.ttl > 0) {
-                opts.ttl = options.ttl;
-            }
-
-            return await client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+            return client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
         }
 
         return result;
@@ -290,117 +298,181 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     return functions;
 }
 
-function getContractTypes (contractSource) {
-    let rgx = /^\s*record\s+([\w\d\_]+)\s+=\s(?:{([^}]+))/gm;
+function parseContractFunctionsFromACI (aci) {
+    let functions = [];
+    const reservedFunctionNames = [
+        'init'
+    ]
 
-    let asMap = new Map();
-    let asList = [];
+    for (let func of aci.functions) {
 
-    let match = rgx.exec(contractSource);
-    while (match) {
-
-        // set type name
-        let temp = {
-            name: match[1],
-            syntax: ''
+        // skip reserved function's name
+        if (reservedFunctionNames.includes(func.name)) {
+            continue;
         }
 
-        let isReservedName = temp.name.toLowerCase() === 'state'
+        let argsArr = parseACIFunctionArguments(func.arguments);
+        let returnType = parseACIFunctionReturnType(func.returns);
 
-        // set syntax
-        if (match.length >= 2 && match[2] && !isReservedName) {
-            let syntax = processSyntax(match[2]);
-            temp.syntax = syntax;
+        let parsedFunc = {
+            name: func.name,
+            args: argsArr,
+            returnType: returnType
         }
 
-        if (!isReservedName) {
-            asMap.set(temp.name, temp.syntax);
-            asList.push(temp.name);
-        }
-
-        match = rgx.exec(contractSource);
+        functions.push(parsedFunc);
     }
 
-    return {
-        asMap,
-        asList
-    };
+    return functions;
 }
 
-function processSyntax (unprocessedSyntax) {
+function parseACIFunctionArguments(functionArguments) {
+    let argsArr = functionArguments;
 
-    let propValues = unprocessedSyntax.split(',').map(x => x.trim());
+    if (argsArr && argsArr.length !== 0) {
+        let tempArgArr = [];
 
-    let syntax = `(`;
+        for (let argInfo of argsArr) {
+            
+            for (let argType of argInfo.type) {
 
-    for (let propValue of propValues) {
-
-        let tokens = propValue.split(':').map(x => x.trim());
-        if (tokens.length >= 2) {
-            syntax += tokens[1] + ','
+                let result = _parseACIFunctionArguments(argType);
+                tempArgArr.push(result);
+            }
         }
+
+        argsArr = tempArgArr;
     }
 
-    // trim last comma
-    syntax = syntax.substr(0, syntax.length - 1);
-    syntax += ')';
-
-    return syntax;
+    return argsArr;
 }
 
-function getContractFunctions (contractSource) {
+function _parseACIFunctionArguments(argument) {
+    if (typeof argument === 'string') {
+        return argument;
+    } else {
 
-    let rgx = /^\s*public\s+(?:stateful\s{1})*function\s+(?:([\w\d\-\_]+)\s{0,1}\(([\w\d\_\-\,\:\s]*)\))\s*(?:\:*\s*([\w\(\)\,\s]+)\s*)*=/gm;
-
-    let matches = [];
-
-    let match = rgx.exec(contractSource);
-    while (match) {
-
-        // set function name
-        let temp = {
-            name: match[1],
-            args: [],
-            returnType: '()'
+        if (argument.record) {
+            let result = parseACIFunctionArgumentsRecord(argument.record);
+            return result;
+        } else if (argument.tuple) {
+            return `(${ argument.tuple.toString() })`;
+        } else if (argument.list) {
+            let result = parseACIFunctionArgumentsList(argument.list);
+            return result;
         }
-
-        // set functions args
-        if (match.length >= 3 && match[2]) {
-            let args = processArguments(match[2]);
-            temp.args = args;
-        }
-
-        // set functions returned type
-        if (match.length >= 4 && match[3]) {
-            temp.returnType = match[3]
-        }
-
-        matches.push(temp);
-        match = rgx.exec(contractSource);
     }
-
-    return matches;
 }
 
-function processArguments (args) {
-    let splittedArgs = args.split(',').map(x => x.trim());
-    let processedArgs = [];
+function parseACIFunctionArgumentsList(list) {
 
-    for (let i = 0; i < splittedArgs.length; i++) {
-        let tokens = splittedArgs[i].split(':').map(x => x.trim());
-        let processedArg = {
-            name: tokens[0],
-            type: null
-        };
+    let temp = [];
 
-        if (tokens.length > 1) {
-            processedArg.type = tokens[1];
+    if (list.length === 1 && typeof list[0] === 'string') {
+        temp.push(list[0]);
+    } else {
+
+        for (let element of list) {
+            let result = _parseACIFunctionArguments(element);
+            temp.push(result);
         }
-
-        processedArgs.push(processedArg);
     }
 
-    return processedArgs;
+    return `list(${ temp.toString() })`;
+}
+
+function parseACIFunctionArgumentsRecord(record) {
+    let temp = [];
+    for (let value of record) {
+
+        if (value.type.length === 1 && typeof value.type[0] === 'string') {
+            temp.push(value.type);
+        } else {
+            let tempSubArr = [];
+            for (let arg of value.type) {
+                if (typeof arg === 'string') {
+                    tempSubArr.push(arg);
+                } else {
+                    
+                    let result = parseACIFunctionArgumentsRecord(arg.record);
+                    // remove brackets
+                    result = result.substr(1, result.length - 2);
+                    tempSubArr.push(result);
+                }
+            }
+
+            temp.push(`(${ tempSubArr.toString() })`);
+        }
+    }
+
+    return `(${ temp.toString() })`;
+}
+
+function parseACIFunctionReturnType (functionReturns = []) {
+    
+    let returnType = functionReturns;
+    if (typeof functionReturns !== 'string') {
+        if (functionReturns.map) {
+            returnType = processReturnType(functionReturns.map);
+        } else if (functionReturns.tuple) {
+            returnType = processReturnType(functionReturns.tuple);
+        } else if (functionReturns.record) {
+            returnType = processReturnTypeRecord(functionReturns.record);
+        } else if (functionReturns.list) {
+            let result = processReturnType(functionReturns.list);
+            result = 'list' + result;
+
+            returnType = result;
+        }
+    }
+
+    return returnType;
+}
+
+// depth is just debug helper
+function processReturnType (array, depth = 1) {
+    let temp = [];
+    if (Array.isArray(array) && array.length > 0) {
+
+        for (let element of array) {
+            if (typeof element === 'string') {
+                temp.push(element)
+            } else {
+                if (element.map) {
+                    temp.push(`${ processReturnType(element.map, depth + 1) }`);
+                } else if (element.tuple) {
+                    temp.push(`${ processReturnType(element.tuple, depth + 1) }`);
+                } else if (element.list) {
+                    temp.push(`${ processReturnType(element.list, depth + 1) }`);
+                } else if (element.record) {
+                    let result = processReturnTypeRecord(element.record);
+                    temp.push(result);
+                }
+            }
+        }
+
+        return `(${ temp.toString() })`;
+    }
+
+    return temp;
+}
+
+// process record
+function processReturnTypeRecord (record) {
+    let recordTemp = [];
+    for (let element of record) {
+
+        for (let recordElement of element.type) {
+            if (typeof recordElement === 'string') {
+                recordTemp.push(recordElement);
+            } else {
+                let result = processReturnTypeRecord(recordElement.record);
+                recordTemp.push(result);
+            }
+        }
+    }
+
+    return `(${ recordTemp.toString() })`;
 }
 
 module.exports = Deployer;

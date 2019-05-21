@@ -57,7 +57,7 @@ describe("Deployed contract instance additional functionality", async () => {
     describe("Test Extract smart contract's functions", async () => {
 
         it("Are all public functions available in contract's instance", async () => {
-            for (functionName of availableSmartContratsFunctions) {
+            for (let functionName of availableSmartContratsFunctions) {
                 if (!deployedContract[functionName]) {
                     assert.isOk(false, 'Function is not extracted from smart contract');
 
@@ -66,7 +66,7 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it("Private functions should not be extracted", async () => {
-            for (functionName of unavailableSmartContratsFunctions) {
+            for (let functionName of unavailableSmartContratsFunctions) {
                 if (deployedContract[functionName]) {
                     assert.isOk(false, `Function [${ functionName }] is extracted from smart contract`);
                 }
@@ -85,7 +85,6 @@ describe("Deployed contract instance additional functionality", async () => {
             assert.equal(result, expectedResult, "Result is not expected one.");
         });
 
-        // TODO: Error: While calling postTransaction (body), POST to http://localhost:3001/v2/transactions failed with 400: Invalid tx => maybe should ask Naz for this error
         it("Should execute function that accept 'int/ints' as parameter successfully", async () => {
             let firstParam = 4;
             let secondParam = 9;
@@ -127,21 +126,21 @@ describe("Deployed contract instance additional functionality", async () => {
         });
 
         it("Should execute default [call] function.", async () => {
-            let param = ["Im a super hero!"];
-            let result = await deployedContract.call('say_hello', param);
-            let value = await result.decode('string');
+            let param = [5, 3];
+            let result = await deployedContract.call('sum', param);
+            let value = await result.decode();
 
-            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
+            assert.equal(value, 8, "Result is incorrect!");
         });
 
-        it("Should execute default [call] function with passed amount/aettos. y", async () => {
+        it("Should execute default [call] function with passed amount/aettos.", async () => {
 
-            let param = ["Im a super hero!"];
+            let param = ['Im a super hero!'];
             let result = await deployedContract.call('say_hello', param, {
                 amount: 101
             });
 
-            let value = await result.decode('string');
+            let value = await result.decode();
 
             assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
@@ -228,27 +227,25 @@ describe("Deployed contract instance additional functionality", async () => {
             }), "Function does not executed successfully!")
         });
 
-        it("Should execute default [call] function. Y", async () => {
-            let param = [`"Im a super hero!"`];
-            let result = await fromInstance.call('say_hello', {
-                "args": param
-            });
+        it("Should execute default [call] function.", async () => {
+            let params = [`"Im a super hero!"`];
+            let result = await fromInstance.call('say_hello', params);
 
-            let decoded = await result.decode('string');
-            let value = decoded.value;
-
-            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
-        });
-
-        it("Should execute default [call] function with passed amount/aettos. ", async () => {
-            let param = [`"Im a super hero!"`];
-            let result = await fromInstance.call('say_hello', {
-                "args": param,
-                amount: 101
-            });
             let value = (await result.decode('string')).value;
 
-            assert.equal(value, `Hello ${ param[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
+            assert.equal(value, `Hello ${ params[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
+        });
+
+        it("Should execute default [call] function with passed amount/aettos.", async () => {
+            let params = ['1', '5'];
+            let options = {
+                amount: 101
+            };
+
+            let result = await fromInstance.call('sum', params, options);
+            let value = (await result.decode('int')).value;
+
+            assert.equal(value, 6, "Result is incorrect!");
         });
 
         it('Should add person successfully', async () => {
@@ -281,7 +278,7 @@ describe("Deployed contract instance additional functionality", async () => {
         // stop node
         let running = await waitForContainer();
         if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
         }
 
         fs.removeSync(`.${ constants.contractWrapperTestsFolderPath }`)

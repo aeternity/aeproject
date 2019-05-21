@@ -8,7 +8,7 @@
 	"exampleContractTests": "/exampleTests.js",
 	"dockerFolderPath": "/cli-commands/forgae-init/artifacts",
 	"nodeStartingFolder": "/test/commands-tests/contractsTests/artifacts",
-	"historyTestsFolderPath": "/test/commands-tests/historyTest",
+	"historyTestsFolderPath": "/test/commands-tests/historyTestFolder",
 	"shapeVueTestsFolderPath": "/test/commands-tests/shapeVueTestFolder",
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
 	"cliCommands": {
@@ -19,7 +19,8 @@
 		"DEPLOY": "deploy",
 		"HISTORY": "history",
 		"CONTRACTS": "contracts",
-		"SHAPE": "shape"
+		"SHAPE": "shape",
+		"CURL": "curl"
 	},
 	"cliSubCommands": {
 		"VUE": "vue"
@@ -31,7 +32,8 @@
 		"PORT": "--port",
 		"UPDATE": "--update",
 		"NODE_URL": "--nodeUrl",
-		"IGNORE_OPENING": "--ignoreOpenInBrowser"
+		"IGNORE_OPENING": "--ignoreOpenInBrowser",
+		"ONLY": "--only"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",
@@ -56,5 +58,7 @@
 		"toDoTestContractPath": "/test/toDoManagerTests.js",
 		"vueWebProjectPath": "/aepp-forgae-shape-vue"
 	},
-	"privateKeyTestnetDeploy": "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319"
+	"privateKeyTestnetDeploy": "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319",
+	"getCompilerVersionURL": "http://localhost:3080/version",
+	"LOCAL_COMPILER_URL": "http://localhost:3080"
 }
