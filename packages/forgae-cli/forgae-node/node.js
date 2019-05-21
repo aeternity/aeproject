@@ -19,8 +19,8 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     printError,
     print
-} = require('forgae-utils/utils');
-const utils = require('forgae-utils/utils');
+} = require('forgae-utils');
+const utils = require('forgae-utils');
 const {
     spawn
 } = require('promisify-child-process');
@@ -28,7 +28,7 @@ const fs = require('fs');
 const path = require('path');
 const dockerCLI = require('docker-cli-js');
 const docker = new dockerCLI.Docker();
-const nodeConfig = require('./config.json')
+const nodeConfig = require('forgae-config')
 const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
 const localCompilerConfig = nodeConfig.localCompiler;

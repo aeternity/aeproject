@@ -16,24 +16,18 @@
  */
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 const {
-<<<<<<< HEAD
-    printError,
-    print
-} = require('../utils');
-=======
   printError,
   print
-} = require('forgae-utils/utils');
->>>>>>> added dependecies to forgae-utils
-const contractUtils = require('./utils');
+} = require('forgae-utils');
+const contractUtils = require('forgae-utils');
 const Mocha = require("mocha");
 const originalRequire = require("original-require");
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
-const nodeConfig = require('./../forgae-node/config.json');
+const nodeConfig = require('forgae-config')
 
-const execute = require('./../utils').execute;
+const execute = require('forgae-utils').execute;
 
 async function run (files) {
     try {

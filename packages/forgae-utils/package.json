@@ -12,7 +12,8 @@
     "@aeternity/aepp-sdk": "3.3.0",
     "promisify-child-process": "^2.1.2",
     "cli-table": "^0.3.1",
-    "moment": "^2.23.0"
+    "moment": "^2.23.0",
+    "forgae-config": "1.0.0"
 
   },
   "keywords": [],

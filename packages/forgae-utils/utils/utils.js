@@ -28,7 +28,7 @@ const {
     spawn
 } = require('promisify-child-process');
 
-const config = require('../forgae-config/config.json');
+const config = require('forgae-config');
 
 // Print helper
 const print = (msg, obj) => {
@@ -165,21 +165,6 @@ const execute = async (cli, command, args = [], options = {}) => {
     return result;
 };
 
-const readFile = (path, encoding = null, errTitle = 'READ FILE ERR') => {
-    try {
-        return fs.readFileSync(
-            path,
-            encoding
-        )
-    } catch (e) {
-        switch (e.code) {
-            case 'ENOENT':
-                throw new Error('File not found')
-            default:
-                throw e
-        }
-    }
-};
 
 function keyToHex (publicKey) {
     let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
@@ -254,7 +239,6 @@ module.exports = {
     getNetwork,
     sleep,
     execute,
-    readFile,
     config,
     keyToHex,
     forgaeExecute,

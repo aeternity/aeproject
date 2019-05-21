@@ -28,7 +28,8 @@
     "shelljs": "^0.8.2",
     "simple-git": "^1.107.0",
     "sinon": "^7.1.1",
-    "forgae-utils": "1.0.0"
+    "forgae-utils": "1.0.0",
+    "forgae-config":"1.0.0"
     
   },
   "devDependencies": {

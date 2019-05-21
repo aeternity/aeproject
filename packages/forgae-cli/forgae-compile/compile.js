@@ -20,12 +20,12 @@ const {
     printError,
     print,
     readFile
-} = require('forgae-utils/utils');
-const utils = require('forgae-utils/utils');
+} = require('forgae-utils');
+const utils = require('forgae-utils');
 const {
     spawn
 } = require('promisify-child-process');
-const config = require('./../../forgae-config/config.json');
+const config = require('forgae-config');
 
 async function compileAndPrint (file, client) {
     print('\r')
