@@ -15,12 +15,12 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 const constants = require('./constants.json');
-const execute = require('./../utils').execute;
-const printError = require('./../utils').printError;
-const print = require('./../utils').print;
-const createMissingFolder = require('./../utils').createMissingFolder;
-const copyFileOrDir = require('./../utils').copyFileOrDir;
-const packageJson = require('../../package.json')
+const execute = require('../utils').execute;
+const printError = require('../utils').printError;
+const print = require('../utils').print;
+const createMissingFolder = require('../utils').createMissingFolder;
+const copyFileOrDir = require('../utils').copyFileOrDir;
+const packageJson = require('../../../package.json')
 const forgaeVersion = packageJson.version;
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
 

@@ -23,7 +23,6 @@ const run = async (deploymentFilePath, network, secretKey, compiler) => {
     
     try {
         await deployMethod(network, secretKey, compiler);
-
         console.log(`Your deployment script finished successfully!`);
     } catch (e) {
         console.error(e);

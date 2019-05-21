@@ -20,8 +20,8 @@ const testConfig = require('./forgae-test/test.js');
 const node = require('./forgae-node/node.js');
 const deploy = require('./forgae-deploy/deploy.js');
 const config = require('./config.json');
-const history = require('./forgae-history/log-store-service');
-const printReportTable = require('./forgae-history/utils').printReportTable;
+const history = require('../forgae-logger/forgae-history/log-store-service');
+const printReportTable = require('../forgae-logger/forgae-history/utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
 const shape = require('./forgae-shapes/shape-commander');
 

@@ -19,7 +19,7 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     printError,
     print
-} = require('./../utils');
+} = require('../utils');
 const utils = require('../utils');
 const {
     spawn

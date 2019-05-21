@@ -20,12 +20,12 @@ const {
     printError,
     print,
     readFile
-} = require('./../utils');
-const utils = require('./../utils');
+} = require('../utils');
+const utils = require('../utils');
 const {
     spawn
 } = require('promisify-child-process');
-const config = require('./../config.json');
+const config = require('./../../config.json');
 
 async function compileAndPrint (file, client) {
     print('\r')
