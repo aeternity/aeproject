@@ -48,7 +48,7 @@ async function compileAndPrint (file, client) {
 async function run (path, network = "local", compiler = config.compilerUrl) {
 
     print('===== Compiling contracts =====');
-    print('===== testing linking contracts =====');
+
     let currentNetwork = utils.getNetwork(network);
     currentNetwork.compilerUrl = compiler;
 
