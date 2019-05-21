@@ -67,6 +67,8 @@ describe('ForgAE Node', () => {
     })
 
     it('Process should start local compiler', async () => {
+        await execute(constants.cliCommands.NODE, [], executeOptions)
+        await waitForContainer();
         let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
         let isContainCurrentVersion = result.indexOf(`{"version":"${ nodeConfig.localCompiler.imageVersion.replace('v', '') }"}`) > 0;
 
@@ -101,7 +103,7 @@ describe('ForgAE Node --only', () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [ constants.cliCommandsOptions.ONLY ], executeOptions)
+        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
     })
 
     it('Process should NOT start local compiler', async () => {
