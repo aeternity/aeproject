@@ -1,4 +1,4 @@
-const LogJSONStore = require('./log-json-store');
+const LogJSONStore = require('../logger-store/log-json-store');
 
 const storageDir = './.forgae-store'
 let store;
