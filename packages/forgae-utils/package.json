@@ -6,6 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "esm": "^3.0.77",
+    "node-dir": "^0.1.17",
+    "@aeternity/aepp-sdk": "3.3.0",
+    "promisify-child-process": "^2.1.2",
+    "cli-table": "^0.3.1",
+    "moment": "^2.23.0"
+
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"

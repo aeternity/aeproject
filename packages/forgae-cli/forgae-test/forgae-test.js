@@ -16,9 +16,15 @@
  */
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 const {
+<<<<<<< HEAD
     printError,
     print
 } = require('../utils');
+=======
+  printError,
+  print
+} = require('forgae-utils/utils');
+>>>>>>> added dependecies to forgae-utils
 const contractUtils = require('./utils');
 const Mocha = require("mocha");
 const originalRequire = require("original-require");

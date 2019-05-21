@@ -28,7 +28,7 @@ const {
     spawn
 } = require('promisify-child-process');
 
-const config = require('./config.json');
+const config = require('../forgae-config/config.json');
 
 // Print helper
 const print = (msg, obj) => {

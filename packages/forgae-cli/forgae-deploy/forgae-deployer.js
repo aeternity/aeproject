@@ -1,4 +1,4 @@
-const utils = require('./../utils')
+const utils = require('forgae-utils/utils')
 const fs = require('fs');
 const logStoreService = require('./../forgae-history/log-store-service');
 const config = require('./../config.json');
