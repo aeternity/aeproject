@@ -3,14 +3,13 @@ const childProcess = util.promisify(require('child_process').exec);
 const utils = require('forgae-utils');
 const exec = utils.execute;
 
-const fs = require('fs-extra');
-
 const vueRepo = require('./constants.json').repos.vue;
+
 const constants = require('../forgae-init/constants.json');
 const vueAeppProjectPath = './aepp-forgae-shape-vue/aepp';
 const vueIdentityProviderProjectPath = './aepp-forgae-shape-vue/identity-provider';
 
-const initCommandObject = require('./../forgae-init/init');
+const initCommandObject = require("./../forgae-init/init");
 const createForgaeProjectStructure = initCommandObject.createForgaeProjectStructure;
 
 let self;

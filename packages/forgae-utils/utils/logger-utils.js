@@ -1,4 +1,4 @@
-const colors = require('../../forgae-cli/colors');
+const colors = require('./colors-utils');
 const Table = require('cli-table');
 const moment = require('moment');
 

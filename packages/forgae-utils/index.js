@@ -1,26 +1,33 @@
-const {printReportTable, getReadableStatus} = require('./utils/logger-utils');
-const print = require('./utils/utils').print;
-const printError = require('./utils/utils').printError;
-const createMissingFolder = require('./utils/utils').createMissingFolder;
-const copyFileOrDir = require('./utils/utils').copyFileOrDir;
-const getFiles = require('./utils/utils').getFiles;
-const getClient = require('./utils/utils').getClient;
-const getNetwork = require('./utils/utils').getNetwork;
-const sleep = require('./utils/utils').sleep;
-const execute = require('./utils/utils').execute;
-const config = require('./utils/utils').config;
-const keyToHex = require('./utils/utils').keyToHex;
-const forgaeExecute = require('./utils/utils').forgaeExecute;
-const isKeyPair = require('./utils/utils').isKeyPair;
-const generatePublicKeyFromSecretKey = require('./utils/utils').generatePublicKeyFromSecretKey;
-const timeout = require('./utils/utils').timeout;
-const generateKeyPairFromSecretKey = require('./utils/utils').generateKeyPairFromSecretKey;
-const decodedHexAddressToPublicAddress = require('./utils/utils').decodedHexAddressToPublicAddress;
-const readFileRelative = require('./utils/test-utils').readFileRelative;
-const writeFileRelative = require('./utils/test-utils').writeFileRelative
-const fileExists = require('./utils/test-utils').fileExists
-const trimAdresseses = require('./utils/test-utils').trimAdresseses
-const readFile = require('./utils/test-utils').readFile;
+const printReportTable = require('./utils/logger-utils').printReportTable;
+const getReadableStatus = require('./utils/logger-utils').getReadableStatus;
+
+const print = require('./utils/fs-utils').print;
+const printError = require('./utils/fs-utils').printError;
+const createMissingFolder = require('./utils/fs-utils').createMissingFolder;
+const copyFileOrDir = require('./utils/fs-utils').copyFileOrDir;
+const getFiles = require('./utils/fs-utils').getFiles;
+const readFileRelative = require('./utils/fs-utils').readFileRelative;
+const writeFileRelative = require('./utils/fs-utils').writeFileRelative;
+const fileExists = require('./utils/fs-utils').fileExists;
+const readFile = require('./utils/fs-utils').readFile;
+
+const getClient = require('./utils/forgae-utils').getClient;
+const getNetwork = require('./utils/forgae-utils').getNetwork;
+const sleep = require('./utils/forgae-utils').sleep;
+const execute = require('./utils/forgae-utils').execute;
+const forgaeExecute = require('./utils/forgae-utils').forgaeExecute;
+const config = require('./utils/forgae-utils').config;
+const handleApiError = require('./utils/forgae-utils').handleApiError;
+const logApiError = require('./utils/forgae-utils').logApiError;
+const timeout = require('./utils/forgae-utils').timeout;
+
+const keyToHex = require('./utils/contract-utils').keyToHex;
+const isKeyPair = require('./utils/contract-utils').isKeyPair;
+const generatePublicKeyFromSecretKey = require('./utils/contract-utils').generatePublicKeyFromSecretKey;
+const generateKeyPairFromSecretKey = require('./utils/contract-utils').generateKeyPairFromSecretKey;
+const decodedHexAddressToPublicAddress = require('./utils/contract-utils').decodedHexAddressToPublicAddress;
+const trimAdresseses = require('./utils/contract-utils').trimAdresseses
+
 
 
 module.exports = {
@@ -37,11 +44,13 @@ module.exports = {
     execute,
     readFile,
     config,
+    handleApiError,
+    logApiError,
+    timeout,
     keyToHex,
     forgaeExecute,
     isKeyPair,
     generatePublicKeyFromSecretKey,
-    timeout,
     generateKeyPairFromSecretKey,
     decodedHexAddressToPublicAddress,
     readFile,

@@ -20,7 +20,7 @@ const testConfig = require('./forgae-test/test.js');
 const node = require('./forgae-node/node.js');
 const deploy = require('./forgae-deploy/deploy.js');
 const config = require('forgae-config');
-const history = require('../forgae-logger/logger-service/log-store-service');
+const history = require('forgae-logger').history;
 const printReportTable = require('forgae-utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
 const shape = require('./forgae-shapes/shape-commander');
@@ -88,7 +88,7 @@ const addHistoryOption = (program) => {
         .description('Show deployment history info')
         .option('--limit [limit]', 'Get last N records.', 5)
         .action(async (options) => {
-
+            
             let data = history.getHistory().slice(options.limit * -1);
 
             for (let i = 0; i < data.length; i++) {

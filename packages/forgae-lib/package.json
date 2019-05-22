@@ -1,8 +1,8 @@
 {
-  "name": "forgae-shapes",
+  "name": "forgae-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "shape-commander.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "forgae-utils": "1.0.0"
+    "forgae-utils":"1.0.0",
+    "forgae-config": "1.0.0",
+    "forgae-logger": "1.0.0"
   }
 }

@@ -1,6 +1,6 @@
 {
-  "name": "forgae",
-  "version": "1.4.1",
+  "name": "forgae-cli",
+  "version": "1.4.0",
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "scripts": {
@@ -29,8 +29,8 @@
     "simple-git": "^1.107.0",
     "sinon": "^7.1.1",
     "forgae-utils": "1.0.0",
-    "forgae-config":"1.0.0"
-    
+    "forgae-config": "1.0.0",
+    "forgae-logger": "1.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^1.7.0",

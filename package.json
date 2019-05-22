@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "forgae-monorepo",
   "private": true,
   "devDependencies": {
     "lerna": "^3.14.1"

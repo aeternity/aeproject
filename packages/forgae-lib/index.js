@@ -1,4 +1,4 @@
-const Deployer = require("./cli-commands/forgae-deploy/forgae-deployer")
+const Deployer = require("./forgae-deployer")
 
 module.exports = {
     Deployer
