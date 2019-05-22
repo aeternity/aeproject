@@ -16,29 +16,39 @@
  */
 
 const forgaeTest = require('./forgae-test');
+const sophiaTest = require('./sophia-test');
+
 const utils = require('../utils.js');
 
 const run = async (path) => {
-  let workingDirectory = process.cwd();
+    let workingDirectory = process.cwd();
 
-  if (path.includes('.js')) {
-    await forgaeTest.run([path]);
+    if (path.includes('.js')) {
+        await forgaeTest.run([path]);
 
-    return;
-  }
+        return;
+    }
 
-  testDirectory = path;
+    if (path.includes('.aes')) {
+        sophiaTest.run([path]);
 
-  if (!path.includes(workingDirectory)) {
-    testDirectory = `${process.cwd()}/${path}`;
-  }
+        return;
+    }
 
-  testDirectory = `${process.cwd()}/${path}`;
-  const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\\.(js|es|es6|jsx|sol)$`);
-  
-  await forgaeTest.run(files);
+    let testDirectory = path;
+
+    if (!path.includes(workingDirectory)) {
+        testDirectory = `${ process.cwd() }/${ path }`;
+    }
+
+    testDirectory = `${ process.cwd() }/${ path }/`;
+    const files = await utils.getFiles(testDirectory, `.*\\.(js|es|es6|jsx|sol)$`);
+    const aesFiles = await utils.getFiles(testDirectory, `.aes$`);
+
+    await forgaeTest.run(files);
+    sophiaTest.run(aesFiles);
 }
 
 module.exports = {
-  run
-} 
+    run
+}

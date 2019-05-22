@@ -16,8 +16,8 @@
  */
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 const {
-  printError,
-  print
+    printError,
+    print
 } = require('../utils');
 const contractUtils = require('./utils');
 const Mocha = require("mocha");
@@ -27,54 +27,54 @@ const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const nodeConfig = require('./../forgae-node/config.json')
 
-async function run(files) {
-  try {
-    print('===== Starting Tests =====');
+async function run (files) {
+    try {
+        print('===== Starting Tests =====');
 
-    let mochaConfig = {
-      useColors: true,
-      timeout: 550000,
-      exit: true
-    };
-    let mocha = await createMocha(mochaConfig, files);
-    setGlobalOptions();
+        let mochaConfig = {
+            useColors: true,
+            timeout: 550000,
+            exit: true
+        };
+        let mocha = await createMocha(mochaConfig, files);
+        setGlobalOptions();
 
-    files.forEach(function (file) {
-      delete originalRequire.cache[file];
-      mocha.addFile(file);
-    });
-    await runMocha(mocha);
+        files.forEach(function (file) {
+            delete originalRequire.cache[file];
+            mocha.addFile(file);
+        });
+        await runMocha(mocha);
 
-  } catch (e) {
-    printError(e.message)
-    console.error(e);
-  }
+    } catch (e) {
+        printError(e.message)
+        console.error(e);
+    }
 }
 
 const createMocha = async (config, files) => {
 
-  let mocha = new Mocha(config);
+    let mocha = new Mocha(config);
 
-  files.forEach(file => {
-    mocha.addFile(file);
-  });
+    files.forEach(file => {
+        mocha.addFile(file);
+    });
 
-  return mocha;
+    return mocha;
 }
 
 const runMocha = (mocha) => {
-  mocha.run(failures => {
-    process.exitCode = failures ? -1 : 0;
-  });
+    mocha.run(failures => {
+        process.exitCode = failures ? -1 : 0;
+    });
 }
 
-async function setGlobalOptions() {
-  global.assert = chai.assert;
-  global.utils = contractUtils;
-  global.minerWallet = nodeConfig.config.keyPair;
-  global.wallets = nodeConfig.defaultWallets;
+async function setGlobalOptions () {
+    global.assert = chai.assert;
+    global.utils = contractUtils;
+    global.minerWallet = nodeConfig.config.keyPair;
+    global.wallets = nodeConfig.defaultWallets;
 }
 
 module.exports = {
-  run
+    run
 }

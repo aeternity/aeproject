@@ -15,7 +15,7 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 
 const fs = require('fs-extra');
 const dir = require('node-dir');
@@ -132,7 +132,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -165,7 +165,7 @@ const execute = async (cli, command, args = [], options = {}) => {
     return result;
 };
 
-const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
+const readFile = (path, encoding = null, errTitle = 'READ FILE ERR') => {
     try {
         return fs.readFileSync(
             path,
@@ -181,7 +181,7 @@ const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
     }
 };
 
-function keyToHex(publicKey) {
+function keyToHex (publicKey) {
     let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
     let asHex = '#' + byteArray.toString('hex');
     return asHex;
@@ -217,7 +217,7 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-async function generateKeyPairFromSecretKey(secretKey) {
+async function generateKeyPairFromSecretKey (secretKey) {
     const hexStr = await Crypto.hexStringToByte(secretKey.trim());
     const keys = await Crypto.generateKeyPairFromSecret(hexStr);
 
@@ -231,11 +231,17 @@ async function generateKeyPairFromSecretKey(secretKey) {
     return keyPair;
 }
 
-function decodedHexAddressToPublicAddress(hexAddress) {
+function decodedHexAddressToPublicAddress (hexAddress) {
 
     const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
 
     return publicKey;
+}
+
+function deleteCreatedFiles (testFiles) {
+    for (let testFile of testFiles) {
+        fs.unlink(testFile);
+    }
 }
 
 module.exports = {
@@ -256,5 +262,6 @@ module.exports = {
     generatePublicKeyFromSecretKey,
     timeout,
     generateKeyPairFromSecretKey,
-    decodedHexAddressToPublicAddress
+    decodedHexAddressToPublicAddress,
+    deleteCreatedFiles
 };
