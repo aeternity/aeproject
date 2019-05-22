@@ -80,10 +80,8 @@ const installAeppSDK = async (_sdkVersion = '') => {
 }
 
 const installForgae = async (_forgaeVersion = '') => {
-
 	print(`===== Installing ForgAE locally =====`);
-	print(forgaeVersion)
-	// await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const installYarn = async () => {
