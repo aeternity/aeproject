@@ -22,9 +22,6 @@ const {
     readFile
 } = require('forgae-utils');
 const utils = require('forgae-utils');
-const {
-    spawn
-} = require('promisify-child-process');
 const config = require('forgae-config');
 
 async function compileAndPrint (file, client) {

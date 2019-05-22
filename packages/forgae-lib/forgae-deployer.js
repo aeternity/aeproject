@@ -1,6 +1,6 @@
 const utils = require('forgae-utils')
 const fs = require('fs');
-const logStoreService = require('forgae-logger').history;
+const logStoreService = require('forgae-logger');
 const config = require('forgae-config');
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;

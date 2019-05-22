@@ -14,50 +14,25 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-const Ae = require('@aeternity/aepp-sdk').Universal;
-const fs = require('fs');
-const path = require('path');
 
-const config = {
-    host: "http://localhost:3001/",
-    internalHost: "http://localhost:3001/internal/",
-    gas: 200000,
-    ttl: 55,
-    compilerUrl: 'https://compiler.aepps.com' 
-    // compilerUrl: 'http://localhost:3080'
-}
+const Deployer = require('forgae-lib').Deployer;
+const EXAMPLE_CONTRACT_PATH = "./contracts/ExampleContract.aes";
 
 let contractPath = path.resolve(__dirname, './../contracts/ExampleContract.aes');
 let contractSource = fs.readFileSync(contractPath, 'utf8');
 
 describe('Example Contract', () => {
 
-    let owner;
-    let options = {
-        ttl: config.ttl
-    }
-
+    let deployer;
+    let ownerKeyPair = wallets[0];
+    
     before(async () => {
-        const ownerKeyPair = wallets[0];
-        owner = await Ae({
-            url: config.host,
-            internalUrl: config.internalHost,
-            keypair: ownerKeyPair,
-            nativeMode: true,
-            networkId: 'ae_devnet',
-            compilerUrl: config.compilerUrl
-        });
-
+        deployer = new Deployer('local', ownerKeyPair.secretKey)
     })
 
     it('Deploying Example Contract', async () => {
-        const compiledContract = await owner.contractCompile(contractSource, { // Compile it
-        })
-        // Deploy it
-        // [] - empty init state object
-        const deployPromise = compiledContract.deploy([], options);
+        const deployPromise = deployer.deploy(EXAMPLE_CONTRACT_PATH) //Deploy it
 
-        await assert.isFulfilled(deployPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check it is deployed
+        await assert.isFulfilled(deployPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check whether it's deployed
     })
-
 })

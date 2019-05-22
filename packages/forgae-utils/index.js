@@ -28,8 +28,6 @@ const generateKeyPairFromSecretKey = require('./utils/contract-utils').generateK
 const decodedHexAddressToPublicAddress = require('./utils/contract-utils').decodedHexAddressToPublicAddress;
 const trimAdresseses = require('./utils/contract-utils').trimAdresseses
 
-
-
 module.exports = {
     printReportTable,
     getReadableStatus,

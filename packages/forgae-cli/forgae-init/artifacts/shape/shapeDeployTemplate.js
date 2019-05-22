@@ -15,7 +15,7 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 const Ae = require('@aeternity/aepp-sdk').Universal;
-const Deployer = require('forgae').Deployer;
+const Deployer = require('forgae-lib').Deployer;
 const gasLimit = 1000000;
 
 const deploy = async (network, privateKey) => {
