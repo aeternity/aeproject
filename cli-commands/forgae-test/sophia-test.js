@@ -38,7 +38,6 @@ const run = async function (paths) {
             throw new Error(`Contract "${ contract.contractName }" was not found!`);
         }
 
-        const path = contract.path;
         const testFunctions = contract.testFunctions; // ['test_sum_correct', 'test_sum_incorrect'];
         const source = SophiaUtil.generateCompleteSource(mainContractsInfo.get(contract.contractName).source, contract.source);
 
@@ -56,7 +55,6 @@ const run = async function (paths) {
             const utils = require('./utils');
             const getClient = utils.getAEClient;
 
-            const contractFilePath = "${ path }";
             const contractSource = \`${ source }\`
 
             describe('test', async () => {
