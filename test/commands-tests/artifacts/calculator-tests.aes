@@ -1,0 +1,18 @@
+// tests
+contract Calculator =
+    
+    public function test_sum_correct() =
+        let result = 5
+        require(sum(2,3) == result, "Result of sum is incorrect!")
+
+    public function test_sum_incorrect() =
+        require(sum(2,3) == 4, "Result of sum is incorrect!")
+
+    // public function should_not_call_me() : int =
+    //     i_am_private()
+
+    // public function i_am_private() : int = 996
+
+    private function require(expression: bool, error_message: string) =
+        if(!expression)
+            abort(error_message)

@@ -41,12 +41,19 @@ const run = async (path) => {
         testDirectory = `${ process.cwd() }/${ path }`;
     }
 
-    testDirectory = `${ process.cwd() }/${ path }/`;
-    const files = await utils.getFiles(testDirectory, `.*\\.(js|es|es6|jsx|sol)$`);
-    const aesFiles = await utils.getFiles(testDirectory, `.aes$`);
+    testDirectory = `${ process.cwd() }/${ path }`;
+    let workingPath = testDirectory;
 
+    const files = await utils.getFiles(testDirectory, `.*\\.(js|es|es6|jsx|sol)$`);
+
+    if (testDirectory.endsWith('./test')) {
+        testDirectory = testDirectory.replace('./test', '');
+    }
+    
+    const aesFiles = await utils.getFiles(testDirectory + '/test', `.aes$`);
+    
     await forgaeTest.run(files);
-    sophiaTest.run(aesFiles);
+    await sophiaTest.run(aesFiles, testDirectory);
 }
 
 module.exports = {

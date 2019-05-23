@@ -1,6 +1,7 @@
 const fs = require('fs');
 const jsTests = require('./forgae-test');
 const utils = require('./../utils');
+const timeout = utils.timeout;
 const deleteCreatedFiles = utils.deleteCreatedFiles;
 
 const SophiaUtil = require('./../../utils/SophiaUtil')
@@ -19,21 +20,26 @@ function generateIt (testFunctions) {
     return its;
 }
 
-const run = async function (paths) {
+const run = async function (paths = [], testFolder = process.cwd()) {
 
-    const testFolder = process.cwd() + '/test';
+    if (paths.length === 0) {
+        console.log('There is no sophia test to execute.');
+        console.log(paths);
+        return;
+    }
 
-    // console.log('cwd', process.cwd());
 
-    const contractsFolder = `${ process.cwd() }/contracts/`;
-    const sophiaContractPaths = await utils.getFiles(contractsFolder, `.aes$`);
+    const contractsFolder = `${ testFolder }/contracts/`;
+    const sophiaContractPaths = await utils.getFiles(contractsFolder.replace('//', '/'), `.aes$`);
 
     const mainContractsInfo = SophiaUtil.getContractInfo(sophiaContractPaths);
+
     const contractsTest = SophiaUtil.getContractInfo(paths);
 
     const testFiles = [];
 
     for (let contract of contractsTest.values()) {
+
         if (!mainContractsInfo.has(contract.contractName)) {
             throw new Error(`Contract "${ contract.contractName }" was not found!`);
         }
@@ -50,10 +56,27 @@ const run = async function (paths) {
 
             const AeSDK = require('@aeternity/aepp-sdk');
             const Universal = AeSDK.Universal;
-            const config = require('./config.json');
+            const config = {
+                host: "http://localhost:3001/",
+                internalHost: "http://localhost:3001/internal/",
+                gas: 200000,
+                ttl: 55,
+                compilerUrl: 'http://localhost:3080',
+                ownerKeyPair: wallets[0]
+            }
 
-            const utils = require('./utils');
-            const getClient = utils.getAEClient;
+            const getClient = async function (Universal, clientConfig, keyPair) {
+                let client = await Universal({
+                    url: clientConfig.host,
+                    internalUrl: clientConfig.internalHost,
+                    keypair: keyPair,
+                    nativeMode: true,
+                    networkId: "ae_devnet",
+                    compilerUrl: config.compilerUrl
+                });
+            
+                return client;
+            }
 
             const contractSource = \`${ source }\`
 
@@ -71,14 +94,16 @@ const run = async function (paths) {
             })
         `;
 
-        let testFilePath = `${ testFolder }/sophia-test-${ contract.contractName }.js`;
+        let testFilePath = `${ testFolder }/test/sophia-test-${ contract.contractName }.js`;
         testFiles.push(testFilePath);
-        fs.appendFileSync(testFilePath, testFile, 'utf8');
+        fs.writeFileSync(testFilePath, testFile, 'utf8');
     }
 
-    // run regular js tests
-    await jsTests.run(testFiles);
+    let result = await jsTests.run(testFiles);
 
+    //await timeout(30000);
+    console.log('6. result');
+    console.log(result);
     // delete created tests
     deleteCreatedFiles(testFiles);
 }

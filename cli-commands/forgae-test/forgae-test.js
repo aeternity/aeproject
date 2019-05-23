@@ -43,6 +43,7 @@ async function run (files) {
             delete originalRequire.cache[file];
             mocha.addFile(file);
         });
+
         await runMocha(mocha);
 
     } catch (e) {
@@ -62,7 +63,7 @@ const createMocha = async (config, files) => {
     return mocha;
 }
 
-const runMocha = (mocha) => {
+const runMocha = async (mocha) => {
     mocha.run(failures => {
         process.exitCode = failures ? -1 : 0;
     });

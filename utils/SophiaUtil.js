@@ -82,6 +82,7 @@ class SophiaUtil {
 }
 
 function parseContractInfo(contractPath) {
+
     const source = utils.readFile(contractPath, 'utf8');
     const contractName = SophiaUtil.getContractName(source);
     const functions = SophiaUtil.getTestFunctions(source);
