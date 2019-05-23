@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "forgae-utils":"1.0.0",
-    "forgae-config": "1.0.0",
-    "forgae-logger": "1.0.0"
+    "forgae-utils":"^1.0.0",
+    "forgae-config": "^1.0.0",
+    "forgae-logger": "^1.0.0"
   }
 }

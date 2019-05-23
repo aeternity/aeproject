@@ -1,6 +1,13 @@
 {
   "name": "forgae-monorepo",
   "private": true,
+  "dependencies": {
+    "esm": "^3.0.77",
+    "fs-extra": "^7.0.1",
+    "forgae-config": "^1.0.0",
+    "forgae-utils": "^1.0.0",
+    "forgae-logger": "^1.0.0"
+  },
   "devDependencies": {
     "lerna": "^3.14.1"
   }
