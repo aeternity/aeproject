@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe.only('ForgAE Test', () => {
+describe('ForgAE Test', () => {
 
     before(async function () {
         fs.ensureDirSync(`.${ constants.testTestsFolderPath }`)

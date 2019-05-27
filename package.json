@@ -1,5 +1,6 @@
 {
   "name": "forgae-monorepo",
+  "version": "0.0.9",
   "private": true,
   "scripts": {
     "test": "mocha './test/**/*.js' --timeout 0 --exit"
