@@ -5,29 +5,21 @@ contract ToDoManager =
     is_completed: bool}
 
   record state = {
-    m_user_todos: map(address, map(int, todo)),
-    m_user_todo_count: map(address, int),
-    m_user_todo_id: map(address, int)}
+    map_user_todos: map(address, map(int, todo)),
+    map_user_todo_count: map(address, int),
+    map_user_todo_id: map(address, int)}
 
 
   public stateful function init() =
-    { m_user_todos = {},
-      m_user_todo_count = {},
-      m_user_todo_id = {}}
-
-
-  public function get_caller() : address =
-    Call.caller
+    { map_user_todos = {},
+      map_user_todo_count = {},
+      map_user_todo_id = {}}
 
   public function get_todo_count(user: address) : int =
-    switch(Map.lookup(user, state.m_user_todo_count))
-      None => 0
-      Some(x) => x
+    Map.lookup_default(user, state.map_user_todo_count, 0)
 
   private function get_todo_id(user: address) : int =
-    switch(Map.lookup(user, state.m_user_todo_id))
-      None => 0
-      Some(x) => x
+    Map.lookup_default(user, state.map_user_todo_id, 0)
 
   public stateful function add_todo(todo_name: string) : int =
     let new_todo : todo = {
@@ -37,65 +29,50 @@ contract ToDoManager =
     let count = get_todo_count(Call.caller) + 1
     let id = get_todo_id(Call.caller) + 1
 
-    create_nested_map_if_not_exists(Call.caller)
-
-    put(state{m_user_todos[Call.caller][id] = new_todo})
-    put(state{m_user_todo_count[Call.caller] = count})
-    put(state{m_user_todo_id[Call.caller] = id})
+    put(state{map_user_todos[Call.caller = {}][id] = new_todo})
+    put(state{map_user_todo_count[Call.caller] = count})
+    put(state{map_user_todo_id[Call.caller] = id})
 
     id
 
-  private stateful function create_nested_map_if_not_exists(user: address) : bool =
-    let is_exists = is_nested_map_exists(user)
-    if(!is_exists)
-      put(state{m_user_todos[Call.caller] = {}})
-      true
-    else
-      false
+  public stateful function edit_todo_state(todo_id: int, is_completed: bool) =
 
-  private stateful function is_nested_map_exists(user: address) : bool =
-    switch(Map.lookup(user, state.m_user_todos))
-      None => false
-      Some(x) => true
-
-  public stateful function edit_todo_state(todo_id: int, _is_completed: bool) =
-
-    let current_todo : todo = private_get_todo_by_id(Call.caller, todo_id)
+    let current_todo : todo = get_todo_by_id'(Call.caller, todo_id)
     let edited_todo : todo = {
       name = current_todo.name,
-      is_completed = _is_completed}
+      is_completed = is_completed}
 
-    put(state{m_user_todos[Call.caller][todo_id] = edited_todo})
+    put(state{map_user_todos[Call.caller][todo_id] = edited_todo})
 
   public stateful function edit_todo_name(todo_id: int, todo_name: string) =
 
-    let current_todo : todo = private_get_todo_by_id(Call.caller, todo_id)
+    let current_todo : todo = get_todo_by_id'(Call.caller, todo_id)
     let edited_todo : todo = {
       name = todo_name,
       is_completed = current_todo.is_completed}
 
-    put(state{m_user_todos[Call.caller][todo_id] = edited_todo})
+    put(state{map_user_todos[Call.caller][todo_id] = edited_todo})
 
-  public stateful function delete_todo(todo_id: int) : bool =
-    let todos: map(int,todo) = get_todos_by_user(Call.caller)
+  public stateful function delete_todo(todo_id: int) =
+    let todos: map(int,todo) = Map.lookup_default(Call.caller, state.map_user_todos, {}) // get_todos_by_user(Call.caller)
     let updated_todos = Map.delete(todo_id, todos)
 
-    put(state{m_user_todos[Call.caller] = updated_todos})
+    put(state{map_user_todos[Call.caller] = updated_todos})
 
     let count = get_todo_count(Call.caller) - 1
-    put(state{m_user_todo_count[Call.caller] = count})
-
-    true
+    put(state{map_user_todo_count[Call.caller] = count})
 
   public function get_todo_by_id(id: int) : todo =
-    let todos: map(int,todo) = get_todos_by_user(Call.caller)
+    let todos: map(int,todo) = Map.lookup_default(Call.caller, state.map_user_todos, {})
+    let result = switch(Map.lookup(id, todos))
+                    // None => {}
+                    Some(x) => x
 
-    let current_todo = get_todo(id, todos)
-    current_todo
+    result
 
   public function get_todos() : list((int, todo)) =
 
-    let user_todos = get_todos_by_user(Call.caller)
+    let user_todos = Map.lookup_default(Call.caller, state.map_user_todos, {})
     let todos = Map.to_list(user_todos)
     todos
 
@@ -104,22 +81,11 @@ contract ToDoManager =
       true => "true"
       false => "false"
 
-  private function private_get_todo_by_id(user: address, id: int) : todo =
-    let todos: map(int,todo) = get_todos_by_user(user)
+  private function get_todo_by_id'(user: address, id: int) : todo =
+    let todos: map(int,todo) = Map.lookup_default(user, state.map_user_todos, {})
 
-    get_todo(id, todos)
+    let result = switch(Map.lookup(id, todos))
+                    // None => {}
+                    Some(x) => x
 
-  private function get_todos_by_user(user: address) : map(int, todo) =
-    switch(Map.lookup(user, state.m_user_todos))
-      None => {}
-      Some(x) => x
-
-  private function get_todo(id: int, todos: map(int, todo)) : todo =
-
-    let new_todo : todo = {
-      name = "",
-      is_completed = false}
-
-    switch(Map.lookup(id, todos))
-      None => new_todo
-      Some(x) => x
+    result
