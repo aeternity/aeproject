@@ -3,10 +3,10 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils').forgaeExecute;
-const timeout = require('../../cli-commands/utils').timeout;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const timeout = require('../../packages/forgae-utils/utils/forgae-utils.js').timeout;
 const constants = require('../constants.json');
-const contractsConstants = require('../../cli-commands/forgae-contracts/contracts-constants.json');
+const contractsConstants = require('../../packages/forgae-cli/forgae-contracts/contracts-constants.json');
 const {
     spawn
 } = require('promisify-child-process');

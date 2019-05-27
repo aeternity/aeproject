@@ -1,14 +1,22 @@
 {
-  "name": "forgae-monorepo",
+  "name": "forgae",
   "private": true,
+  "scripts": {
+    "test": "mocha './test/**/*.js' --timeout 0 --exit"
+  },
   "dependencies": {
     "esm": "^3.0.77",
-    "fs-extra": "^7.0.1",
-    "forgae-config": "^1.0.0",
-    "forgae-utils": "^1.0.0",
-    "forgae-logger": "^1.0.0"
+    "fs-extra": "^7.0.1"
   },
   "devDependencies": {
-    "lerna": "^3.14.1"
+    "mocha": "^5.0.0",
+    "lerna": "^3.14.1",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "chai-files": "^1.4.0",
+    "docker-cli-js": "^2.5.1",
+    "sinon": "^7.1.1",
+    "promisify-child-process": "^2.1.2",
+    "shelljs": "^0.8.2"
   }
 }

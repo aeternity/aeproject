@@ -2,6 +2,7 @@ require = require('esm')(module /*, options */ ) // use to handle es6 import/exp
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const config = require('forgae-config');
+const { printError } = require('./fs-utils')
 
 const {
     spawn

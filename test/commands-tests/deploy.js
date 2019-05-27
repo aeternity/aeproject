@@ -3,7 +3,7 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils').forgaeExecute;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
@@ -15,7 +15,7 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require('./../../cli-commands/forgae-deploy/forgae-deployer');
+const Deployer = require('./../../packages/forgae-lib/forgae-deployer');
 const config = require('./../constants.json');
 
 const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';

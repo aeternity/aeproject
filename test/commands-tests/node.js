@@ -1,13 +1,13 @@
 const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
-const execute = require('../../cli-commands/utils.js').forgaeExecute;
-const exec = require('../../cli-commands/utils.js').execute;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const exec = require('../../packages/forgae-utils/utils/forgae-utils.js').execute;
 const waitForContainer = require('../utils').waitForContainer;
 const waitUntilFundedBlocks = require('../utils').waitUntilFundedBlocks;
 const constants = require('../constants.json')
 const fs = require('fs-extra')
-const nodeConfig = require('../../cli-commands/forgae-node/config.json')
-const utils = require('../../cli-commands/utils')
+const nodeConfig = require('../../packages/forgae-config/config/node-config.json')
+const utils = require('../../packages/forgae-utils/utils/forgae-utils')
 let executeOptions = {
     cwd: process.cwd() + constants.nodeTestsFolderPath
 };
@@ -29,6 +29,7 @@ describe('ForgAE Node', () => {
 
     it('Should start the node successfully', async () => {
         let running = await waitForContainer();
+        console.log('runnint here after wait: ' + running)
         assert.isTrue(running, "node wasn't started properly");
     })
 
@@ -53,6 +54,8 @@ describe('ForgAE Node', () => {
     it('Should stop the node successfully', async () => {
         await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         let running = await waitForContainer();
+        console.log('runnint here after second wait: ' + running)
+
         assert.isNotTrue(running, "node wasn't stopped properly");
     })
 
