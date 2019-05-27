@@ -19,10 +19,10 @@
     "opn": "^5.4.0",
     "original-require": "^1.0.1",
     "path": "^0.12.7",
-    "forgae-config": "^1.0.0",
-    "forgae-utils": "^1.0.0",
-    "forgae-logger": "^1.0.0",
-    "forgae-lib": "^1.0.0"
+    "forgae-config": "^0.0.1",
+    "forgae-utils": "^0.0.1",
+    "forgae-logger": "^0.0.1",
+    "forgae-lib": "^0.0.1"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^1.7.0",

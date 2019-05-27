@@ -21,7 +21,7 @@ const print = require('forgae-utils').print;
 const createMissingFolder = require('forgae-utils').createMissingFolder;
 const copyFileOrDir = require('forgae-utils').copyFileOrDir;
 const packageJson = require('../package.json')
-// const forgaeVersion = packageJson.dependencies['forgae-lib'];
+// const forgaeLibVersion = packageJson.dependencies['forgae-lib'];
 const forgaeVersion = packageJson.version;
 
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
@@ -84,8 +84,6 @@ const installAeppSDK = async (_sdkVersion = '') => {
 const installForgae = async (_forgaeVersion = '') => {
 	print(`===== Installing ForgAE locally =====`);
 	// await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-lib@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
-	console.log('forgae version: ' + forgaeVersion);
-	console.log('tesssssss');
 	
 	//this is now used for testing, as forgae-lib is not yet published on npm
 	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);

@@ -1,5 +1,5 @@
 {
-  "name": "forgae",
+  "name": "forgae-monorepo",
   "private": true,
   "scripts": {
     "test": "mocha './test/**/*.js' --timeout 0 --exit"
