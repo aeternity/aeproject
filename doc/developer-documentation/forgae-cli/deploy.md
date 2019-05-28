@@ -28,8 +28,3 @@ Example:
 ```
 forgae deploy --compiler http://localhost:3080
 ```
-
-**Deployer.deploy(path, gasLimit, initState)** function can take up to 2 arguments:
-- path - relative path to the contract
-- gasLimit - the gas limit for the deployment
-- initState - variable for the arguments of the **init** function of the contract
