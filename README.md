@@ -13,4 +13,4 @@ npm i -g forgae-cli
 
 ### Documentation
 
-[Documentation](https://forgae.gitbook.io/forgae)
+[Documentation](https://forgae.gitbook.io/forgae/v/develop/)
