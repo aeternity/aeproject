@@ -3,11 +3,11 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const utils = require('../../cli-commands/utils');
+const utils = require('./../../cli-commands/utils');
 const execute = utils.forgaeExecute;
-const test = require('../../cli-commands/forgae-test/test')
+const test = require('./../../cli-commands/forgae-test/test')
 const sinon = require('sinon')
-const constants = require('../constants.json')
+const constants = require('./../constants.json')
 
 const path = require('path');
 
@@ -59,29 +59,56 @@ describe('ForgAE Test', () => {
     })
 })
 
-describe('ForgAE Test - sophia tests', () => {
+describe.only('ForgAE Test - sophia tests', () => {
 
     before(async function () {
         fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
-        insertAdditionalFiles(executeOptions.cwd);
-        // await execute(constants.cliCommands.NODE, [], executeOptions)
+        await execute(constants.cliCommands.NODE, [], executeOptions)
     })
 
-    it.only('should work on unexisting test folder', async function () {
-        let result = await test.run(constants.testTestsFolderPath);
-        console.log('>>>>>>>>>>>>>>>>>>');
-        console.log(result);
-        // await assert.isFulfilled(test.run(constants.testTestsFolderPath))
+    beforeEach(async function () {
+        fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+    });
+
+    it('should parse sophia tests, create regular js file with tests and execute it.', async function () {
+        insertAdditionalFiles(executeOptions.cwd);
+        let result = await execute(constants.cliCommands.TEST, [
+            '--path',
+            constants.testTestsFolderPath
+        ], executeOptions);
+
+        let indexOfSophiaTests = result.indexOf('Sophia tests');
+        if (indexOfSophiaTests <= 0) {
+            assert.isOk(false, "Missing sophia tests");
+        }
+
+        let shouldHaveSuccessfulTest = result.indexOf('1 passing', indexOfSophiaTests) > 0;
+        let shouldHaveUnsuccessfulTest = result.indexOf('1 failing', indexOfSophiaTests) > 0;
+        
+        assert.isOk(shouldHaveSuccessfulTest && shouldHaveUnsuccessfulTest, "Tests have unexpected results.");
     })
 
     it('check executed tests', async () => {
-        // insertAdditionalFiles(executeOptions.cwd)
+        insertAdditionalFiles(executeOptions.cwd, true);
+
+        let result = await execute(constants.cliCommands.TEST, [
+            '--path',
+            constants.testTestsFolderPath
+        ], executeOptions);
+
+        if (result.indexOf('Error: Cannot append sophia tests to existing contract!') < 1) {
+            assert.isOk(false, "Sophia tests were appended to invalid smart contract!");
+        }
+    })
+
+    afterEach(async function () {
+        fs.removeSync(`.${ constants.testTestsFolderPath }`);
     })
 
     after(async function () {
-        // await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        fs.removeSync(`.${ constants.testTestsFolderPath }`);
+        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
     })
 })
 
@@ -97,10 +124,10 @@ function insertAdditionalFiles (cwd, copyArtifactsWithInvalidData = false) {
     const calculatorWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-invalid-name.aes');
     const sophiaTestWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-tests-invalid-contract-name.aes');
 
-    fs.copyFileSync(calculatorSourcePath, `${ contractDestinationFolder }/calculator.aes`);
-    fs.copyFileSync(sophiaTestSourcePath, `${ testDestinationFolder }/calculator-tests.aes`);
-
-    if (copyArtifactsWithInvalidData) {
+    if (!copyArtifactsWithInvalidData) {
+        fs.copyFileSync(calculatorSourcePath, `${ contractDestinationFolder }/calculator.aes`);
+        fs.copyFileSync(sophiaTestSourcePath, `${ testDestinationFolder }/calculator-tests.aes`);
+    } else {
         fs.copyFileSync(calculatorWithInvalidNameSourcePath, `${ contractDestinationFolder }/calculator-invalid-name.aes`);
         fs.copyFileSync(sophiaTestWithInvalidNameSourcePath, `${ testDestinationFolder }/calculator-tests-invalid-contract-name.aes`);
     }

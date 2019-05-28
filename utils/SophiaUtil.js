@@ -1,12 +1,12 @@
 const utils = require('./../cli-commands/utils');
 
 // TODO: insert and use 'Assert' 
-const assertInterface = `
-contract Assert =
-    public function require : (bool,string) => ()
+// const assertInterface = `
+// contract Assert =
+//     public function require : (bool,string) => ()
 
 
-`;
+// `;
 
 class SophiaUtil {
     static getContractInfo (contractPath) {

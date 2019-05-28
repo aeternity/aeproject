@@ -15,14 +15,20 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 const Ae = require('@aeternity/aepp-sdk').Universal;
+const fs = require('fs');
+const path = require('path');
 
 const config = {
     host: "http://localhost:3001/",
     internalHost: "http://localhost:3001/internal/",
     gas: 200000,
     ttl: 55,
-    compilerUrl: 'https://compiler.aepps.com'
+    compilerUrl: 'https://compiler.aepps.com' 
+    // compilerUrl: 'http://localhost:3080'
 }
+
+let contractPath = path.resolve(__dirname, './../contracts/ExampleContract.aes');
+let contractSource = fs.readFileSync(contractPath, 'utf8');
 
 describe('Example Contract', () => {
 
@@ -45,8 +51,6 @@ describe('Example Contract', () => {
     })
 
     it('Deploying Example Contract', async () => {
-        let contractSource = utils.readFileRelative('./contracts/ExampleContract.aes', "utf-8"); // Read the aes file
-
         const compiledContract = await owner.contractCompile(contractSource, { // Compile it
         })
         // Deploy it

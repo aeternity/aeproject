@@ -25,12 +25,13 @@ const originalRequire = require("original-require");
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
-const nodeConfig = require('./../forgae-node/config.json')
+const nodeConfig = require('./../forgae-node/config.json');
+
+const execute = require('./../utils').execute;
 
 async function run (files) {
     try {
         print('===== Starting Tests =====');
-
         let mochaConfig = {
             useColors: true,
             timeout: 550000,
@@ -39,15 +40,14 @@ async function run (files) {
         let mocha = await createMocha(mochaConfig, files);
         setGlobalOptions();
 
-        files.forEach(function (file) {
-            delete originalRequire.cache[file];
-            mocha.addFile(file);
-        });
+        for (let i = 0; i < files.length; i++) {
+            delete originalRequire.cache[files[i]];
+            mocha.addFile(files[i]);
+        }
 
         await runMocha(mocha);
 
     } catch (e) {
-        printError(e.message)
         console.error(e);
     }
 }
@@ -63,10 +63,18 @@ const createMocha = async (config, files) => {
     return mocha;
 }
 
-const runMocha = async (mocha) => {
-    mocha.run(failures => {
-        process.exitCode = failures ? -1 : 0;
-    });
+const runMocha = (mocha) => {
+
+    return new Promise((resolve, reject) => {
+        mocha.run(failures => {
+
+            if (failures) {
+                reject(failures);
+            } else {
+                resolve();
+            }
+        });
+    })
 }
 
 async function setGlobalOptions () {
