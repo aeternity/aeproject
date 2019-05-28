@@ -7,7 +7,8 @@ const fs = require('fs-extra');
 
 const vueRepo = require('./constants.json').repos.vue;
 const constants = require('../forgae-init/constants.json');
-const vueWebProjectPath = './aepp-forgae-shape-vue';
+const vueAeppProjectPath = './aepp-forgae-shape-vue/aepp';
+const vueIdentityProviderProjectPath = './aepp-forgae-shape-vue/identity-provider';
 
 const initCommandObject = require('./../forgae-init/init');
 const createForgaeProjectStructure = initCommandObject.createForgaeProjectStructure;
@@ -15,30 +16,35 @@ const createForgaeProjectStructure = initCommandObject.createForgaeProjectStruct
 let self;
 
 class VueSubCommand {
-	constructor() {
-		this.name = 'vue';
-		self = this;
-	}
+    constructor() {
+        this.name = 'vue';
+        self = this;
+    }
 
-	async run() {
-		await createForgaeProjectStructure(true);
+    async run() {
+        await createForgaeProjectStructure(true);
 
-		await self.prepareVueProject();
+        await self.prepareVueProject();
 
-		console.log('===== Vue project successfully initialized. =====');
-	}
+        console.log('===== Vue project successfully initialized. =====');
+    }
 
-	async prepareVueProject() {
-		console.log('===== Preparation of a ready-to-use aepp with predefined Vue.js frontend framework and forgae integration =====');
+    async prepareVueProject() {
+        console.log('===== Preparation of a ready-to-use aepp with predefined Vue.js frontend framework and forgae integration =====');
 
-		await exec('git', 'clone', [vueRepo]);
+        await exec('git', 'clone', [vueRepo]);
 
-		const currentDir = process.cwd();
-		process.chdir(vueWebProjectPath);
+        const currentDir = process.cwd();
+        process.chdir(vueAeppProjectPath);
 
-		await childProcess('npm install');
-		process.chdir(currentDir);
-	}
+        await childProcess('npm install');
+        process.chdir(currentDir);
+
+        process.chdir(vueIdentityProviderProjectPath);
+
+        await childProcess('npm install');
+        process.chdir(currentDir);
+    }
 }
 
 const subCommand = new VueSubCommand();
