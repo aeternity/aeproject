@@ -29,7 +29,6 @@ describe('ForgAE Node', () => {
 
     it('Should start the node successfully', async () => {
         let running = await waitForContainer();
-        console.log('runnint here after wait: ' + running)
         assert.isTrue(running, "node wasn't started properly");
     })
 
@@ -51,10 +50,16 @@ describe('ForgAE Node', () => {
         }
     })
 
+    it('Process should start local compiler', async () => {
+        let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
+        let isContainCurrentVersion = result.indexOf(`{"version":"${ nodeConfig.localCompiler.imageVersion.replace('v', '') }"}`) > 0;
+        
+        assert.isOk(isContainCurrentVersion);
+    })
+
     it('Should stop the node successfully', async () => {
         await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         let running = await waitForContainer();
-        console.log('runnint here after second wait: ' + running)
 
         assert.isNotTrue(running, "node wasn't stopped properly");
     })

@@ -10,12 +10,8 @@ The framework can be installed via npm:
 npm i -g forgae
 ```
 
-### Installing
 
-```text
-npm i -g forgae-cli
-```
+	
 
-### Documentation
 
-[Documentation](developer-documentation/getting-started.md)
+  

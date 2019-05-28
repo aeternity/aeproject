@@ -19,14 +19,14 @@ chai.use(chaiAsPromised);
 const LOCAL_COMPILER_URL = constants.LOCAL_COMPILER_URL;
 const INVALID_COMPILER_URL = 'https://compiler.somewhere.com';
 
-describe.only('ForgAE Compile', () => {
+describe('ForgAE Compile', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
     })
 
-    describe.only('Compile', () => {
+    describe('Compile', () => {
         it('Should compile contract successfully with specif contract path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ executeOptions.cwd }/contracts/ExampleContract.aes`])
             assert.include(result, expectedCompileResultExampleContract)

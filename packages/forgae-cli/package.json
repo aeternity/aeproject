@@ -22,7 +22,7 @@
     "forgae-config": "^0.0.1",
     "forgae-utils": "^0.0.1",
     "forgae-logger": "^0.0.1",
-    "forgae-lib": "^0.0.1"
+    "forgae-lib": "^1.0.1"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^1.7.0",

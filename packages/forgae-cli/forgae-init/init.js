@@ -21,14 +21,18 @@ const print = require('forgae-utils').print;
 const createMissingFolder = require('forgae-utils').createMissingFolder;
 const copyFileOrDir = require('forgae-utils').copyFileOrDir;
 const packageJson = require('../package.json')
-// const forgaeLibVersion = packageJson.dependencies['forgae-lib'];
-const forgaeVersion = packageJson.version;
+const forgae = {
+	lib : packageJson.dependencies['forgae-lib'],
+	utils : packageJson.dependencies['forgae-utils'],
+	config : packageJson.dependencies['forgae-config'],
+	logger : packageJson.dependencies['forgae-logger']
+}
 
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
 
 async function run(update) {
 	if (update) {
-		await updateForgaeProjectLibraries(sdkVersion, forgaeVersion);
+		await updateForgaeProjectLibraries(sdkVersion, forgae);
 		return;
 	}
 
@@ -57,11 +61,11 @@ const createForgaeProjectStructure = async (shape) => {
 	print('===== ForgAE was successfully initialized! =====');
 }
 
-const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeVersion) => {
+const updateForgaeProjectLibraries = async (_sdkVersion, _forgae) => {
 	print(`===== Updating ForgAE files =====`);
 
 	setupDocker();
-	await installForgae(_forgaeVersion)
+	await installForgae(_forgae)
 	await installAeppSDK(_sdkVersion)
 	await installYarn()
 
@@ -72,7 +76,7 @@ const installLibraries = async () => {
 	const fileSource = `${__dirname}${constants.artifactsDir}/package.json`;
 	copyFileOrDir(fileSource, "./package.json")
 	await installAeppSDK(sdkVersion)
-	await installForgae(forgaeVersion)
+	await installForgae(forgae)
 	await installYarn()
 }
 
@@ -81,12 +85,12 @@ const installAeppSDK = async (_sdkVersion = '') => {
 	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${_sdkVersion}`, '--save-exact']);
 }
 
-const installForgae = async (_forgaeVersion = '') => {
+const installForgae = async (_forgae) => {
 	print(`===== Installing ForgAE locally =====`);
-	// await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-lib@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
-	
-	//this is now used for testing, as forgae-lib is not yet published on npm
-	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae@${_forgaeVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute('npm', 'install', [`forgae-lib@${_forgae.lib}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute('npm', 'install', [`forgae-utils@${_forgae.utils}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute('npm', 'install', [`forgae-config@${_forgae.config}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute('npm', 'install', [`forgae-logger@${_forgae.logger}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const installYarn = async () => {

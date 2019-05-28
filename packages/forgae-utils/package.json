@@ -7,17 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "esm": "^3.0.77",
-    "path": "^0.12.7",
-    "fs-extra": "^7.0.1",
+    "@aeternity/aepp-sdk": "3.4.0",
     "chalk": "^2.4.1",
-    "node-dir": "^0.1.17",
-    "@aeternity/aepp-sdk": "3.3.0",
-    "promisify-child-process": "^2.1.2",
     "cli-table": "^0.3.1",
+    "esm": "^3.0.77",
+    "forgae-config": "^0.0.1",
+    "fs-extra": "^7.0.1",
     "moment": "^2.23.0",
-    "forgae-config": "^0.0.1"
-
+    "node-dir": "^0.1.17",
+    "path": "^0.12.7",
+    "promisify-child-process": "^2.1.2"
   },
   "keywords": [],
   "author": "",
