@@ -21,5 +21,5 @@
 * [ForgAE Config](developer-documentation/forgae-config/README.md)
     * [forgae-config](developer-documentation/forgae-config/config.md)
 * [ForgAE History](developer-documentation/forgae-config/README.md)
-    * [forgae-history] (developer-documentation/forgae-history/history.md)
+    * [forgae-history](developer-documentation/forgae-history/history.md)
 * [License](developer-documentation/licence.md)
