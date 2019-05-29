@@ -1,4 +1,4 @@
-# forgae history
+# ForgAE History
 
 ## History of your deploys
 
