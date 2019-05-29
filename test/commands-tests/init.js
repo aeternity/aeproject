@@ -54,15 +54,17 @@ describe('ForgAE Init', () => {
 		// //assert
 		let editedDockerComposeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeYml, 'utf8')
 
-		const forgae_lib = packageJson.dependencies['forgae-lib']; // this is to be inplemented once forgae lib has been published to npm
-		const forgae_config = packageJson.dependencies['forgae-config']; 
-		const forgae_utils = packageJson.dependencies['forgae-utils']; 
-		const forgae_logger = packageJson.dependencies['forgae-logger'];
+		const forgae = {
+			lib: packageJson.dependencies['forgae-lib'],
+			config: packageJson.dependencies['forgae-config'],
+			utils: packageJson.dependencies['forgae-utils'],
+			logger: packageJson.dependencies['forgae-logger']
+		}
 		const sdkVersion = utilsPackageJson.dependencies['@aeternity/aepp-sdk'];
 		const projectPackageJson = require("./initTests/package.json");
 
 		const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk'];
-		const forgaeLibInProject = projectPackageJson.dependencies['forgae-lib']; // this is to be inplemented once forgae lib has been published to npm
+		const forgaeLibInProject = projectPackageJson.dependencies['forgae-lib'];
 		const forgaeConfigInProject = projectPackageJson.dependencies['forgae-config'];
 		const forgaeUtilsInProject = projectPackageJson.dependencies['forgae-utils'];
 		const forgaeLoggerInProject = projectPackageJson.dependencies['forgae-logger'];
@@ -70,10 +72,10 @@ describe('ForgAE Init', () => {
 
 		assert.notEqual(editedDockerComposeYml, editedContent);
 		assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
-		assert.equal(forgae_lib.slice(1), forgaeLibInProject, "forgae-lib is not updated properly");
-		assert.equal(forgae_config.slice(1), forgaeConfigInProject, "forgae-config is not updated properly");
-		assert.equal(forgae_utils.slice(1), forgaeUtilsInProject, "forgae-utils is not updated properly");
-		assert.equal(forgae_logger.slice(1), forgaeLoggerInProject, "forgae-logger is not updated properly");
+		assert.equal(forgae.lib.slice(1), forgaeLibInProject, "forgae-lib is not updated properly");
+		assert.equal(forgae.config.slice(1), forgaeConfigInProject, "forgae-config is not updated properly");
+		assert.equal(forgae.utils.slice(1), forgaeUtilsInProject, "forgae-utils is not updated properly");
+		assert.equal(forgae.logger.slice(1), forgaeLoggerInProject, "forgae-logger is not updated properly");
 
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageJson}`), "package.json doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageLockJson}`), "package-lock.json doesn't exist");

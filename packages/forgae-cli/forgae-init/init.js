@@ -22,10 +22,10 @@ const createMissingFolder = require('forgae-utils').createMissingFolder;
 const copyFileOrDir = require('forgae-utils').copyFileOrDir;
 const packageJson = require('../package.json')
 const forgae = {
-	lib : packageJson.dependencies['forgae-lib'],
-	utils : packageJson.dependencies['forgae-utils'],
-	config : packageJson.dependencies['forgae-config'],
-	logger : packageJson.dependencies['forgae-logger']
+	lib: packageJson.dependencies['forgae-lib'],
+	utils: packageJson.dependencies['forgae-utils'],
+	config: packageJson.dependencies['forgae-config'],
+	logger: packageJson.dependencies['forgae-logger']
 }
 
 const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk'];
@@ -87,10 +87,10 @@ const installAeppSDK = async (_sdkVersion = '') => {
 
 const installForgae = async (_forgae) => {
 	print(`===== Installing ForgAE locally =====`);
-	await execute('npm', 'install', [`forgae-lib@${_forgae.lib}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
-	await execute('npm', 'install', [`forgae-utils@${_forgae.utils}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
-	await execute('npm', 'install', [`forgae-config@${_forgae.config}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
-	await execute('npm', 'install', [`forgae-logger@${_forgae.logger}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-lib@${_forgae.lib}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-utils@${_forgae.utils}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-config@${_forgae.config}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-logger@${_forgae.logger}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const installYarn = async () => {

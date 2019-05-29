@@ -88,7 +88,7 @@ const addHistoryOption = (program) => {
         .description('Show deployment history info')
         .option('--limit [limit]', 'Get last N records.', 5)
         .action(async (options) => {
-            
+
             let data = history.getHistory().slice(options.limit * -1);
 
             for (let i = 0; i < data.length; i++) {

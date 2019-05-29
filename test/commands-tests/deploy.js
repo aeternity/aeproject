@@ -107,7 +107,6 @@ describe('ForgAE Deploy', () => {
 
         it('without any arguments', async () => {
             let result = await execute(constants.cliCommands.DEPLOY, [], executeOptions)
-            
             assert.include(result, expectedDeployResult)
         })
 
@@ -209,14 +208,14 @@ describe('ForgAE Deploy', () => {
         it('try to deploy SC with invalid init parameters from another deployment script', async () => {
             insertAdditionalFiles();
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ invalidParamDeploymentScriptPath }`], executeOptions);
-            
+
             assert.include(result, 'Error: ValidationError');
         })
 
         it('try to deploy SC with missing init parameters from another deployment script', async () => {
             let error = `${`Error data`}: ${`{"reason":"Type errors\\nUnbound variable`}`;
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
-            
+
             assert.include(result, error);
         })
     })

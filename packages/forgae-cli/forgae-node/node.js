@@ -156,7 +156,7 @@ function stopLocalCompiler () {
 }
 
 async function run (option) {
-    
+
     try {
         let dockerProcess;
         let running = await waitForContainer();

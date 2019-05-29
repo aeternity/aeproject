@@ -3,9 +3,8 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const utils = require('./../../cli-commands/utils');
-const execute = utils.forgaeExecute;
-const test = require('./../../cli-commands/forgae-test/test')
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const test = require('../../packages/forgae-cli/forgae-test/test')
 const sinon = require('sinon')
 const constants = require('./../constants.json')
 const countPhraseRepeats = require('./../utils').countPhraseRepeats;

@@ -4,7 +4,6 @@ const utils = require('forgae-utils');
 const exec = utils.execute;
 
 const vueRepo = require('./constants.json').repos.vue;
-
 const constants = require('../forgae-init/constants.json');
 const vueAeppProjectPath = './aepp-forgae-shape-vue/aepp';
 const vueIdentityProviderProjectPath = './aepp-forgae-shape-vue/identity-provider';

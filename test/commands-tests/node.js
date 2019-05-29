@@ -60,7 +60,6 @@ describe('ForgAE Node', () => {
     it('Should stop the node successfully', async () => {
         await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         let running = await waitForContainer();
-
         assert.isNotTrue(running, "node wasn't stopped properly");
     })
 
