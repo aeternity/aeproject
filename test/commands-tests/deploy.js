@@ -191,12 +191,12 @@ describe('ForgAE Deploy', () => {
         })
 
         it('Should NOT deploy with invalid additional parameter --compiler', async () => {
-            
+
             let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
 
             assert.include(result, `Error: getaddrinfo ENOTFOUND ${ INVALID_COMPILER_URL.replace('http://', '') }`);
         })
-        
+
         it('with secret key arguments that have 0 (AEs) balance', async () => {
 
             const zeroBalanceSecretKey = '922bf2635813fb51827dcdb8fff38d0c16c447594b60bc523f5e5c10a876d1b14701787d0fe30d8f50cf340262daee1204f3c881a9ce8c5c9adccfb0e1de40e5';
@@ -216,7 +216,7 @@ describe('ForgAE Deploy', () => {
 
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
 
-            assert.include(result, 'encode-calldata failed with status code 403');
+            assert.include(result, 'Error: Http request');
         })
     })
 

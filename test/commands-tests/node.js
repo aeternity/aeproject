@@ -120,7 +120,7 @@ describe('ForgAE Node --only', () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [ constants.cliCommandsOptions.ONLY ], executeOptions)
+        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
     })
 
     it('Process should NOT start local compiler', async () => {
