@@ -1,7 +1,7 @@
 # forgae contracts
 
 ## [Contracts aepp](https://testnet.contracts.aepps.com/) integration
-The integration between the forgae and the [Contracts aepp](https://testnet.contracts.aepps.com/) allows the user to compile and deploy contracts using the **Contracts aepp** on the local spawned node. Please note that the following commands would work only once a project has been initialized.
+The integration between the forgae and the [Contracts aepp](https://testnet.contracts.aepps.com/) allows the user to compile and deploy contracts using the **Contracts aepp** on the local spawned node. Please note that the following command would work only once a project has been initialized.
 
 The Contracts aepp runs on http://localhost:8080/ by default.
 There are three optional parameters to ```forgae contracts```:
