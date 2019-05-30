@@ -8,7 +8,7 @@ The framework makes the development of smart contracts in the aeternity network 
 ### Installing
 
 ```text
-npm i -g forgae-cli
+npm i -g forgae
 ```
 
 ### Documentation
