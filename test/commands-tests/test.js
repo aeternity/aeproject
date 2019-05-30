@@ -8,6 +8,7 @@ const execute = utils.forgaeExecute;
 const test = require('./../../cli-commands/forgae-test/test')
 const sinon = require('sinon')
 const constants = require('./../constants.json')
+const countPhraseRepeats = require('./../utils').countPhraseRepeats;
 
 const path = require('path');
 
@@ -129,32 +130,6 @@ describe('ForgAE Test - sophia tests', () => {
         fs.removeSync(`.${ constants.testTestsFolderPath }`);
     })
 })
-
-function countPhraseRepeats (text, phrase) {
-    
-    // prevent infinity loop
-    const MAX_ITERATIONS = 100000; 
-
-    let count = 0;
-    let index = 0;
-
-    while (true) {
-
-        index = text.indexOf(phrase, index);
-        if (index < 0) {
-            break;
-        }
-
-        index++;
-        count++;
-
-        if (count >= MAX_ITERATIONS) {
-            throw new Error('Iteration limit reached or has infinity loop!')
-        }
-    }
-
-    return count;
-}
 
 function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) {
     // copy needed files into test folder to run the specific tests

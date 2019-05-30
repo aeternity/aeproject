@@ -8,11 +8,16 @@ contract Calculator =
     public function test_sum_incorrect() =
         require(sum(2,3) == 4, "Result of sum is incorrect!")
 
-    // public function should_not_call_me() : int =
-    //     i_am_private()
+    public function should_not_call_me() : int =
+        i_am_private()
 
-    // public function i_am_private() : int = 996
+    private function i_am_private() : int = 996
 
     private function require(expression: bool, error_message: string) =
         if(!expression)
             abort(error_message)
+
+    // public function commented_should_nott_call_me() : int =
+    //     i_am_private()
+
+    // public function commented_am_i_private() : int = 996
