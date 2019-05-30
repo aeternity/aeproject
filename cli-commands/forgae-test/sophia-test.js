@@ -6,8 +6,6 @@ const deleteCreatedFiles = utils.deleteCreatedFiles;
 
 const SophiaUtil = require('./../../utils/SophiaUtil');
 
-const AVERAGE_TIME_TO_EXECUTE_A_TEST = 15000;
-
 function generateIt (testFunctions) {
     let its = '';
 
@@ -38,7 +36,6 @@ const run = async function (paths = [], testFolder = process.cwd()) {
     const contractsTest = SophiaUtil.getContractInfo(paths);
 
     const testFiles = [];
-    let itsCount = 0;
 
     for (let contract of contractsTest.values()) {
 
@@ -46,8 +43,7 @@ const run = async function (paths = [], testFolder = process.cwd()) {
             throw new Error(`Cannot append sophia tests to existing contract! Contract "${ contract.contractName }" was not found!`);
         }
 
-        const testFunctions = contract.testFunctions; // ['test_sum_correct', 'test_sum_incorrect'];
-        itsCount += testFunctions.length;
+        const testFunctions = contract.testFunctions;
         const source = SophiaUtil.generateCompleteSource(mainContractsInfo.get(contract.contractName).source, contract.source);
 
         let testFile = `
@@ -103,10 +99,6 @@ const run = async function (paths = [], testFolder = process.cwd()) {
     }
 
     let result = await jsTests.run(testFiles);
-    await timeout(AVERAGE_TIME_TO_EXECUTE_A_TEST * itsCount);
-
-    // console.log('6. result');
-    // console.log(result);
 
     // delete created tests
     deleteCreatedFiles(testFiles);

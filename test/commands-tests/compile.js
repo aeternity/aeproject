@@ -51,7 +51,7 @@ describe('ForgAE Compile', () => {
 
         it('Should compile contracts with -n argument - testnet ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["-n", "testnet"], executeOptions)
-
+            
             assert.include(result, expectedCompileResultExampleContract)
         })
         it('Should compile contracts with -n argument - mainnet ', async () => {

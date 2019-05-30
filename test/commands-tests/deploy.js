@@ -209,14 +209,14 @@ describe('ForgAE Deploy', () => {
             insertAdditionalFiles();
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ invalidParamDeploymentScriptPath }`], executeOptions);
 
-            assert.include(result, 'Error: Validation error');
+            assert.include(result, 'Error: ValidationError');
         })
 
         it('try to deploy SC with missing init parameters from another deployment script', async () => {
 
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
 
-            assert.include(result, 'Error: Validation error');
+            assert.include(result, 'encode-calldata failed with status code 403');
         })
     })
 

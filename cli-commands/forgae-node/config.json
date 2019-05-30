@@ -60,6 +60,6 @@
 	"localCompiler": {
 		"port": 3080,
 		"dockerImage": "aeternity/aesophia_http",
-		"imageVersion": "v3.0.0"
+		"imageVersion": "v2.1.0"
 	}
 }

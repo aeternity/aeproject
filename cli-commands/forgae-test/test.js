@@ -22,16 +22,11 @@ const sophiaTest = require('./sophia-test');
 const utils = require('../utils.js');
 
 const run = async (path) => {
+
     let workingDirectory = process.cwd();
 
     if (path.includes('.js')) {
         await forgaeTest.run([path]);
-
-        return;
-    }
-
-    if (path.includes('.aes')) {
-        sophiaTest.run([path]);
 
         return;
     }
@@ -45,6 +40,16 @@ const run = async (path) => {
         testDirectory = p.join(workingDirectory, path);
     } else {
         testDirectory = workingDirectory;
+    }
+
+    if (path.includes('.aes')) {
+        if (!workingDirectory.includes(path)) {
+            path = p.join(workingDirectory, path);
+        }
+
+        sophiaTest.run([path], workingDirectory);
+
+        return;
     }
 
     const files = await utils.getFiles(testDirectory + '/test', `.*\\.(js|es|es6|jsx|sol)$`);

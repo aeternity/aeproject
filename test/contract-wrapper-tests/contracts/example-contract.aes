@@ -36,7 +36,7 @@ contract ExampleContract =
   public function show_my_param(param: bool) : bool =
     param
 
-  public function add_person(_name: string, _age: int) : int =
+  public stateful function add_person(_name: string, _age: int) : int =
 
     let _person : person = {
       name = _name,

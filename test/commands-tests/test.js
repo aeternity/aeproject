@@ -59,7 +59,7 @@ describe('ForgAE Test', () => {
     })
 })
 
-describe.only('ForgAE Test - sophia tests', () => {
+describe('ForgAE Test - sophia tests', () => {
 
     before(async function () {
         fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
@@ -86,11 +86,11 @@ describe.only('ForgAE Test - sophia tests', () => {
 
         let shouldHaveSuccessfulTest = result.indexOf('1 passing', indexOfSophiaTests) > 0;
         let shouldHaveUnsuccessfulTest = result.indexOf('1 failing', indexOfSophiaTests) > 0;
-        
+
         assert.isOk(shouldHaveSuccessfulTest && shouldHaveUnsuccessfulTest, "Tests have unexpected results.");
     })
 
-    it('check executed tests', async () => {
+    it('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
         insertAdditionalFiles(executeOptions.cwd, true);
 
         let result = await execute(constants.cliCommands.TEST, [
@@ -103,16 +103,60 @@ describe.only('ForgAE Test - sophia tests', () => {
         }
     })
 
+    it('should run only "sophia test"', async function () {
+        insertAdditionalFiles(executeOptions.cwd);
+        let result = await execute(constants.cliCommands.TEST, [
+            '--path',
+            '/test/calculator-tests.aes'
+        ], executeOptions);
+
+        let count = countPhraseRepeats(result, '===== Starting Tests =====');
+
+        assert.isOk(count === 1, "More than one file with tests were executed!");
+        assert.isOk(result.indexOf('Sophia tests') >= 0, "Missing sophia tests!");
+    })
+
     afterEach(async function () {
         fs.removeSync(`.${ constants.testTestsFolderPath }`);
     })
 
     after(async function () {
+        // this folder structure is needed for NODE --STOP command
+        fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
         await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
+        fs.removeSync(`.${ constants.testTestsFolderPath }`);
     })
 })
 
-function insertAdditionalFiles (cwd, copyArtifactsWithInvalidData = false) {
+function countPhraseRepeats (text, phrase) {
+    
+    // prevent infinity loop
+    const MAX_ITERATIONS = 100000; 
+
+    let count = 0;
+    let index = 0;
+
+    while (true) {
+
+        index = text.indexOf(phrase, index);
+        if (index < 0) {
+            break;
+        }
+
+        index++;
+        count++;
+
+        if (count >= MAX_ITERATIONS) {
+            throw new Error('Iteration limit reached or has infinity loop!')
+        }
+    }
+
+    return count;
+}
+
+function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) {
     // copy needed files into test folder to run the specific tests
 
     const contractDestinationFolder = `${ cwd }/contracts`;
