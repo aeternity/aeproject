@@ -96,10 +96,9 @@ class Deployer {
         try {
             contractInstance = await client.getContractInstance(contract);
             deployedContract = await contractInstance.deploy(initState, options);
-
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
-
+            
             deployedContract = addSmartContractFunctions(deployedContract, functions);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -143,7 +142,7 @@ class Deployer {
 
 async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
     const functionsDescription = parseContractFunctionsFromACI(deployedContract.aci);
-
+    
     const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
     const currentClient = await utils.getClient(network, keyPair);
 
@@ -303,7 +302,7 @@ function parseContractFunctionsFromACI (aci) {
     const reservedFunctionNames = [
         'init'
     ]
-
+    
     for (let func of aci.functions) {
 
         // skip reserved function's name
@@ -322,7 +321,7 @@ function parseContractFunctionsFromACI (aci) {
 
         functions.push(parsedFunc);
     }
-
+    
     return functions;
 }
 
@@ -425,7 +424,7 @@ function parseACIFunctionReturnType (functionReturns = []) {
             returnType = result;
         }
     }
-
+    
     return returnType;
 }
 
@@ -461,18 +460,41 @@ function processReturnType (array, depth = 1) {
 function processReturnTypeRecord (record) {
     let recordTemp = [];
     for (let element of record) {
-
+        
         for (let recordElement of element.type) {
             if (typeof recordElement === 'string') {
                 recordTemp.push(recordElement);
             } else {
-                let result = processReturnTypeRecord(recordElement.record);
-                recordTemp.push(result);
+
+                if (recordElement.option) {
+                    let result = processReturnTypeOption(recordElement.option);
+                    recordTemp.push(result);
+                } else {
+                    let result = processReturnTypeRecord(recordElement.record);
+                    recordTemp.push(result);
+                }
             }
         }
     }
 
     return `(${ recordTemp.toString() })`;
+}
+
+function processReturnTypeOption (option) {
+    let temp = [];
+
+    if (Array.isArray(option) && option.length > 0) {
+        for (let element of option) {
+            if (typeof element === 'string') {
+                temp.push(element)
+            } else {
+                // is there complex option's type like "option(some_record || some_list)"
+                console.log('=====>>>> unhandled return type');
+            }
+        }
+    }
+
+    return temp.toString();
 }
 
 module.exports = Deployer;
