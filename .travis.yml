@@ -17,6 +17,5 @@ install:
   - cd packages/forgae-cli
   - yarn link
   - cd ../..
-  - cd packages/forgae-lib
 script:
   - npm test
