@@ -1,0 +1,5 @@
+
+contract SomeContract =
+    public function sum(a: int, b: int) = a + b
+
+    public function sub(a: int, b: int) = a - b

@@ -15,30 +15,55 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
+const p = require('path');
 const forgaeTest = require('./forgae-test');
+const sophiaTest = require('./sophia-test');
+
 const utils = require('../utils.js');
 
 const run = async (path) => {
-  let workingDirectory = process.cwd();
 
-  if (path.includes('.js')) {
-    await forgaeTest.run([path]);
+    let workingDirectory = process.cwd();
 
-    return;
-  }
+    if (path.includes('.js')) {
+        await forgaeTest.run([path]);
 
-  testDirectory = path;
+        return;
+    }
 
-  if (!path.includes(workingDirectory)) {
-    testDirectory = `${process.cwd()}/${path}`;
-  }
+    if (path.endsWith('./test')) {
+        path = path.replace('./test', '');
+    }
 
-  testDirectory = `${process.cwd()}/${path}`;
-  const files = await utils.getFiles(`${process.cwd()}/${path}/`, `.*\\.(js|es|es6|jsx|sol)$`);
-  
-  await forgaeTest.run(files);
+    let testDirectory;
+    if (!workingDirectory.includes(path)) {
+        testDirectory = p.join(workingDirectory, path);
+    } else {
+        testDirectory = workingDirectory;
+    }
+
+    if (path.includes('.aes')) {
+        if (!workingDirectory.includes(path)) {
+            path = p.join(workingDirectory, path);
+        }
+
+        sophiaTest.run([path], workingDirectory);
+
+        return;
+    }
+
+    const files = await utils.getFiles(testDirectory + '/test', `.*\\.(js|es|es6|jsx|sol)$`);
+    const aesFiles = await utils.getFiles(testDirectory + '/test', `.aes$`);
+
+    let cwd = process.cwd()
+    process.chdir(testDirectory);
+
+    await forgaeTest.run(files);
+    await sophiaTest.run(aesFiles, testDirectory);
+
+    process.chdir(cwd);
 }
 
 module.exports = {
-  run
-} 
+    run
+}
