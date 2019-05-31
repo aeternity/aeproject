@@ -4,7 +4,7 @@ const utils = require('./../utils');
 const timeout = utils.timeout;
 const deleteCreatedFiles = utils.deleteCreatedFiles;
 
-const SophiaUtil = require('./../../utils/SophiaUtil');
+const SophiaUtil = require('./../../utils/sophia-util');
 
 function generateIt (testFunctions) {
     let its = '';
