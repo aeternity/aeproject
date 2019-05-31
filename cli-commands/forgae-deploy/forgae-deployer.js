@@ -422,6 +422,11 @@ function parseACIFunctionReturnType (functionReturns = []) {
             result = 'list' + result;
 
             returnType = result;
+        } else if (functionReturns.option) {
+            let typeOptionResult = processReturnTypeOption(functionReturns.option);
+            returnType = [ typeOptionResult ];
+        } else {
+            console.log('=====>>>> unhandled return type <<===');
         }
     }
     
@@ -482,7 +487,7 @@ function processReturnTypeRecord (record) {
 
 function processReturnTypeOption (option) {
     let temp = [];
-
+    
     if (Array.isArray(option) && option.length > 0) {
         for (let element of option) {
             if (typeof element === 'string') {
@@ -490,8 +495,12 @@ function processReturnTypeOption (option) {
             } else {
                 // is there complex option's type like "option(some_record || some_list)"
                 console.log('=====>>>> unhandled return type');
+                // console.log(option);
             }
         }
+    } else {
+        console.log('=====>>>> unhandled return type');
+        // console.log(option);
     }
 
     return temp.toString();
