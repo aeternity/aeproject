@@ -1,4 +1,4 @@
-const utils = require('../cli-commands/utils');
+const utils = require('./fs-utils');
 
 // TODO: insert and use 'Assert' 
 // const assertInterface = `

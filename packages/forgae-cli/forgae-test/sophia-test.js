@@ -1,10 +1,10 @@
 const fs = require('fs');
 const jsTests = require('./forgae-test');
-const utils = require('./../utils');
+const utils = require('forgae-utils');
 const timeout = utils.timeout;
 const deleteCreatedFiles = utils.deleteCreatedFiles;
 
-const SophiaUtil = require('../../../utils/sophia-util');
+const SophiaUtil = require('forgae-utils').SophiaUtil;
 
 function generateIt (testFunctions) {
     let its = '';
@@ -27,7 +27,7 @@ const run = async function (paths = [], testFolder = process.cwd()) {
         console.log(paths);
         return;
     }
-
+    
     const contractsFolder = `${ testFolder }/contracts/`;
     const sophiaContractPaths = await utils.getFiles(contractsFolder.replace('//', '/'), `.aes$`);
 

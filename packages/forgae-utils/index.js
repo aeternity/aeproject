@@ -26,7 +26,9 @@ const isKeyPair = require('./utils/contract-utils').isKeyPair;
 const generatePublicKeyFromSecretKey = require('./utils/contract-utils').generatePublicKeyFromSecretKey;
 const generateKeyPairFromSecretKey = require('./utils/contract-utils').generateKeyPairFromSecretKey;
 const decodedHexAddressToPublicAddress = require('./utils/contract-utils').decodedHexAddressToPublicAddress;
-const trimAdresseses = require('./utils/contract-utils').trimAdresseses
+const trimAdresseses = require('./utils/contract-utils').trimAdresseses;
+
+const SophiaUtil = require('./utils/sophia-util');
 
 module.exports = {
     printReportTable,
@@ -51,9 +53,9 @@ module.exports = {
     generatePublicKeyFromSecretKey,
     generateKeyPairFromSecretKey,
     decodedHexAddressToPublicAddress,
-    readFile,
 	readFileRelative,
 	writeFileRelative,
 	fileExists,
-	trimAdresseses
+    trimAdresseses,
+    SophiaUtil
 }
