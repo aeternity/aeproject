@@ -14,7 +14,7 @@ let executeOptions = {
 
 chai.use(chaiFiles);
 
-describe.only('ForgAE Init', () => {
+describe('ForgAE Init', () => {
 	before(async () => {
 		fs.ensureDirSync(`.${constants.initTestsFolderPath}`)
 	});
