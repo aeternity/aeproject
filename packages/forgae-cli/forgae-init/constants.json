@@ -1,4 +1,6 @@
 {
+	"forgaeLibVersion": "0.0.1",
+	
 	"testDir": "./test",
 	"testTemplateFile": "exampleTests.js",
 	"testFileDestination": "./test/exampleTest.js",

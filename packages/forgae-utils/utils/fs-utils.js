@@ -78,6 +78,12 @@ const readFileRelative = (relativePath, encoding = null, errTitle = 'READ FILE E
 const fileExists = (relativePath) => {
 	return fs.existsSync(path.resolve(process.cwd(), relativePath));
 }
+
+function deleteCreatedFiles (testFiles) {
+    for (let testFile of testFiles) {
+        fs.unlink(testFile);
+    }
+}
 module.exports = {
     print,
     printError,
@@ -88,5 +94,6 @@ module.exports = {
     writeFile,
     writeFileRelative,
     readFileRelative,
-    fileExists
+    fileExists,
+    deleteCreatedFiles
 }

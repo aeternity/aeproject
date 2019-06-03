@@ -3,13 +3,7 @@ const jsTests = require('./forgae-test');
 const utils = require('forgae-utils');
 const timeout = utils.timeout;
 
-// const deleteCreatedFiles = utils.deleteCreatedFiles;
-function deleteCreatedFiles (testFiles) {
-    for (let testFile of testFiles) {
-        fs.unlink(testFile);
-    }
-}
-
+const deleteCreatedFiles = utils.deleteCreatedFiles;
 const SophiaUtil = require('forgae-utils').SophiaUtil;
 
 function generateIt (testFunctions) {

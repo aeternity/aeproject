@@ -10,6 +10,7 @@ const readFileRelative = require('./utils/fs-utils').readFileRelative;
 const writeFileRelative = require('./utils/fs-utils').writeFileRelative;
 const fileExists = require('./utils/fs-utils').fileExists;
 const readFile = require('./utils/fs-utils').readFile;
+const deleteCreatedFiles = require('./utils/fs-utils').deleteCreatedFiles;
 
 const getClient = require('./utils/forgae-utils').getClient;
 const getNetwork = require('./utils/forgae-utils').getNetwork;
@@ -43,6 +44,7 @@ module.exports = {
     sleep,
     execute,
     readFile,
+    deleteCreatedFiles,
     config,
     handleApiError,
     logApiError,
