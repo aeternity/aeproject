@@ -57,7 +57,7 @@ class Deployer {
         throw new Error("Incorrect keypair or secret key passed")
     }
 
-    async readFile (path) {
+    readFile (path) {
         return fs.readFileSync(path, "utf-8")
     }
 
@@ -72,7 +72,7 @@ class Deployer {
         
         this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
-        contract = await this.readFile(contractPath);
+        contract = this.readFile(contractPath);
 
         let contractInstance;
         let deployedContract;

@@ -15,6 +15,9 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
+const path = require('path');
+const fs = require('fs');
+
 const Deployer = require('forgae-lib').Deployer;
 const EXAMPLE_CONTRACT_PATH = "./contracts/ExampleContract.aes";
 

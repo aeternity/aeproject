@@ -47,7 +47,7 @@ const getFiles = async function (directory, regex) {
     });
 };
 
-const readFile = async (path, encoding = null, errTitle = 'READ FILE ERR') => {
+const readFile = (path, encoding = null, errTitle = 'READ FILE ERR') => {
     try {
         return fs.readFileSync(
             path,

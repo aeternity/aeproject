@@ -74,13 +74,9 @@ describe('ForgAE Test - sophia tests', () => {
 
     it.only('should parse sophia tests, create regular js file with tests and execute it.', async function () {
         await insertAdditionalFiles(executeOptions.cwd);
-        let result = await execute(constants.cliCommands.TEST, [
-            '--path',
-            constants.testTestsFolderPath
-        ], executeOptions);
-        console.log('result-------------');
-        console.log(result);
-        
+
+        let result = await execute(constants.cliCommands.TEST, [], executeOptions);
+
         let indexOfSophiaTests = result.indexOf('Sophia tests');
         if (indexOfSophiaTests <= 0) {
             assert.isOk(false, "Missing sophia tests");
@@ -127,7 +123,7 @@ describe('ForgAE Test - sophia tests', () => {
         fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
 
-        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
+        // await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
         fs.removeSync(`.${ constants.testTestsFolderPath }`);
     })
 })

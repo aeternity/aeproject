@@ -103,6 +103,12 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
+function deleteCreatedFiles (testFiles) {
+    for (let testFile of testFiles) {
+        fs.unlink(testFile);
+    }
+}
+
 module.exports = {
     config,
     getClient,
@@ -112,5 +118,6 @@ module.exports = {
     sleep,
     forgaeExecute,
     execute,
-    timeout
+    timeout,
+    deleteCreatedFiles
 }
