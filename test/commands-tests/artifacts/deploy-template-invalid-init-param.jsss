@@ -1,4 +1,3 @@
-
 /*
  * ISC License (ISC)
  * Copyright (c) 2018 aeternity developers
@@ -16,10 +15,9 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-
 const path = require('path');
 
-const Deployer = require('./../../../../cli-commands/forgae-deploy/forgae-deployer'); // use this path if you want to test it locally
+const Deployer = require('./../../../../packages/forgae-lib/forgae-deployer'); // use this path if you want to test it locally
 
 let contractPath = './../contracts/ExampleContract2.aes';
 

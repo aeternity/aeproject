@@ -6,7 +6,7 @@ chai.use(chaiAsPromised);
 const path = require('path');
 const fs = require('fs');
 
-const SophiaUtil = require('./../../utils/sophia-util');
+const SophiaUtil = require('./../../packages/forgae-utils/utils/sophia-util');
 
 const sophiaContractPath = './../commands-tests/artifacts/calculator.aes';
 const invalidContractNameSophiaContractPath = './../commands-tests/artifacts/calculator-invalid-name.aes';

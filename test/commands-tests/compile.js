@@ -1,7 +1,8 @@
 const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils.js').forgaeExecute;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+// const execute = require('../../cli-commands/utils.js').forgaeExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"

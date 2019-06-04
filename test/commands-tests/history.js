@@ -3,12 +3,12 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
-const cliUtils = require('../../cli-commands/utils.js');
+const cliUtils = require('../../packages/forgae-utils/utils/forgae-utils.js');
 const execute = cliUtils.forgaeExecute;
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const _store = require('./../../cli-commands/forgae-history/log-store-service');
+const _store = require('../../packages/forgae-logger/logger-service/log-store-service')
 
 const constants = require('../constants.json');
 const TEMP_TEST_PATH = constants.historyTestsFolderPath;

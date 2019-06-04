@@ -1,13 +1,13 @@
 const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
-const execute = require('../../cli-commands/utils.js').forgaeExecute;
-const exec = require('../../cli-commands/utils.js').execute;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const exec = require('../../packages/forgae-utils/utils/forgae-utils.js').execute;
 const waitForContainer = require('../utils').waitForContainer;
 const waitUntilFundedBlocks = require('../utils').waitUntilFundedBlocks;
 const constants = require('../constants.json')
 const fs = require('fs-extra')
-const nodeConfig = require('../../cli-commands/forgae-node/config.json')
-const utils = require('../../cli-commands/utils')
+const nodeConfig = require('../../packages/forgae-config/config/node-config.json')
+const utils = require('../../packages/forgae-utils/utils/forgae-utils')
 let executeOptions = {
     cwd: process.cwd() + constants.nodeTestsFolderPath
 };
@@ -48,6 +48,13 @@ describe('ForgAE Node', () => {
             let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
             assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
         }
+    })
+
+    it('Process should start local compiler', async () => {
+        let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
+        let isContainCurrentVersion = result.indexOf(`{"version":"${ nodeConfig.localCompiler.imageVersion.replace('v', '') }"}`) > 0;
+        
+        assert.isOk(isContainCurrentVersion);
     })
 
     it('Should stop the node successfully', async () => {

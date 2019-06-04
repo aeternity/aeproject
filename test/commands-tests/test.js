@@ -3,9 +3,8 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const utils = require('./../../cli-commands/utils');
-const execute = utils.forgaeExecute;
-const test = require('./../../cli-commands/forgae-test/test')
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const test = require('../../packages/forgae-cli/forgae-test/test')
 const sinon = require('sinon')
 const constants = require('./../constants.json')
 const countPhraseRepeats = require('./../utils').countPhraseRepeats;
@@ -67,18 +66,16 @@ describe('ForgAE Test - sophia tests', () => {
         await execute(constants.cliCommands.INIT, [], executeOptions);
         await execute(constants.cliCommands.NODE, [], executeOptions)
     })
-
+    
     beforeEach(async function () {
         fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
     });
 
     it('should parse sophia tests, create regular js file with tests and execute it.', async function () {
-        insertAdditionalFiles(executeOptions.cwd);
-        let result = await execute(constants.cliCommands.TEST, [
-            '--path',
-            constants.testTestsFolderPath
-        ], executeOptions);
+        await insertAdditionalFiles(executeOptions.cwd);
+
+        let result = await execute(constants.cliCommands.TEST, [], executeOptions);
 
         let indexOfSophiaTests = result.indexOf('Sophia tests');
         if (indexOfSophiaTests <= 0) {
@@ -93,7 +90,7 @@ describe('ForgAE Test - sophia tests', () => {
 
     it('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
         insertAdditionalFiles(executeOptions.cwd, true);
-
+        
         let result = await execute(constants.cliCommands.TEST, [
             '--path',
             constants.testTestsFolderPath
@@ -131,23 +128,24 @@ describe('ForgAE Test - sophia tests', () => {
     })
 })
 
-function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) {
-    // copy needed files into test folder to run the specific tests
-
-    const contractDestinationFolder = `${ cwd }/contracts`;
-    const testDestinationFolder = `${ cwd }/test`;
-
+async function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) {
+    const contractDestinationFolder = `${cwd}/contracts`;
+    const testDestinationFolder = `${cwd}/test`;
+    
     const calculatorSourcePath = path.resolve(cwd, './../artifacts/calculator.aes');
     const sophiaTestSourcePath = path.resolve(cwd, './../artifacts/calculator-tests.aes');
-
+    
     const calculatorWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-invalid-name.aes');
     const sophiaTestWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-tests-invalid-contract-name.aes');
 
     if (!copyArtifactsWithInvalidData) {
-        fs.copyFileSync(calculatorSourcePath, `${ contractDestinationFolder }/calculator.aes`);
-        fs.copyFileSync(sophiaTestSourcePath, `${ testDestinationFolder }/calculator-tests.aes`);
+        fs.copyFileSync(calculatorSourcePath, `${contractDestinationFolder}/calculator.aes`);
+        fs.copyFileSync(sophiaTestSourcePath, `${testDestinationFolder}/calculator-tests.aes`);
     } else {
-        fs.copyFileSync(calculatorWithInvalidNameSourcePath, `${ contractDestinationFolder }/calculator-invalid-name.aes`);
-        fs.copyFileSync(sophiaTestWithInvalidNameSourcePath, `${ testDestinationFolder }/calculator-tests-invalid-contract-name.aes`);
+        fs.copyFileSync(calculatorWithInvalidNameSourcePath, `${contractDestinationFolder}/calculator-invalid-name.aes`);
+        fs.copyFileSync(sophiaTestWithInvalidNameSourcePath, `${testDestinationFolder}/calculator-tests-invalid-contract-name.aes`);
     }
+    
 }
+
+
