@@ -11,7 +11,7 @@ npm install -g forgae
 forgae node
 ```
 
-## init a project
+## Init a project
 ```
 forgae init
 ```
