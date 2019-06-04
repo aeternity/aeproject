@@ -101,7 +101,7 @@ describe('ForgAE Deploy', () => {
         })
     })
 
-    describe('Deploy command ', async () => {
+    describe.only('Deploy command ', async () => {
 
         let expectedDeployResult = "ExampleContract.aes has been deployed";
 

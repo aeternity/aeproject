@@ -145,7 +145,4 @@ async function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) 
         fs.copyFileSync(calculatorWithInvalidNameSourcePath, `${contractDestinationFolder}/calculator-invalid-name.aes`);
         fs.copyFileSync(sophiaTestWithInvalidNameSourcePath, `${testDestinationFolder}/calculator-tests-invalid-contract-name.aes`);
     }
-    
 }
-
-

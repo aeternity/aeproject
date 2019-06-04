@@ -24,6 +24,7 @@ const utils = require('forgae-utils');
 const {
     spawn
 } = require('promisify-child-process');
+
 const fs = require('fs');
 const path = require('path');
 const dockerCLI = require('docker-cli-js');
@@ -38,7 +39,9 @@ let balanceOptions = {
     format: false
 }
 
-async function waitForContainer () {
+const MAX_SECONDS_TO_RUN_NODE = 60;
+
+async function waitForContainer (dockerImage) {
     let running = false
 
     await docker.command('ps', function (err, data) {
@@ -47,7 +50,7 @@ async function waitForContainer () {
         }
 
         data.containerList.forEach(function (container) {
-            if (container.image.startsWith(dockerConfiguration.dockerImage) && container.status.indexOf("healthy") != -1) {
+            if (container.image.startsWith(dockerImage) && container.status.indexOf("healthy") != -1) {
                 running = true;
             }
         })
@@ -130,7 +133,7 @@ function stopLocalCompiler () {
     });
 
     setTimeout(function () {
-        
+
         let containerId = '';
         tempOutput.forEach(x => {
             let rgx = /(?:\s+|\n)([a-zA-Z0-9]+)\s+(?=aeternity\/aesophia_http)/gm
@@ -158,8 +161,7 @@ function stopLocalCompiler () {
 async function run (option) {
 
     try {
-        let dockerProcess;
-        let running = await waitForContainer();
+        let running = await waitForContainer(dockerConfiguration.dockerImage);
 
         if (option.stop) {
             if (!running) {
@@ -169,7 +171,7 @@ async function run (option) {
 
             print('===== Stopping node =====');
 
-            dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
+            await spawn('docker-compose', ['down', '-v'], {});
 
             print('===== Node was successfully stopped! =====');
 
@@ -189,33 +191,61 @@ async function run (option) {
         }
 
         print('===== Starting node =====');
-        dockerProcess = spawn('docker-compose', ['up', '-d']);
 
-        dockerProcess.stderr.on('data', (data) => {
+        let startingNodeSpawn = spawn('docker-compose', ['up', '-d']);
+
+        startingNodeSpawn.stdout.on('data', (data) => {
             print(data.toString());
         });
 
-        if (!option.only) {
+        let e = '';
+        startingNodeSpawn.stderr.on('data', (data) => {
+            e += data.toString();
+            print(data.toString())
+        });
 
-            let dockerCompilerProcess = spawn('docker', [
-                'run',
-                '-d',
-                '-p',
-                `${ localCompilerConfig.port }:3080`,
-                `${ localCompilerConfig.dockerImage }:${ localCompilerConfig.imageVersion }`
-            ]);
+        let counter = 0;
+        while (!(await waitForContainer(dockerConfiguration.dockerImage))) {
+            if (e.indexOf('port is already allocated') >= 0) {
+                await spawn('docker-compose', ['down', '-v'], {});
+                startingNodeSpawn.kill('SIGINT');
+                throw new Error(`Cannot start AE node, port is already allocated!`)
+            }
 
-            dockerCompilerProcess.stderr.on('data', (data) => {
-                print(data.toString());
-            });
-        }
-
-        while (!(await waitForContainer())) {
             process.stdout.write(".");
             utils.sleep(1000);
+
+            // prevent infinity loop
+            counter++;
+            if (counter >= MAX_SECONDS_TO_RUN_NODE) {
+                throw new Error("Cannot start AE Node!")
+            }
         }
 
         print('\n\r===== Node was successfully started! =====');
+
+        if (!option.only) {
+
+            try {
+                await startLocalCompiler(option.compilerPort);
+
+                print(`===== Local Compiler was successfully started at port: ${ option.compilerPort }! =====`);
+
+            } catch (error) {
+
+                await spawn('docker-compose', ['down', '-v'], {});
+                print('===== Node was successfully stopped! =====');
+
+                const errorMessage = readErrorSpawnOutput(error);
+                if (errorMessage.indexOf('port is already allocated') >= 0) {
+
+                    throw new Error(`Cannot start local compiler at port: ${ option.compilerPort }, port is already allocated!`)
+                }
+
+                throw new Error(error);
+            }
+        }
+
         print('===== Funding default wallets! =====');
 
         await fundWallets();
@@ -226,6 +256,22 @@ async function run (option) {
     } catch (e) {
         printError(e.message)
     }
+}
+
+function startLocalCompiler (port) {
+    return spawn('docker', [
+        'run',
+        '-d',
+        '-p',
+        `${ port }:${ localCompilerConfig.port }`,
+        // `${ port }:${ port }`,
+        `${ localCompilerConfig.dockerImage }:${ localCompilerConfig.imageVersion }`
+    ]);
+}
+
+function readErrorSpawnOutput (spawnError) {
+    const buffMessage = Buffer.from(spawnError.stderr);
+    return buffMessage.toString('utf8');
 }
 
 module.exports = {
