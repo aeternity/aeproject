@@ -3,7 +3,8 @@
   "version": "0.0.9",
   "private": true,
   "scripts": {
-    "test": "mocha './test/**/*.js' --timeout 0 --exit"
+    "test": "mocha './test/**/*.js' --timeout 0 --exit",
+    "link": "lerna bootstrap && cd packages/forgae-cli && yarn link"
   },
   "dependencies": {
     "esm": "^3.0.77",
