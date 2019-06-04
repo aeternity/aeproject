@@ -19,7 +19,7 @@ Run this command to give you all possible commands of `forgae` + help info
 ## Version
 
 ```text
-gorgae --version
+forgae --version
 ```
 
 Running this command will give you the current installed `forgae` version

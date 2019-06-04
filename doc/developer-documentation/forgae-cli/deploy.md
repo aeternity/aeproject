@@ -6,8 +6,8 @@
 forgae deploy
 ```
 
-The **deploy** command help developers run their deploy script aeternity
-proejcts. The sample deploy script is scaffolded in deployment folder.
+The **deploy** command helps developers run their deployment scripts and thus deploy their aeternity projects.
+The sample deploy script is scaffolded in deployment folder.
 
 You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available : 
 - "local" - "http://localhost:3001"
