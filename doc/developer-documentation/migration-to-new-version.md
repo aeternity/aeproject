@@ -3,11 +3,11 @@
 ##Breaking changes
 
 **Important** We have decided to separate our project to several packages as it's now getting bigger and the need of separation of concerns would become inevitable. Listed below are all the required steps we would like you to guide you through. Please note that all the steps are being made from the **root** folder of your project and are processed in due course. 
-- We strongly recommend that you do global uninstall of forgae with `npm uninstall -g forgae` and reinstall the newer version - `npm install -g forgae`
+- We strongly recommend that you do global uninstall of **forgae** with `npm uninstall -g forgae` and reinstall the newer version - `npm install -g forgae`
 - Delete your node_modules folder, so that you do not keep the deprecated module in your project.
 - Delete your old dependency to **forgae** in the package.json file.
 - Do `npm install`
-- Now that you have forgae globally, run `forgae init --update` in your root directory. This will incorporate [forgae-lib](./forgae-api/deployer.md) to your existing project
+- Now that you have **forgae** globally, run `forgae init --update` in your root directory. This will incorporate [forgae-lib](./forgae-api/deployer.md) to your existing project
 - Everywhere you have `require('forgae').Deployer;` now should be amended to `require('forgae-lib').Deployer`. 
 
 ### Deploying in v1.4
