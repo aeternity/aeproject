@@ -2,6 +2,18 @@
 
 ## History of your deploys
 
+This package provides information of your previous deployments such as:
+- The public key of whoever executed the transaction
+- Name of the contracts
+- Tx Hash of the transaction
+- Its status (whether it was successful or not)
+- The netowrk it has been deployed on.
+
+### Installation
+```
+npm install forgae-logger
+```
+
 In order to see a list of what you've deployed you can run the following command:
 ```
 forgae history [limit]

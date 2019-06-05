@@ -21,7 +21,6 @@ const forgaeTest = require('./forgae-test');
 const sophiaTest = require('./sophia-test');
 const utils = require('forgae-utils');
 
-
 const run = async (path) => {
 
     let workingDirectory = process.cwd();

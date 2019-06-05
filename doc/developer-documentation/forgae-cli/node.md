@@ -8,7 +8,8 @@ forgae node
 
 ```
 
-The **node** command help developers run their local network on docker.
+The package is responsible for setting up a healthy local node. 
+The **node** command help developers run their local network, as well as local compiler on docker.
 The local network contains 3 nodes. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
 ```
 forgae node

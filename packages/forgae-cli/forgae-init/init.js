@@ -15,11 +15,12 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 const constants = require('./constants.json');
-const execute = require('forgae-utils').execute;
-const printError = require('forgae-utils').printError;
-const print = require('forgae-utils').print;
-const createMissingFolder = require('forgae-utils').createMissingFolder;
-const copyFileOrDir = require('forgae-utils').copyFileOrDir;
+const utils = require('forgae-utils');
+const execute = utils.execute;
+const printError = utils.printError;
+const print = utils.print;
+const createMissingFolder = utils.createMissingFolder;
+const copyFileOrDir = utils.copyFileOrDir;
 const packageJson = require('../package.json')
 const forgaeLibVersion = constants.forgaeLibVersion;
 

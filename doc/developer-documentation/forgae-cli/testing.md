@@ -15,7 +15,7 @@ Additional **--path** param is available, which can specify the path to the test
 
 forgae exposes special convenience global variables and functions that can be used in the unit tests.
 
-#### wallets
+#### Wallets
 Global wallets array is available to be used by the developer. Wallets has 10 items all representing the 10 `forgae node` wallets created on the node start. Every item has the structure of:
 ```
 {

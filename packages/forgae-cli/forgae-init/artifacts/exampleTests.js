@@ -15,14 +15,8 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-const path = require('path');
-const fs = require('fs');
-
 const Deployer = require('forgae-lib').Deployer;
 const EXAMPLE_CONTRACT_PATH = "./contracts/ExampleContract.aes";
-
-let contractPath = path.resolve(__dirname, './../contracts/ExampleContract.aes');
-let contractSource = fs.readFileSync(contractPath, 'utf8');
 
 describe('Example Contract', () => {
 
@@ -34,7 +28,7 @@ describe('Example Contract', () => {
     })
 
     it('Deploying Example Contract', async () => {
-        const deployPromise = deployer.deploy(EXAMPLE_CONTRACT_PATH) //Deploy it
+        const deployPromise = deployer.deploy(EXAMPLE_CONTRACT_PATH) // Deploy it
 
         await assert.isFulfilled(deployPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check whether it's deployed
     })

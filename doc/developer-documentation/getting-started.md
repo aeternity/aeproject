@@ -11,7 +11,7 @@ npm install -g forgae
 forgae node
 ```
 
-## init a project
+## Init a project
 ```
 forgae init
 ```
@@ -25,7 +25,7 @@ Examples
 ```
 contract ExampleContract =
 
-  public function sayHello(name : string) : string = 
+  public function say_hello(name : string) : string = 
     String.concat("Hello, ", name)
 
   public function donate() : int =
@@ -36,13 +36,13 @@ contract ExampleContract =
 let deployer = new Deployer('local', privateKey);
 deployedContract = await deployer.deploy( contractPath, []); // empty array for init params
 
-let result = await deployedContract.sayHello('World'); // result would be: "Hello, World"
+let result = await deployedContract.say_hello('World'); // result would be: "Hello, World"
 ```
 
 or you can execute/call functions from another private/secret key
 ```javascript
 const fromInstance = await deployedContract.from(anotherSecretKey);
-let result = await fromInstance.sayHello('Friend'); // result would be: "Hello, Friend"
+let result = await fromInstance.say_hello('Friend'); // result would be: "Hello, Friend"
 ```
 
 or you just want to donate some aettos
