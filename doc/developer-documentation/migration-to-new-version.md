@@ -2,32 +2,13 @@
 
 ##Breaking changes
 
-In your project run:
-
-```text
-npm install forgae-lib
-```
-
-Everywhere you have `require('forgae').Deployer;` now should be amended to `require('forgae-lib').Deployer`. 
-
-**Important** We have decided to separate our project to several packages as it's now getting bigger and the need of separation of concerns would become inevitable.
-Now when you already installed **forgae-lib** we strongly recommend that you do global uninstall of forgae with `npm uninstall -g forgae` and reinstall the newer version - `npm install -g forgae`
-
-### Installing v2.0
-
-#### Installing the CLI:
-```test
-npm install forgae
-```
-
-This command in v2.0 will install **only** the forgae CLI - (command line interface) library. You can use all the [CLI](https://app.gitbook.com/@forgae/s/forgae/v/develop/developer-documentation/forgae-cli) commands.
-
-#### Installing the LIB:
-```text
-npm install forgae-lib
-```
-
-This command will install **only** forgae [LIB](https://app.gitbook.com/@forgae/s/forgae/v/develop/developer-documentation/forgae-library-api/deployer). You can use LIB to deploy, instantiate or test smart contracts.
+**Important** We have decided to separate our project to several packages as it's now getting bigger and the need of separation of concerns would become inevitable. Listed below are all the required steps we would like you to guide you through. Please note that all the steps are being made from the **root** folder of your project and are processed in due course. 
+- We strongly recommend that you do global uninstall of forgae with `npm uninstall -g forgae` and reinstall the newer version - `npm install -g forgae`
+- Delete your node_modules folder, so that you do not keep the deprecated module in your project.
+- Delete your old dependency to **forgae** in the package.json file.
+- Do `npm install`
+- Now that you have forgae globally, run `forgae init --update` in your root directory. This will incorporate [forgae-lib](./forgae-api/deployer.md) to your existing project
+- Everywhere you have `require('forgae').Deployer;` now should be amended to `require('forgae-lib').Deployer`. 
 
 ### Deploying in v1.4
 
