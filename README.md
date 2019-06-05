@@ -21,4 +21,4 @@ npm i -g forgae
 
 ### Documentation
 
-[Documentation](https://forgae.gitbook.io/forgae/v/develop/)
+[Documentation](https://forgae.gitbook.io/)
