@@ -82,8 +82,6 @@ const installAeppSDK = async (_sdkVersion = '') => {
 
 const installForgae = async (_forgaeLibVersion) => {
 	print(`===== Installing ForgAE locally =====`);
-	console.log("forgae lib version: ", sdkVersion);
-	
 	await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-lib@${_forgaeLibVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
