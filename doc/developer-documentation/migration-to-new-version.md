@@ -27,7 +27,7 @@ This command in v2.0 will install **only** the forgae CLI - (command line interf
 npm install forgae-lib
 ```
 
-This command will instal **only** forgae [LIB](https://app.gitbook.com/@forgae/s/forgae/v/develop/developer-documentation/forgae-library-api/deployer). You can use LIB to deploy, instantiate or test smart contracts.
+This command will install **only** forgae [LIB](https://app.gitbook.com/@forgae/s/forgae/v/develop/developer-documentation/forgae-library-api/deployer). You can use LIB to deploy, instantiate or test smart contracts.
 
 ### Deploying in v1.4
 
