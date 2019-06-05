@@ -84,24 +84,32 @@ const forgaeExecute = async (command, args = [], options = {}) => {
 
 const execute = async (cli, command, args = [], options = {}) => {
 
-    const child = spawn(cli, [command, ...args], options)
-    let result = '';
+    const child = await spawn(cli, [command, ...args], options); 
+    let result = readSpawnOutput(child);
+    if(!result) {
+        result = readErrorSpawnOutput(child);
+    }
 
-    child.stdout.on('data', (data) => {
-        result += data.toString();
-    });
-
-    child.stderr.on('data', (data) => {
-        result += data.toString();
-    });
-
-    await child;
     return result;
 };
 
 const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
+
+function readErrorSpawnOutput (spawnResult) {
+    if (!spawnResult.stderr || spawnResult.stderr === '') {
+        return '';
+    }
+
+    const buffMessage = Buffer.from(spawnResult.stderr);
+    return buffMessage.toString('utf8');
+}
+
+function readSpawnOutput (spawnResult) {
+    const buffMessage = Buffer.from(spawnResult.stdout);
+    return buffMessage.toString('utf8');
+}
 
 module.exports = {
     config,

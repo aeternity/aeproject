@@ -40,7 +40,10 @@ const run = async function (paths = [], testFolder = process.cwd()) {
     for (let contract of contractsTest.values()) {
 
         if (!mainContractsInfo.has(contract.contractName)) {
-            throw new Error(`Cannot append sophia tests to existing contract! Contract "${ contract.contractName }" was not found!`);
+            const errorMessage = `Cannot append sophia tests to existing contract! Contract "${ contract.contractName }" was not found!`;
+            // somehow this error was not thrown in the tests, that why I use console.log.
+            console.log(errorMessage);
+            throw new Error(errorMessage);
         }
 
         const testFunctions = contract.testFunctions;

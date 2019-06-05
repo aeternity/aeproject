@@ -208,7 +208,6 @@ async function run (option) {
         while (!(await waitForContainer(dockerConfiguration.dockerImage))) {
             if (e.indexOf('port is already allocated') >= 0) {
                 await spawn('docker-compose', ['down', '-v'], {});
-                startingNodeSpawn.kill('SIGINT');
                 throw new Error(`Cannot start AE node, port is already allocated!`)
             }
 
@@ -229,7 +228,7 @@ async function run (option) {
             try {
                 await startLocalCompiler(option.compilerPort);
 
-                print(`===== Local Compiler was successfully started at port: ${ option.compilerPort }! =====`);
+                print(`===== Local Compiler was successfully started on port:${ option.compilerPort }! =====`);
 
             } catch (error) {
 
@@ -239,7 +238,7 @@ async function run (option) {
                 const errorMessage = readErrorSpawnOutput(error);
                 if (errorMessage.indexOf('port is already allocated') >= 0) {
 
-                    throw new Error(`Cannot start local compiler at port: ${ option.compilerPort }, port is already allocated!`)
+                    throw new Error(`Cannot start local compiler on port:${ option.compilerPort }, port is already allocated!`)
                 }
 
                 throw new Error(error);
@@ -251,10 +250,9 @@ async function run (option) {
         await fundWallets();
 
         print('\r\n===== Default wallets was successfully funded! =====');
-        return
-
     } catch (e) {
-        printError(e.message)
+        printError(e.message || e);
+        throw new Error(e);
     }
 }
 
@@ -264,7 +262,6 @@ function startLocalCompiler (port) {
         '-d',
         '-p',
         `${ port }:${ localCompilerConfig.port }`,
-        // `${ port }:${ port }`,
         `${ localCompilerConfig.dockerImage }:${ localCompilerConfig.imageVersion }`
     ]);
 }
