@@ -23,3 +23,10 @@ forgae --version
 ```
 
 Running this command will give you the current installed `forgae` version
+
+### Contribution
+
+If you would like to furter contribute or enhance your project with the CLI, you would need to run the following command once you are in the root folder:
+```
+npm run link
+```
