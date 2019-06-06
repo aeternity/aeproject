@@ -13,12 +13,17 @@ Forgae consists of 5 separated packages. There are two main packages.
 - forgae-utils - Similarly to config this package helps with functions like **ReadFile**  & **keyToHex**, etc.
 
 
-### Installing
+## Installing
 
 ```text
 npm i -g forgae
 ```
 
-### Documentation
+## Documentation
 
 [Documentation](https://forgae.gitbook.io/)
+
+## Changelog
+[CHANGELOG](CHANGELOG.md)
+
+
