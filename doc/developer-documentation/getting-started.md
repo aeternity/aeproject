@@ -1,28 +1,32 @@
 # Quick Start
 
-## Install 
-```
+## Install
+
+```text
 npm install -g forgae
 ```
 
-## Running local node 
+## Running local node
 
-```
+```text
 forgae node
 ```
 
 ## Init a project
-```
+
+```text
 forgae init
 ```
 
 This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
 
 ## Access deployed smart contract functions
+
 You can execute function of smart contract from deployed instance
 
 Examples
-```
+
+```text
 contract ExampleContract =
 
   public function say_hello(name : string) : string = 
@@ -40,12 +44,14 @@ let result = await deployedContract.say_hello('World'); // result would be: "Hel
 ```
 
 or you can execute/call functions from another private/secret key
+
 ```javascript
 const fromInstance = await deployedContract.from(anotherSecretKey);
 let result = await fromInstance.say_hello('Friend'); // result would be: "Hello, Friend"
 ```
 
 or you just want to donate some aettos
+
 ```javascript
 await deployedContract.donate({ value: 991 });
 ```
@@ -58,7 +64,6 @@ Run the following in order to execute the deployment file created from the **for
 forgae deploy
 ```
 
-
 ## History of your deploys
 
 In order to see a list of what you've deployed you can run the following command:
@@ -66,3 +71,4 @@ In order to see a list of what you've deployed you can run the following command
 ```text
 forgae history
 ```
+

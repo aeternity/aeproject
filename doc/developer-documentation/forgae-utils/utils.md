@@ -1,30 +1,32 @@
 # forgae-utils
 
-### Install 
+## Install
 
-```
+```text
 npm install forgae-utils
 ```
 
-### Usage
+## Usage
+
 `forgae-utils` is a package giving helper functions mainly for working with files and AEternity contracts.
 
-##### Available utils
+### Available utils
 
-* `utils.readFileRelative(relativePath, encoding, error) giving you the ability to read content of a file in encoding of your preference
+* \`utils.readFileRelative\(relativePath, encoding, error\) giving you the ability to read content of a file in encoding of your preference
 
 Example
 
 ```javascript
 const contractSource = utils.readFileRelative(config.contractSourceFile, "utf-8");
 const compiledContract = await client.contractCompile(contractSource, {
-	gas: config.gas
+    gas: config.gas
 })
 ```
 
 * `utils.execute(cli, command, args = [], options = {})` is helping you spawn and run child processes 
 
 Example
+
 ```javascript
 const execute = require('forgae-utils').execute;
 await execute('npm', 'install', [`forgae-lib@${forgaeLibVersion}`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
@@ -32,3 +34,4 @@ await execute('npm', 'install', [`forgae-lib@${forgaeLibVersion}`, '--save-exact
 
 * `utils.keyToHex(publicKey)`
 * `utils.generatePublicKeyFromSecretKey(secretKey)`
+
