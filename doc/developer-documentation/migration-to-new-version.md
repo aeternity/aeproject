@@ -54,11 +54,7 @@ const config = {
     internalHost: "http://localhost:3001/internal/",
     gas: 200000,
     ttl: 55,
-<<<<<<< HEAD
-    compilerUrl: 'https://compiler.aepps.com'
-=======
     compilerUrl: 'https://localhost:3080'
->>>>>>> develop
 }
 
 describe('Example Contract', () => {
