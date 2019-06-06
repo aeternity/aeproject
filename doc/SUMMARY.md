@@ -23,4 +23,5 @@
 * [ForgAE History](developer-documentation/forgae-config/README.md)
     * [forgae-history](developer-documentation/forgae-history/history.md)
 * [Migration from version 1.4 to 2.0](developer-documentation/migration-to-new-version.md)
+* [Changelog](CHANGELOG.md)
 * [License](developer-documentation/licence.md)
