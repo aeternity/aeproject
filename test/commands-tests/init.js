@@ -1,10 +1,12 @@
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils.js').forgaeExecute;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
-const packageJson = require('../../package.json')
+const packageJson = require('../../packages/forgae-cli/package.json')
+const utilsPackageJson = require('../../packages/forgae-utils/package.json')
+const forgaeLibVersion = require('../../packages/forgae-lib/package.json').version;
 
 let executeOptions = {
 	cwd: process.cwd() + constants.initTestsFolderPath
@@ -52,17 +54,17 @@ describe('ForgAE Init', () => {
 
 		// //assert
 		let editedDockerComposeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeYml, 'utf8')
-		const forgaeVersion = packageJson.version
-		const sdkVersion = packageJson.dependencies['@aeternity/aepp-sdk']
-		const projectPackageJson = require("./initTests/package.json")
 
-		const forgaeVersionInProject = projectPackageJson.dependencies['forgae']
-		const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk']
+		const sdkVersion = utilsPackageJson.dependencies['@aeternity/aepp-sdk'];
+		const projectPackageJson = require("./initTests/package.json");
+
+		const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk'];
+		const forgaeLibInProject = projectPackageJson.dependencies['forgae-lib'];
 
 
-		assert.notEqual(editedDockerComposeYml, editedContent)
-		assert.equal(forgaeVersion, forgaeVersionInProject, "Forgae version is not updated properly")
-		assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly")
+		assert.notEqual(editedDockerComposeYml, editedContent);
+		assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
+		assert.equal(forgaeLibVersion, forgaeLibInProject, "forgae-lib is not updated properly");
 
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageJson}`), "package.json doesn't exist");
 		assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageLockJson}`), "package-lock.json doesn't exist");

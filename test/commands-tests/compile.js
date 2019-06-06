@@ -1,7 +1,8 @@
 const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
-const execute = require('../../cli-commands/utils.js').forgaeExecute;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+// const execute = require('../../cli-commands/utils.js').forgaeExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
@@ -51,7 +52,7 @@ describe('ForgAE Compile', () => {
 
         it('Should compile contracts with -n argument - testnet ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["-n", "testnet"], executeOptions)
-
+            
             assert.include(result, expectedCompileResultExampleContract)
         })
         it('Should compile contracts with -n argument - mainnet ', async () => {

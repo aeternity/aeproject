@@ -1,13 +1,13 @@
 const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
-const execute = require('../../cli-commands/utils.js').forgaeExecute;
-const exec = require('../../cli-commands/utils.js').execute;
+const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const exec = require('../../packages/forgae-utils/utils/forgae-utils.js').execute;
 const waitForContainer = require('../utils').waitForContainer;
 const waitUntilFundedBlocks = require('../utils').waitUntilFundedBlocks;
 const constants = require('../constants.json')
 const fs = require('fs-extra')
-const nodeConfig = require('../../cli-commands/forgae-node/config.json')
-const utils = require('../../cli-commands/utils')
+const nodeConfig = require('../../packages/forgae-config/config/node-config.json')
+const utils = require('../../packages/forgae-utils/utils/forgae-utils')
 let executeOptions = {
     cwd: process.cwd() + constants.nodeTestsFolderPath
 };
@@ -50,6 +50,13 @@ describe('ForgAE Node', () => {
         }
     })
 
+    it('Process should start local compiler', async () => {
+        let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
+        let isContainCurrentVersion = result.indexOf(`{"version":"${ nodeConfig.localCompiler.imageVersion.replace('v', '') }"}`) > 0;
+        
+        assert.isOk(isContainCurrentVersion);
+    })
+
     it('Should stop the node successfully', async () => {
         await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         let running = await waitForContainer();
@@ -66,9 +73,26 @@ describe('ForgAE Node', () => {
         }
     })
 
-    it('Process should start local compiler', async () => {
+    after(async () => {
+
+        let running = await waitForContainer();
+        if (running) {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        }
+        fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+    })
+})
+
+describe('ForgAE Node - check if compiler is running too', () => {
+
+    before(async () => {
+        fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+
+        await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
-        await waitForContainer();
+    })
+
+    it('Local compiler should be running.', async () => {
         let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
         let isContainCurrentVersion = result.indexOf(`{"version":"${ nodeConfig.localCompiler.imageVersion.replace('v', '') }"}`) > 0;
 
