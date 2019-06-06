@@ -6,7 +6,7 @@ const fs = require('fs-extra')
 const constants = require('../constants.json')
 const packageJson = require('../../packages/forgae-cli/package.json')
 const utilsPackageJson = require('../../packages/forgae-utils/package.json')
-const forgaeLibVersion = require('../../packages/forgae-cli/forgae-init/constants.json').forgaeLibVersion;
+const forgaeLibVersion = require('../../packages/forgae-lib/package.json').version;
 
 let executeOptions = {
 	cwd: process.cwd() + constants.initTestsFolderPath

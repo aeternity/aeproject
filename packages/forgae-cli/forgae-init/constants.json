@@ -2,14 +2,12 @@
 	"testDir": "./test",
 	"testTemplateFile": "exampleTests.js",
 	"testFileDestination": "./test/exampleTest.js",
-    "shapeTestTemplateFile": "toDoManagerTests.js",
-    "shapeTestFileDestination": "./test/toDoManagerTests.js",
-
+	"shapeTestTemplateFile": "toDoManagerTests.js",
+	"shapeTestFileDestination": "./test/toDoManagerTests.js",
 	"deployDir": "./deployment",
 	"deployTemplateFile": "deployTemplate.js",
 	"shapeDeployTemplateFile": "shapeDeployTemplate.js",
 	"deployFileDestination": "./deployment/deploy.js",
-
 	"contractsDir": "./contracts",
 	"contractTemplateFile": "ExampleContract.aes",
 	"contractFileDestination": "./contracts/ExampleContract.aes",
@@ -17,15 +15,12 @@
 	"shapeContractFileDestination": "./contracts/ToDoManager.aes",
 	"artifactsDir": "/artifacts",
 	"shapeArtifactsDir": "/artifacts/shape",
-
-    "integrationsDir": "./integrations",
+	"integrationsDir": "./integrations",
 	"contratsAeppSetting": "contractsAeppSettings.js",
-    "contratsAeppSettingFileDestination": "./integrations/contractsAeppSettings.js",
-
-  "dockerDir": "./docker",
+	"contratsAeppSettingFileDestination": "./integrations/contractsAeppSettings.js",
+	"dockerDir": "./docker",
 	"dockerTemplateDir": "docker",
 	"dockerFilesDestination": "./docker",
-
 	"dockerYmlFile": "docker-compose.yml",
 	"dockerYmlFileDestination": "./docker-compose.yml"
 }
