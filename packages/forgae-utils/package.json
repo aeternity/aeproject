@@ -1,6 +1,6 @@
 {
   "name": "forgae-utils",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "chalk": "^2.4.1",
     "cli-table": "^0.3.1",
     "esm": "^3.0.77",
-    "forgae-config": "^0.0.1",
+    "forgae-config": "^1.0.0",
     "fs-extra": "^7.0.1",
     "moment": "^2.23.0",
     "node-dir": "^0.1.17",
