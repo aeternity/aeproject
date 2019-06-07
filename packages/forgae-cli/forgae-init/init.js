@@ -22,12 +22,11 @@ const print = utils.print;
 const createMissingFolder = utils.createMissingFolder;
 const copyFileOrDir = utils.copyFileOrDir;
 
-const forgaeLibVersion = require('../../forgae-lib/package.json').version
-const sdkVersion = require('../../forgae-utils/package.json').dependencies['@aeternity/aepp-sdk'];
+const sdkVersion = constants.sdkVersion;
 
 async function run (update) {
     if (update) {
-        await updateForgaeProjectLibraries(sdkVersion, forgaeLibVersion);
+        await updateForgaeProjectLibraries(sdkVersion);
         return;
     }
 
@@ -56,11 +55,11 @@ const createForgaeProjectStructure = async (shape) => {
     print('===== ForgAE was successfully initialized! =====');
 }
 
-const updateForgaeProjectLibraries = async (_sdkVersion, _forgaeLibVersion) => {
+const updateForgaeProjectLibraries = async (_sdkVersion) => {
     print(`===== Updating ForgAE files =====`);
 
     setupDocker();
-    await installForgae(_forgaeLibVersion)
+    await installForgae()
     await installAeppSDK(_sdkVersion)
     await installYarn()
 
@@ -71,7 +70,7 @@ const installLibraries = async () => {
     const fileSource = `${ __dirname }${ constants.artifactsDir }/package.json`;
     copyFileOrDir(fileSource, "./package.json")
     await installAeppSDK(sdkVersion)
-    await installForgae(forgaeLibVersion)
+    await installForgae()
     await installYarn()
 }
 
@@ -80,9 +79,9 @@ const installAeppSDK = async (_sdkVersion = '') => {
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${ _sdkVersion }`, '--save-exact']);
 }
 
-const installForgae = async (_forgaeLibVersion) => {
+const installForgae = async () => {
     print(`===== Installing ForgAE locally =====`);
-    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-lib@${ _forgaeLibVersion }`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`forgae-lib`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const installYarn = async () => {
