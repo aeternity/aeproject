@@ -1,3 +1,3 @@
-import { Deployer } from "./forgae-deployer";
+import  { Deployer }  from "./forgae-deployer";
 
 export { Deployer };
