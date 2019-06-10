@@ -420,4 +420,5 @@ function processReturnTypeRecord(record) {
     }
     return `(${recordTemp.toString()})`;
 }
+// module.exports = Deployer
 //# sourceMappingURL=forgae-deployer.js.map
