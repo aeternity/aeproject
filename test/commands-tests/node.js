@@ -175,8 +175,7 @@ describe("ForgAE Node -- allocated port's tests", () => {
         // Start the server on specific port
         app.listen(port);
 
-
-        //test
+        // test
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
         const isPortAllocated = result.indexOf('port is already allocated') >= 0;
         const isSamePort = result.indexOf(`:${ port }`) >= 0;
@@ -208,8 +207,7 @@ describe("ForgAE Node -- allocated port's tests", () => {
         // Start the server on specific port
         app.listen(port);
 
-
-        //test
+        // test
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
         const isPortAllocated = result.indexOf('port is already allocated') >= 0;
         const isSamePort = result.indexOf(`:${ port }`) >= 0;
@@ -226,12 +224,12 @@ describe("ForgAE Node -- allocated port's tests", () => {
 
         const port = 4080;
 
-        //test
+        // test
         let result = await execute(constants.cliCommands.NODE, [
             constants.cliCommandsOptions.COMPILER_PORT,
             port
         ], executeOptions);
-        
+
         const isSuccessfullyStarted = result.indexOf(`Local Compiler was successfully started on port:${ port }`) >= 0;
 
         assert.isOk(isSuccessfullyStarted, 'Local compiler does not start on specific port!');
