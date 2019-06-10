@@ -128,9 +128,9 @@ describe('ForgAE Test - sophia tests', () => {
     })
 })
 
-async function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) {
-    const contractDestinationFolder = `${cwd}/contracts`;
-    const testDestinationFolder = `${cwd}/test`;
+async function insertAdditionalFiles (cwd, copyArtifactsWithInvalidData = false) {
+    const contractDestinationFolder = `${ cwd }/contracts`;
+    const testDestinationFolder = `${ cwd }/test`;
 
     const calculatorSourcePath = path.resolve(cwd, './../artifacts/calculator.aes');
     const sophiaTestSourcePath = path.resolve(cwd, './../artifacts/calculator-tests.aes');
@@ -139,10 +139,10 @@ async function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) 
     const sophiaTestWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-tests-invalid-contract-name.aes');
 
     if (!copyArtifactsWithInvalidData) {
-        fs.copyFileSync(calculatorSourcePath, `${contractDestinationFolder}/calculator.aes`);
-        fs.copyFileSync(sophiaTestSourcePath, `${testDestinationFolder}/calculator-tests.aes`);
+        fs.copyFileSync(calculatorSourcePath, `${ contractDestinationFolder }/calculator.aes`);
+        fs.copyFileSync(sophiaTestSourcePath, `${ testDestinationFolder }/calculator-tests.aes`);
     } else {
-        fs.copyFileSync(calculatorWithInvalidNameSourcePath, `${contractDestinationFolder}/calculator-invalid-name.aes`);
-        fs.copyFileSync(sophiaTestWithInvalidNameSourcePath, `${testDestinationFolder}/calculator-tests-invalid-contract-name.aes`);
+        fs.copyFileSync(calculatorWithInvalidNameSourcePath, `${ contractDestinationFolder }/calculator-invalid-name.aes`);
+        fs.copyFileSync(sophiaTestWithInvalidNameSourcePath, `${ testDestinationFolder }/calculator-tests-invalid-contract-name.aes`);
     }
 }

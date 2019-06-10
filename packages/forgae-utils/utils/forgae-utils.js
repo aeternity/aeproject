@@ -1,8 +1,10 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const config = require('forgae-config');
-const { printError } = require('./fs-utils')
+const {
+    printError
+} = require('./fs-utils')
 
 const {
     spawn
@@ -54,7 +56,6 @@ const getNetwork = (network) => {
     return result
 };
 
-
 const handleApiError = async (fn) => {
     try {
 
@@ -66,7 +67,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -84,12 +85,13 @@ const forgaeExecute = async (command, args = [], options = {}) => {
 
 const execute = async (cli, command, args = [], options = {}) => {
 
-    const child = await spawn(cli, [command, ...args], options); 
+    const child = await spawn(cli, [command, ...args], options);
+    
     let result = readSpawnOutput(child);
-    if(!result) {
+    if (!result) {
         result = readErrorSpawnOutput(child);
     }
-
+    
     return result;
 };
 

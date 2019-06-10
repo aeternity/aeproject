@@ -252,7 +252,7 @@ async function run (option) {
         print('\r\n===== Default wallets was successfully funded! =====');
     } catch (e) {
         printError(e.message || e);
-        throw new Error(e);
+        // throw new Error(e);
     }
 }
 
