@@ -39,7 +39,7 @@ async function getTxInfo (txHash): Promise<TxInfo> {
     return result;
 }
 
-export default class Deployer {
+export class Deployer {
     name: string;
     network: Network;
     compilerUrl: string;
@@ -498,5 +498,3 @@ function processReturnTypeRecord (record) {
 
     return `(${ recordTemp.toString() })`;
 }
-
-// module.exports = Deployer
