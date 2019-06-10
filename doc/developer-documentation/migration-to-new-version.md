@@ -1,18 +1,20 @@
-# Migration guide from Forgae v1.4 to v2.0
+# Migration from version 1.4 to 2.0
 
-##Breaking changes
+## Breaking changes
 
-**Important** We have decided to separate our project to several packages as it's now getting bigger and the need of separation of concerns would become inevitable. Listed below are all the required steps we would like you to guide you through. Please note that all the steps are being made from the **root** folder of your project and are processed in due course. 
-- We strongly recommend that you do global uninstall of **forgae** with `npm uninstall -g forgae` and reinstall the newer version - `npm install -g forgae`
-- Delete your node_modules folder, so that you do not keep the deprecated module in your project.
-- Delete your old dependency to **forgae** in the package.json file.
-- Do `npm install`
-- Now that you have **forgae** globally, run `forgae init --update` in your root directory. This will incorporate [forgae-lib](./forgae-api/deployer.md) to your existing project
-- Everywhere you have `require('forgae').Deployer;` now should be amended to `require('forgae-lib').Deployer`. 
+**Important** We have decided to separate our project to several packages as it's now getting bigger and the need of separation of concerns would become inevitable. Listed below are all the required steps we would like you to guide you through. Please note that all the steps are being made from the **root** folder of your project and are processed in due course.
+
+* We strongly recommend that you do global uninstall of **forgae** with `npm uninstall -g forgae` and reinstall the newer version - `npm install -g forgae`
+* Delete your node\_modules folder, so that you do not keep the deprecated module in your project.
+* Delete your old dependency to **forgae** in the package.json file.
+* Do `npm install`
+* Now that you have **forgae** globally, run `forgae init --update` in your root directory. This will incorporate [forgae-lib](forgae-library-api/deployer.md) to your existing project
+* Everywhere you have `require('forgae').Deployer;` now should be amended to `require('forgae-lib').Deployer`. 
 
 ### Deploying in v1.4
 
 Example:
+
 ```javascript
 const Deployer = require('forgae').Deployer;
 
@@ -46,6 +48,7 @@ module.exports = {
 ```
 
 ### Testing smart contract v1.2
+
 ```javascript
 const Ae = require('@aeternity/aepp-sdk').Universal;
 
@@ -54,7 +57,7 @@ const config = {
     internalHost: "http://localhost:3001/internal/",
     gas: 200000,
     ttl: 55,
-    compilerUrl: 'https://compiler.aepps.com'
+    compilerUrl: 'https://localhost:3080'
 }
 
 describe('Example Contract', () => {
@@ -91,9 +94,11 @@ describe('Example Contract', () => {
 
 })
 ```
+
 ### Testing smart contract v2.0
 
 Now the test file is completely reworked.
+
 ```javascript
 const Deployer = require('forgae-lib').Deployer;
 const EXAMPLE_CONTRACT_PATH = "./contracts/ExampleContract.aes";
@@ -102,7 +107,7 @@ describe('Example Contract', () => {
 
     let deployer;
     let ownerKeyPair = wallets[0];
-    
+
     before(async () => {
         deployer = new Deployer('local', ownerKeyPair.secretKey)
     })
@@ -114,3 +119,4 @@ describe('Example Contract', () => {
     })
 })
 ```
+
