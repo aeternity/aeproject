@@ -39,7 +39,7 @@ async function getTxInfo (txHash): Promise<TxInfo> {
     return result;
 }
 
-export class Deployer {
+export default class Deployer {
     name: string;
     network: Network;
     compilerUrl: string;
@@ -54,6 +54,7 @@ export class Deployer {
     */
 
     constructor(network: string = "local", keypairOrSecret: object = utils.config.keypair, compilerUrl: string = config.compilerUrl) {
+        
         this.network = new Network(network)
         this.compilerUrl = new URL(compilerUrl).origin;
         
@@ -497,3 +498,5 @@ function processReturnTypeRecord (record) {
 
     return `(${ recordTemp.toString() })`;
 }
+
+// module.exports = Deployer

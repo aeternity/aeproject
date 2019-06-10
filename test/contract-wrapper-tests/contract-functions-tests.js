@@ -8,7 +8,7 @@ const fs = require('fs-extra');
 
 const constants = require('./../constants.json');
 
-const Deployer = require('./../../packages/forgae-lib/dist/forgae-deployer');
+const Deployer = require('./../../packages/forgae-lib/dist/forgae-deployer').Deployer;
 const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
 const convertToPerson = require('../utils').convertToPerson;
