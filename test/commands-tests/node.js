@@ -147,7 +147,7 @@ describe('ForgAE Node --only', () => {
     })
 })
 
-describe.only("ForgAE Node -- allocated port's tests", () => {
+describe("ForgAE Node -- allocated port's tests", () => {
 
     before(async () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -156,7 +156,7 @@ describe.only("ForgAE Node -- allocated port's tests", () => {
     })
 
     // try to run AE node on already allocated port , process should stop
-    it.only('Process should NOT start AE node', async () => {
+    it('Process should NOT start AE node', async () => {
 
         const port = 3001;
 
@@ -177,7 +177,7 @@ describe.only("ForgAE Node -- allocated port's tests", () => {
 
         // test
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
-        console.log(result);
+        
         const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0;
         const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
