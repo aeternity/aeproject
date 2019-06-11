@@ -30,8 +30,6 @@ export type DeployedContract = {
     deployInfo: deployInfo
 }
 
-import { DeployedContract } from "./contractTypes";
-
 export type Contractinstance = {
     /**
     * Deploy contract
