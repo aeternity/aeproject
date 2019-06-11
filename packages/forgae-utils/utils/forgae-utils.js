@@ -86,13 +86,33 @@ const forgaeExecute = async (command, args = [], options = {}) => {
 const execute = async (cli, command, args = [], options = {}) => {
 
     const child = await spawn(cli, [command, ...args], options);
-    
+
     let result = readSpawnOutput(child);
     if (!result) {
         result = readErrorSpawnOutput(child);
     }
-    
+
     return result;
+
+    // try {
+    //     const child = await spawn(cli, [command, ...args], options);
+
+    //     let result = readSpawnOutput(child);
+    //     if (!result) {
+    //         result = readErrorSpawnOutput(child);
+    //     }
+
+    //     return result;
+    // } catch (e) {
+    //     let result = readSpawnOutput(e);
+    //     console.log(result);
+    //     console.log();
+    //     result = readErrorSpawnOutput(e);
+    //     console.log(result);
+    //     console.log();
+
+    //     return e;
+    // }
 };
 
 const timeout = (ms) => {
