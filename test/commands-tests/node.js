@@ -137,7 +137,7 @@ describe.only('ForgAE Node --only', () => {
         let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
         console.log('Process should NOT start local compiler')
         console.log(result)
-        await assert.isRejected(exec(constants.cliCommands.CURL, constants.getCompilerVersionURL), 'Process exited with code 7');
+        await assert.isRejected(exec(constants.cliCommands.CURL, constants.getCompilerVersionURL), 'Connection refused');
     })
 
     afterEach(async () => {
