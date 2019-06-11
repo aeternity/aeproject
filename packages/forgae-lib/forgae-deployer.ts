@@ -1,5 +1,4 @@
 import {Network}  from "./network";
-import { URL } from "url";
 import utils from 'forgae-utils';
 import fs from 'fs';
 import logStoreService from 'forgae-logger';
@@ -55,7 +54,7 @@ export class Deployer {
     constructor(network: string = "local", keypairOrSecret: object = utils.config.keypair, compilerUrl: string = config.compilerUrl) {
         
         this.network = new Network(network)
-        this.compilerUrl = new URL(compilerUrl).origin;
+        this.compilerUrl =  compilerUrl;
         
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
