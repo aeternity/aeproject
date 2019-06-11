@@ -95,6 +95,8 @@ const execute = async (cli, command, args = [], options = {}) => {
 
         return result;
     } catch (e) {
+        console.log('=-=> e');
+        console.log(e);
         let result = readSpawnOutput(e);
         result += readErrorSpawnOutput(e);
 

@@ -237,8 +237,9 @@ async function run (option) {
 
                 const errorMessage = readErrorSpawnOutput(error);
                 if (errorMessage.indexOf('port is already allocated') >= 0) {
-
-                    throw new Error(`Cannot start local compiler on port:${ option.compilerPort }, port is already allocated!`)
+                    const errorMessage = `Cannot start local compiler on port:${ option.compilerPort }, port is already allocated!`;
+                    console.log(errorMessage);
+                    throw new Error(errorMessage);
                 }
 
                 throw new Error(error);
