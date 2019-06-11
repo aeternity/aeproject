@@ -135,9 +135,7 @@ describe.only('ForgAE Node --only', () => {
 
     it('Process should NOT start local compiler', async () => {
         let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
-        console.log('Process should NOT start local compiler')
-        console.log(result)
-        await assert.isRejected(exec(constants.cliCommands.CURL, constants.getCompilerVersionURL), 'Connection refused');
+        assert.isOk(result.indexOf('Connection refused') >= 0, "There is a port that listening on compiler's port.");
     })
 
     afterEach(async () => {
@@ -213,6 +211,11 @@ describe.only("ForgAE Node -- allocated port's tests", () => {
 
         // test
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
+
+        console.log('==> Process should NOT start local compiler');
+        console.log(result)
+        console.log('<<<< result')
+
         const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0;
         const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
@@ -233,9 +236,6 @@ describe.only("ForgAE Node -- allocated port's tests", () => {
             constants.cliCommandsOptions.COMPILER_PORT,
             port
         ], executeOptions);
-
-        console.log('Process should start local compiler on specific port')
-        console.log(result)
 
         const isSuccessfullyStarted = result.indexOf(`Local Compiler was successfully started on port:${ port }`) >= 0;
 
