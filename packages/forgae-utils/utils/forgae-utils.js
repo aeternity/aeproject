@@ -96,9 +96,7 @@ const execute = async (cli, command, args = [], options = {}) => {
         return result;
     } catch (e) {
         let result = readSpawnOutput(e);
-        if (!result) {
-            result = readErrorSpawnOutput(e);
-        }
+        result += readErrorSpawnOutput(e);
 
         return result;
     }
@@ -114,7 +112,7 @@ function readErrorSpawnOutput (spawnResult) {
     }
 
     const buffMessage = Buffer.from(spawnResult.stderr);
-    return buffMessage.toString('utf8');
+    return '\n' + buffMessage.toString('utf8');
 }
 
 function readSpawnOutput (spawnResult) {
