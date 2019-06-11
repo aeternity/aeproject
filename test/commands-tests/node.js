@@ -124,7 +124,7 @@ describe('ForgAE Node', async () => {
     })
 })
 
-describe.only('ForgAE Node --only', () => {
+describe('ForgAE Node --only', () => {
 
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -148,7 +148,7 @@ describe.only('ForgAE Node --only', () => {
     })
 })
 
-describe.only("ForgAE Node -- allocated port's tests", () => {
+describe("ForgAE Node -- allocated port's tests", () => {
 
     before(async () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -211,10 +211,6 @@ describe.only("ForgAE Node -- allocated port's tests", () => {
 
         // test
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
-
-        console.log('==> Process should NOT start local compiler');
-        console.log(result)
-        console.log('<<<< result')
 
         const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0 || result.indexOf(`Process exited with code 125`) >= 0;
         //const isSamePort = result.indexOf(`:${ port }`) >= 0;
