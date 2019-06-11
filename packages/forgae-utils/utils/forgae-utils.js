@@ -105,15 +105,11 @@ const execute = async (cli, command, args = [], options = {}) => {
         return result;
     } catch (e) {
         let result = readSpawnOutput(e);
-        console.log('read stdout');
-        console.log(result);
-        console.log();
-        result = readErrorSpawnOutput(e);
-        console.log('read stderr');
-        console.log(result);
-        console.log();
+        if (!result) {
+            result = readErrorSpawnOutput(e);
+        }
 
-        return e;
+        return result;
     }
 };
 

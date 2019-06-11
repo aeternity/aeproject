@@ -178,7 +178,7 @@ describe.only("ForgAE Node -- allocated port's tests", () => {
         // test
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
         console.log(result);
-        const isPortAllocated = result.indexOf('port is already allocated') >= 0;
+        const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0;
         const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
         assert.isOk(isPortAllocated, 'Node does not throw exception on allocated port!');
