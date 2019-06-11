@@ -1,5 +1,5 @@
 import {Network}  from "./network";
-import { Url } from "url";
+import { URL } from "url";
 import utils from 'forgae-utils';
 import fs from 'fs';
 import logStoreService from 'forgae-logger';
@@ -44,7 +44,6 @@ export class Deployer {
     network: Network;
     compilerUrl: string;
     keypair: any;
-    test: Url;
 
    /**
     * 
