@@ -198,15 +198,15 @@ async function run (option) {
             print(data.toString());
         });
 
-        let e = '';
+        let errorMessage = '';
         startingNodeSpawn.stderr.on('data', (data) => {
-            e += data.toString();
+            errorMessage += data.toString();
             print(data.toString())
         });
 
         let counter = 0;
         while (!(await waitForContainer(dockerConfiguration.dockerImage))) {
-            if (e.indexOf('port is already allocated') >= 0 || e.indexOf(`address already in use`) >= 0) {
+            if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
                 await spawn('docker-compose', ['down', '-v'], {});
                 throw new Error(`Cannot start AE node, port is already allocated!`)
             }
@@ -253,7 +253,6 @@ async function run (option) {
         print('\r\n===== Default wallets was successfully funded! =====');
     } catch (e) {
         printError(e.message || e);
-        // throw new Error(e);
     }
 }
 
