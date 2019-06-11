@@ -206,7 +206,7 @@ async function run (option) {
 
         let counter = 0;
         while (!(await waitForContainer(dockerConfiguration.dockerImage))) {
-            if (e.indexOf('port is already allocated') >= 0) {
+            if (e.indexOf('port is already allocated') >= 0 || e.indexOf(`address already in use`) >= 0) {
                 await spawn('docker-compose', ['down', '-v'], {});
                 throw new Error(`Cannot start AE node, port is already allocated!`)
             }

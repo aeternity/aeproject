@@ -118,6 +118,10 @@ function readErrorSpawnOutput (spawnResult) {
 }
 
 function readSpawnOutput (spawnResult) {
+    if (!spawnResult.stdout || spawnResult.stdout === '') {
+        return '';
+    }
+
     const buffMessage = Buffer.from(spawnResult.stdout);
     return buffMessage.toString('utf8');
 }
