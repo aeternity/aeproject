@@ -24,6 +24,7 @@ const config = forgaeUtils.config;
 const handleApiError = forgaeUtils.handleApiError;
 const logApiError = forgaeUtils.logApiError;
 const timeout = forgaeUtils.timeout;
+const contractCompile = forgaeUtils.contractCompile;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -63,5 +64,6 @@ module.exports = {
     writeFileRelative,
     fileExists,
     trimAdresseses,
-    SophiaUtil
+    SophiaUtil,
+    contractCompile
 }

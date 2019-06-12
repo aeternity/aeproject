@@ -1,6 +1,8 @@
 require = require('esm')(module /*, options */) // use to handle es6 import/export 
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
+const ContractCompilerAPI = AeSDK.ContractCompilerAPI;
+
 const config = require('forgae-config');
 const {
     printError
@@ -124,6 +126,11 @@ function readSpawnOutput (spawnResult) {
     return buffMessage.toString('utf8');
 }
 
+async function contractCompile(source, options) {
+    const compiler = await ContractCompilerAPI(options);
+    return compiler.compileContractAPI(source);
+}
+
 module.exports = {
     config,
     getClient,
@@ -133,5 +140,6 @@ module.exports = {
     sleep,
     forgaeExecute,
     execute,
-    timeout
+    timeout,
+    contractCompile
 }
