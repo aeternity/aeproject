@@ -46,14 +46,20 @@ const getNetwork = (network) => {
         }
     };
 
-    const result = networks[network]
-    if (!result) {
-        throw new Error(`Unrecognized network ${ network }`)
-    }
-
+    const result = networks[network] != undefined ? networks[network] : createCustomNetwork(network);
+    console.log(result);
+    
     return result
 };
 
+const createCustomNetwork = (network) => {
+    const customNet = {
+        url: network,
+        networkId: config.customnetParams.networkId
+    }
+
+    return customNet;
+}
 
 const handleApiError = async (fn) => {
     try {

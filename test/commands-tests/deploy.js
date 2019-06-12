@@ -47,7 +47,7 @@ describe('ForgAE Deploy', () => {
         await execute(constants.cliCommands.NODE, [], executeOptions)
     })
 
-    describe('Deployer', async () => {
+    describe.only('Deployer', async () => {
         it('Should init Deployer with local network', async () => {
             // Arrange
             const expectedNetwork = "http://localhost:3001"
@@ -82,6 +82,19 @@ describe('ForgAE Deploy', () => {
 
             // Assert
             assert.equal(deployer.network.url, expectedNetwork)
+        })
+
+        it('Should init Deployer with custom network', async () => {
+            // Arrange
+            const expectedNetwork = "192.168.99.100:3001"
+            const passedNetwork = "192.168.99.100:3001"
+            const expectedNetworkId = "ae_custom"
+            // Act
+            const deployer = new Deployer(passedNetwork);
+
+            // Assert
+            assert.equal(deployer.network.url, expectedNetwork)
+            assert.equal(deployer.network.networkId, expectedNetworkId)
         })
 
         it('Should deploy contract with init arguments', async () => {

@@ -1,6 +1,7 @@
 const localhostParams = require('./config/config.json').localhostParams;
 const testnetParams = require('./config/config.json').testnetParams;
 const mainnetParams = require('./config/config.json').mainnetParams;
+const customnetParams = require('./config/config.json').customnetParams;
 const keypair = require('./config/config.json').keypair;
 const compilerUrl = require('./config/config.json').compilerUrl;
 const compilerVersion = require('./config/config.json').compilerVersion;
@@ -14,6 +15,7 @@ module.exports = {
     localhostParams,
     testnetParams,
     mainnetParams,
+    customnetParams,
     keypair,
     compilerUrl,
     compilerVersion,
