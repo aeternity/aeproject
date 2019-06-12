@@ -47,7 +47,7 @@ describe('ForgAE Deploy', () => {
         await execute(constants.cliCommands.NODE, [], executeOptions)
     })
 
-    describe.only('Deployer', async () => {
+    describe('Deployer', async () => {
         it('Should init Deployer with local network', async () => {
             // Arrange
             const expectedNetwork = "http://localhost:3001"
