@@ -33,7 +33,8 @@
 		"UPDATE": "--update",
 		"NODE_URL": "--nodeUrl",
 		"IGNORE_OPENING": "--ignoreOpenInBrowser",
-		"ONLY": "--only"
+		"ONLY": "--only",
+		"COMPILER_PORT": "--compiler-port"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",

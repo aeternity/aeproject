@@ -52,7 +52,11 @@ describe('ForgAE contracts', () => {
         const logStream = fs.createWriteStream(contractsConstants.LOG_FILE, {
             flags: 'a'
         });
-        contractsResult = spawn(contractsConstants.FORGAE_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.UPDATE, constants.cliCommandsOptions.IGNORE_OPENING], {});
+        contractsResult = spawn(contractsConstants.FORGAE_CLI_COMMAND, [
+            constants.cliCommands.CONTRACTS, 
+            constants.cliCommandsOptions.UPDATE, 
+            constants.cliCommandsOptions.IGNORE_OPENING
+        ], {});
         contractsResult.stdout.pipe(logStream);
         await timeout(contractsConstants.STARTING_AEPP_TIMEOUT);
         const logContent = fs.readFileSync(contractsConstants.LOG_FILE, 'utf8');
