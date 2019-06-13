@@ -45,6 +45,10 @@ function countHistoryLogs(result) {
     let hasMatch = true;
     let index = 0;
 
+    if (!result) {
+        return counter;
+    }
+
     while (hasMatch) {
         index = result.indexOf('Event Time', index);
         if (index < 0) {
@@ -160,7 +164,7 @@ describe('ForgAE History', async () => {
         let currentCwd;
         let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
-        before('', async () => {
+        before(async () => {
             if (!fs.existsSync(tempTestPath)) {
                 fs.mkdirSync(tempTestPath);
             }
