@@ -11,7 +11,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const network_1 = require("./network");
 const forgae_utils_1 = __importDefault(require("forgae-utils"));
 const fs_1 = __importDefault(require("fs"));
 const forgae_logger_1 = __importDefault(require("forgae-logger"));
@@ -53,7 +52,7 @@ class Deployer {
      * @param {string} compilerUrl
      */
     constructor(network = "local", keypairOrSecret = forgae_utils_1.default.config.keypair, compilerUrl = forgae_config_1.default.compilerUrl) {
-        this.network = new network_1.Network(network);
+        this.network = forgae_utils_1.default.getNetwork(network);
         this.compilerUrl = compilerUrl;
         if (forgae_utils_1.default.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;

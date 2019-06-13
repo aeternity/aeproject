@@ -5,13 +5,13 @@ export type KeyPair = {
 
 
 export type ParsedContractFunction = {
-    name?: string,
+    name: string,
     args?: Array<string>,
     returnType?: any
 }
 
 export type AciFunctions = {
-    name?: string,
+    name: string,
     arguments?: Array<{
         name?: string,
         type?: Array<any>
@@ -30,7 +30,7 @@ export type DeployedContract = {
     deployInfo: deployInfo
 }
 
-export type Contractinstance = {
+export type ContractInstance = {
     /**
     * Deploy contract
     * @param {Array} initState Contract init function arguments array
@@ -98,7 +98,7 @@ export type Client = {
     * const callResult = await contractIns.call('setState', [123])
     * const staticCallResult = await contractIns.call('setState', [123], { callStatic: true })
     */
-    getContractInstance(source: string, options?: object): Promise<Contractinstance>;
+    getContractInstance(source: string, options?: object): Promise<ContractInstance>;
 
     /**
      * Call contract function
@@ -111,4 +111,10 @@ export type Client = {
      * @return {Promise<Object>} Result object
      */
     contractCall(source: string, address: string, name: string, args: Array<number | string>, options: object): Promise<Object>
+}
+
+export type Network = {
+    url: string,
+    networkId: string,
+    compilerUrl: string
 }

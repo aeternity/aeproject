@@ -1,9 +1,8 @@
-import {Network}  from "./network";
 import utils from 'forgae-utils';
 import fs from 'fs';
 import logStoreService from 'forgae-logger';
 import config from 'forgae-config';
-import { KeyPair, ParsedContractFunction, AciFunctions, DeployedContract, Info, TxInfo, Client, Contractinstance } from "./contractTypes";
+import { KeyPair, ParsedContractFunction, AciFunctions, DeployedContract, Info, TxInfo, Client, ContractInstance, Network } from "./contractTypes";
 
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
@@ -53,7 +52,7 @@ export class Deployer {
 
     constructor(network: string = "local", keypairOrSecret: object = utils.config.keypair, compilerUrl: string = config.compilerUrl) {
         
-        this.network = new Network(network)
+        this.network = utils.getNetwork(network);
         this.compilerUrl =  compilerUrl;
         
         if (utils.isKeyPair(keypairOrSecret)) {
@@ -94,7 +93,7 @@ export class Deployer {
         client = await utils.getClient(this.network, this.keypair);
         contract = await this.readFile(contractPath);
         
-        let contractInstance: Contractinstance;
+        let contractInstance: ContractInstance;
         let deployedContract: DeployedContract;
         
         let contractFileName: Array<string | number>;
@@ -159,7 +158,7 @@ export class Deployer {
 }
 
 async function generateFunctionsFromSmartContract (contractSource: string, deployedContract: DeployedContract, privateKey: number, network: Network): Promise<Object> {
-    const functionsDescription: Array<ParsedContractFunction> = parseContractFunctionsFromACI(deployedContract.aci);
+const functionsDescription: Array<ParsedContractFunction> = parseContractFunctionsFromACI(deployedContract.aci);
     
     const keyPair: KeyPair = await utils.generateKeyPairFromSecretKey(privateKey);
     
@@ -344,7 +343,7 @@ function parseContractFunctionsFromACI(aci): Array<AciFunctions> {
 
         functions.push(parsedFunc);
     }
-
+    
     return functions;
 }
 
