@@ -38,7 +38,7 @@ function insertAdditionalFiles () {
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
 }
 
-describe('ForgAE Deploy', () => {
+describe.only('ForgAE Deploy', () => {
     const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
     before(async () => {
         fs.ensureDirSync(`.${ constants.deployTestsFolderPath }`)
@@ -86,15 +86,41 @@ describe('ForgAE Deploy', () => {
 
         it('Should init Deployer with custom network', async () => {
             // Arrange
-            const expectedNetwork = "192.168.99.100:3001"
-            const passedNetwork = "192.168.99.100:3001"
+            const network = "192.168.99.100:3001"
             const expectedNetworkId = "ae_custom"
             // Act
-            const deployer = new Deployer(passedNetwork);
+            const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
 
             // Assert
-            assert.equal(deployer.network.url, expectedNetwork)
+            assert.equal(deployer.network.url, network)
             assert.equal(deployer.network.networkId, expectedNetworkId)
+        })
+
+        it.only('should revert if only custom network is passed', async () => {
+            const mainForgaeProjectDir = process.cwd();
+            const forgaeLibDir = `${process.cwd()}/packages/forgae-lib/`
+            const forgaeUtilsDir = `${process.cwd()}/packages/forgae-utils/`
+            console.log(process.cwd())
+            process.chdir(executeOptions.cwd);
+
+            await exec(`npm link ${ forgaeLibDir }`);
+            await exec(`npm link ${ forgaeUtilsDir }`);
+
+
+            const expectedError = "Both network and networkId should be passed";
+            let result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);
+            console.log(result)
+
+            process.chdir(mainForgaeProjectDir);
+
+            assert.include(result, expectedError)
+        })
+
+        it('should revert if only custom networkId is passed', async () => {
+            const expectedError = "Both network and networkId should be passed";
+            let result = await execute(constants.cliCommands.DEPLOY, ["--networkId", "testov"], executeOptions);
+
+            assert.include(result, expectedError)
         })
 
         it('Should deploy contract with init arguments', async () => {
@@ -240,6 +266,11 @@ describe('ForgAE Deploy', () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 
-        fs.removeSync(`.${ constants.deployTestsFolderPath }`)
+        const forgaeLibDir = `${process.cwd()}/packages/forgae-lib`
+        const forgaeUtilsDir = `${process.cwd()}/packages/forgae-utils`
+        await exec(`npm unlink ${forgaeLibDir}`);
+        await exec(`npm unlink ${forgaeUtilsDir}`);
+
+        // fs.removeSync(`.${ constants.deployTestsFolderPath }`)
     })
 })

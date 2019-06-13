@@ -20,9 +20,11 @@ Example:
 forgae deploy -n testnet
 ```
 
-* additionally you could specify the path to your preconfigured network
+* additionally you could specify the path to your preconfigured network along with your network id. Please bear in mind your request will fail if you do not pass **both** parameters!
+Example:
+
 ```text
-  forgae deploy --network "192.168.0.1:3001"
+forgae deploy --network "192.168.0.1:3001" --networkId "ae_custom"
 ```
 
 Additional **--path** parameter is available, which can specify the path to the deployment scripts.

@@ -37,8 +37,8 @@ async function getTxInfo (txHash) {
 
 class Deployer {
 
-    constructor(network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl) {
-        this.network = utils.getNetwork(network);
+    constructor(network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl, networkId) {
+        this.network = utils.getNetwork(network, networkId);
         this.compilerUrl = compilerUrl;
 
         if (utils.isKeyPair(keypairOrSecret)) {

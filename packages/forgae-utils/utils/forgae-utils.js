@@ -30,35 +30,43 @@ const getClient = async function (network, keypair = config.keypair) {
     return client;
 }
 
-const getNetwork = (network) => {
+const getNetwork = (network, networkId) => {
+    if (networkId) {
+        const customNetwork = createCustomNetwork(network, networkId)
+        return customNetwork; 
+    }
+    
     const networks = {
         local: {
             url: config.localhostParams.url,
             networkId: config.localhostParams.networkId
         },
         testnet: {
-            url: config.testnetParams.url,
-            networkId: config.testnetParams.networkId
+            url: config.testNetParams.url,
+            networkId: config.testNetParams.networkId
         },
         mainnet: {
-            url: config.mainnetParams.url,
-            networkId: config.mainnetParams.networkId
+            url: config.mainNetParams.url,
+            networkId: config.mainNetParams.networkId
         }
     };
-
-    const result = networks[network] != undefined ? networks[network] : createCustomNetwork(network);
-    console.log(result);
+    
+    const result = networks[network] != undefined ? networks[network] : createCustomNetwork(network, networkId);
     
     return result
 };
 
-const createCustomNetwork = (network) => {
-    const customNet = {
-        url: network,
-        networkId: config.customnetParams.networkId
+const createCustomNetwork = (network, networkId) => {
+    
+    if (network.includes('local') || networkId == undefined) {
+        throw new Error('Both network and networkId should be passed')
     }
-
-    return customNet;
+    const customNetork = {
+        url: network,
+        networkId: networkId
+    }
+    
+    return customNetork;
 }
 
 const handleApiError = async (fn) => {
