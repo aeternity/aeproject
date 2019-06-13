@@ -4,3 +4,4 @@ node_modules
 .idea/
 contractLogFile.log
 .DS_Store
+lerna-debug.log

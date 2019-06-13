@@ -8,8 +8,6 @@
   },
   "dependencies": {
     "esm": "^3.0.77",
-    "forgae-lib": "file:packages/forgae-lib",
-    "forgae-utils": "file:packages/forgae-utils",
     "fs-extra": "^7.0.1"
   },
   "devDependencies": {
