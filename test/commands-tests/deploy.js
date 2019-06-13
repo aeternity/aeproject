@@ -23,6 +23,7 @@ const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
+const mainForgaeProjectDir = process.cwd();
 
 function insertAdditionalFiles () {
     // copy needed files into test folder to run the specific tests
@@ -36,6 +37,32 @@ function insertAdditionalFiles () {
     fs.copyFileSync(invalidParamDeploymentScript, `${ testFolder }/${ invalidParamDeploymentScriptPath }`);
     fs.copyFileSync(missingParamDeploymentScript, `${ testFolder }/${ missingParamDeploymentScriptPath }`);
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
+}
+
+
+async function linkLocalPackages() {
+    const forgaeLibDir = `${process.cwd()}/packages/forgae-lib/`
+    const forgaeUtilsDir = `${process.cwd()}/packages/forgae-utils/`
+    const forgaeConfigDir = `${process.cwd()}/packages/forgae-config/`
+    
+    process.chdir(forgaeLibDir);
+    await exec('npm link')
+
+    process.chdir(forgaeUtilsDir);
+    await exec('npm link')
+
+    process.chdir(forgaeConfigDir);
+    await exec('npm link')
+
+    process.chdir(executeOptions.cwd);
+    await exec('npm link forgae-lib')
+
+    process.chdir(`${executeOptions.cwd}/node_modules/forgae-lib`);
+    await exec('npm link forgae-utils')
+
+    process.chdir(forgaeUtilsDir)
+    await exec('npm link forgae-config')
+    
 }
 
 describe.only('ForgAE Deploy', () => {
@@ -96,22 +123,14 @@ describe.only('ForgAE Deploy', () => {
             assert.equal(deployer.network.networkId, expectedNetworkId)
         })
 
-        it.only('should revert if only custom network is passed', async () => {
-            const mainForgaeProjectDir = process.cwd();
-            const forgaeLibDir = `${process.cwd()}/packages/forgae-lib/`
-            const forgaeUtilsDir = `${process.cwd()}/packages/forgae-utils/`
-            console.log(process.cwd())
-            process.chdir(executeOptions.cwd);
-
-            await exec(`npm link ${ forgaeLibDir }`);
-            await exec(`npm link ${ forgaeUtilsDir }`);
-
-
+        it('should revert if only custom network is passed', async () => {
             const expectedError = "Both network and networkId should be passed";
-            let result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);
-            console.log(result)
+            let result;
 
-            process.chdir(mainForgaeProjectDir);
+            await linkLocalPackages();
+            process.chdir(mainForgaeProjectDir)
+            
+            result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);
 
             assert.include(result, expectedError)
         })
@@ -119,7 +138,7 @@ describe.only('ForgAE Deploy', () => {
         it('should revert if only custom networkId is passed', async () => {
             const expectedError = "Both network and networkId should be passed";
             let result = await execute(constants.cliCommands.DEPLOY, ["--networkId", "testov"], executeOptions);
-
+            
             assert.include(result, expectedError)
         })
 
@@ -195,11 +214,6 @@ describe.only('ForgAE Deploy', () => {
             let testSecretKey = constants.privateKeyTestnetDeploy;
             let result = '';
 
-            const mainForgaeProjectDir = process.cwd();
-            process.chdir(executeOptions.cwd);
-
-            await exec(`npm link ${ mainForgaeProjectDir }`);
-
             try {
                 result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
             } catch (err) {
@@ -266,11 +280,6 @@ describe.only('ForgAE Deploy', () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 
-        const forgaeLibDir = `${process.cwd()}/packages/forgae-lib`
-        const forgaeUtilsDir = `${process.cwd()}/packages/forgae-utils`
-        await exec(`npm unlink ${forgaeLibDir}`);
-        await exec(`npm unlink ${forgaeUtilsDir}`);
-
-        // fs.removeSync(`.${ constants.deployTestsFolderPath }`)
+        fs.removeSync(`.${ constants.deployTestsFolderPath }`)
     })
 })

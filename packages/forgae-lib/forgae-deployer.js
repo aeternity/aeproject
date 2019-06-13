@@ -37,7 +37,7 @@ async function getTxInfo (txHash) {
 
 class Deployer {
 
-    constructor(network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl, networkId) {
+    constructor (network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl, networkId) {
         this.network = utils.getNetwork(network, networkId);
         this.compilerUrl = compilerUrl;
 
@@ -68,7 +68,7 @@ class Deployer {
      * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy(contractPath, initState = [], options = opts) {
+    async deploy (contractPath, initState = [], options = opts) {
         
         this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
@@ -325,7 +325,7 @@ function parseContractFunctionsFromACI (aci) {
     return functions;
 }
 
-function parseACIFunctionArguments(functionArguments) {
+function parseACIFunctionArguments (functionArguments) {
     let argsArr = functionArguments;
 
     if (argsArr && argsArr.length !== 0) {
@@ -346,7 +346,7 @@ function parseACIFunctionArguments(functionArguments) {
     return argsArr;
 }
 
-function _parseACIFunctionArguments(argument) {
+function _parseACIFunctionArguments (argument) {
     if (typeof argument === 'string') {
         return argument;
     } else {
@@ -363,7 +363,7 @@ function _parseACIFunctionArguments(argument) {
     }
 }
 
-function parseACIFunctionArgumentsList(list) {
+function parseACIFunctionArgumentsList (list) {
 
     let temp = [];
 
@@ -380,7 +380,7 @@ function parseACIFunctionArgumentsList(list) {
     return `list(${ temp.toString() })`;
 }
 
-function parseACIFunctionArgumentsRecord(record) {
+function parseACIFunctionArgumentsRecord (record) {
     let temp = [];
     for (let value of record) {
 
