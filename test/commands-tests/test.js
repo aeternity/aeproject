@@ -66,7 +66,7 @@ describe('ForgAE Test - sophia tests', () => {
         await execute(constants.cliCommands.INIT, [], executeOptions);
         await execute(constants.cliCommands.NODE, [], executeOptions)
     })
-    
+
     beforeEach(async function () {
         fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
@@ -90,13 +90,13 @@ describe('ForgAE Test - sophia tests', () => {
 
     it('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
         insertAdditionalFiles(executeOptions.cwd, true);
-        
+
         let result = await execute(constants.cliCommands.TEST, [
             '--path',
             constants.testTestsFolderPath
         ], executeOptions);
 
-        if (result.indexOf('Error: Cannot append sophia tests to existing contract!') < 1) {
+        if (result.indexOf('Cannot append sophia tests to existing contract!') < 0) {
             assert.isOk(false, "Sophia tests were appended to invalid smart contract!");
         }
     })
@@ -134,7 +134,7 @@ async function insertAdditionalFiles (cwd, copyArtifactsWithInvalidData = false)
     
     const calculatorSourcePath = path.resolve(cwd, './../artifacts/calculator.aes');
     const sophiaTestSourcePath = path.resolve(cwd, './../artifacts/calculator-tests.aes');
-    
+
     const calculatorWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-invalid-name.aes');
     const sophiaTestWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-tests-invalid-contract-name.aes');
 
@@ -145,5 +145,4 @@ async function insertAdditionalFiles (cwd, copyArtifactsWithInvalidData = false)
         fs.copyFileSync(calculatorWithInvalidNameSourcePath, `${ contractDestinationFolder }/calculator-invalid-name.aes`);
         fs.copyFileSync(sophiaTestWithInvalidNameSourcePath, `${ testDestinationFolder }/calculator-tests-invalid-contract-name.aes`);
     }
-    
 }

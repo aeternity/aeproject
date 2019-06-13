@@ -24,3 +24,8 @@ To stop the local node, simply run
 forgae node --stop
 ```
 
+Additional **--compiler-port** parameter is available, which can specify on which port would local compiler start (default is 3080).
+Example:
+```
+forgae node --compiler-port 4080
+```

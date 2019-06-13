@@ -1,8 +1,10 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const config = require('forgae-config');
-const { printError } = require('./fs-utils')
+const {
+    printError
+} = require('./fs-utils')
 
 const {
     spawn
@@ -54,7 +56,6 @@ const getNetwork = (network) => {
     return result
 };
 
-
 const handleApiError = async (fn) => {
     try {
 
@@ -66,7 +67,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -84,24 +85,44 @@ const forgaeExecute = async (command, args = [], options = {}) => {
 
 const execute = async (cli, command, args = [], options = {}) => {
 
-    const child = spawn(cli, [command, ...args], options)
-    let result = '';
+    try {
+        const child = await spawn(cli, [command, ...args], options);
 
-    child.stdout.on('data', (data) => {
-        result += data.toString();
-    });
+        let result = readSpawnOutput(child);
+        if (!result) {
+            result = readErrorSpawnOutput(child);
+        }
 
-    child.stderr.on('data', (data) => {
-        result += data.toString();
-    });
+        return result;
+    } catch (e) {
+        let result = readSpawnOutput(e);
+        result += readErrorSpawnOutput(e);
 
-    await child;
-    return result;
+        return result;
+    }
 };
 
 const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
+
+function readErrorSpawnOutput (spawnResult) {
+    if (!spawnResult.stderr || spawnResult.stderr === '') {
+        return '';
+    }
+
+    const buffMessage = Buffer.from(spawnResult.stderr);
+    return '\n' + buffMessage.toString('utf8');
+}
+
+function readSpawnOutput (spawnResult) {
+    if (!spawnResult.stdout || spawnResult.stdout === '') {
+        return '';
+    }
+
+    const buffMessage = Buffer.from(spawnResult.stdout);
+    return buffMessage.toString('utf8');
+}
 
 module.exports = {
     config,
