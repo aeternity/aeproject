@@ -44,41 +44,7 @@ describe('ForgAE Compile', () => {
             assert.include(result, expectedResult3)
         })
 
-        it('Should compile contracts with -n argument - localhost', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["-n", "local"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with -n argument - testnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["-n", "testnet"], executeOptions)
-            
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-        it('Should compile contracts with -n argument - mainnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["-n", "mainnet"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with --network argument - localhost', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["--network", "local"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with --network argument - testnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["--network", "testnet"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-        it('Should compile contracts with --netwotk argument - mainnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["--network", "mainnet"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with --compiler argument - localhost ', async () => {
+        it('Should compile contracts with --compiler argument', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", LOCAL_COMPILER_URL], executeOptions)
 
             assert.include(result, expectedCompileResultExampleContract);
