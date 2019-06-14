@@ -15,7 +15,7 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require('./../../packages/forgae-lib/forgae-deployer');
+const Deployer = require('./../../packages/forgae-lib/dist/forgae-deployer').Deployer;
 const config = require('./../constants.json');
 
 const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
@@ -213,9 +213,8 @@ describe('ForgAE Deploy', () => {
         })
 
         it('try to deploy SC with missing init parameters from another deployment script', async () => {
-            let error = `${`Error data`}: ${`{"reason":"Type errors\\nUnbound variable`}`;
+            let error = `${ `Error data` }: ${ `{"reason":"Type errors\\nUnbound variable` }`;
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
-
             assert.include(result, error);
         })
     })
