@@ -284,6 +284,8 @@ function parseContractFunctionsFromACI(aci) {
         };
         functions.push(parsedFunc);
     }
+    console.log('functions');
+    console.log(functions);
     return functions;
 }
 function parseACIFunctionArguments(functionArguments) {

@@ -3,13 +3,18 @@ export type KeyPair = {
     secretKey: string
 }
 
-
+//TODO: Arguments should be mandatory, but for now we are getting compile time error "Property 'args' is missing in type 'AciFunctions' but required in type 'ParsedContractFunction", 
+//which is due to inconsistency between properties of AciFunctions & ParsedContractFunction - one is args & and the other is arguments. 
+//This is coming outside the deployer and will be standardized later on.
 export type ParsedContractFunction = {
     name: string,
     args?: Array<string>,
     returnType?: any
 }
 
+//TODO: Arguments should be mandatory, but for now we are getting compile time error "Property 'args' is missing in type 'AciFunctions' but required in type 'ParsedContractFunction", 
+//which is due to inconsistency between properties of AciFunctions & ParsedContractFunction - one is args & and the other is arguments. 
+//This is coming outside the deployer and will be standardized later on.
 export type AciFunctions = {
     name: string,
     arguments?: Array<{
