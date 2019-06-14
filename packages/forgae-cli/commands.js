@@ -39,12 +39,11 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
     program
         .command('compile')
-        .option('-n --network [network]', 'Network to connect to', "local")
         .option('--path [compile path]', 'Path to contract files', './contracts')
         .option('--compiler [compiler url]', 'Url to the desired compiler', config.compilerUrl)
         .description('Compile contracts')
         .action(async (option) => {
-            await compile.run(option.path, option.network, option.compiler);
+            await compile.run(option.path, option.compiler);
         })
 }
 
