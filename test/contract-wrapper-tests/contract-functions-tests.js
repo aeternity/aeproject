@@ -156,18 +156,16 @@ describe("Deployed contract instance additional functionality", async () => {
 
             let id = await deployedContract.add_person(NAME, AGE);
             let encodedRecord = await deployedContract.get_person_by_id(id);
-            let person = convertToPerson(encodedRecord);
 
-            assert.equal(person.name, NAME, "Incorrect decoded data: 'Name'.")
-            assert.equal(person.age, AGE, "Incorrect decoded data: 'Age'.")
+            assert.equal(encodedRecord.name, NAME, "Incorrect decoded data: 'Name'.")
+            assert.equal(encodedRecord.age, AGE, "Incorrect decoded data: 'Age'.")
         });
 
         it('Should get empty person', async () => {
             let encodedRecord = await deployedContract.get_person_by_id(91);
-            let person = convertToPerson(encodedRecord);
 
-            assert.equal(person.name, "", "Incorrect decoded data: 'Name'.")
-            assert.equal(person.age, 0, "Incorrect decoded data: 'Age'.")
+            assert.equal(encodedRecord.name, "", "Incorrect decoded data: 'Name'.")
+            assert.equal(encodedRecord.age, 0, "Incorrect decoded data: 'Age'.")
         });
     });
 
@@ -231,7 +229,7 @@ describe("Deployed contract instance additional functionality", async () => {
             let params = [`"Im a super hero!"`];
             let result = await fromInstance.call('say_hello', params);
 
-            let value = (await result.decode('string')).value;
+            let value = (await result.decode('string'));
 
             assert.equal(value, `Hello ${ params[0].replace(/[\(\)\")]+/g, '') }`, "Result is incorrect!");
         });
@@ -243,8 +241,7 @@ describe("Deployed contract instance additional functionality", async () => {
             };
 
             let result = await fromInstance.call('sum', params, options);
-            let value = (await result.decode('int')).value;
-
+            let value = (await result.decode('int'));
             assert.equal(value, 6, "Result is incorrect!");
         });
 
@@ -258,16 +255,14 @@ describe("Deployed contract instance additional functionality", async () => {
             const AGE = 25;
 
             let id = await fromInstance.add_person(NAME, AGE);
-            let encodedRecord = await fromInstance.get_person_by_id(id);
-            let person = convertToPerson(encodedRecord);
+            let person = await fromInstance.get_person_by_id(id);
 
             assert.equal(person.name, NAME, "Incorrect decoded data: 'Name'.")
             assert.equal(person.age, AGE, "Incorrect decoded data: 'Age'.")
         });
 
         it('Should get empty person', async () => {
-            let encodedRecord = await fromInstance.get_person_by_id(91);
-            let person = convertToPerson(encodedRecord);
+            let person = await fromInstance.get_person_by_id(91);
 
             assert.equal(person.name, "", "Incorrect decoded data: 'Name'.")
             assert.equal(person.age, 0, "Incorrect decoded data: 'Age'.")

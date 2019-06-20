@@ -213,7 +213,7 @@ describe('ForgAE Deploy', () => {
         })
 
         it('try to deploy SC with missing init parameters from another deployment script', async () => {
-            let error = `${`Error data`}: ${`{"reason":"Type errors\\nUnbound variable`}`;
+            let error = `${ `Error data` }: ${ `{"reason":"Type errors\\nUnbound variable` }`;
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
 
             assert.include(result, error);

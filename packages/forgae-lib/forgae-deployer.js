@@ -37,10 +37,9 @@ async function getTxInfo (txHash) {
 
 class Deployer {
 
-    constructor(network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl) {
+    constructor (network = "local", keypairOrSecret = utils.config.keypair, compilerUrl = config.compilerUrl) {
         this.network = utils.getNetwork(network);
         this.compilerUrl = compilerUrl;
-
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
             return
@@ -68,8 +67,8 @@ class Deployer {
      * @param {object} initState - Initial arguments that will be passed to init function.
      * @param {object} options - Initial options that will be passed to init function.
      */
-    async deploy(contractPath, initState = [], options = opts) {
-        
+    async deploy (contractPath, initState = [], options = opts) {
+
         this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
         contract = this.readFile(contractPath);
@@ -98,7 +97,7 @@ class Deployer {
             deployedContract = await contractInstance.deploy(initState, options);
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
-            
+
             deployedContract = addSmartContractFunctions(deployedContract, functions);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -141,8 +140,9 @@ class Deployer {
 }
 
 async function generateFunctionsFromSmartContract (contractSource, deployedContract, privateKey, network) {
+
     const functionsDescription = parseContractFunctionsFromACI(deployedContract.aci);
-    
+
     const keyPair = await utils.generateKeyPairFromSecretKey(privateKey);
     const currentClient = await utils.getClient(network, keyPair);
 
@@ -152,7 +152,6 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
     let fMap = new Map();
 
     for (let func of functionsDescription) {
-
         const funcName = func.name;
         const funcArgs = func.args;
         const funcReturnType = func.returnType;
@@ -187,7 +186,7 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
 
                     switch (argType) {
                         case 'address':
-                            argsArr.push(`${ utils.keyToHex(arguments[i]) }`);
+                            argsArr.push(`${ arguments[i] }`);
                             break;
 
                         case 'int':
@@ -253,17 +252,13 @@ async function generateFunctionsFromSmartContract (contractSource, deployedContr
                 amount: amount,
                 ttl: ttl
             }
-
             let resultFromExecution = await client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
             let returnType = thisFunctionReturnType;
 
             let decodedValue = await resultFromExecution.decode(returnType.trim());
+       
 
-            if (returnType.trim() === 'address') {
-                decodedValue.value = decodedHexAddressToPublicAddress(decodedValue.value);
-            }
-
-            return decodedValue.value;
+            return decodedValue;
         }
 
     }
@@ -302,7 +297,7 @@ function parseContractFunctionsFromACI (aci) {
     const reservedFunctionNames = [
         'init'
     ]
-    
+
     for (let func of aci.functions) {
 
         // skip reserved function's name
@@ -311,6 +306,7 @@ function parseContractFunctionsFromACI (aci) {
         }
 
         let argsArr = parseACIFunctionArguments(func.arguments);
+
         let returnType = parseACIFunctionReturnType(func.returns);
 
         let parsedFunc = {
@@ -321,23 +317,20 @@ function parseContractFunctionsFromACI (aci) {
 
         functions.push(parsedFunc);
     }
-    
+
     return functions;
 }
 
-function parseACIFunctionArguments(functionArguments) {
+function parseACIFunctionArguments (functionArguments) {
     let argsArr = functionArguments;
 
     if (argsArr && argsArr.length !== 0) {
         let tempArgArr = [];
 
         for (let argInfo of argsArr) {
-            
-            for (let argType of argInfo.type) {
 
-                let result = _parseACIFunctionArguments(argType);
-                tempArgArr.push(result);
-            }
+            let result = _parseACIFunctionArguments(argInfo.type);
+            tempArgArr.push(result);
         }
 
         argsArr = tempArgArr;
@@ -346,7 +339,7 @@ function parseACIFunctionArguments(functionArguments) {
     return argsArr;
 }
 
-function _parseACIFunctionArguments(argument) {
+function _parseACIFunctionArguments (argument) {
     if (typeof argument === 'string') {
         return argument;
     } else {
@@ -363,7 +356,7 @@ function _parseACIFunctionArguments(argument) {
     }
 }
 
-function parseACIFunctionArgumentsList(list) {
+function parseACIFunctionArgumentsList (list) {
 
     let temp = [];
 
@@ -380,7 +373,7 @@ function parseACIFunctionArgumentsList(list) {
     return `list(${ temp.toString() })`;
 }
 
-function parseACIFunctionArgumentsRecord(record) {
+function parseACIFunctionArgumentsRecord (record) {
     let temp = [];
     for (let value of record) {
 
@@ -392,7 +385,7 @@ function parseACIFunctionArgumentsRecord(record) {
                 if (typeof arg === 'string') {
                     tempSubArr.push(arg);
                 } else {
-                    
+
                     let result = parseACIFunctionArgumentsRecord(arg.record);
                     // remove brackets
                     result = result.substr(1, result.length - 2);
@@ -408,7 +401,7 @@ function parseACIFunctionArgumentsRecord(record) {
 }
 
 function parseACIFunctionReturnType (functionReturns = []) {
-    
+
     let returnType = functionReturns;
     if (typeof functionReturns !== 'string') {
         if (functionReturns.map) {
@@ -424,12 +417,12 @@ function parseACIFunctionReturnType (functionReturns = []) {
             returnType = result;
         } else if (functionReturns.option) {
             let typeOptionResult = processReturnTypeOption(functionReturns.option);
-            returnType = [ typeOptionResult ];
+            returnType = [typeOptionResult];
         } else {
             console.log('=====>>>> unhandled return type <<===');
         }
     }
-    
+
     return returnType;
 }
 
@@ -465,7 +458,7 @@ function processReturnType (array, depth = 1) {
 function processReturnTypeRecord (record) {
     let recordTemp = [];
     for (let element of record) {
-        
+
         for (let recordElement of element.type) {
             if (typeof recordElement === 'string') {
                 recordTemp.push(recordElement);
@@ -487,7 +480,7 @@ function processReturnTypeRecord (record) {
 
 function processReturnTypeOption (option) {
     let temp = [];
-    
+
     if (Array.isArray(option) && option.length > 0) {
         for (let element of option) {
             if (typeof element === 'string') {

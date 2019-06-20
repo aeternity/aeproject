@@ -74,9 +74,7 @@ describe('ForgAE Test - sophia tests', () => {
 
     it('should parse sophia tests, create regular js file with tests and execute it.', async function () {
         await insertAdditionalFiles(executeOptions.cwd);
-
         let result = await execute(constants.cliCommands.TEST, [], executeOptions);
-
         let indexOfSophiaTests = result.indexOf('Sophia tests');
         if (indexOfSophiaTests <= 0) {
             assert.isOk(false, "Missing sophia tests");
