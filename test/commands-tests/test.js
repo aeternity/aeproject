@@ -129,7 +129,7 @@ describe('ForgAE Test - sophia tests', () => {
 async function insertAdditionalFiles (cwd, copyArtifactsWithInvalidData = false) {
     const contractDestinationFolder = `${ cwd }/contracts`;
     const testDestinationFolder = `${ cwd }/test`;
-
+    
     const calculatorSourcePath = path.resolve(cwd, './../artifacts/calculator.aes');
     const sophiaTestSourcePath = path.resolve(cwd, './../artifacts/calculator-tests.aes');
 
