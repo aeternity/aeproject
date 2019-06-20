@@ -51,8 +51,8 @@ class Deployer {
      * @param {any} keypairOrSecret
      * @param {string} compilerUrl
      */
-    constructor(network = "local", keypairOrSecret = forgae_utils_1.default.config.keypair, compilerUrl = forgae_config_1.default.compilerUrl) {
-        this.network = forgae_utils_1.default.getNetwork(network);
+    constructor(network = "local", keypairOrSecret = forgae_utils_1.default.config.keypair, compilerUrl = forgae_config_1.default.compilerUrl, networkId) {
+        this.network = forgae_utils_1.default.getNetwork(network, networkId);
         this.compilerUrl = compilerUrl;
         if (forgae_utils_1.default.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;

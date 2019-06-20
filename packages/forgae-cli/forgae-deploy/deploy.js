@@ -18,11 +18,11 @@ const getDeployMethod = (deploymentFilePath) => {
     return deployModule.deploy;
 };
 
-const run = async (deploymentFilePath, network, secretKey, compiler) => {
+const run = async (deploymentFilePath, network, secretKey, compiler, networkId) => {
     const deployMethod = getDeployMethod(deploymentFilePath);
     
     try {
-        await deployMethod(network, secretKey, compiler);
+        await deployMethod(network, secretKey, compiler, networkId);
         console.log(`Your deployment script finished successfully!`);
     } catch (e) {
         console.error(e);

@@ -76,10 +76,11 @@ const addDeployOption = (program) => {
         .description('Run deploy script')
         .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
         .option('-n --network [network]', 'Select network', "local")
+        .option('--networkId [networkId]', 'Configure your network id')
         .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)')
         .option('--compiler [compiler_url]', 'Url to the desired compiler')
         .action(async (options) => {
-            await deploy.run(options.path, options.network, options.secretKey, options.compiler);
+            await deploy.run(options.path, options.network, options.secretKey, options.compiler, options.networkId);
         })
 }
 

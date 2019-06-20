@@ -50,9 +50,8 @@ export class Deployer {
     * @param {string} compilerUrl
     */
 
-    constructor(network: string = "local", keypairOrSecret: object = utils.config.keypair, compilerUrl: string = config.compilerUrl) {
-        
-        this.network = utils.getNetwork(network);
+    constructor(network: string = "local", keypairOrSecret: object = utils.config.keypair, compilerUrl: string = config.compilerUrl, networkId: string) {
+        this.network = utils.getNetwork(network, networkId);
         this.compilerUrl =  compilerUrl;
         
         if (utils.isKeyPair(keypairOrSecret)) {

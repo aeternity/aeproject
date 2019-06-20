@@ -3,11 +3,11 @@
         "url": "http://localhost:3001",
         "networkId": "ae_devnet"
     },
-    "testnetParams": {
+    "testNetParams": {
         "url": "https://sdk-testnet.aepps.com",
         "networkId": "ae_uat"
     },
-    "mainnetParams": {
+    "mainNetParams": {
         "url": "https://sdk-mainnet.aepps.com",
         "networkId": "ae_mainnet"
     },
