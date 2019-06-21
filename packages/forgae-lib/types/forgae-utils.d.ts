@@ -64,7 +64,7 @@ export function generateKeyPairFromSecretKey(secretKey: any): any;
 export function generatePublicKeyFromSecretKey(secretKey: any): any;
 export function getClient(network: any, keypair: any): any;
 export function getFiles(directory: any, regex: any): any;
-export function getNetwork(network: string): Network;
+export function getNetwork(network: string, networkId: string): Network;
 export function getReadableStatus(status: any): any;
 export function handleApiError(fn: any): any;
 export function isKeyPair(k: any): any;

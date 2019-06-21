@@ -23,6 +23,7 @@ const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
+const mainForgaeProjectDir = process.cwd();
 
 function insertAdditionalFiles () {
     // copy needed files into test folder to run the specific tests
@@ -36,6 +37,31 @@ function insertAdditionalFiles () {
     fs.copyFileSync(invalidParamDeploymentScript, `${ testFolder }/${ invalidParamDeploymentScriptPath }`);
     fs.copyFileSync(missingParamDeploymentScript, `${ testFolder }/${ missingParamDeploymentScriptPath }`);
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
+}
+
+async function linkLocalPackages () {
+    const forgaeLibDir = `${ process.cwd() }/packages/forgae-lib/`
+    const forgaeUtilsDir = `${ process.cwd() }/packages/forgae-utils/`
+    const forgaeConfigDir = `${ process.cwd() }/packages/forgae-config/`
+
+    process.chdir(forgaeLibDir);
+    await exec('npm link')
+
+    process.chdir(forgaeUtilsDir);
+    await exec('npm link')
+
+    process.chdir(forgaeConfigDir);
+    await exec('npm link')
+
+    process.chdir(executeOptions.cwd);
+    await exec('npm link forgae-lib')
+
+    process.chdir(`${ executeOptions.cwd }/node_modules/forgae-lib`);
+    await exec('npm link forgae-utils')
+
+    process.chdir(forgaeUtilsDir)
+    await exec('npm link forgae-config')
+
 }
 
 describe('ForgAE Deploy', () => {
@@ -82,6 +108,37 @@ describe('ForgAE Deploy', () => {
 
             // Assert
             assert.equal(deployer.network.url, expectedNetwork)
+        })
+
+        it('Should init Deployer with custom network', async () => {
+            // Arrange
+            const network = "192.168.99.100:3001"
+            const expectedNetworkId = "ae_custom"
+            // Act
+            const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
+
+            // Assert
+            assert.equal(deployer.network.url, network)
+            assert.equal(deployer.network.networkId, expectedNetworkId)
+        })
+
+        it('should revert if only custom network is passed', async () => {
+            const expectedError = "Both network and networkId should be passed";
+            let result;
+
+            await linkLocalPackages();
+            process.chdir(mainForgaeProjectDir)
+
+            result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);
+
+            assert.include(result, expectedError)
+        })
+
+        it('should revert if only custom networkId is passed', async () => {
+            const expectedError = "Both network and networkId should be passed";
+            let result = await execute(constants.cliCommands.DEPLOY, ["--networkId", "testov"], executeOptions);
+
+            assert.include(result, expectedError)
         })
 
         it('Should deploy contract with init arguments', async () => {
@@ -156,11 +213,6 @@ describe('ForgAE Deploy', () => {
             let testSecretKey = constants.privateKeyTestnetDeploy;
             let result = '';
 
-            const mainForgaeProjectDir = process.cwd();
-            process.chdir(executeOptions.cwd);
-
-            await exec(`npm link ${ mainForgaeProjectDir }`);
-
             try {
                 result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
             } catch (err) {
@@ -194,7 +246,7 @@ describe('ForgAE Deploy', () => {
 
             let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
 
-            assert.include(result, `Error: getaddrinfo ENOTFOUND ${ INVALID_COMPILER_URL.replace('http://', '') }`);
+            assert.include(result, `Error: Compiler not defined`);
         })
 
         it('with secret key arguments that have 0 (AEs) balance', async () => {
@@ -208,7 +260,6 @@ describe('ForgAE Deploy', () => {
         it('try to deploy SC with invalid init parameters from another deployment script', async () => {
             insertAdditionalFiles();
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ invalidParamDeploymentScriptPath }`], executeOptions);
-
             assert.include(result, 'Error: ValidationError');
         })
 

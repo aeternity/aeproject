@@ -15,13 +15,13 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export
+require = require('esm')(module /*, options */) // use to handle es6 import/export
 
 const AeSDK = require('@aeternity/aepp-sdk');
 const Crypto = AeSDK.Crypto;
 const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
 
-function keyToHex(publicKey) {
+function keyToHex (publicKey) {
     let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
     let asHex = '#' + byteArray.toString('hex');
     return asHex;
@@ -53,9 +53,7 @@ const generatePublicKeyFromSecretKey = (secretKey) => {
     return Crypto.aeEncodeKey(keys.publicKey)
 }
 
-
-
-async function generateKeyPairFromSecretKey(secretKey) {
+async function generateKeyPairFromSecretKey (secretKey) {
     const hexStr = await Crypto.hexStringToByte(secretKey.trim());
     const keys = await Crypto.generateKeyPairFromSecret(hexStr);
 
@@ -69,7 +67,7 @@ async function generateKeyPairFromSecretKey(secretKey) {
     return keyPair;
 }
 
-function decodedHexAddressToPublicAddress(hexAddress) {
+function decodedHexAddressToPublicAddress (hexAddress) {
 
     const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
 
@@ -77,7 +75,7 @@ function decodedHexAddressToPublicAddress(hexAddress) {
 }
 
 const trimAdresseses = (addressToTrim) => {
-	return addressToTrim.substring(3)
+    return addressToTrim.substring(3)
 }
 module.exports = {
     keyToHex,

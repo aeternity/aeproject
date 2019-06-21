@@ -51,8 +51,8 @@ class Deployer {
      * @param {any} keypairOrSecret
      * @param {string} compilerUrl
      */
-    constructor(network = "local", keypairOrSecret = forgae_utils_1.default.config.keypair, compilerUrl = forgae_config_1.default.compilerUrl) {
-        this.network = forgae_utils_1.default.getNetwork(network);
+    constructor(network = "local", keypairOrSecret = forgae_utils_1.default.config.keypair, compilerUrl = forgae_config_1.default.compilerUrl, networkId) {
+        this.network = forgae_utils_1.default.getNetwork(network, networkId);
         this.compilerUrl = compilerUrl;
         if (forgae_utils_1.default.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
@@ -175,7 +175,7 @@ function generateFunctionsFromSmartContract(contractSource, deployedContract, pr
                             let argType = thisFunctionArgs[i];
                             switch (argType) {
                                 case 'address':
-                                    argsArr.push(`${forgae_utils_1.default.keyToHex(arguments[i])}`);
+                                    argsArr.push(`${arguments[i]}`);
                                     break;
                                 case 'int':
                                     argsArr.push(`${arguments[i]}`);
@@ -233,10 +233,7 @@ function generateFunctionsFromSmartContract(contractSource, deployedContract, pr
                     let resultFromExecution = yield client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
                     let returnType = thisFunctionReturnType;
                     let decodedValue = yield resultFromExecution.decode(returnType.trim());
-                    if (returnType.trim() === 'address') {
-                        decodedValue.value = decodedHexAddressToPublicAddress(decodedValue.value);
-                    }
-                    return decodedValue.value;
+                    return decodedValue;
                 });
             };
         }
@@ -291,10 +288,8 @@ function parseACIFunctionArguments(functionArguments) {
     if (argsArr && argsArr.length !== 0) {
         let tempArgArr = [];
         for (let argInfo of argsArr) {
-            for (let argType of argInfo.type) {
-                let result = _parseACIFunctionArguments(argType);
-                tempArgArr.push(result);
-            }
+            let result = _parseACIFunctionArguments(argInfo.type);
+            tempArgArr.push(result);
         }
         argsArr = tempArgArr;
     }
