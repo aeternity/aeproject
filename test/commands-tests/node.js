@@ -21,6 +21,9 @@ let balanceOptions = {
     format: false
 }
 
+let network = utils.config.localhostParams;
+network.compilerUrl = utils.config.compilerUrl
+
 describe('ForgAE Node', () => {
 
     before(async () => {
@@ -37,7 +40,7 @@ describe('ForgAE Node', () => {
 
     it('Should check if the wallets are funded', async () => {
 
-        let client = await utils.getClient(utils.config.localhostParams);
+        let client = await utils.getClient(network);
         await waitUntilFundedBlocks(client)
         for (let wallet in defaultWallets) {
             let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
@@ -46,7 +49,7 @@ describe('ForgAE Node', () => {
     })
 
     it('Should check if the wallets are funded with the exact amount', async () => {
-        let client = await utils.getClient(utils.config.localhostParams);
+        let client = await utils.getClient(network);
         for (let wallet in defaultWallets) {
             let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
             assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
@@ -178,7 +181,7 @@ describe("ForgAE Node -- allocated port's tests", () => {
 
         // test
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
-        
+
         const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0;
         const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
@@ -213,10 +216,10 @@ describe("ForgAE Node -- allocated port's tests", () => {
         let result = await execute(constants.cliCommands.NODE, [], executeOptions);
 
         const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0 || result.indexOf(`Process exited with code 125`) >= 0;
-        //const isSamePort = result.indexOf(`:${ port }`) >= 0;
+        // const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
         assert.isOk(isPortAllocated, 'Local compiler does not throw exception on allocated port!');
-        //assert.isOk(isSamePort, 'Error message does not contains expected port!');
+        // assert.isOk(isSamePort, 'Error message does not contains expected port!');
 
         // stop server
         app.close();

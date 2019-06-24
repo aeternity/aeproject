@@ -39,12 +39,11 @@ function insertAdditionalFiles () {
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
 }
 
+async function linkLocalPackages () {
+    const forgaeLibDir = `${ process.cwd() }/packages/forgae-lib/`
+    const forgaeUtilsDir = `${ process.cwd() }/packages/forgae-utils/`
+    const forgaeConfigDir = `${ process.cwd() }/packages/forgae-config/`
 
-async function linkLocalPackages() {
-    const forgaeLibDir = `${process.cwd()}/packages/forgae-lib/`
-    const forgaeUtilsDir = `${process.cwd()}/packages/forgae-utils/`
-    const forgaeConfigDir = `${process.cwd()}/packages/forgae-config/`
-    
     process.chdir(forgaeLibDir);
     await exec('npm link')
 
@@ -57,12 +56,12 @@ async function linkLocalPackages() {
     process.chdir(executeOptions.cwd);
     await exec('npm link forgae-lib')
 
-    process.chdir(`${executeOptions.cwd}/node_modules/forgae-lib`);
+    process.chdir(`${ executeOptions.cwd }/node_modules/forgae-lib`);
     await exec('npm link forgae-utils')
 
     process.chdir(forgaeUtilsDir)
     await exec('npm link forgae-config')
-    
+
 }
 
 describe('ForgAE Deploy', () => {
@@ -129,7 +128,7 @@ describe('ForgAE Deploy', () => {
 
             await linkLocalPackages();
             process.chdir(mainForgaeProjectDir)
-            
+
             result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);
 
             assert.include(result, expectedError)
@@ -138,7 +137,7 @@ describe('ForgAE Deploy', () => {
         it('should revert if only custom networkId is passed', async () => {
             const expectedError = "Both network and networkId should be passed";
             let result = await execute(constants.cliCommands.DEPLOY, ["--networkId", "testov"], executeOptions);
-            
+
             assert.include(result, expectedError)
         })
 
@@ -247,7 +246,7 @@ describe('ForgAE Deploy', () => {
 
             let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
 
-            assert.include(result, `Error: getaddrinfo ENOTFOUND ${ INVALID_COMPILER_URL.replace('http://', '') }`);
+            assert.include(result, `Error: Compiler not defined`);
         })
 
         it('with secret key arguments that have 0 (AEs) balance', async () => {
@@ -261,7 +260,6 @@ describe('ForgAE Deploy', () => {
         it('try to deploy SC with invalid init parameters from another deployment script', async () => {
             insertAdditionalFiles();
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ invalidParamDeploymentScriptPath }`], executeOptions);
-
             assert.include(result, 'Error: ValidationError');
         })
 

@@ -19,7 +19,6 @@ const getClient = async function (network, keypair = config.keypair) {
     if (network.url.includes("localhost")) {
         internalUrl = internalUrl + "/internal"
     }
-
     await handleApiError(async () => {
         client = await Universal({
             url: network.url,
@@ -37,9 +36,8 @@ const getClient = async function (network, keypair = config.keypair) {
 const getNetwork = (network, networkId) => {
     if (networkId) {
         const customNetwork = createCustomNetwork(network, networkId)
-        return customNetwork; 
+        return customNetwork;
     }
-    
     const networks = {
         local: {
             url: config.localhostParams.url,
@@ -54,14 +52,14 @@ const getNetwork = (network, networkId) => {
             networkId: config.mainNetParams.networkId
         }
     };
-    
+
     const result = networks[network] != undefined ? networks[network] : createCustomNetwork(network, networkId);
-    
+
     return result
 };
 
 const createCustomNetwork = (network, networkId) => {
-    
+
     if (network.includes('local') || networkId == undefined) {
         throw new Error('Both network and networkId should be passed')
     }
@@ -69,7 +67,7 @@ const createCustomNetwork = (network, networkId) => {
         url: network,
         networkId: networkId
     }
-    
+
     return customNetork;
 }
 
@@ -141,7 +139,7 @@ function readSpawnOutput (spawnResult) {
     return buffMessage.toString('utf8');
 }
 
-async function contractCompile(source, options) {
+async function contractCompile (source, options) {
     const compiler = await ContractCompilerAPI(options);
     return compiler.compileContractAPI(source);
 }

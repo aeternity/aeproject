@@ -5,3 +5,4 @@ node_modules
 contractLogFile.log
 .DS_Store
 lerna-debug.log
+test/.DS_Store

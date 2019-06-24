@@ -38,6 +38,8 @@ const dockerConfiguration = nodeConfig.dockerConfiguration;
 let balanceOptions = {
     format: false
 }
+let network = utils.config.localhostParams
+network.compilerUrl = utils.config.compilerUrl
 
 const MAX_SECONDS_TO_RUN_NODE = 60;
 
@@ -62,10 +64,10 @@ async function fundWallets () {
     await waitToMineCoins()
 
     let walletIndex = 0;
-    let client = await utils.getClient(utils.config.localhostParams);
+
+    let client = await utils.getClient(network);
     await printBeneficiaryKey(client);
     for (let wallet in defaultWallets) {
-
         await fundWallet(client, defaultWallets[wallet].publicKey)
         await printWallet(client, defaultWallets[wallet], `#${ walletIndex++ }`)
     }
@@ -85,7 +87,7 @@ async function printWallet (client, keyPair, label) {
 }
 
 async function waitToMineCoins () {
-    let client = await utils.getClient(utils.config.localhostParams);
+    let client = await utils.getClient(network);
     let heightOptions = {
         interval: 8000,
         attempts: 300

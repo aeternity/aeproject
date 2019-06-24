@@ -208,7 +208,7 @@ const functionsDescription: Array<ParsedContractFunction> = parseContractFunctio
                     
                     switch (argType) {
                         case 'address':
-                            argsArr.push(`${ utils.keyToHex(arguments[i]) }`);
+                            argsArr.push(`${ arguments[i] }`);
                             break;
 
                         case 'int':
@@ -281,11 +281,7 @@ const functionsDescription: Array<ParsedContractFunction> = parseContractFunctio
             
             let decodedValue = await resultFromExecution.decode(returnType.trim())
 
-            if (returnType.trim() === 'address') {
-                decodedValue.value = decodedHexAddressToPublicAddress(decodedValue.value);
-            }
-
-            return decodedValue.value;
+            return decodedValue;
         }
 
     }
@@ -342,7 +338,7 @@ function parseContractFunctionsFromACI(aci): Array<AciFunctions> {
 
         functions.push(parsedFunc);
     }
-    
+
     return functions;
 }
 
@@ -353,12 +349,9 @@ function parseACIFunctionArguments(functionArguments: AciFunctions['arguments'])
         let tempArgArr = [];
 
         for (let argInfo of argsArr) {
-            
-            for (let argType of argInfo.type) {
 
-                let result = _parseACIFunctionArguments(argType);
-                tempArgArr.push(result);
-            }
+            let result = _parseACIFunctionArguments(argInfo.type);
+            tempArgArr.push(result);
         }
 
         argsArr = tempArgArr;
@@ -413,7 +406,7 @@ function parseACIFunctionArgumentsRecord(record): any {
                 if (typeof arg === 'string') {
                     tempSubArr.push(arg);
                 } else {
-                    
+
                     let result = parseACIFunctionArgumentsRecord(arg.record);
                     // remove brackets
                     result = result.substr(1, result.length - 2);
