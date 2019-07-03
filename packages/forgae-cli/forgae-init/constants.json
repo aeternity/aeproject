@@ -23,5 +23,5 @@
 	"dockerFilesDestination": "./docker",
 	"dockerYmlFile": "docker-compose.yml",
 	"dockerYmlFileDestination": "./docker-compose.yml",
-	"sdkVersion": "4.0.1"
+	"sdkVersion": "4.1.0"
 }

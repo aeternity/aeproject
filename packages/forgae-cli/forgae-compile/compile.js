@@ -24,19 +24,19 @@ const {
 const utils = require('forgae-utils');
 const config = require('forgae-config');
 
-async function compileAndPrint (file, options) {
+async function compileAndPrint (file, compileOptions) {
     print('\r')
     
     try {
-        const code = readFile(file);
-        const bytecode = await utils.contractCompile(code.toString(), options);
-
+        const code = readFile(file, 'utf-8');
+        const bytecode = await utils.contractCompile(code.toString(), file, compileOptions);
+        
         print(`Contract '${ file } has been successfully compiled'`)
-        print(`Contract bytecode: ${ bytecode }`)
+        print(`Contract bytecode: ${ JSON.stringify(bytecode) }`)
     } catch (error) {
         printError(`Contract '${ file } has not been compiled'`)
         printError(`reason:`)
-        printError(error.message || error)
+        printError(error.response.data.reason || error)
     }
 
     print('\r')
@@ -46,17 +46,17 @@ async function run (path, compiler = config.compilerUrl) {
 
     print('===== Compiling contracts =====');
 
-    const options = {
+    const compileOptions = {
         compilerUrl: compiler
     }
 
     if (path.includes('.aes')) {
-        compileAndPrint(path, options)
+        compileAndPrint(path, compileOptions)
     } else {
         const files = await utils.getFiles(`${ process.cwd() }/${ path }/`, `.*\.(aes)`);
 
         files.forEach(async (file) => {
-            compileAndPrint(file, options)
+            compileAndPrint(file, compileOptions)
         });
     }
 }
