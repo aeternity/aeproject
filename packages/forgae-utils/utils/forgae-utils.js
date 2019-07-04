@@ -161,10 +161,10 @@ async function contractCompile (source, contractPath, compileOptions) {
         code: source,
         options
     };
-
+    
     result = await axios.post(compileOptions.compilerUrl, body, options);
 
-    return result.data;
+    return result;
 }
 
 function getDependencies (contractContent, contractPath) {
@@ -183,7 +183,7 @@ function getDependencies (contractContent, contractPath) {
     allDependencies = contractContent.match(rgx)
     try {
         for (let index = 0; index < allDependencies.length; index++) {
-            dependencyFromContract = dependencyPathrgx.exec(allDependencies[0])
+            dependencyFromContract = dependencyPathrgx.exec(allDependencies[index])
             dependencyPathrgx.lastIndex = 0;
 
             contractPath = mainContractsPathRgx.exec(contractPath)

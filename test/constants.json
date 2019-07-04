@@ -61,5 +61,5 @@
 	},
 	"privateKeyTestnetDeploy": "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319",
 	"getCompilerVersionURL": "http://localhost:3080/version",
-	"LOCAL_COMPILER_URL": "http://localhost:3080"
+	"LOCAL_COMPILER_URL": "http://localhost:3080/compile"
 }

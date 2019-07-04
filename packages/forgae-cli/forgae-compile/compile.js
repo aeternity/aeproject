@@ -29,14 +29,14 @@ async function compileAndPrint (file, compileOptions) {
     
     try {
         const code = readFile(file, 'utf-8');
-        const bytecode = await utils.contractCompile(code.toString(), file, compileOptions);
+        const result = await utils.contractCompile(code.toString(), file, compileOptions);
         
         print(`Contract '${ file } has been successfully compiled'`)
-        print(`Contract bytecode: ${ JSON.stringify(bytecode) }`)
+        print(`Contract bytecode: ${JSON.stringify(result.data.bytecode) }`)
     } catch (error) {
         printError(`Contract '${ file } has not been compiled'`)
         printError(`reason:`)
-        printError(error.response.data.reason || error)
+        printError(error.message)
     }
 
     print('\r')

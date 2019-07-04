@@ -1,0 +1,20 @@
+contract Test =
+   record state = {
+      origin_year : int, 
+      day_in_seconds : int,
+      year_in_seconds : int,
+      leap_year_in_seconds : int,
+      hour_in_seconds : int,
+      minute_in_seconds : int }
+   
+   function main(x : int) = x 
+   
+   public function init() : state =
+      {
+         origin_year = 1970, 
+         day_in_seconds = 86400,
+         year_in_seconds = 31536000,
+         leap_year_in_seconds = 31622400,
+         hour_in_seconds = 3600,
+         minute_in_seconds = 60
+         }

@@ -10,7 +10,7 @@ const expectedCompileResultExampleContract = "ExampleContract.aes has been succe
 let expectedResult1 = "ExampleContract1.aes has been successfully compiled"
 let expectedResult2 = "ExampleContract2.aes has been successfully compiled"
 let expectedResult3 = "ExampleContract3.aes has been successfully compiled"
-let expectedResult4 = "Compiler not defined"
+let expectedResult4 = "ENOTFOUND compiler.somewhere.com compiler.somewhere.com"
 let executeOptions = {
     cwd: process.cwd() + constants.compileTestsFolderPath
 };
