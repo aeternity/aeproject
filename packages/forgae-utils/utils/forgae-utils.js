@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
-let rgx = /^include\s+\"([a-zA-Z\/\.\-\_]+)\"/gmi;
-let dependencyPathrgx = /"([a-zA-Z\/\.\-\_]+)\"/gmi;
+let rgx = /^include\s+\"([a-zA-Z+\d\w\/\.\-\_]+)\"/gmi;
+let dependencyPathrgx = /"([a-zA-Z+\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
 let dependencies;
 let match;
