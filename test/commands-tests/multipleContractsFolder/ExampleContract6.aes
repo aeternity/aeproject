@@ -1,8 +1,0 @@
-include "./ExampleContract7.aes"
-include "./ExampleContract8.aes"
-
-contract ExampleContract =
-  type state = ()
-  function main(x : int) = x 
-  function sum(x: int, y: int) =
-    ExampleContract7.sum(x,y)

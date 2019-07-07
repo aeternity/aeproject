@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
-let rgx = /^include\s+\"([a-zA-Z+\d\w\/\.\-\_]+)\"/gmi;
-let dependencyPathrgx = /"([a-zA-Z+\d\w\/\.\-\_]+)\"/gmi;
+let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
+let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
 let dependencies;
 let match;
@@ -181,27 +181,23 @@ function getDependencies (contractContent, contractPath) {
     }
 
     allDependencies = contractContent.match(rgx)
-    try {
-        for (let index = 0; index < allDependencies.length; index++) {
-            dependencyFromContract = dependencyPathrgx.exec(allDependencies[index])
-            dependencyPathrgx.lastIndex = 0;
+    for (let index = 0; index < allDependencies.length; index++) {
+        dependencyFromContract = dependencyPathRgx.exec(allDependencies[index])
+        dependencyPathRgx.lastIndex = 0;
 
-            contractPath = mainContractsPathRgx.exec(contractPath)
-            mainContractsPathRgx.lastIndex = 0;
-            dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
-            dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
-            actualContract = getActualContract(dependencyContractContent)
+        contractPath = mainContractsPathRgx.exec(contractPath)
+        mainContractsPathRgx.lastIndex = 0;
+        dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
+        dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
+        actualContract = getActualContract(dependencyContractContent)
 
-            if (!dependencies[dependencyFromContract[1]]) {
-                dependencies[dependencyFromContract[1]] = actualContract;
-            }
-
-            getDependencies(dependencyContractContent, dependencyContractPath)
+        if (!dependencies[dependencyFromContract[1]]) {
+            dependencies[dependencyFromContract[1]] = actualContract;
         }
 
-    } catch (e) {
-        return;
+        getDependencies(dependencyContractContent, dependencyContractPath)
     }
+
     return dependencies;
 }
 
