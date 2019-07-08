@@ -34,9 +34,11 @@ async function compileAndPrint (file, compileOptions) {
         print(`Contract '${ file } has been successfully compiled'`)
         print(`Contract bytecode: ${JSON.stringify(result.data.bytecode) }`)
     } catch (error) {
+        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? error.response.data.reason : error.message
+
         printError(`Contract '${ file } has not been compiled'`)
         printError(`reason:`)
-        printError(error.message)
+        printError(errorMessage)
     }
 
     print('\r')
@@ -45,7 +47,7 @@ async function compileAndPrint (file, compileOptions) {
 async function run (path, compiler = config.compilerUrl) {
 
     print('===== Compiling contracts =====');
-
+    
     const compileOptions = {
         compilerUrl: compiler
     }

@@ -2,7 +2,6 @@ const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
 const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
-// const execute = require('../../cli-commands/utils.js').forgaeExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
@@ -52,7 +51,6 @@ describe('ForgAE Compile', () => {
 
         it('Should NOT compile contracts with --compiler argument - invalid one ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", INVALID_COMPILER_URL], executeOptions)
-
             assert.include(result, expectedResult4);
         })
     })

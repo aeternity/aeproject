@@ -7,7 +7,6 @@ const Universal = AeSDK.Universal;
 let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
 let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
-let dependencies;
 let match;
 
 const config = require('forgae-config');
@@ -151,10 +150,9 @@ async function contractCompile (source, contractPath, compileOptions) {
     let options = {
         "file_system": null
     }
-    dependencies = {};
-
-    getDependencies(source, contractPath)
-
+    
+    let dependencies = getDependencies(source, contractPath)
+    
     options["file_system"] = dependencies
 
     let body = {
@@ -167,7 +165,15 @@ async function contractCompile (source, contractPath, compileOptions) {
     return result;
 }
 
-function getDependencies (contractContent, contractPath) {
+function checkNestedProperty (obj, property) {
+    if (!obj || !obj.hasOwnProperty(property)) {
+        return false;
+    }
+    
+    return true;
+}
+
+function getDependencies (contractContent, contractPath, dependencies = {}) {
     let allDependencies = [];
     let dependencyFromContract;
     let dependencyContractContent;
@@ -195,7 +201,7 @@ function getDependencies (contractContent, contractPath) {
             dependencies[dependencyFromContract[1]] = actualContract;
         }
 
-        getDependencies(dependencyContractContent, dependencyContractPath)
+        getDependencies(dependencyContractContent, dependencyContractPath, dependencies)
     }
 
     return dependencies;
@@ -218,5 +224,6 @@ module.exports = {
     forgaeExecute,
     execute,
     timeout,
-    contractCompile
+    contractCompile,
+    checkNestedProperty
 }
