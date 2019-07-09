@@ -3,7 +3,7 @@ const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const ContractCompilerAPI = AeSDK.ContractCompilerAPI;
 
-const config = require('forgae-config');
+const config = require('../../forgae-config/config/config.json');
 const {
     printError
 } = require('./fs-utils')
@@ -15,7 +15,6 @@ const {
 const getClient = async function (network, keypair = config.keypair) {
     let client;
     let internalUrl = network.url;
-
     if (network.url.includes("localhost")) {
         internalUrl = internalUrl + "/internal"
     }
@@ -59,7 +58,6 @@ const getNetwork = (network, networkId) => {
 };
 
 const createCustomNetwork = (network, networkId) => {
-
     if (network.includes('local') || networkId == undefined) {
         throw new Error('Both network and networkId should be passed')
     }

@@ -125,7 +125,7 @@ describe("Deployed contract instance additional functionality", async () => {
             }), "Function does not executed successfully!");
         });
 
-        it("Should execute default [call] function.", async () => {
+        xit("Should execute default [call] function.", async () => {
             let param = [5, 3];
             let result = await deployedContract.call('sum', param);
             let value = await result.decode();
@@ -133,7 +133,7 @@ describe("Deployed contract instance additional functionality", async () => {
             assert.equal(value, 8, "Result is incorrect!");
         });
 
-        it("Should execute default [call] function with passed amount/aettos.", async () => {
+        xit("Should execute default [call] function with passed amount/aettos.", async () => {
 
             let param = ['Im a super hero!'];
             let result = await deployedContract.call('say_hello', param, {
@@ -167,6 +167,11 @@ describe("Deployed contract instance additional functionality", async () => {
             assert.equal(encodedRecord.name, "", "Incorrect decoded data: 'Name'.")
             assert.equal(encodedRecord.age, 0, "Incorrect decoded data: 'Age'.")
         });
+
+        it("Should call function without return type without errors", async () => {
+            await assert.isFulfilled(deployedContract.func_no_return(20, 25), "Cannot call function withoud return type!")
+
+        })
     });
 
     describe("Test [from] functionality", async () => {

@@ -8,6 +8,8 @@ contract ExampleContract =
     current_id: int,
     m_id_people: map(int, person)}
 
+  datatype event = TestEvent()
+
   public stateful function init() =
     { current_id = 0,
       m_id_people = {}}
@@ -48,6 +50,9 @@ contract ExampleContract =
     put(state{current_id = next_id})
 
     next_id
+
+  public function func_no_return(intA: int, intB: int) =
+    Chain.event(TestEvent)
 
   public function get_person_by_id(id: int) : person =
     _get_person_by_id(id)

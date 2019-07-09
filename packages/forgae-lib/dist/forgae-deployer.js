@@ -105,16 +105,16 @@ class Deployer {
                 contractInstance = yield client.getContractInstance(contract);
                 deployedContract = yield contractInstance.deploy(initState, options);
                 // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-                let functions = yield generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
+                let functions = yield generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network, contractInstance);
                 deployedContract = addSmartContractFunctions(deployedContract, functions);
                 let regex = new RegExp(/[\w]+.aes$/);
                 contractFileName = regex.exec(contractPath);
-                txInfo = yield getTxInfo(deployedContract.deployInfo.transaction);
-                if (deployedContract && deployedContract.deployInfo && deployedContract.deployInfo.transaction) {
-                    info.transactionHash = deployedContract.deployInfo.transaction;
+                txInfo = yield getTxInfo(deployedContract.transaction);
+                if (deployedContract && deployedContract.transaction) {
+                    info.transactionHash = deployedContract.transaction;
                     info.gasPrice = txInfo.gasPrice;
                     info.gasUsed = txInfo.gasUsed;
-                    info.result = deployedContract.deployInfo.address;
+                    info.result = deployedContract.address;
                     info.status = true;
                     console.log(`===== Contract: ${contractFileName} has been deployed =====`);
                 }
@@ -139,9 +139,9 @@ class Deployer {
     }
 }
 exports.Deployer = Deployer;
-function generateFunctionsFromSmartContract(contractSource, deployedContract, privateKey, network) {
+function generateFunctionsFromSmartContract(contractSource, deployedContract, privateKey, network, contractInstance) {
     return __awaiter(this, void 0, void 0, function* () {
-        const functionsDescription = parseContractFunctionsFromACI(deployedContract.aci);
+        const functionsDescription = parseContractFunctionsFromACI(contractInstance.aci);
         const keyPair = yield forgae_utils_1.default.generateKeyPairFromSecretKey(privateKey);
         const currentClient = yield forgae_utils_1.default.getClient(network, keyPair);
         let functions = {};
@@ -230,8 +230,11 @@ function generateFunctionsFromSmartContract(contractSource, deployedContract, pr
                         amount: amount,
                         ttl: ttl
                     };
-                    let resultFromExecution = yield client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
+                    let resultFromExecution = yield client.contractCall(contractSource, deployedContract.address, thisFunctionName, argsArr, options);
                     let returnType = thisFunctionReturnType;
+                    if (returnType.length == 0) {
+                        return;
+                    }
                     let decodedValue = yield resultFromExecution.decode(returnType.trim());
                     return decodedValue;
                 });
@@ -253,7 +256,7 @@ function generateFunctionsFromSmartContract(contractSource, deployedContract, pr
                 }
                 result['call'] = function (functionName, args = [], options = {}) {
                     return __awaiter(this, void 0, void 0, function* () {
-                        return client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+                        return client.contractCall(contract, deployedContract.address, functionName, args, opts);
                     });
                 };
                 return result;
