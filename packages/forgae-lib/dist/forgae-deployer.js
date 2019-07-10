@@ -116,7 +116,7 @@ class Deployer {
                     info.gasUsed = txInfo.gasUsed;
                     info.result = deployedContract.deployInfo.address;
                     info.status = true;
-                    console.log(`===== Contract: ${contractFileName} has been deployed =====`);
+                    console.log(`===== Contract: ${contractFileName} has been deployed at ${deployedContract.deployInfo.address} =====`);
                 }
             }
             catch (e) {
