@@ -136,7 +136,7 @@ describe('ForgAE Deploy', () => {
             let deployedContract = await deployer.deploy("./test/commands-tests/multipleContractsFolder/ExampleContract4.aes", [expectedInitValue]);
             const callNameResult = await deployedContract.name(expectedInitValue);
             // Assert
-            assert.equal(callNameResult, expectedInitValue)
+            assert.equal(callNameResult.decodedResult, expectedInitValue)
         })
     })
 
