@@ -40,7 +40,7 @@ const addCompileOption = (program) => {
     program
         .command('compile')
         .option('--path [compile path]', 'Path to contract files', './contracts')
-        .option('--compiler [compiler url]', 'Url to the desired compiler', config.compilerUrl)
+        .option('--compiler [compiler url]', 'Url to the desired compiler', config.compilerUrl + "/compile")
         .description('Compile contracts')
         .action(async (option) => {
             await compile.run(option.path, option.compiler);

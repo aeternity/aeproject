@@ -18,3 +18,37 @@ You can specify compiler using the **--compiler** parameter.
   forgae compile --compiler http://localhost:3080
   ```
 
+The compiler allows you to include other **.aes** files to your contract by using the reserved word **include** and speciying the path to the file. You can add contracts, as well as namespaces.
+
+Example:
+
+Let's say we want to include some helper functions from contracts *math-sum.aes* & *math-sub* to our *math.aes* contract
+
+**math-sum.aes**
+```
+contract MathSum =
+    function sum (x: int, y: int) : int =
+        x + y
+
+```
+
+**math-sub.aes**
+```
+contract MathSub =
+    function sub (x: int, y: int) : int =
+        x - y
+```
+
+**math.aes**
+```
+include "./math-sum.aes"
+include "./math-sub.aes"
+
+contract Math =
+   public function sum(a : int, b: int) : int =
+      MathSum.sum(a, b)
+
+   public function sub(x : int, y : int) : int =
+      MathSub.sub(x, y)
+```
+ 
