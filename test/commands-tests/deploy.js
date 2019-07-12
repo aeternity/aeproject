@@ -25,7 +25,7 @@ const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
 const mainForgaeProjectDir = process.cwd();
 
-function insertAdditionalFiles () {
+function insertAdditionalFiles() {
     // copy needed files into test folder to run the specific tests
     let cwd = process.cwd();
     let testFolder = path.join(cwd, '/test/commands-tests/deployTest');
@@ -39,7 +39,7 @@ function insertAdditionalFiles () {
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
 }
 
-async function linkLocalPackages () {
+async function linkLocalPackages() {
     const forgaeLibDir = `${ process.cwd() }/packages/forgae-lib/`
     const forgaeUtilsDir = `${ process.cwd() }/packages/forgae-utils/`
     const forgaeConfigDir = `${ process.cwd() }/packages/forgae-config/`

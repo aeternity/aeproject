@@ -172,6 +172,35 @@ describe("Deployed contract instance additional functionality", async () => {
             await assert.isFulfilled(deployedContract.func_no_return(20, 25), "Cannot call function withoud return type!")
 
         })
+
+        it("Should call function with map as argument without errors", async () => {
+
+            let human = new Map();
+            human.set(42, 42);
+            let addHumanResult = await deployedContract.add_human(human);
+
+            assert.equal(addHumanResult.decodedResult[0][0], human.get(42), 'The map was not set properly')
+        })
+
+        it("Should call function with record aas an argument without errors", async () => {
+
+            let human = {
+                name: "Alice",
+                age: 25
+            }
+            let addRecordResult = await deployedContract.add_record(human, 42);
+
+            assert.equal(addRecordResult.decodedResult.name, human.name, "The record was not set properly, names are not equal")
+            assert.equal(addRecordResult.decodedResult.age, human.age, "The record was not ser properly, ages are not equal")
+        })
+
+        it("Should call function with lisst as an agrument withoud errors", async () => {
+
+            let humanIds = [1, 2, 3]
+            let addListResult = await deployedContract.add_list_human(humanIds);
+
+            assert.equal(addListResult.decodedResult.length, humanIds.length, "Error when calling and setting functions with list arguments")
+        })
     });
 
     describe("Test [from] functionality", async () => {
@@ -277,6 +306,40 @@ describe("Deployed contract instance additional functionality", async () => {
             assert.equal(person.decodedResult.name, '', "Incorrect decoded data: 'Name'.")
             assert.equal(person.decodedResult.age, 0, "Incorrect decoded data: 'Age'.")
         });
+
+        it("Should call function without return type without errors", async () => {
+            await assert.isFulfilled(fromInstance.func_no_return(20, 25), "Cannot call function withoud return type!")
+
+        })
+
+        it("Should call function with map as argument without errors", async () => {
+
+            let human = new Map();
+            human.set(42, 42);
+            let addHumanResult = await fromInstance.add_human(human);
+
+            assert.equal(addHumanResult.decodedResult[0][0], human.get(42), 'The map was not set properly')
+        })
+
+        it("Should call function with record aas an argument without errors", async () => {
+
+            let human = {
+                name: "Alice",
+                age: 25
+            }
+            let addRecordResult = await fromInstance.add_record(human, 42);
+
+            assert.equal(addRecordResult.decodedResult.name, human.name, "The record was not set properly, names are not equal")
+            assert.equal(addRecordResult.decodedResult.age, human.age, "The record was not ser properly, ages are not equal")
+        })
+
+        it("Should call function with lisst as an agrument withoud errors", async () => {
+
+            let humanIds = [1, 2, 3]
+            let addListResult = await fromInstance.add_list_human(humanIds);
+
+            assert.equal(addListResult.decodedResult.length, humanIds.length, "Error when calling and setting functions with list arguments")
+        })
     });
 
     after(async () => {
