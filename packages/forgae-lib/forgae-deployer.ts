@@ -113,21 +113,20 @@ export class Deployer {
             deployedContract = await contractInstance.deploy(initState, options);
 
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-            let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network);
+            let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network,contractInstance);
 
             deployedContract = addSmartContractFunctions(deployedContract, functions);
 
             let regex = new RegExp(/[\w]+.aes$/);
             contractFileName = regex.exec(contractPath);
+            txInfo = await getTxInfo(deployedContract.transaction);
             
-            txInfo = await getTxInfo(deployedContract.deployInfo.transaction);
-            
-            if (deployedContract && deployedContract.deployInfo && deployedContract.deployInfo.transaction) {
-                 
-                info.transactionHash = deployedContract.deployInfo.transaction;
+            if (deployedContract && deployedContract.transaction) {
+                
+                info.transactionHash = deployedContract.transaction;
                 info.gasPrice = txInfo.gasPrice;
                 info.gasUsed = txInfo.gasUsed;
-                info.result = deployedContract.deployInfo.address;
+                info.result = deployedContract.address;
                 info.status = true;
                 
                 console.log(`===== Contract: ${ contractFileName } has been deployed =====`);
@@ -156,8 +155,8 @@ export class Deployer {
     }
 }
 
-async function generateFunctionsFromSmartContract (contractSource: string, deployedContract: DeployedContract, privateKey: number, network: Network): Promise<Object> {
-const functionsDescription: Array<ParsedContractFunction> = parseContractFunctionsFromACI(deployedContract.aci);
+async function generateFunctionsFromSmartContract (contractSource: string, deployedContract: DeployedContract, privateKey: number, network: Network, contractInstance): Promise<Object> {
+const functionsDescription: Array<ParsedContractFunction> = parseContractFunctionsFromACI(contractInstance.aci);
     
     const keyPair: KeyPair = await utils.generateKeyPairFromSecretKey(privateKey);
     
@@ -276,8 +275,11 @@ const functionsDescription: Array<ParsedContractFunction> = parseContractFunctio
                 ttl: ttl
             }
 
-            let resultFromExecution: any = await client.contractCall(contractSource, deployedContract.deployInfo.address, thisFunctionName, argsArr, options);
+            let resultFromExecution: any = await client.contractCall(contractSource, deployedContract.address, thisFunctionName, argsArr, options);
             let returnType: any = thisFunctionReturnType;
+            if(returnType.length == 0){
+                return
+            }
             
             let decodedValue = await resultFromExecution.decode(returnType.trim())
 
@@ -305,7 +307,7 @@ const functionsDescription: Array<ParsedContractFunction> = parseContractFunctio
 
         result['call'] = async function (functionName, args = [], options = {}) {
 
-            return client.contractCall(contract, deployedContract.deployInfo.address, functionName, args, opts);
+            return client.contractCall(contract, deployedContract.address, functionName, args, opts);
         }
 
         return result;
@@ -319,14 +321,12 @@ function parseContractFunctionsFromACI(aci): Array<AciFunctions> {
     const reservedFunctionNames: Array<string> = [
         'init'
     ]
-
     for (let func of aci.functions) {
 
         // skip reserved function's name
         if (reservedFunctionNames.includes(func.name)) {
             continue;
         }
-        
         let argsArr: Array<string>= parseACIFunctionArguments(func.arguments);
         let returnType: any = parseACIFunctionReturnType(func.returns);
         
