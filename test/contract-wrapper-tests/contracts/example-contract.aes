@@ -12,6 +12,8 @@ contract ExampleContract =
 
   datatype event = TestEvent()
 
+  datatype event = TestEvent()
+
   public stateful function init() =
     { current_id = 0,
       m_id_people = {},

@@ -1,7 +1,13 @@
 require = require('esm')(module /*, options */) // use to handle es6 import/export 
+let axios = require('axios');
+const fs = require('fs');
+const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
-const ContractCompilerAPI = AeSDK.ContractCompilerAPI;
+let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
+let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
+const mainContractsPathRgx = /.*\//g;
+let match;
 
 const config = require('../../forgae-config/config/config.json');
 const {
@@ -137,9 +143,73 @@ function readSpawnOutput (spawnResult) {
     return buffMessage.toString('utf8');
 }
 
-async function contractCompile (source, options) {
-    const compiler = await ContractCompilerAPI(options);
-    return compiler.compileContractAPI(source);
+async function contractCompile (source, contractPath, compileOptions) {
+    let result;
+    let options = {
+        "file_system": null
+    }
+    
+    let dependencies = getDependencies(source, contractPath)
+    
+    options["file_system"] = dependencies
+
+    let body = {
+        code: source,
+        options
+    };
+    
+    result = await axios.post(compileOptions.compilerUrl, body, options);
+
+    return result;
+}
+
+function checkNestedProperty (obj, property) {
+    if (!obj || !obj.hasOwnProperty(property)) {
+        return false;
+    }
+    
+    return true;
+}
+
+function getDependencies (contractContent, contractPath, dependencies = {}) {
+    let allDependencies = [];
+    let dependencyFromContract;
+    let dependencyContractContent;
+    let dependencyContractPath;
+    let actualContract;
+
+    match = rgx.exec(contractContent)
+
+    if (match == null) {
+        return;
+    }
+
+    allDependencies = contractContent.match(rgx)
+    for (let index = 0; index < allDependencies.length; index++) {
+        dependencyFromContract = dependencyPathRgx.exec(allDependencies[index])
+        dependencyPathRgx.lastIndex = 0;
+
+        contractPath = mainContractsPathRgx.exec(contractPath)
+        mainContractsPathRgx.lastIndex = 0;
+        dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
+        dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
+        actualContract = getActualContract(dependencyContractContent)
+
+        if (!dependencies[dependencyFromContract[1]]) {
+            dependencies[dependencyFromContract[1]] = actualContract;
+        }
+
+        getDependencies(dependencyContractContent, dependencyContractPath, dependencies)
+    }
+
+    return dependencies;
+}
+
+function getActualContract (contractContent) {
+    let contentStartIndex = contractContent.indexOf('contract ');
+    let content = contractContent.substr(contentStartIndex);
+
+    return content;
 }
 
 module.exports = {
@@ -152,5 +222,6 @@ module.exports = {
     forgaeExecute,
     execute,
     timeout,
-    contractCompile
+    contractCompile,
+    checkNestedProperty
 }
