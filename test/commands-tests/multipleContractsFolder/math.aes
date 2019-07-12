@@ -1,0 +1,17 @@
+include "./math-sum.aes"
+include "./math-sub.aes"
+include "./math-mul.aes"
+include "./math-div.aes"
+
+contract Math =
+   public function sum(a : int, b: int) : int =
+      MathSum.sum(a, b)
+
+   public function sub(x : int, y : int) : int =
+      MathSub.sub(x, y)
+
+   public function mul(x : int, y : int) : int =
+      MathMul.multiply(x, y)
+
+   public function div(x : int, y : int) : int =
+      MathDiv.divide(x, y)
