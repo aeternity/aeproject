@@ -109,7 +109,7 @@ class Deployer {
                 deployedContract = yield contractInstance.deploy(initState, options);
                 // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
                 yield generateInstancesWithWallets(this.network, deployedContract.address);
-                let contractInstanceWrapperFuncs = yield generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network, contractInstance);
+                let contractInstanceWrapperFuncs = yield generateFunctionsFromSmartContract(contractInstance);
                 deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
                 let regex = new RegExp(/[\w]+.aes$/);
                 contractFileName = regex.exec(contractPath);
@@ -154,7 +154,7 @@ function generateInstancesWithWallets(network, contractAddress) {
         }
     });
 }
-function generateFunctionsFromSmartContract(contractSource, deployedContract, privateKey, network, contractInstance) {
+function generateFunctionsFromSmartContract(contractInstance) {
     return __awaiter(this, void 0, void 0, function* () {
         let contractFunctions = contractInstance.methods;
         contractFunctions['from'] = function (userWallet) {
@@ -164,7 +164,6 @@ function generateFunctionsFromSmartContract(contractSource, deployedContract, pr
                     walletToPass = walletToPass.secretKey;
                 }
                 const keyPair = yield forgae_utils_1.default.generateKeyPairFromSecretKey(walletToPass);
-                const client = yield forgae_utils_1.default.getClient(network, keyPair);
                 return instancesMap[keyPair.publicKey].methods;
             });
         };
