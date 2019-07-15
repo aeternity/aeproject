@@ -171,17 +171,18 @@ function checkNestedProperty (obj, property) {
     return true;
 }
 
-function getDependencies (contractContent, contractPath, dependencies = {}) {
+function getDependencies (contractContent, contractPath) {
     let allDependencies = [];
     let dependencyFromContract;
     let dependencyContractContent;
     let dependencyContractPath;
     let actualContract;
+    let dependencies = {}
 
     match = rgx.exec(contractContent)
 
-    if (match == null) {
-        return;
+    if (!match) {
+        return dependencies;
     }
 
     allDependencies = contractContent.match(rgx)
@@ -195,11 +196,9 @@ function getDependencies (contractContent, contractPath, dependencies = {}) {
         dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
         actualContract = getActualContract(dependencyContractContent)
 
-        if (!dependencies[dependencyFromContract[1]]) {
-            dependencies[dependencyFromContract[1]] = actualContract;
-        }
+        dependencies[dependencyFromContract[1]] = actualContract;
 
-        getDependencies(dependencyContractContent, dependencyContractPath, dependencies)
+        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath))
     }
 
     return dependencies;

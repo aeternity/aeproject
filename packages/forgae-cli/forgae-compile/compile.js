@@ -32,7 +32,7 @@ async function compileAndPrint (file, compileOptions) {
         const result = await utils.contractCompile(code.toString(), file, compileOptions);
         
         print(`Contract '${ file } has been successfully compiled'`)
-        print(`Contract bytecode: ${JSON.stringify(result.data.bytecode) }`)
+        print(`Contract bytecode: ${ JSON.stringify(result.data.bytecode) }`)
     } catch (error) {
         const errorMessage = utils.checkNestedProperty(error.response, 'data') ? error.response.data.reason : error.message
 
