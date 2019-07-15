@@ -15,6 +15,7 @@ const forgae_utils_1 = __importDefault(require("forgae-utils"));
 const fs_1 = __importDefault(require("fs"));
 const forgae_logger_1 = __importDefault(require("forgae-logger"));
 const forgae_config_1 = __importDefault(require("forgae-config"));
+const forgae_config_2 = __importDefault(require("forgae-config"));
 const decodedHexAddressToPublicAddress = forgae_utils_1.default.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -22,6 +23,8 @@ const opts = {
 };
 let client;
 let contract;
+let instances;
+let instancesMap = {};
 forgae_logger_1.default.initHistoryRecord();
 function getContractName(contract) {
     let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
@@ -105,8 +108,9 @@ class Deployer {
                 contractInstance = yield client.getContractInstance(contract);
                 deployedContract = yield contractInstance.deploy(initState, options);
                 // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-                let functions = yield generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network, contractInstance);
-                deployedContract = addSmartContractFunctions(deployedContract, functions);
+                yield generateInstancesWithWallets(this.network, deployedContract.address);
+                let contractInstanceWrapperFuncs = yield generateFunctionsFromSmartContract(contractInstance);
+                deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
                 let regex = new RegExp(/[\w]+.aes$/);
                 contractFileName = regex.exec(contractPath);
                 txInfo = yield getTxInfo(deployedContract.transaction);
@@ -131,290 +135,39 @@ class Deployer {
                 throw new Error(error);
             }
             return deployedContract;
-            function addSmartContractFunctions(deployedContract, functions) {
-                let newInstanceWithAddedAdditionalFunctionality = Object.assign(functions, deployedContract);
+            function addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs) {
+                let newInstanceWithAddedAdditionalFunctionality = Object.assign(contractInstanceWrapperFuncs, deployedContract);
                 return newInstanceWithAddedAdditionalFunctionality;
             }
         });
     }
 }
 exports.Deployer = Deployer;
-function generateFunctionsFromSmartContract(contractSource, deployedContract, privateKey, network, contractInstance) {
+function generateInstancesWithWallets(network, contractAddress) {
     return __awaiter(this, void 0, void 0, function* () {
-        const functionsDescription = parseContractFunctionsFromACI(contractInstance.aci);
-        const keyPair = yield forgae_utils_1.default.generateKeyPairFromSecretKey(privateKey);
-        const currentClient = yield forgae_utils_1.default.getClient(network, keyPair);
-        let functions = {};
-        let fNames = [];
-        let fMap = new Map();
-        for (let func of functionsDescription) {
-            const funcName = func.name;
-            const funcArgs = func.args;
-            const funcReturnType = func.returnType;
-            fNames.push(funcName);
-            fMap.set(funcName, {
-                funcName,
-                funcArgs,
-                funcReturnType
-            });
-            functions[funcName] = function (args) {
-                return __awaiter(this, arguments, void 0, function* () {
-                    let client;
-                    if (arguments.length > 0 && arguments[arguments.length - 1].Chain && arguments[arguments.length - 1].Ae) {
-                        client = arguments[arguments.length - 1];
-                    }
-                    else {
-                        client = currentClient;
-                    }
-                    const thisFunctionName = funcName;
-                    const thisFunctionArgs = funcArgs;
-                    const thisFunctionReturnType = funcReturnType;
-                    let argsArr = [];
-                    if (arguments.length > 0) {
-                        for (let i = 0; i < thisFunctionArgs.length; i++) {
-                            let argType = thisFunctionArgs[i];
-                            switch (argType) {
-                                case 'address':
-                                    argsArr.push(`${arguments[i]}`);
-                                    break;
-                                case 'int':
-                                    argsArr.push(`${arguments[i]}`);
-                                    break;
-                                case 'bool':
-                                    argsArr.push(`${arguments[i]}`);
-                                    break;
-                                //     // TODO
-                                // case 'list(int)':
-                                //     break;
-                                // case 'list(string)':
-                                //     break;
-                                // case 'list(bool)':
-                                //     break;
-                                case 'string':
-                                default:
-                                    argsArr.push(`"${arguments[i]}"`);
-                                    break;
-                            }
-                        }
-                    }
-                    let amount = 0;
-                    if (arguments.length > thisFunctionArgs.length) {
-                        // check is there passed amount/value
-                        if (arguments[arguments.length - 1].value) {
-                            let element = arguments[arguments.length - 1].value;
-                            if (element && !isNaN(element)) {
-                                amount = parseInt(element);
-                            }
-                        }
-                        if (arguments.length > 1 && arguments[arguments.length - 2].value) {
-                            let element = arguments[arguments.length - 2].value;
-                            if (element && !isNaN(element)) {
-                                amount = parseInt(element);
-                            }
-                        }
-                        // check is there passed ttl
-                        if (arguments[arguments.length - 1].ttl) {
-                            let element = arguments[arguments.length - 1].ttl;
-                            if (element && !isNaN(element)) {
-                                ttl = parseInt(element);
-                            }
-                        }
-                        if (arguments.length > 1 && arguments[arguments.length - 2].ttl) {
-                            let element = arguments[arguments.length - 2].ttl;
-                            if (element && !isNaN(element)) {
-                                ttl = parseInt(element);
-                            }
-                        }
-                    }
-                    let options = {
-                        amount: amount,
-                        ttl: ttl
-                    };
-                    let resultFromExecution = yield client.contractCall(contractSource, deployedContract.address, thisFunctionName, argsArr, options);
-                    let returnType = thisFunctionReturnType;
-                    if (returnType.length == 0) {
-                        return;
-                    }
-                    let decodedValue = yield resultFromExecution.decode(returnType.trim());
-                    return decodedValue;
-                });
-            };
+        instances = [];
+        for (let wallet in forgae_config_2.default.defaultWallets) {
+            let currentClient = yield forgae_utils_1.default.getClient(network, forgae_config_2.default.defaultWallets[wallet]);
+            let contractInstance = yield currentClient.getContractInstance(contract, { contractAddress });
+            instances.push(contractInstance);
+            instancesMap[forgae_config_2.default.defaultWallets[wallet].publicKey] = contractInstance;
         }
-        functions['from'] = function (privateKey) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const keyPair = yield forgae_utils_1.default.generateKeyPairFromSecretKey(privateKey);
-                const client = yield forgae_utils_1.default.getClient(network, keyPair);
-                let result = {};
-                for (let fName of fNames) {
-                    const name = fName;
-                    result[name] = function () {
-                        return __awaiter(this, arguments, void 0, function* () {
-                            const f = functions[name];
-                            return f(...arguments, client);
-                        });
-                    };
-                }
-                result['call'] = function (functionName, args = [], options = {}) {
-                    return __awaiter(this, void 0, void 0, function* () {
-                        return client.contractCall(contract, deployedContract.address, functionName, args, opts);
-                    });
-                };
-                return result;
-            });
-        };
-        return functions;
     });
 }
-function parseContractFunctionsFromACI(aci) {
-    let functions = [];
-    const reservedFunctionNames = [
-        'init'
-    ];
-    for (let func of aci.functions) {
-        // skip reserved function's name
-        if (reservedFunctionNames.includes(func.name)) {
-            continue;
-        }
-        let argsArr = parseACIFunctionArguments(func.arguments);
-        let returnType = parseACIFunctionReturnType(func.returns);
-        let parsedFunc = {
-            name: func.name,
-            args: argsArr,
-            returnType: returnType
+function generateFunctionsFromSmartContract(contractInstance) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let contractFunctions = contractInstance.methods;
+        contractFunctions['from'] = function (userWallet) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let walletToPass = userWallet;
+                if (walletToPass.secretKey) {
+                    walletToPass = walletToPass.secretKey;
+                }
+                const keyPair = yield forgae_utils_1.default.generateKeyPairFromSecretKey(walletToPass);
+                return instancesMap[keyPair.publicKey].methods;
+            });
         };
-        functions.push(parsedFunc);
-    }
-    return functions;
-}
-function parseACIFunctionArguments(functionArguments) {
-    let argsArr = functionArguments;
-    if (argsArr && argsArr.length !== 0) {
-        let tempArgArr = [];
-        for (let argInfo of argsArr) {
-            let result = _parseACIFunctionArguments(argInfo.type);
-            tempArgArr.push(result);
-        }
-        argsArr = tempArgArr;
-    }
-    return argsArr;
-}
-function _parseACIFunctionArguments(argument) {
-    if (typeof argument === 'string') {
-        return argument;
-    }
-    else {
-        if (argument.record) {
-            let result = parseACIFunctionArgumentsRecord(argument.record);
-            return result;
-        }
-        else if (argument.tuple) {
-            return `(${argument.tuple.toString()})`;
-        }
-        else if (argument.list) {
-            let result = parseACIFunctionArgumentsList(argument.list);
-            return result;
-        }
-    }
-}
-function parseACIFunctionArgumentsList(list) {
-    let temp = [];
-    if (list.length === 1 && typeof list[0] === 'string') {
-        temp.push(list[0]);
-    }
-    else {
-        for (let element of list) {
-            let result = _parseACIFunctionArguments(element);
-            temp.push(result);
-        }
-    }
-    return `list(${temp.toString()})`;
-}
-function parseACIFunctionArgumentsRecord(record) {
-    let temp = [];
-    for (let value of record) {
-        if (value.type.length === 1 && typeof value.type[0] === 'string') {
-            temp.push(value.type);
-        }
-        else {
-            let tempSubArr = [];
-            for (let arg of value.type) {
-                if (typeof arg === 'string') {
-                    tempSubArr.push(arg);
-                }
-                else {
-                    let result = parseACIFunctionArgumentsRecord(arg.record);
-                    // remove brackets
-                    result = result.substr(1, result.length - 2);
-                    tempSubArr.push(result);
-                }
-            }
-            temp.push(`(${tempSubArr.toString()})`);
-        }
-    }
-    return `(${temp.toString()})`;
-}
-function parseACIFunctionReturnType(functionReturns = []) {
-    let returnType = functionReturns;
-    if (typeof functionReturns !== 'string') {
-        if (functionReturns.map) {
-            returnType = processReturnType(functionReturns.map);
-        }
-        else if (functionReturns.tuple) {
-            returnType = processReturnType(functionReturns.tuple);
-        }
-        else if (functionReturns.record) {
-            returnType = processReturnTypeRecord(functionReturns.record);
-        }
-        else if (functionReturns.list) {
-            let result = processReturnType(functionReturns.list);
-            result = 'list' + result;
-            returnType = result;
-        }
-    }
-    return returnType;
-}
-// depth is just debug helper
-function processReturnType(array, depth = 1) {
-    let temp = [];
-    if (Array.isArray(array) && array.length > 0) {
-        for (let element of array) {
-            if (typeof element === 'string') {
-                temp.push(element);
-            }
-            else {
-                if (element.map) {
-                    temp.push(`${processReturnType(element.map, depth + 1)}`);
-                }
-                else if (element.tuple) {
-                    temp.push(`${processReturnType(element.tuple, depth + 1)}`);
-                }
-                else if (element.list) {
-                    temp.push(`${processReturnType(element.list, depth + 1)}`);
-                }
-                else if (element.record) {
-                    let result = processReturnTypeRecord(element.record);
-                    temp.push(result);
-                }
-            }
-        }
-        return `(${temp.toString()})`;
-    }
-    return temp;
-}
-// process record
-function processReturnTypeRecord(record) {
-    let recordTemp = [];
-    for (let element of record) {
-        for (let recordElement of element.type) {
-            if (typeof recordElement === 'string') {
-                recordTemp.push(recordElement);
-            }
-            else {
-                let result = processReturnTypeRecord(recordElement.record);
-                recordTemp.push(result);
-            }
-        }
-    }
-    return `(${recordTemp.toString()})`;
+        return contractFunctions;
+    });
 }
 //# sourceMappingURL=forgae-deployer.js.map
