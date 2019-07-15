@@ -118,7 +118,7 @@ export class Deployer {
 
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             await generateInstancesWithWallets(this.network, deployedContract.address);
-            let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network, contractInstance);
+            let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(contractInstance);
             deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -171,17 +171,16 @@ async function generateInstancesWithWallets(network: Network, contractAddress) {
     }
 }
 
-async function generateFunctionsFromSmartContract(contractSource: string, deployedContract: DeployedContract, privateKey: number, network: Network, contractInstance: ContractInstance): Promise<Object> {
+async function generateFunctionsFromSmartContract(contractInstance: ContractInstance): Promise<Object> {
     let contractFunctions = contractInstance.methods;
 
-    contractFunctions['from'] = async function (userWallet: string) {
+    contractFunctions['from'] = async function (userWallet: Any) {
         let walletToPass = userWallet
 
         if(walletToPass.secretKey) {
             walletToPass = walletToPass.secretKey
         }
         const keyPair: KeyPair = await utils.generateKeyPairFromSecretKey(walletToPass);
-        const client: Client = await utils.getClient(network, keyPair);
         return instancesMap[keyPair.publicKey].methods
 
     }

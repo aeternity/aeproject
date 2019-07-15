@@ -194,7 +194,7 @@ describe("Deployed contract instance additional functionality", async () => {
             assert.equal(addRecordResult.decodedResult.age, human.age, "The record was not ser properly, ages are not equal")
         })
 
-        it("Should call function with lisst as an agrument withoud errors", async () => {
+        it("Should call function with list as an agrument withoud errors", async () => {
 
             let humanIds = [1, 2, 3]
             let addListResult = await deployedContract.add_list_human(humanIds);
@@ -333,7 +333,7 @@ describe("Deployed contract instance additional functionality", async () => {
             assert.equal(addRecordResult.decodedResult.age, human.age, "The record was not ser properly, ages are not equal")
         })
 
-        it("Should call function with lisst as an agrument withoud errors", async () => {
+        it("Should call function with list as an agrument withoud errors", async () => {
 
             let humanIds = [1, 2, 3]
             let addListResult = await fromInstance.add_list_human(humanIds);
