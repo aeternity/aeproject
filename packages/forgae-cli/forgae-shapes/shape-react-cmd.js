@@ -4,7 +4,6 @@ const utils = require('forgae-utils');
 const exec = utils.execute;
 
 const reactRepo = require('./constants.json').repos.react;
-const constants = require('../forgae-init/constants.json');
 
 const reactAeppProjectPath = './aepp-forgae-shape-react/aepp';
 const reactIdentityProviderProjectPath = './aepp-forgae-shape-react/identity-provider';
@@ -25,11 +24,11 @@ class ReactSubCommand {
 
         await self.prepareVueProject();
 
-        console.log('===== React project successfully initialized. =====');
+        console.log(`===== '${ self.name }' project successfully initialized. =====`);
     }
 
     async prepareVueProject () {
-        console.log('===== Preparation of a ready-to-use aepp with predefined Vue.js frontend framework and forgae integration =====');
+        console.log(`===== Preparation of a ready-to-use aepp with predefined '${ self.name }' frontend framework and forgae integration =====`);
 
         await exec('git', 'clone', [ reactRepo ]);
 

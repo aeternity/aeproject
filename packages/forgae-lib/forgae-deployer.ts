@@ -1,5 +1,5 @@
 import utils from 'forgae-utils';
-import fs from 'fs';
+import * as fs from 'fs';
 import logStoreService from 'forgae-logger';
 import config from 'forgae-config';
 import nodeConfig from 'forgae-config';
