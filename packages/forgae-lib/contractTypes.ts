@@ -33,6 +33,8 @@ type deployInfo = {
 export type DeployedContract = {
     aci: string
     deployInfo: deployInfo
+    address: string,
+    transaction: string
 }
 
 export type ContractInstance = {

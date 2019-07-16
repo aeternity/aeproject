@@ -117,23 +117,23 @@ export class Deployer {
             deployedContract = await contractInstance.deploy(initState, options);
 
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-            await generateInstancesWithWallets(this.network, deployedContract.deployInfo.address);
+            await generateInstancesWithWallets(this.network, deployedContract.address);
             let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(contractInstance);
             deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
 
             let regex = new RegExp(/[\w]+.aes$/);
             contractFileName = regex.exec(contractPath);
-            txInfo = await getTxInfo(deployedContract.deployInfo.transaction);
+            txInfo = await getTxInfo(deployedContract.transaction);
 
-            if (deployedContract && deployedContract.deployInfo.transaction) {
+            if (deployedContract && deployedContract.transaction) {
 
-                info.transactionHash = deployedContract.deployInfo.transaction;
+                info.transactionHash = deployedContract.transaction;
                 info.gasPrice = txInfo.gasPrice;
                 info.gasUsed = txInfo.gasUsed;
-                info.result = deployedContract.deployInfo.address;
+                info.result = deployedContract.address;
                 info.status = true;
                 
-                console.log(`===== Contract: ${ contractFileName } has been deployed at ${ deployedContract.deployInfo.address } =====`);
+                console.log(`===== Contract: ${ contractFileName } has been deployed at ${ deployedContract.address } =====`);
             }
 
         } catch (e) {

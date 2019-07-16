@@ -159,7 +159,7 @@ var Deployer = /** @class */ (function () {
                     case 5:
                         deployedContract = _a.sent();
                         // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
-                        return [4 /*yield*/, generateInstancesWithWallets(this.network, deployedContract.deployInfo.address)];
+                        return [4 /*yield*/, generateInstancesWithWallets(this.network, deployedContract.address)];
                     case 6:
                         // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
                         _a.sent();
@@ -169,16 +169,16 @@ var Deployer = /** @class */ (function () {
                         deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
                         regex = new RegExp(/[\w]+.aes$/);
                         contractFileName = regex.exec(contractPath);
-                        return [4 /*yield*/, getTxInfo(deployedContract.deployInfo.transaction)];
+                        return [4 /*yield*/, getTxInfo(deployedContract.transaction)];
                     case 8:
                         txInfo = _a.sent();
-                        if (deployedContract && deployedContract.deployInfo.transaction) {
-                            info.transactionHash = deployedContract.deployInfo.transaction;
+                        if (deployedContract && deployedContract.transaction) {
+                            info.transactionHash = deployedContract.transaction;
                             info.gasPrice = txInfo.gasPrice;
                             info.gasUsed = txInfo.gasUsed;
-                            info.result = deployedContract.deployInfo.address;
+                            info.result = deployedContract.address;
                             info.status = true;
-                            console.log("===== Contract: " + contractFileName + " has been deployed at " + deployedContract.deployInfo.address + " =====");
+                            console.log("===== Contract: " + contractFileName + " has been deployed at " + deployedContract.address + " =====");
                         }
                         return [3 /*break*/, 10];
                     case 9:
