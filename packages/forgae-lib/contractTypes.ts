@@ -43,7 +43,8 @@ export type ContractInstance = {
     * @param {Boolean} [options.skipArgsConvert=false] Skip Validation and Transforming arguments before prepare call-data
     * @return {ContractInstance} Contract ACI object with predefined js methods for contract usage
     */
-    deploy(initState: Array<string | number>, options?: object): DeployedContract
+    deploy(initState: Array<string | number>, options?: object): DeployedContract;
+    methods: Array<any>
 }
 
 export type Info = {

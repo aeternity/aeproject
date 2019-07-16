@@ -25,7 +25,7 @@ const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
 const mainForgaeProjectDir = process.cwd();
 
-function insertAdditionalFiles () {
+function insertAdditionalFiles() {
     // copy needed files into test folder to run the specific tests
     let cwd = process.cwd();
     let testFolder = path.join(cwd, '/test/commands-tests/deployTest');
@@ -39,28 +39,13 @@ function insertAdditionalFiles () {
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
 }
 
-async function linkLocalPackages () {
+async function linkLocalPackages() {
     const forgaeLibDir = `${ process.cwd() }/packages/forgae-lib/`
     const forgaeUtilsDir = `${ process.cwd() }/packages/forgae-utils/`
     const forgaeConfigDir = `${ process.cwd() }/packages/forgae-config/`
 
-    process.chdir(forgaeLibDir);
-    await exec('npm link')
-
-    process.chdir(forgaeUtilsDir);
-    await exec('npm link')
-
-    process.chdir(forgaeConfigDir);
-    await exec('npm link')
-
     process.chdir(executeOptions.cwd);
     await exec('npm link forgae-lib')
-
-    process.chdir(`${ executeOptions.cwd }/node_modules/forgae-lib`);
-    await exec('npm link forgae-utils')
-
-    process.chdir(forgaeUtilsDir)
-    await exec('npm link forgae-config')
 
 }
 
@@ -118,6 +103,7 @@ describe('ForgAE Deploy', () => {
             const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
 
             // Assert
+
             assert.equal(deployer.network.url, network)
             assert.equal(deployer.network.networkId, expectedNetworkId)
         })
@@ -146,15 +132,11 @@ describe('ForgAE Deploy', () => {
             let expectedNetwork = "local"
             let expectedInitValue = "testString"
             let deployer = new Deployer(expectedNetwork);
-
             // Act
             let deployedContract = await deployer.deploy("./test/commands-tests/multipleContractsFolder/ExampleContract4.aes", [expectedInitValue]);
-
-            const callNameResult = await deployedContract.call('name');
-
+            const callNameResult = await deployedContract.name(expectedInitValue);
             // Assert
-            const decodedNameResult = await callNameResult.decode("string");
-            assert.equal(decodedNameResult, expectedInitValue)
+            assert.equal(callNameResult.decodedResult, expectedInitValue)
         })
     })
 
@@ -245,8 +227,7 @@ describe('ForgAE Deploy', () => {
         it('Should NOT deploy with invalid additional parameter --compiler', async () => {
 
             let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
-
-            assert.include(result, `Error: Compiler not defined`);
+            assert.include(result, "Compiler not defined");
         })
 
         it('with secret key arguments that have 0 (AEs) balance', async () => {
@@ -260,7 +241,7 @@ describe('ForgAE Deploy', () => {
         it('try to deploy SC with invalid init parameters from another deployment script', async () => {
             insertAdditionalFiles();
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ invalidParamDeploymentScriptPath }`], executeOptions);
-            assert.include(result, 'Error: ValidationError');
+            assert.include(result, 'ValidationError');
         })
 
         it('try to deploy SC with missing init parameters from another deployment script', async () => {

@@ -25,6 +25,7 @@ const handleApiError = forgaeUtils.handleApiError;
 const logApiError = forgaeUtils.logApiError;
 const timeout = forgaeUtils.timeout;
 const contractCompile = forgaeUtils.contractCompile;
+const checkNestedProperty = forgaeUtils.checkNestedProperty;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -65,5 +66,6 @@ module.exports = {
     fileExists,
     trimAdresseses,
     SophiaUtil,
-    contractCompile
+    contractCompile,
+    checkNestedProperty
 }
