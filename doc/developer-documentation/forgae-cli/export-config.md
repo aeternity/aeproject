@@ -6,7 +6,7 @@
 forgae export-config 
 ```
 
-The **export-config** command helps developers see basic forgae configuration like miner and some default wallets, and node localhost configuration. The command print configuration as a json and export it to a file. Exported forgae configuration will be saved in './forgaeConfig.json' by default.
+The **export-config** command helps developers see basic forgae configuration like miner and some default wallets, and node configuration. The command prints configuration as a json and export it to a file. Exported forgae configuration will be saved in './forgaeConfig.json' by default.
 
 You can specify path using the **--path** option.
 

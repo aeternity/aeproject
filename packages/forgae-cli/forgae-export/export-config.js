@@ -64,18 +64,20 @@ async function writeToFile (forgaeConfig, destination) {
     utils.writeFileSync(destination, JSON.stringify(forgaeConfig));
 }
 
-module.exports = {
-    run: async (options) => {
+async function run (options) {
         
-        const localHostConfig = exportNodeConfiguration(config);
-        const minerKeyPair = exportMinerWallet(config.keypair);
-        const defaultWallets = exportWallets(config.defaultWallets);
+    const localHostConfig = exportNodeConfiguration(config);
+    const minerKeyPair = exportMinerWallet(config.keypair);
+    const defaultWallets = exportWallets(config.defaultWallets);
 
-        let forgaeConfig = Object.assign({}, localHostConfig);
-        forgaeConfig = Object.assign(forgaeConfig, minerKeyPair);
-        forgaeConfig.defaultWallets = defaultWallets; 
+    let forgaeConfig = Object.assign({}, localHostConfig);
+    forgaeConfig = Object.assign(forgaeConfig, minerKeyPair);
+    forgaeConfig.defaultWallets = defaultWallets; 
 
-        console.log(JSON.stringify(forgaeConfig, null, 2));
-        await writeToFile(forgaeConfig, options.path);
-    }
+    console.log(JSON.stringify(forgaeConfig, null, 2));
+    await writeToFile(forgaeConfig, options.path);
+}
+
+module.exports = {
+    run
 }
