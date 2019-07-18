@@ -1,5 +1,7 @@
 const config = require('forgae-config');
 const utils = require('forgae-utils');
+const path = require('path');
+const forgaeConfigDefaultFileName = require('./constants').forgaeConfigFileName;
 
 const DEFAULT_NUMBER_OF_WALLETS = 3;
 
@@ -50,8 +52,14 @@ function exportNodeConfiguration (config) {
 }
 
 async function writeToFile (forgaeConfig, destination) {
-
+    
     await utils.createDirIfNotExists(destination);
+    if (!destination.endsWith('.json')) {
+        destination = path.join(
+            destination,
+            forgaeConfigDefaultFileName
+        );
+    }
 
     utils.writeFileSync(destination, JSON.stringify(forgaeConfig));
 }
@@ -67,7 +75,7 @@ module.exports = {
         forgaeConfig = Object.assign(forgaeConfig, minerKeyPair);
         forgaeConfig.defaultWallets = defaultWallets; 
 
-        console.log(forgaeConfig);
+        console.log(JSON.stringify(forgaeConfig, null, 2));
         await writeToFile(forgaeConfig, options.path);
     }
 }

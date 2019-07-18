@@ -26,6 +26,7 @@ const printReportTable = require('forgae-utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
 const shape = require('./forgae-shapes/shape-commander');
 const exportConfig = require('./forgae-export/export-config');
+const forgaeConfigDefaultFileName = require('./forgae-export/constants').forgaeConfigFileName;
 
 const addInitOption = (program) => {
     program
@@ -126,7 +127,7 @@ const addExportConfigOption = (program) => {
     program
         .command('export-config')
         .description('Export miner account, few funded accounts  and default node configuration.')
-        .option('--path [export path]', 'Path to export config file', './forgaeConfig.json')
+        .option('--path [export path]', 'Path to export config file', forgaeConfigDefaultFileName)
         .action(async (options) => {
             await exportConfig.run(options);
         })

@@ -86,12 +86,12 @@ function deleteCreatedFiles (testFiles) {
 }
 
 async function createDirIfNotExists (destination) {
-    const lastIndexOf = destination.lastIndexOf('/');
-    const dirPath = destination.substring(0, lastIndexOf);
-    if (!await fs.ensureDir(dirPath)) {
-
-        await fs.ensureDir(dirPath);
+    if (path.parse(destination).ext !== '') {
+        const lastIndexOf = destination.lastIndexOf('/');
+        destination = destination.substring(0, lastIndexOf);
     }
+
+    await fs.ensureDir(destination);
 }
 
 module.exports = {
