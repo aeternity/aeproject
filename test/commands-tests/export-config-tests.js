@@ -40,7 +40,7 @@ const expectedTerminalOutput = {
     ]
 };
 
-describe.only('ForgAE Export Forgae Config', async () => {
+describe('ForgAE Export Forgae Config', async () => {
 
     let workingDir;
 
