@@ -22,12 +22,12 @@ class ReactSubCommand {
     async run () {
         await createForgaeProjectStructure(true);
 
-        await self.prepareVueProject();
+        await self.prepareProject();
 
         console.log(`===== '${ self.name }' project successfully initialized. =====`);
     }
 
-    async prepareVueProject () {
+    async prepareProject () {
         console.log(`===== Preparation of a ready-to-use aepp with predefined '${ self.name }' frontend framework and forgae integration =====`);
 
         await exec('git', 'clone', [ reactRepo ]);
