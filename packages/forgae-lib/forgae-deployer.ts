@@ -111,7 +111,7 @@ export class Deployer {
         try {
             contractInstance = await client.getContractInstance(contract);
             deployedContract = await contractInstance.deploy(initState, options);
-
+          
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             let functions = await generateFunctionsFromSmartContract(contract, deployedContract, this.keypair.secretKey, this.network,contractInstance);
 
