@@ -21,7 +21,9 @@
 	"dockerDir": "./docker",
 	"dockerTemplateDir": "docker",
 	"dockerFilesDestination": "./docker",
-	"dockerYmlFile": "docker-compose.yml",
-	"dockerYmlFileDestination": "./docker-compose.yml",
-	"sdkVersion": "4.1.0"
+	"dockerNodeYmlFile": "docker-compose.yml",
+	"dockerCompilerYmlFile": "docker-compose.compiler.yml",
+	"dockerNodeYmlFileDestination": "./docker-compose.yml",
+	"dockerCompilerYmlFileDestination": "./docker-compose.compiler.yml",
+	"sdkVersion": "4.2.0"
 }

@@ -39,7 +39,7 @@ describe('ForgAE Compile', () => {
 
         it('Should compile multiple contracts successfully with path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder"], executeOptions)
-            
+
             assert.include(result, expectedResult1)
             assert.include(result, expectedResult2)
             assert.include(result, expectedResult3)

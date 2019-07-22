@@ -2,8 +2,8 @@ contract ExampleContract =
     record state = {
         index : int}
         
-    public stateful function init(start_index: int) = 
+    stateful entrypoint init(start_index: int) = 
         { index = start_index}
 
-    function get_index() =
+    entrypoint get_index() =
         state.index

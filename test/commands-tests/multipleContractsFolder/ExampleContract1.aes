@@ -1,4 +1,4 @@
 contract ExampleContract1 =
   type state = ()
-  public function main(x : int) = x
-  public function main1(x : string) : string = x
+  entrypoint main(x : int) = x
+  entrypoint main1(x : string) : string = x

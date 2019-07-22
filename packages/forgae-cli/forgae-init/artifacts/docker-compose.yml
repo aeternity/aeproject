@@ -50,6 +50,8 @@ services:
       - ./docker/nginx-cors.conf:/etc/nginx/cors.conf
       - ./docker/nginx-ws.conf:/etc/nginx/ws.conf
 
+  
+
 volumes:
   node1_db:
   node1_keys:
