@@ -1,5 +1,5 @@
 import utils from 'forgae-utils';
-import fs from 'fs';
+import * as fs from 'fs';
 import logStoreService from 'forgae-logger';
 import config from 'forgae-config';
 import nodeConfig from 'forgae-config';
@@ -132,8 +132,8 @@ export class Deployer {
                 info.gasUsed = txInfo.gasUsed;
                 info.result = deployedContract.address;
                 info.status = true;
-
-                console.log(`===== Contract: ${contractFileName} has been deployed =====`);
+                
+                console.log(`===== Contract: ${ contractFileName } has been deployed at ${ deployedContract.address } =====`);
             }
 
         } catch (e) {
@@ -174,7 +174,7 @@ async function generateInstancesWithWallets(network: Network, contractAddress) {
 async function generateFunctionsFromSmartContract(contractInstance: ContractInstance): Promise<Object> {
     let contractFunctions = contractInstance.methods;
 
-    contractFunctions['from'] = async function (userWallet: Any) {
+    contractFunctions['from'] = async function (userWallet: any) {
         let walletToPass = userWallet
 
         if(walletToPass.secretKey) {
