@@ -12,6 +12,7 @@
 	"shapeVueTestsFolderPath": "/test/commands-tests/shapeVueTestFolder",
 	"shapeReactTestsFolderPath": "/test/commands-tests/shapeReactTestFolder",
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
+	"exportForgaeConfigTestsFolderPath": "/test/commands-tests/exportForgaeConfigTestFolder",
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
