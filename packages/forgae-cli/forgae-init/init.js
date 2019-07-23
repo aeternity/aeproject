@@ -66,9 +66,73 @@ const updateForgaeProjectLibraries = async (_sdkVersion) => {
     print('===== ForgAE was successfully updated! =====');
 }
 
+async function prompt(error) {
+    const args = [...arguments];
+    // [0] - error
+    // [1] - function to execute
+    // [..] rest = function arguments 
+
+    const funcToExecute = args[1];
+
+    let inputData = '';
+
+    // Get process.stdin as the standard input object.
+    const input = process.stdin;
+
+    // Set input character encoding.
+    input.setEncoding('utf-8');
+
+    // Prompt user to input data in console.
+    console.log("'package.json' already exists, Do you want to overwrite it? (YES/no):");
+
+    // When user input data and click enter key.
+    input.on('data', function (data) {
+        inputData += data.toString().trim();
+    });
+
+    const MAX_TIMEOUT = 10000;
+    const INTERVAL_TIME = 400;
+    let passedMs = 0;
+
+    let inputInterval = setInterval(function () {
+
+        if (inputData === 'YES') {
+            console.log('===> 3.1');
+            clearInterval(inputInterval);
+            // copyFileOrDir(fileSource, "./package.json", { overwrite: true });
+
+            !!!
+            funcToExecute(...args.slice(2));
+            console.log('===> 3.2');
+        } // else {
+        //     //inputData = '';
+        // }
+
+        passedMs += INTERVAL_TIME;
+
+        if (passedMs >= MAX_TIMEOUT) {
+            throw Error(error);
+        }
+    }, INTERVAL_TIME);
+}
+
 const installLibraries = async () => {
+    console.log('====> 1');
     const fileSource = `${ __dirname }${ constants.artifactsDir }/package.json`;
-    copyFileOrDir(fileSource, "./package.json")
+    try {
+        copyFileOrDir(fileSource, "./package.json")
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+
+            await prompt(error, copyFileOrDir, fileSource, "./package.json")
+
+            await utils.timeout(10000);
+
+        } else {
+            throw Error(error);
+        }
+    }
+    
     await installAeppSDK(sdkVersion)
     await installForgae()
     await installYarn()
