@@ -17,7 +17,7 @@ contract Calculator =
         if(!expression)
             abort(error_message)
 
-    // entrypoint commented_should_nott_call_me() : int =
+    // entrypoint commented_should_not_call : int =
     //     i_am_private()
 
     // entrypoint commented_am_i_private() : int = 996

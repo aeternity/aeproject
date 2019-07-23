@@ -25,7 +25,7 @@ const INVALID_TEST_FUNCTIONS = [
     'should_not_call_me',
     'i_am_private',
     'require',
-    'commented_should_nott_call_me',
+    'commented_should_not_call',
     'commented_am_i_private'
 ];
 
