@@ -125,8 +125,12 @@ const setupDocker = () => {
         overwrite: true
     }
 
-    const dockerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerYmlFile }`;
-    copyFileOrDir(dockerYmlFileSource, constants.dockerYmlFileDestination, copyOptions)
+    const dockerNodeYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerNodeYmlFile }`;
+    copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination, copyOptions)
+    copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
+
+    const dockerCompilerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerCompilerYmlFile }`;
+    copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, copyOptions)
     copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
 }
 

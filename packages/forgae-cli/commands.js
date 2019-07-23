@@ -66,7 +66,6 @@ const addNodeOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--only', 'Start only the node without local compiler')
-        .option('--compiler-port [compiler port]', 'Run a desired compiler at specific port', localCompiler.port)
         .action(async (options) => {
             await node.run(options);
         })

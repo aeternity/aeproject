@@ -2,8 +2,8 @@ contract ExampleContract4 =
   record state = { 
     name              : string}
 
-  public stateful function  name() : string =
+  stateful entrypoint  name() : string =
     state.name
   
-  public stateful function  init(name : string) = {
+  stateful entrypoint  init(name : string) = {
   	name = name}

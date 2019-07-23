@@ -32,8 +32,8 @@ const docker = new dockerCLI.Docker();
 const nodeConfig = require('forgae-config')
 const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
-const localCompilerConfig = nodeConfig.localCompiler;
-const dockerConfiguration = nodeConfig.dockerConfiguration;
+const localCompilerConfig = nodeConfig.compilerConfiguration;
+const nodeConfiguration = nodeConfig.nodeConfiguration;
 
 let balanceOptions = {
     format: false
@@ -103,67 +103,34 @@ async function fundWallet (client, recipient) {
 }
 
 function hasNodeConfigFiles () {
-    const neededConfigFile = nodeConfig.dockerConfiguration.configFileName;
-    const configFilePath = path.resolve(process.cwd(), neededConfigFile);
-    let isDockerConfigFileExists = fs.existsSync(configFilePath);
+    const neededNodeConfigFile = nodeConfiguration.configFileName;
+    const neededCompilerConfigFile = localCompilerConfig.configFileName;
+    const nodeConfigFilePath = path.resolve(process.cwd(), neededNodeConfigFile);
+    const compilerConfigFilePath = path.resolve(process.cwd(), neededCompilerConfigFile);
 
-    if (!isDockerConfigFileExists) {
-        console.log(`Missing ${ neededConfigFile } file!`);
+    let doesNodeConfigFileExists = fs.existsSync(nodeConfigFilePath);
+    let doesCompilerConfigFileExists = fs.existsSync(compilerConfigFilePath);
+
+    if (!doesNodeConfigFileExists || !doesCompilerConfigFileExists) {
+        console.log(`Missing ${ neededNodeConfigFile } or ${ neededCompilerConfigFile } file!`);
         return false;
     }
 
-    let fileContent = fs.readFileSync(configFilePath, 'utf-8');
+    let nodeFileContent = fs.readFileSync(nodeConfigFilePath, 'utf-8');
+    let compilerFileContent = fs.readFileSync(compilerConfigFilePath, 'utf-8');
 
-    if (fileContent.indexOf(nodeConfig.dockerConfiguration.textToSearch) < 0) {
-        console.log(`Invalid ${ neededConfigFile } file! Missing docker Ae node configuration.`);
+    if (nodeFileContent.indexOf(nodeConfiguration.textToSearch) < 0 || compilerFileContent.indexOf(localCompilerConfig.textToSearch) < 0) {
+        console.log(`Invalid ${ neededNodeConfigFile } or ${ neededCompilerConfigFile } file!`);
         return false;
     }
 
     return true;
 }
 
-function stopLocalCompiler () {
-
-    // get docker container ID - compiler
-    let tempOutput = [];
-    let dockerPs = spawn('docker', [
-        'ps'
-    ]);
-
-    dockerPs.stdout.on('data', (data) => {
-        tempOutput.push(data.toString());
-    });
-
-    setTimeout(function () {
-
-        let containerId = '';
-        tempOutput.forEach(x => {
-            let rgx = /(?:\s+|\n)([a-zA-Z0-9]+)\s+(?=aeternity\/aesophia_http)/gm
-            let match = rgx.exec(x);
-            while (match) {
-                if (match[1]) {
-                    containerId = match[1]
-                }
-
-                match = rgx.exec(x);
-            }
-        })
-
-        if (containerId) {
-            spawn('docker', [
-                'stop',
-                containerId
-            ]);
-
-            print('===== Local Compiler was successfully stopped! =====');
-        }
-    }, 1000);
-}
-
 async function run (option) {
 
     try {
-        let running = await waitForContainer(dockerConfiguration.dockerImage);
+        let running = await waitForContainer(nodeConfiguration.dockerImage);
 
         if (option.stop) {
             if (!running) {
@@ -171,15 +138,14 @@ async function run (option) {
                 return
             }
 
-            print('===== Stopping node =====');
+            print('===== Stopping node and compiler  =====');
 
-            await spawn('docker-compose', ['down', '-v'], {});
-
+            await spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'down', '-v', '--remove-orphans']);
             print('===== Node was successfully stopped! =====');
-
-            stopLocalCompiler();
+            print('===== Compiler was successfully stopped! =====');
 
             return;
+
         }
 
         if (!hasNodeConfigFiles()) {
@@ -193,8 +159,7 @@ async function run (option) {
         }
 
         print('===== Starting node =====');
-
-        let startingNodeSpawn = spawn('docker-compose', ['up', '-d']);
+        let startingNodeSpawn = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
 
         startingNodeSpawn.stdout.on('data', (data) => {
             print(data.toString());
@@ -207,9 +172,9 @@ async function run (option) {
         });
 
         let counter = 0;
-        while (!(await waitForContainer(dockerConfiguration.dockerImage))) {
+        while (!(await waitForContainer(nodeConfiguration.dockerImage))) {
             if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
-                await spawn('docker-compose', ['down', '-v'], {});
+                await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down', '-v', '--remove-orphans'], {});
                 throw new Error(`Cannot start AE node, port is already allocated!`)
             }
 
@@ -228,18 +193,18 @@ async function run (option) {
         if (!option.only) {
 
             try {
-                await startLocalCompiler(option.compilerPort);
+                await startLocalCompiler();
 
-                print(`===== Local Compiler was successfully started on port:${ option.compilerPort }! =====`);
+                print(`===== Local Compiler was successfully started! =====`);
 
             } catch (error) {
 
-                await spawn('docker-compose', ['down', '-v'], {});
+                await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down', '-v', '--remove-orphans'], {});
                 print('===== Node was successfully stopped! =====');
 
                 const errorMessage = readErrorSpawnOutput(error);
                 if (errorMessage.indexOf('port is already allocated') >= 0) {
-                    const errorMessage = `Cannot start local compiler on port:${ option.compilerPort }, port is already allocated!`;
+                    const errorMessage = `Cannot start local compiler, port is already allocated!`;
                     console.log(errorMessage);
                     throw new Error(errorMessage);
                 }
@@ -258,14 +223,8 @@ async function run (option) {
     }
 }
 
-function startLocalCompiler (port) {
-    return spawn('docker', [
-        'run',
-        '-d',
-        '-p',
-        `${ port }:${ localCompilerConfig.port }`,
-        `${ localCompilerConfig.dockerImage }:${ localCompilerConfig.imageVersion }`
-    ]);
+function startLocalCompiler () {
+    return spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
 }
 
 function readErrorSpawnOutput (spawnError) {
