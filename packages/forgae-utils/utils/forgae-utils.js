@@ -18,6 +18,8 @@ const {
     spawn
 } = require('promisify-child-process');
 
+const COMPILER_URL_POSTFIX = '/compile';
+
 const getClient = async function (network, keypair = config.keypair) {
     let client;
     let internalUrl = network.url;
@@ -157,8 +159,10 @@ async function contractCompile (source, contractPath, compileOptions) {
         code: source,
         options
     };
-    
-    result = await axios.post(compileOptions.compilerUrl, body, options);
+
+    const url = normalizeCompilerUrl(compileOptions.compilerUrl);
+
+    result = await axios.post(url, body, options);
 
     return result;
 }
@@ -209,6 +213,23 @@ function getActualContract (contractContent) {
     let content = contractContent.substr(contentStartIndex);
 
     return content;
+}
+
+function normalizeCompilerUrl(url) {
+
+    if (!url.startsWith('http')) {
+        url = 'http://' + url;
+    }
+
+    if (!url.endsWith(COMPILER_URL_POSTFIX)) {
+        if (url.endsWith('/')) {
+            url += COMPILER_URL_POSTFIX.substr(1);
+        } else {
+            url += COMPILER_URL_POSTFIX
+        }
+    }
+
+    return url;
 }
 
 module.exports = {
