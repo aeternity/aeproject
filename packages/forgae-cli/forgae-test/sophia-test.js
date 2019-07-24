@@ -29,6 +29,13 @@ const run = async function (paths = [], testFolder = process.cwd()) {
     }
 
     const contractsFolder = `${ testFolder }/contracts/`;
+
+    if (!fs.existsSync(contractsFolder)) {
+        console.log('There is no sophia test to execute.');
+        console.log(`There is missing 'contract' folder at a given test folder: '${ testFolder }'`);
+        return;
+    }
+
     const sophiaContractPaths = await utils.getFiles(contractsFolder.replace('//', '/'), `.aes$`);
 
     const mainContractsInfo = SophiaUtil.getContractInfo(sophiaContractPaths);
