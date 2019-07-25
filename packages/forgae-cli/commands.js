@@ -20,10 +20,13 @@ const testConfig = require('./forgae-test/test.js');
 const node = require('./forgae-node/node.js');
 const deploy = require('./forgae-deploy/deploy.js');
 const config = require('forgae-config');
+const localCompiler = config.localCompiler;
 const history = require('forgae-logger');
 const printReportTable = require('forgae-utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
 const shape = require('./forgae-shapes/shape-commander');
+const exportConfig = require('./forgae-export/export-config');
+const forgaeConfigDefaultFileName = require('./forgae-export/constants').forgaeConfigFileName;
 
 const addInitOption = (program) => {
     program
@@ -38,12 +41,11 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
     program
         .command('compile')
-        .option('-n --network [network]', 'Network to connect to', "local")
         .option('--path [compile path]', 'Path to contract files', './contracts')
-        .option('--compiler [compiler url]', 'Url to the desired compiler', config.compilerUrl)
+        .option('--compiler [compiler url]', 'Url to the desired compiler', config.compilerUrl + "/compile")
         .description('Compile contracts')
         .action(async (option) => {
-            await compile.run(option.path, option.network, option.compiler);
+            await compile.run(option.path, option.compiler);
         })
 }
 
@@ -75,10 +77,11 @@ const addDeployOption = (program) => {
         .description('Run deploy script')
         .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
         .option('-n --network [network]', 'Select network', "local")
+        .option('--networkId [networkId]', 'Configure your network id')
         .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)')
         .option('--compiler [compiler_url]', 'Url to the desired compiler')
         .action(async (options) => {
-            await deploy.run(options.path, options.network, options.secretKey, options.compiler);
+            await deploy.run(options.path, options.network, options.secretKey, options.compiler, options.networkId);
         })
 }
 
@@ -119,6 +122,16 @@ const addShapeOption = (program) => {
         })
 };
 
+const addExportConfigOption = (program) => {
+    program
+        .command('export-config')
+        .description('Export miner account, few funded accounts  and default node configuration.')
+        .option('--path [export path]', 'Path to export config file', forgaeConfigDefaultFileName)
+        .action(async (options) => {
+            await exportConfig.run(options);
+        })
+};
+
 const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
@@ -128,6 +141,7 @@ const initCommands = (program) => {
     addHistoryOption(program);
     addContractsAeppIntegrationOption(program)
     addShapeOption(program);
+    addExportConfigOption(program);
 }
 
 module.exports = {

@@ -13,133 +13,243 @@ let executeOptions = {
 };
 chai.use(chaiAsPromised);
 const assert = chai.assert;
+
+const http = require('http');
+
 const defaultWallets = nodeConfig.defaultWallets
 let balanceOptions = {
     format: false
 }
 
-describe('ForgAE Node', () => {
+let network = utils.config.localhostParams;
+network.compilerUrl = utils.config.compilerUrl
 
-    before(async () => {
-        fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+describe("Forgae Node and Compiler Tests", () => {
 
-        await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [], executeOptions)
+    describe('ForgAE Node', () => {
+
+        before(async () => {
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+
+            await execute(constants.cliCommands.INIT, [], executeOptions)
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+        })
+
+        it('Should start the node successfully', async () => {
+            let running = await waitForContainer();
+            assert.isTrue(running, "node wasn't started properly");
+        })
+
+        it('Should check if the wallets are funded', async () => {
+
+            let client = await utils.getClient(network);
+            await waitUntilFundedBlocks(client)
+            for (let wallet in defaultWallets) {
+                let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
+            }
+        })
+
+        it('Should check if the wallets are funded with the exact amount', async () => {
+            let client = await utils.getClient(network);
+            for (let wallet in defaultWallets) {
+                let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
+            }
+        })
+
+        it('Process should start local compiler', async () => {
+            let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
+            let isContainCurrentVersion = result.indexOf(`{"version"`) >= 0;
+
+            assert.isOk(isContainCurrentVersion);
+        })
+
+        it('Should stop the node successfully', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            let running = await waitForContainer();
+            assert.isNotTrue(running, "node wasn't stopped properly");
+        })
+
+        it('Process should stop when command is started in wrong folder.', async () => {
+            let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], {
+                cwd: process.cwd()
+            });
+
+            if (result.indexOf('Process will be terminated!') < 0) {
+                assert.isOk(false, "Process is still running in wrong folder.")
+            }
+        })
+
+        after(async () => {
+
+            let running = await waitForContainer();
+            if (running) {
+                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            }
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        })
     })
 
-    it('Should start the node successfully', async () => {
-        let running = await waitForContainer();
-        assert.isTrue(running, "node wasn't started properly");
+    describe('ForgAE Node - check if compiler is running too', () => {
+
+        before(async () => {
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+
+            await execute(constants.cliCommands.INIT, [], executeOptions)
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+        })
+
+        it('Local compiler should be running.', async () => {
+            let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
+            let isContainCurrentVersion = result.indexOf(`{"version"`) >= 0;
+
+            assert.isOk(isContainCurrentVersion);
+        })
+
+        after(async () => {
+
+            let running = await waitForContainer();
+            if (running) {
+                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            }
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        })
     })
 
-    it('Should check if the wallets are funded', async () => {
+    describe('ForgAE Node', async () => {
+        it('Process should stop when command is started in wrong folder.', async () => {
+            let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], {
+                cwd: process.cwd()
+            });
 
-        let client = await utils.getClient(utils.config.localhostParams);
-        await waitUntilFundedBlocks(client)
-        for (let wallet in defaultWallets) {
-            let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
-            assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
-        }
+            if (result.indexOf('Process will be terminated!') < 0) {
+                assert.isOk(false, "Process is still running in wrong folder.")
+            }
+        })
     })
 
-    it('Should check if the wallets are funded with the exact amount', async () => {
-        let client = await utils.getClient(utils.config.localhostParams);
-        for (let wallet in defaultWallets) {
-            let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
-            assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
-        }
+    describe('ForgAE Node --only', () => {
+
+        beforeEach(async () => {
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+
+            await execute(constants.cliCommands.INIT, [], executeOptions)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
+        })
+
+        it('Process should NOT start local compiler', async () => {
+            let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
+            assert.isOk(result.indexOf('Connection refused') >= 0, "There is a port that listening on compiler's port.");
+        })
+
+        afterEach(async () => {
+
+            let running = await waitForContainer();
+            if (running) {
+                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            }
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        })
     })
 
-    it('Process should start local compiler', async () => {
-        let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
-        let isContainCurrentVersion = result.indexOf(`{"version":"${ nodeConfig.localCompiler.imageVersion.replace('v', '') }"}`) > 0;
-        
-        assert.isOk(isContainCurrentVersion);
-    })
+    describe("ForgAE Node -- allocated port's tests", () => {
 
-    it('Should stop the node successfully', async () => {
-        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        let running = await waitForContainer();
-        assert.isNotTrue(running, "node wasn't stopped properly");
-    })
+        before(async () => {
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
-    it('Process should stop when command is started at wrong folder.', async () => {
-        let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], {
-            cwd: process.cwd()
+            await execute(constants.cliCommands.INIT, [], executeOptions);
+        })
+
+        // try to run AE node on already allocated port , process should stop
+        it('Process should NOT start AE node', async () => {
+
+            const port = 3001;
+
+            // Create an instance of the http server to handle HTTP requests
+            let app = http.createServer((req, res) => {
+
+                // Set a response type of plain text for the response
+                res.writeHead(200, {
+                    'Content-Type': 'text/plain'
+                });
+
+                // Send back a response and end the connection
+                res.end('Hello World!\n');
+            });
+
+            // Start the server on specific port
+            app.listen(port);
+
+            // test
+            let result = await execute(constants.cliCommands.NODE, [], executeOptions);
+
+            const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0;
+            const isSamePort = result.indexOf(`:${ port }`) >= 0;
+
+            assert.isOk(isPortAllocated, 'Node does not throw exception on allocated port!');
+            assert.isOk(isSamePort, 'Error message does not contains expected port!');
+
+            // stop server
+            app.close();
         });
 
-        if (result.indexOf('Process will be terminated!') < 0) {
-            assert.isOk(false, "Process is still running in wrong folder.")
-        }
-    })
+        // try to run compiler on already allocated port, process should stop
+        it('Process should NOT start local compiler', async () => {
 
-    after(async () => {
+            const port = 3080;
 
-        let running = await waitForContainer();
-        if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        }
-        fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
-    })
-})
+            // Create an instance of the http server to handle HTTP requests
+            let app = http.createServer((req, res) => {
 
-describe('ForgAE Node - check if compiler is running too', () => {
+                // Set a response type of plain text for the response
+                res.writeHead(200, {
+                    'Content-Type': 'text/plain'
+                });
 
-    before(async () => {
-        fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+                // Send back a response and end the connection
+                res.end('Hello World!\n');
+            });
 
-        await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [], executeOptions)
-    })
+            // Start the server on specific port
+            app.listen(port);
 
-    it('Local compiler should be running.', async () => {
-        let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
-        let isContainCurrentVersion = result.indexOf(`{"version":"${ nodeConfig.localCompiler.imageVersion.replace('v', '') }"}`) > 0;
+            // test
+            let result = await execute(constants.cliCommands.NODE, [], executeOptions);
 
-        assert.isOk(isContainCurrentVersion);
-    })
+            const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0 || result.indexOf(`Process exited with code 125`) >= 0;
+            // const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
-    after(async () => {
+            assert.isOk(isPortAllocated, 'Local compiler does not throw exception on allocated port!');
+            // assert.isOk(isSamePort, 'Error message does not contains expected port!');
 
-        let running = await waitForContainer();
-        if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        }
-        fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
-    })
-})
-
-describe('ForgAE Node', async () => {
-    it('Process should stop when command is started at wrong folder.', async () => {
-        let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], {
-            cwd: process.cwd()
+            // stop server
+            app.close();
         });
 
-        if (result.indexOf('Process will be terminated!') < 0) {
-            assert.isOk(false, "Process is still running in wrong folder.")
-        }
-    })
-})
+        // try to run compiler on custom port
+        xit('Process should start local compiler on specific port', async () => {
 
-describe('ForgAE Node --only', () => {
+            const port = 4080;
 
-    beforeEach(async () => {
-        fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+            // test
+            let result = await execute(constants.cliCommands.NODE, [
+                constants.cliCommandsOptions.COMPILER_PORT,
+                port
+            ], executeOptions);
 
-        await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
-    })
+            const isSuccessfullyStarted = result.indexOf(`Local Compiler was successfully started on port:${ port }`) >= 0;
 
-    it('Process should NOT start local compiler', async () => {
-        await assert.isRejected(exec(constants.cliCommands.CURL, constants.getCompilerVersionURL), 'Process exited with code 7');
-    })
+            assert.isOk(isSuccessfullyStarted, 'Local compiler does not start on specific port!');
+        });
 
-    afterEach(async () => {
+        after(async () => {
 
-        let running = await waitForContainer();
-        if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        }
-        fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            let running = await waitForContainer();
+            if (running) {
+                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            }
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        })
     })
 })

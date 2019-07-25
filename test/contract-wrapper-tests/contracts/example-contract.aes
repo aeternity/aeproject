@@ -6,37 +6,45 @@ contract ExampleContract =
 
   record state = {
     current_id: int,
-    m_id_people: map(int, person)}
+    m_id_people: map(int, person),
+    m_human: map(int,int),
+    l_humans: list(int)}
 
-  public stateful function init() =
+  datatype event = TestEvent()
+
+  datatype event = TestEvent()
+
+  stateful entrypoint init() =
     { current_id = 0,
-      m_id_people = {}}
+      m_id_people = {},
+      m_human = {},
+      l_humans = []}
 
-  public function say_hello(name : string) : string = 
+  entrypoint say_hello(name : string) : string = 
     String.concat("Hello ", name)
 
-  public function sum(intA: int, intB: int) : int =
+  entrypoint sum(intA: int, intB: int) : int =
     intA + intB
 
-  public function am_i_caller(caller: address) : bool =
+  entrypoint am_i_caller(caller: address) : bool =
     caller == Call.caller
 
-  public function get_caller() : address =
+  entrypoint get_caller() : address =
     Call.caller
 
-  public function return_string() : string =
+  entrypoint return_string() : string =
     "Call.caller"
 
-  private function multiply(x: int, y: int) : int =
+  function multiply(x: int, y: int) : int =
     x * y
 
-  private function prv_func(name: string) =
+  function prv_func(name: string) =
     String.concat("Bye ", name)
 
-  public function show_my_param(param: bool) : bool =
+  entrypoint show_my_param(param: bool) : bool =
     param
 
-  public stateful function add_person(_name: string, _age: int) : int =
+  stateful entrypoint add_person(_name: string, _age: int) : int =
 
     let _person : person = {
       name = _name,
@@ -49,10 +57,25 @@ contract ExampleContract =
 
     next_id
 
-  public function get_person_by_id(id: int) : person =
-    _get_person_by_id(id)
+  entrypoint func_no_return(intA: int, intB: int) =
+    Chain.event(TestEvent)
 
-  private function _get_person_by_id(id: int) : person =
+  stateful entrypoint add_human(human: map(int, int)) : map(int,int) =
+    put(state{m_human = human})
+    state.m_human
+    
+  stateful entrypoint add_record(human:person, id: int): person =
+    put(state{m_id_people[id] = human})
+    state.m_id_people[id]
+    
+  stateful entrypoint add_list_human(humansList: list(int)): list(int) =
+    put(state{l_humans = humansList})
+    state.l_humans
+
+  entrypoint get_person_by_id(id: int) : person =
+    _get_person_by_id(id)
+  
+  function _get_person_by_id(id: int) : person =
       
     let _person : person = {
       name = "",
@@ -63,7 +86,7 @@ contract ExampleContract =
       None => _person
 
   // this code is needed for a test
-  // public function commented_function() : list(string) =
+  //  entrypoint commented_function() : list(string) =
   //   // ["Name: first todo | Is completed: false", "Name: second todo | Is completed: true"]
   //   let numberOfTodos = get_todo_count(Call.caller)
   //   let collection = []

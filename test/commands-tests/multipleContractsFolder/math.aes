@@ -1,0 +1,17 @@
+include "./math-sum.aes"
+include "./math-sub.aes"
+include "./math-mul.aes"
+include "./math-div.aes"
+
+contract Math =
+   entrypoint sum(a : int, b: int) : int =
+      MathSum.sum(a, b)
+
+   entrypoint sub(x : int, y : int) : int =
+      MathSub.sub(x, y)
+
+   entrypoint mul(x : int, y : int) : int =
+      MathMul.multiply(x, y)
+
+   entrypoint div(x : int, y : int) : int =
+      MathDiv.divide(x, y)

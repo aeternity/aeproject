@@ -13,6 +13,8 @@ const writeFileRelative = fsUtils.writeFileRelative;
 const fileExists = fsUtils.fileExists;
 const readFile = fsUtils.readFile;
 const deleteCreatedFiles = fsUtils.deleteCreatedFiles;
+const createDirIfNotExists = fsUtils.createDirIfNotExists;
+const writeFileSync = fsUtils.writeFile;
 
 const forgaeUtils = require('./utils/forgae-utils');
 const getClient = forgaeUtils.getClient;
@@ -24,6 +26,8 @@ const config = forgaeUtils.config;
 const handleApiError = forgaeUtils.handleApiError;
 const logApiError = forgaeUtils.logApiError;
 const timeout = forgaeUtils.timeout;
+const contractCompile = forgaeUtils.contractCompile;
+const checkNestedProperty = forgaeUtils.checkNestedProperty;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -63,5 +67,9 @@ module.exports = {
     writeFileRelative,
     fileExists,
     trimAdresseses,
-    SophiaUtil
+    SophiaUtil,
+    contractCompile,
+    checkNestedProperty,
+    createDirIfNotExists,
+    writeFileSync
 }

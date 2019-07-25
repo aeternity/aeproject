@@ -1,0 +1,3 @@
+contract MathDiv =
+    entrypoint divide (x: int, y: int) : int =
+        x / y

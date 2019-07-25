@@ -2,7 +2,6 @@ const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
 const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
-// const execute = require('../../cli-commands/utils.js').forgaeExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
@@ -10,7 +9,8 @@ const expectedCompileResultExampleContract = "ExampleContract.aes has been succe
 let expectedResult1 = "ExampleContract1.aes has been successfully compiled"
 let expectedResult2 = "ExampleContract2.aes has been successfully compiled"
 let expectedResult3 = "ExampleContract3.aes has been successfully compiled"
-let expectedResult4 = "ExampleContract.aes has not been compiled"
+let expectedResult4 = "math.aes has been successfully compiled"
+let expectedResult5 = "ENOTFOUND compiler.somewhere.com compiler.somewhere.com"
 let executeOptions = {
     cwd: process.cwd() + constants.compileTestsFolderPath
 };
@@ -39,46 +39,14 @@ describe('ForgAE Compile', () => {
 
         it('Should compile multiple contracts successfully with path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder"], executeOptions)
+
             assert.include(result, expectedResult1)
             assert.include(result, expectedResult2)
             assert.include(result, expectedResult3)
+            assert.include(result, expectedResult4)
         })
 
-        it('Should compile contracts with -n argument - localhost', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["-n", "local"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with -n argument - testnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["-n", "testnet"], executeOptions)
-            
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-        it('Should compile contracts with -n argument - mainnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["-n", "mainnet"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with --network argument - localhost', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["--network", "local"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with --network argument - testnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["--network", "testnet"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-        it('Should compile contracts with --netwotk argument - mainnet ', async () => {
-            let result = await execute(constants.cliCommands.COMPILE, ["--network", "mainnet"], executeOptions)
-
-            assert.include(result, expectedCompileResultExampleContract)
-        })
-
-        it('Should compile contracts with --compiler argument - localhost ', async () => {
+        it('Should compile contracts with --compiler argument', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", LOCAL_COMPILER_URL], executeOptions)
 
             assert.include(result, expectedCompileResultExampleContract);
@@ -86,8 +54,7 @@ describe('ForgAE Compile', () => {
 
         it('Should NOT compile contracts with --compiler argument - invalid one ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", INVALID_COMPILER_URL], executeOptions)
-            
-            assert.include(result, expectedResult4);
+            assert.include(result, expectedResult5);
         })
     })
 

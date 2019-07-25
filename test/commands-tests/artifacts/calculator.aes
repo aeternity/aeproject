@@ -1,4 +1,11 @@
 contract Calculator =
-    public function sum(a: int, b: int) = a + b
 
-    public function sub(a: int, b: int) = a - b
+    record state = {
+      index : int}
+
+    stateful entrypoint init() = 
+      { index = 5 }
+
+    entrypoint sum(a: int, b: int) = a + b
+
+    entrypoint sub(a: int, b: int) = a - b

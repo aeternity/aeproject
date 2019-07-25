@@ -6,12 +6,6 @@
 npm install -g forgae
 ```
 
-## Running local node
-
-```text
-forgae node
-```
-
 ## Init a project
 
 ```text
@@ -19,6 +13,14 @@ forgae init
 ```
 
 This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
+
+## Running local node
+In a project folder:
+```text
+forgae node
+```
+
+To spwan a temporary local chain, use `forgae node --stop` to stop it.
 
 ## Access deployed smart contract functions
 

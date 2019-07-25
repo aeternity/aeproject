@@ -1,0 +1,3 @@
+contract MathMul =
+  entrypoint multiply(x : int, y : int) : int =
+    x * y

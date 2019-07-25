@@ -11,7 +11,7 @@
    "EXPORT_FILE_LITERAL" : "export default",
    "CONTRACTS_STARTING_SUCCESSFULLY" : "Compiled successfully",
    "LOG_FILE" : "./contractLogFile.log",
-   "LOCALHOST_SUCCESS" : "Starting Contracts web Aepp",
+   "LOCALHOST_SUCCESS" : "Contracts web Aepp",
    "UPDATE_FLAG_CHECK_CONDITION" : "Installing Contracts web Aepp",
    "FORGAE_CLI_COMMAND" : "forgae",
    "STARTING_AEPP_TIMEOUT" : 150000

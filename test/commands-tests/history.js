@@ -20,7 +20,7 @@ const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
 
-function insertAdditionalFiles(oldCWD) {
+function insertAdditionalFiles (oldCWD) {
 
     // copy needed files into test folder to run the specific tests
     let cwd = process.cwd();
@@ -40,10 +40,14 @@ function insertAdditionalFiles(oldCWD) {
     process.chdir(cwd);
 }
 
-function countHistoryLogs(result) {
+function countHistoryLogs (result) {
     let counter = 0;
     let hasMatch = true;
     let index = 0;
+
+    if (!result) {
+        return counter;
+    }
 
     while (hasMatch) {
         index = result.indexOf('Event Time', index);
@@ -160,7 +164,7 @@ describe('ForgAE History', async () => {
         let currentCwd;
         let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
-        before('', async () => {
+        before(async () => {
             if (!fs.existsSync(tempTestPath)) {
                 fs.mkdirSync(tempTestPath);
             }
@@ -179,7 +183,6 @@ describe('ForgAE History', async () => {
 
             assert.equal(numberOfLogs, 0, "There are some logs!");
         });
-
 
         it('After first deployment, history should return 1 record', async () => {
 

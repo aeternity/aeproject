@@ -1,8 +1,18 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
+let axios = require('axios');
+const fs = require('fs');
+const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
-const config = require('forgae-config');
-const { printError } = require('./fs-utils')
+let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
+let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
+const mainContractsPathRgx = /.*\//g;
+let match;
+
+const config = require('../../forgae-config/config/config.json');
+const {
+    printError
+} = require('./fs-utils')
 
 const {
     spawn
@@ -11,11 +21,9 @@ const {
 const getClient = async function (network, keypair = config.keypair) {
     let client;
     let internalUrl = network.url;
-
     if (network.url.includes("localhost")) {
         internalUrl = internalUrl + "/internal"
     }
-
     await handleApiError(async () => {
         client = await Universal({
             url: network.url,
@@ -30,30 +38,42 @@ const getClient = async function (network, keypair = config.keypair) {
     return client;
 }
 
-const getNetwork = (network) => {
+const getNetwork = (network, networkId) => {
+    if (networkId) {
+        const customNetwork = createCustomNetwork(network, networkId)
+        return customNetwork;
+    }
     const networks = {
         local: {
             url: config.localhostParams.url,
             networkId: config.localhostParams.networkId
         },
         testnet: {
-            url: config.testnetParams.url,
-            networkId: config.testnetParams.networkId
+            url: config.testNetParams.url,
+            networkId: config.testNetParams.networkId
         },
         mainnet: {
-            url: config.mainnetParams.url,
-            networkId: config.mainnetParams.networkId
+            url: config.mainNetParams.url,
+            networkId: config.mainNetParams.networkId
         }
     };
 
-    const result = networks[network]
-    if (!result) {
-        throw new Error(`Unrecognized network ${ network }`)
-    }
+    const result = networks[network] != undefined ? networks[network] : createCustomNetwork(network, networkId);
 
     return result
 };
 
+const createCustomNetwork = (network, networkId) => {
+    if (network.includes('local') || networkId == undefined) {
+        throw new Error('Both network and networkId should be passed')
+    }
+    const customNetork = {
+        url: network,
+        networkId: networkId
+    }
+
+    return customNetork;
+}
 
 const handleApiError = async (fn) => {
     try {
@@ -66,7 +86,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -84,24 +104,112 @@ const forgaeExecute = async (command, args = [], options = {}) => {
 
 const execute = async (cli, command, args = [], options = {}) => {
 
-    const child = spawn(cli, [command, ...args], options)
-    let result = '';
+    try {
+        const child = await spawn(cli, [command, ...args], options);
 
-    child.stdout.on('data', (data) => {
-        result += data.toString();
-    });
+        let result = readSpawnOutput(child);
+        if (!result) {
+            result = readErrorSpawnOutput(child);
+        }
 
-    child.stderr.on('data', (data) => {
-        result += data.toString();
-    });
+        return result;
+    } catch (e) {
+        let result = readSpawnOutput(e);
+        result += readErrorSpawnOutput(e);
 
-    await child;
-    return result;
+        return result;
+    }
 };
 
 const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
+
+function readErrorSpawnOutput (spawnResult) {
+    if (!spawnResult.stderr || spawnResult.stderr === '') {
+        return '';
+    }
+
+    const buffMessage = Buffer.from(spawnResult.stderr);
+    return '\n' + buffMessage.toString('utf8');
+}
+
+function readSpawnOutput (spawnResult) {
+    if (!spawnResult.stdout || spawnResult.stdout === '') {
+        return '';
+    }
+
+    const buffMessage = Buffer.from(spawnResult.stdout);
+    return buffMessage.toString('utf8');
+}
+
+async function contractCompile (source, contractPath, compileOptions) {
+    let result;
+    let options = {
+        "file_system": null
+    }
+    
+    let dependencies = getDependencies(source, contractPath)
+    
+    options["file_system"] = dependencies
+
+    let body = {
+        code: source,
+        options
+    };
+    
+    result = await axios.post(compileOptions.compilerUrl, body, options);
+
+    return result;
+}
+
+function checkNestedProperty (obj, property) {
+    if (!obj || !obj.hasOwnProperty(property)) {
+        return false;
+    }
+    
+    return true;
+}
+
+function getDependencies (contractContent, contractPath) {
+    let allDependencies = [];
+    let dependencyFromContract;
+    let dependencyContractContent;
+    let dependencyContractPath;
+    let actualContract;
+    let dependencies = {}
+
+    match = rgx.exec(contractContent)
+
+    if (!match) {
+        return dependencies;
+    }
+
+    allDependencies = contractContent.match(rgx)
+    for (let index = 0; index < allDependencies.length; index++) {
+        dependencyFromContract = dependencyPathRgx.exec(allDependencies[index])
+        dependencyPathRgx.lastIndex = 0;
+
+        contractPath = mainContractsPathRgx.exec(contractPath)
+        mainContractsPathRgx.lastIndex = 0;
+        dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
+        dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
+        actualContract = getActualContract(dependencyContractContent)
+
+        dependencies[dependencyFromContract[1]] = actualContract;
+
+        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath))
+    }
+
+    return dependencies;
+}
+
+function getActualContract (contractContent) {
+    let contentStartIndex = contractContent.indexOf('contract ');
+    let content = contractContent.substr(contentStartIndex);
+
+    return content;
+}
 
 module.exports = {
     config,
@@ -112,5 +220,7 @@ module.exports = {
     sleep,
     forgaeExecute,
     execute,
-    timeout
+    timeout,
+    contractCompile,
+    checkNestedProperty
 }

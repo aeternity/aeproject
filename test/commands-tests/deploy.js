@@ -15,7 +15,7 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require('./../../packages/forgae-lib/forgae-deployer');
+const Deployer = require('./../../packages/forgae-lib/dist/forgae-deployer').Deployer;
 const config = require('./../constants.json');
 
 const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
@@ -23,8 +23,9 @@ const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
+const mainForgaeProjectDir = process.cwd();
 
-function insertAdditionalFiles () {
+function insertAdditionalFiles() {
     // copy needed files into test folder to run the specific tests
     let cwd = process.cwd();
     let testFolder = path.join(cwd, '/test/commands-tests/deployTest');
@@ -36,6 +37,16 @@ function insertAdditionalFiles () {
     fs.copyFileSync(invalidParamDeploymentScript, `${ testFolder }/${ invalidParamDeploymentScriptPath }`);
     fs.copyFileSync(missingParamDeploymentScript, `${ testFolder }/${ missingParamDeploymentScriptPath }`);
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
+}
+
+async function linkLocalPackages() {
+    const forgaeLibDir = `${ process.cwd() }/packages/forgae-lib/`
+    const forgaeUtilsDir = `${ process.cwd() }/packages/forgae-utils/`
+    const forgaeConfigDir = `${ process.cwd() }/packages/forgae-config/`
+
+    process.chdir(executeOptions.cwd);
+    await exec('npm link forgae-lib')
+
 }
 
 describe('ForgAE Deploy', () => {
@@ -84,20 +95,48 @@ describe('ForgAE Deploy', () => {
             assert.equal(deployer.network.url, expectedNetwork)
         })
 
+        it('Should init Deployer with custom network', async () => {
+            // Arrange
+            const network = "192.168.99.100:3001"
+            const expectedNetworkId = "ae_custom"
+            // Act
+            const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
+
+            // Assert
+
+            assert.equal(deployer.network.url, network)
+            assert.equal(deployer.network.networkId, expectedNetworkId)
+        })
+
+        it('should revert if only custom network is passed', async () => {
+            const expectedError = "Both network and networkId should be passed";
+            let result;
+
+            await linkLocalPackages();
+            process.chdir(mainForgaeProjectDir)
+
+            result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);
+
+            assert.include(result, expectedError)
+        })
+
+        it('should revert if only custom networkId is passed', async () => {
+            const expectedError = "Both network and networkId should be passed";
+            let result = await execute(constants.cliCommands.DEPLOY, ["--networkId", "testov"], executeOptions);
+
+            assert.include(result, expectedError)
+        })
+
         it('Should deploy contract with init arguments', async () => {
             // Arrange
             let expectedNetwork = "local"
             let expectedInitValue = "testString"
             let deployer = new Deployer(expectedNetwork);
-
             // Act
             let deployedContract = await deployer.deploy("./test/commands-tests/multipleContractsFolder/ExampleContract4.aes", [expectedInitValue]);
-
-            const callNameResult = await deployedContract.call('name');
-
+            const callNameResult = await deployedContract.name(expectedInitValue);
             // Assert
-            const decodedNameResult = await callNameResult.decode("string");
-            assert.equal(decodedNameResult, expectedInitValue)
+            assert.equal(callNameResult.decodedResult, expectedInitValue)
         })
     })
 
@@ -156,11 +195,6 @@ describe('ForgAE Deploy', () => {
             let testSecretKey = constants.privateKeyTestnetDeploy;
             let result = '';
 
-            const mainForgaeProjectDir = process.cwd();
-            process.chdir(executeOptions.cwd);
-
-            await exec(`npm link ${ mainForgaeProjectDir }`);
-
             try {
                 result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
             } catch (err) {
@@ -193,8 +227,7 @@ describe('ForgAE Deploy', () => {
         it('Should NOT deploy with invalid additional parameter --compiler', async () => {
 
             let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
-
-            assert.include(result, `Error: getaddrinfo ENOTFOUND ${ INVALID_COMPILER_URL.replace('http://', '') }`);
+            assert.include(result, "Compiler not defined");
         })
 
         it('with secret key arguments that have 0 (AEs) balance', async () => {
@@ -208,14 +241,12 @@ describe('ForgAE Deploy', () => {
         it('try to deploy SC with invalid init parameters from another deployment script', async () => {
             insertAdditionalFiles();
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ invalidParamDeploymentScriptPath }`], executeOptions);
-
-            assert.include(result, 'Error: ValidationError');
+            assert.include(result, 'ValidationError');
         })
 
         it('try to deploy SC with missing init parameters from another deployment script', async () => {
-            let error = `${`Error data`}: ${`{"reason":"Type errors\\nUnbound variable`}`;
+            let error = `${ `Error data` }: ${ `{"reason":"Type errors\\nUnbound variable` }`;
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
-
             assert.include(result, error);
         })
     })

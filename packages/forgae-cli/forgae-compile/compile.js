@@ -24,39 +24,41 @@ const {
 const utils = require('forgae-utils');
 const config = require('forgae-config');
 
-async function compileAndPrint (file, client) {
+async function compileAndPrint (file, compileOptions) {
     print('\r')
-
+    
     try {
-        let code = readFile(file)
-        let contract = await client.contractCompile(code.toString());
-
+        const code = readFile(file, 'utf-8');
+        const result = await utils.contractCompile(code.toString(), file, compileOptions);
+        
         print(`Contract '${ file } has been successfully compiled'`)
-        print(`Contract bytecode: ${ contract.bytecode }`)
+        print(`Contract bytecode: ${ JSON.stringify(result.data.bytecode) }`)
     } catch (error) {
+        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? error.response.data.reason : error.message
+
         printError(`Contract '${ file } has not been compiled'`)
         printError(`reason:`)
-        printError(error)
+        printError(errorMessage)
     }
 
     print('\r')
 }
 
-async function run (path, network = "local", compiler = config.compilerUrl) {
+async function run (path, compiler = config.compilerUrl) {
 
     print('===== Compiling contracts =====');
-    let currentNetwork = utils.getNetwork(network);
-    currentNetwork.compilerUrl = compiler;
-
-    let client = await utils.getClient(currentNetwork);
+    
+    const compileOptions = {
+        compilerUrl: compiler
+    }
 
     if (path.includes('.aes')) {
-        compileAndPrint(path, client)
+        compileAndPrint(path, compileOptions)
     } else {
         const files = await utils.getFiles(`${ process.cwd() }/${ path }/`, `.*\.(aes)`);
 
         files.forEach(async (file) => {
-            compileAndPrint(file, client)
+            compileAndPrint(file, compileOptions)
         });
     }
 }

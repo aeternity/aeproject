@@ -24,6 +24,7 @@ const utils = require('forgae-utils');
 const {
     spawn
 } = require('promisify-child-process');
+
 const fs = require('fs');
 const path = require('path');
 const dockerCLI = require('docker-cli-js');
@@ -31,14 +32,18 @@ const docker = new dockerCLI.Docker();
 const nodeConfig = require('forgae-config')
 const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
-const localCompilerConfig = nodeConfig.localCompiler;
-const dockerConfiguration = nodeConfig.dockerConfiguration;
+const localCompilerConfig = nodeConfig.compilerConfiguration;
+const nodeConfiguration = nodeConfig.nodeConfiguration;
 
 let balanceOptions = {
     format: false
 }
+let network = utils.config.localhostParams
+network.compilerUrl = utils.config.compilerUrl
 
-async function waitForContainer () {
+const MAX_SECONDS_TO_RUN_NODE = 60;
+
+async function waitForContainer (dockerImage) {
     let running = false
 
     await docker.command('ps', function (err, data) {
@@ -47,7 +52,7 @@ async function waitForContainer () {
         }
 
         data.containerList.forEach(function (container) {
-            if (container.image.startsWith(dockerConfiguration.dockerImage) && container.status.indexOf("healthy") != -1) {
+            if (container.image.startsWith(dockerImage) && container.status.indexOf("healthy") != -1) {
                 running = true;
             }
         })
@@ -59,10 +64,10 @@ async function fundWallets () {
     await waitToMineCoins()
 
     let walletIndex = 0;
-    let client = await utils.getClient(utils.config.localhostParams);
+
+    let client = await utils.getClient(network);
     await printBeneficiaryKey(client);
     for (let wallet in defaultWallets) {
-
         await fundWallet(client, defaultWallets[wallet].publicKey)
         await printWallet(client, defaultWallets[wallet], `#${ walletIndex++ }`)
     }
@@ -82,7 +87,7 @@ async function printWallet (client, keyPair, label) {
 }
 
 async function waitToMineCoins () {
-    let client = await utils.getClient(utils.config.localhostParams);
+    let client = await utils.getClient(network);
     let heightOptions = {
         interval: 8000,
         attempts: 300
@@ -98,68 +103,34 @@ async function fundWallet (client, recipient) {
 }
 
 function hasNodeConfigFiles () {
-    const neededConfigFile = nodeConfig.dockerConfiguration.configFileName;
-    const configFilePath = path.resolve(process.cwd(), neededConfigFile);
-    let isDockerConfigFileExists = fs.existsSync(configFilePath);
+    const neededNodeConfigFile = nodeConfiguration.configFileName;
+    const neededCompilerConfigFile = localCompilerConfig.configFileName;
+    const nodeConfigFilePath = path.resolve(process.cwd(), neededNodeConfigFile);
+    const compilerConfigFilePath = path.resolve(process.cwd(), neededCompilerConfigFile);
 
-    if (!isDockerConfigFileExists) {
-        console.log(`Missing ${ neededConfigFile } file!`);
+    let doesNodeConfigFileExists = fs.existsSync(nodeConfigFilePath);
+    let doesCompilerConfigFileExists = fs.existsSync(compilerConfigFilePath);
+
+    if (!doesNodeConfigFileExists || !doesCompilerConfigFileExists) {
+        console.log(`Missing ${ neededNodeConfigFile } or ${ neededCompilerConfigFile } file!`);
         return false;
     }
 
-    let fileContent = fs.readFileSync(configFilePath, 'utf-8');
+    let nodeFileContent = fs.readFileSync(nodeConfigFilePath, 'utf-8');
+    let compilerFileContent = fs.readFileSync(compilerConfigFilePath, 'utf-8');
 
-    if (fileContent.indexOf(nodeConfig.dockerConfiguration.textToSearch) < 0) {
-        console.log(`Invalid ${ neededConfigFile } file! Missing docker Ae node configuration.`);
+    if (nodeFileContent.indexOf(nodeConfiguration.textToSearch) < 0 || compilerFileContent.indexOf(localCompilerConfig.textToSearch) < 0) {
+        console.log(`Invalid ${ neededNodeConfigFile } or ${ neededCompilerConfigFile } file!`);
         return false;
     }
 
     return true;
 }
 
-function stopLocalCompiler () {
-
-    // get docker container ID - compiler
-    let tempOutput = [];
-    let dockerPs = spawn('docker', [
-        'ps'
-    ]);
-
-    dockerPs.stdout.on('data', (data) => {
-        tempOutput.push(data.toString());
-    });
-
-    setTimeout(function () {
-        
-        let containerId = '';
-        tempOutput.forEach(x => {
-            let rgx = /(?:\s+|\n)([a-zA-Z0-9]+)\s+(?=aeternity\/aesophia_http)/gm
-            let match = rgx.exec(x);
-            while (match) {
-                if (match[1]) {
-                    containerId = match[1]
-                }
-
-                match = rgx.exec(x);
-            }
-        })
-
-        if (containerId) {
-            spawn('docker', [
-                'stop',
-                containerId
-            ]);
-
-            print('===== Local Compiler was successfully stopped! =====');
-        }
-    }, 1000);
-}
-
 async function run (option) {
 
     try {
-        let dockerProcess;
-        let running = await waitForContainer();
+        let running = await waitForContainer(nodeConfiguration.dockerImage);
 
         if (option.stop) {
             if (!running) {
@@ -167,15 +138,14 @@ async function run (option) {
                 return
             }
 
-            print('===== Stopping node =====');
+            print('===== Stopping node and compiler  =====');
 
-            dockerProcess = await spawn('docker-compose', ['down', '-v'], {});
-
+            await spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'down', '-v', '--remove-orphans']);
             print('===== Node was successfully stopped! =====');
-
-            stopLocalCompiler();
+            print('===== Compiler was successfully stopped! =====');
 
             return;
+
         }
 
         if (!hasNodeConfigFiles()) {
@@ -189,43 +159,77 @@ async function run (option) {
         }
 
         print('===== Starting node =====');
-        dockerProcess = spawn('docker-compose', ['up', '-d']);
+        let startingNodeSpawn = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
 
-        dockerProcess.stderr.on('data', (data) => {
+        startingNodeSpawn.stdout.on('data', (data) => {
             print(data.toString());
         });
 
-        if (!option.only) {
+        let errorMessage = '';
+        startingNodeSpawn.stderr.on('data', (data) => {
+            errorMessage += data.toString();
+            print(data.toString())
+        });
 
-            let dockerCompilerProcess = spawn('docker', [
-                'run',
-                '-d',
-                '-p',
-                `${ localCompilerConfig.port }:3080`,
-                `${ localCompilerConfig.dockerImage }:${ localCompilerConfig.imageVersion }`
-            ]);
+        let counter = 0;
+        while (!(await waitForContainer(nodeConfiguration.dockerImage))) {
+            if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
+                await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down', '-v', '--remove-orphans'], {});
+                throw new Error(`Cannot start AE node, port is already allocated!`)
+            }
 
-            dockerCompilerProcess.stderr.on('data', (data) => {
-                print(data.toString());
-            });
-        }
-
-        while (!(await waitForContainer())) {
             process.stdout.write(".");
             utils.sleep(1000);
+
+            // prevent infinity loop
+            counter++;
+            if (counter >= MAX_SECONDS_TO_RUN_NODE) {
+                throw new Error("Cannot start AE Node!")
+            }
         }
 
         print('\n\r===== Node was successfully started! =====');
+
+        if (!option.only) {
+
+            try {
+                await startLocalCompiler();
+
+                print(`===== Local Compiler was successfully started! =====`);
+
+            } catch (error) {
+
+                await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down', '-v', '--remove-orphans'], {});
+                print('===== Node was successfully stopped! =====');
+
+                const errorMessage = readErrorSpawnOutput(error);
+                if (errorMessage.indexOf('port is already allocated') >= 0) {
+                    const errorMessage = `Cannot start local compiler, port is already allocated!`;
+                    console.log(errorMessage);
+                    throw new Error(errorMessage);
+                }
+
+                throw new Error(error);
+            }
+        }
+
         print('===== Funding default wallets! =====');
 
         await fundWallets();
 
         print('\r\n===== Default wallets was successfully funded! =====');
-        return
-
     } catch (e) {
-        printError(e.message)
+        printError(e.message || e);
     }
+}
+
+function startLocalCompiler () {
+    return spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
+}
+
+function readErrorSpawnOutput (spawnError) {
+    const buffMessage = Buffer.from(spawnError.stderr);
+    return buffMessage.toString('utf8');
 }
 
 module.exports = {

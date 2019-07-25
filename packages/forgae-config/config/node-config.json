@@ -51,15 +51,16 @@
 		}
 	],
 
-	"dockerConfiguration": {
+	"nodeConfiguration": {
 		"configFileName": "docker-compose.yml",
 		"textToSearch": "image: aeternity/",
 		"dockerImage": "aeternity/aeternity"
 	},
 
-	"localCompiler": {
-		"port": 3080,
+	"compilerConfiguration": {
+		"configFileName": "docker-compose.compiler.yml",
+		"textToSearch": "aeternity/aesophia_http",
 		"dockerImage": "aeternity/aesophia_http",
-		"imageVersion": "v2.1.0"
+		"imageVersion": "v3.1.0"
 	}
 }

@@ -15,18 +15,12 @@
     "chai-as-promised": "^7.1.1",
     "commander": "^2.19.0",
     "docker-cli-js": "^2.5.1",
-    "esm": "^3.0.77",
     "forgae-config": "^1.0.0",
     "forgae-logger": "^1.0.0",
     "forgae-utils": "^1.0.0",
-    "fs-extra": "^7.0.1",
     "mocha": "^5.0.0",
     "opn": "^5.4.0",
-    "original-require": "^1.0.1",
     "path": "^0.12.7",
-    "mocha": "^5.0.0",
-    "opn": "^5.4.0",
-    "original-require": "^1.0.1",
-    "path": "^0.12.7"
+    "original-require": "^1.0.1"
   }
 }
