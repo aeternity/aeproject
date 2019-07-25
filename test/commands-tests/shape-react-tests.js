@@ -15,7 +15,7 @@ const testWorkingDir = constants.shapeReactTestsFolderPath;
 
 let cwd = process.cwd();
 
-describe.only('ForgAE Shape React', async () => {
+describe('ForgAE Shape React', async () => {
 
     let workingDir;
 
