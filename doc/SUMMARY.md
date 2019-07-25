@@ -23,6 +23,6 @@
 * [ForgAE History](developer-documentation/forgae-config-1/README.md)
   * [forgae-history](developer-documentation/forgae-config-1/history.md)
 * [Migration from version 1.4 to 2.0](developer-documentation/migration-to-new-version.md)
-* [Migration from version 2.0 to 3.0](developer-documentation/migration-tо-3.0.md)
+* [Migration from version 2.0 to 3.0](developer-documentation/migration-to-3.0.md)
 * [License](developer-documentation/licence.md)
 
