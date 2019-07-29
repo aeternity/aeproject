@@ -11,11 +11,11 @@ const constants = require('../constants.json');
 const cliCmds = constants.cliCommands;
 const cliSubCmds = constants.cliSubCommands;
 
-const testWorkingDir = constants.shapeVueTestsFolderPath;
+const testWorkingDir = constants.shapeReactTestsFolderPath;
 
 let cwd = process.cwd();
 
-describe('ForgAE Shape Vue', async () => {
+describe('ForgAE Shape React', async () => {
 
     let workingDir;
 
@@ -26,12 +26,12 @@ describe('ForgAE Shape Vue', async () => {
         process.chdir(workingDir);
     });
 
-    it('Should init shape vue project successfully', async () => {
-        await forgaeExecute(cliCmds.SHAPE, [cliSubCmds.VUE]);
+    it('Should init shape "React" project successfully', async () => {
+        await forgaeExecute(cliCmds.SHAPE, [cliSubCmds.REACT]);
+
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.packageJson)), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.packageLockJson)), "package-lock.json doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeNodeYml)), "docker-compose.yml doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeCompilerYml)), "docker-compose.yml doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeYml)), "docker-compose.yml doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoTestContractPath)), "test contract doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.deployScriptsPath)), "deploy scripts doesn't exists");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.contractsAeppSettings)), "contracts aepp settings file doesn't exist");
@@ -46,8 +46,10 @@ describe('ForgAE Shape Vue', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerNginxWs)), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerKeys)), "docker keys folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.forgaeStore)), "forgae store folder doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.vueWebProjectPath)), "vue web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoContract)), "ToDo Manager contract doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.reactWebProjectPath)), "React web project folder doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.reactWebProjectPath + constants.testsFiles.shapeAeppProjectPath)), "React aepp web project folder doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.reactWebProjectPath + constants.testsFiles.shapeIdentityProviderProjectPath)), "React identity-provider web project folder doesn't exist");
     });
 
     after(async () => {

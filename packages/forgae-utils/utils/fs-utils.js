@@ -64,19 +64,19 @@ const readFile = (path, encoding = null, errTitle = 'READ FILE ERR') => {
 };
 
 const writeFile = (path, content) => {
-	fs.writeFileSync(path, content);
+    fs.writeFileSync(path, content);
 }
 
 const writeFileRelative = async (relativePath, content = null) => {
-	return writeFile(path.resolve(process.cwd(), relativePath), content);
+    return writeFile(path.resolve(process.cwd(), relativePath), content);
 }
 
 const readFileRelative = (relativePath, encoding = null, errTitle = 'READ FILE ERR') => {
-	return readFile(path.resolve(process.cwd(), relativePath), encoding, errTitle);
+    return readFile(path.resolve(process.cwd(), relativePath), encoding, errTitle);
 }
 
 const fileExists = (relativePath) => {
-	return fs.existsSync(path.resolve(process.cwd(), relativePath));
+    return fs.existsSync(path.resolve(process.cwd(), relativePath));
 }
 
 function deleteCreatedFiles (testFiles) {
@@ -84,6 +84,16 @@ function deleteCreatedFiles (testFiles) {
         fs.unlink(testFile);
     }
 }
+
+async function createDirIfNotExists (destination) {
+    if (path.parse(destination).ext !== '') {
+        const lastIndexOf = destination.lastIndexOf('/');
+        destination = destination.substring(0, lastIndexOf);
+    }
+
+    await fs.ensureDir(destination);
+}
+
 module.exports = {
     print,
     printError,
@@ -95,5 +105,6 @@ module.exports = {
     writeFileRelative,
     readFileRelative,
     fileExists,
-    deleteCreatedFiles
+    deleteCreatedFiles,
+    createDirIfNotExists
 }

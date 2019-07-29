@@ -13,6 +13,8 @@ const writeFileRelative = fsUtils.writeFileRelative;
 const fileExists = fsUtils.fileExists;
 const readFile = fsUtils.readFile;
 const deleteCreatedFiles = fsUtils.deleteCreatedFiles;
+const createDirIfNotExists = fsUtils.createDirIfNotExists;
+const writeFileSync = fsUtils.writeFile;
 
 const forgaeUtils = require('./utils/forgae-utils');
 const getClient = forgaeUtils.getClient;
@@ -67,5 +69,7 @@ module.exports = {
     trimAdresseses,
     SophiaUtil,
     contractCompile,
-    checkNestedProperty
+    checkNestedProperty,
+    createDirIfNotExists,
+    writeFileSync
 }

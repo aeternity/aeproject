@@ -13,5 +13,8 @@
     "forgae-config": "^1.0.0",
     "forgae-logger": "^1.0.0",
     "forgae-utils": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.5.2"
   }
 }

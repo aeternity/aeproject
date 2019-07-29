@@ -26,6 +26,8 @@ const history = require('forgae-logger');
 const printReportTable = require('forgae-utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
 const shape = require('./forgae-shapes/shape-commander');
+const exportConfig = require('./forgae-export/export-config');
+const forgaeConfigDefaultFileName = require('./forgae-export/constants').forgaeConfigFileName;
 
 const addInitOption = (program) => {
     program
@@ -65,7 +67,6 @@ const addNodeOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--only', 'Start only the node without local compiler')
-        .option('--compiler-port [compiler port]', 'Run a desired compiler at specific port', localCompiler.port)
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
         .action(async (options) => {
@@ -124,6 +125,16 @@ const addShapeOption = (program) => {
         })
 };
 
+const addExportConfigOption = (program) => {
+    program
+        .command('export-config')
+        .description('Export miner account, few funded accounts  and default node configuration.')
+        .option('--path [export path]', 'Path to export config file', forgaeConfigDefaultFileName)
+        .action(async (options) => {
+            await exportConfig.run(options);
+        })
+};
+
 const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
@@ -133,6 +144,7 @@ const initCommands = (program) => {
     addHistoryOption(program);
     addContractsAeppIntegrationOption(program)
     addShapeOption(program);
+    addExportConfigOption(program);
 }
 
 module.exports = {

@@ -10,6 +10,7 @@ function generateIt (testFunctions) {
     let its = '';
 
     for (let testFunc of testFunctions) {
+
         its += `
             it('Sophia tests - ${ testFunc }', async () => {
                 await assert.isFulfilled(contractInstance.call("${ testFunc }"));
@@ -21,31 +22,34 @@ function generateIt (testFunctions) {
 }
 
 const run = async function (paths = [], testFolder = process.cwd()) {
-
     if (paths.length === 0) {
         console.log('There is no sophia test to execute.');
         console.log(paths);
         return;
     }
-    
+
     const contractsFolder = `${ testFolder }/contracts/`;
+
+    if (!fs.existsSync(contractsFolder)) {
+        console.log('There is no sophia test to execute.');
+        console.log(`There is missing 'contract' folder at a given test folder: '${ testFolder }'`);
+        return;
+    }
+
     const sophiaContractPaths = await utils.getFiles(contractsFolder.replace('//', '/'), `.aes$`);
 
     const mainContractsInfo = SophiaUtil.getContractInfo(sophiaContractPaths);
-
     const contractsTest = SophiaUtil.getContractInfo(paths);
 
     const testFiles = [];
 
     for (let contract of contractsTest.values()) {
-
         if (!mainContractsInfo.has(contract.contractName)) {
             const errorMessage = `Cannot append sophia tests to existing contract! Contract "${ contract.contractName }" was not found!`;
             // somehow this error was not thrown in the tests, that why I use console.log.
             console.log(errorMessage);
             throw new Error(errorMessage);
         }
-
         const testFunctions = contract.testFunctions;
         const source = SophiaUtil.generateCompleteSource(mainContractsInfo.get(contract.contractName).source, contract.source);
 
@@ -101,7 +105,7 @@ const run = async function (paths = [], testFolder = process.cwd()) {
         fs.writeFileSync(testFilePath, testFile, 'utf8');
     }
 
-    let result = await jsTests.run(testFiles);
+    await jsTests.run(testFiles);
 
     // delete created tests
     deleteCreatedFiles(testFiles);

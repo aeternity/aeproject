@@ -7,8 +7,8 @@ const compilerVersion = require('./config/config.json').compilerVersion;
 
 const config = require('./config/node-config.json').config;
 const defaultWallets = require('./config/node-config.json').defaultWallets;
-const dockerConfiguration = require('./config/node-config.json').dockerConfiguration;
-const localCompiler = require('./config/node-config.json').localCompiler;
+const nodeConfiguration = require('./config/node-config.json').nodeConfiguration;
+const compilerConfiguration = require('./config/node-config.json').compilerConfiguration;
 
 module.exports = {
     localhostParams,
@@ -19,6 +19,6 @@ module.exports = {
     compilerVersion,
     config,
     defaultWallets,
-    dockerConfiguration,
-    localCompiler
+    nodeConfiguration,
+    compilerConfiguration
 }
