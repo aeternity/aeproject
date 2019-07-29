@@ -21,6 +21,7 @@ const node = require('./forgae-node/node.js');
 const deploy = require('./forgae-deploy/deploy.js');
 const config = require('forgae-config');
 const localCompiler = config.localCompiler;
+const dockerIp = config.dockerConfiguration.dockerMachineIP;
 const history = require('forgae-logger');
 const printReportTable = require('forgae-utils').printReportTable;
 const contracts = require('./forgae-contracts/forgae-contracts.js');
@@ -66,7 +67,7 @@ const addNodeOption = (program) => {
         .option('--only', 'Start only the node without local compiler')
         .option('--compiler-port [compiler port]', 'Run a desired compiler at specific port', localCompiler.port)
         .option('--windows', 'Start the node in windows env')
-        .option('--docker-ip [default docker machine ip]', 'Set docker machine IP, default is "192.168.99.100"', '192.168.99.100')
+        .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
         .action(async (options) => {
             await node.run(options);
         })
