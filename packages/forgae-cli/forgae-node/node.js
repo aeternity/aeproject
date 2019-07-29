@@ -27,8 +27,10 @@ const {
 
 const fs = require('fs');
 const path = require('path');
-const dockerCLI = require('docker-cli-js');
-const docker = new dockerCLI.Docker();
+// const dockerCLI = require('docker-cli-js');
+// const docker = new dockerCLI.Docker();
+
+
 const nodeConfig = require('forgae-config')
 const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
@@ -41,22 +43,42 @@ let balanceOptions = {
 let network = utils.config.localhostParams
 network.compilerUrl = utils.config.compilerUrl
 
-const MAX_SECONDS_TO_RUN_NODE = 60;
+const MAX_SECONDS_TO_RUN_NODE = 90;
 
 async function waitForContainer (dockerImage) {
-    let running = false
 
-    await docker.command('ps', function (err, data) {
-        if (err) {
-            throw new Error(err);
+    let running = false;
+
+    const nodes = [
+        'test_compiler_1',
+        'test_node1_1',
+        'test_node2_1',
+        'test_node3_1',
+    ]
+
+    try {
+
+        let result = await spawn('docker-compose', ['ps']);
+        let res = readSpawnOutput(result);
+        if (res) {
+            res = res.split('\n');
         }
 
-        data.containerList.forEach(function (container) {
-            if (container.image.startsWith(dockerImage) && container.status.indexOf("healthy") != -1) {
-                running = true;
-            }
-        })
-    });
+        if (Array.isArray(res)) {
+            res.map(line => {
+                if (line.includes(dockerImage) && line.includes('healthy')) {
+                    console.log('=> included')
+                    running = true
+                } else {
+                    console.log('=> NOT included')
+                }
+            })
+        }
+    } catch (error) {
+
+        throw Error(error)
+    }
+
     return running;
 }
 
@@ -162,8 +184,9 @@ function stopLocalCompiler () {
 
 async function run (option) {
 
+    const dockerImage = 'node1' // dockerConfiguration.dockerImage
     try {
-        let running = await waitForContainer(dockerConfiguration.dockerImage);
+        let running = await waitForContainer(dockerImage);
 
         if (option.stop) {
             if (!running) {
@@ -207,7 +230,7 @@ async function run (option) {
         });
 
         let counter = 0;
-        while (!(await waitForContainer(dockerConfiguration.dockerImage))) {
+        while (!(await waitForContainer(dockerImage))) {
             if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
                 await spawn('docker-compose', ['down', '-v'], {});
                 throw new Error(`Cannot start AE node, port is already allocated!`)
@@ -219,6 +242,10 @@ async function run (option) {
             // prevent infinity loop
             counter++;
             if (counter >= MAX_SECONDS_TO_RUN_NODE) {
+                // TODO: if node is started, and error message is another,
+                // we should stop docker
+                
+                await spawn('docker-compose', ['down', '-v'], {});
                 throw new Error("Cannot start AE Node!")
             }
         }
@@ -233,7 +260,6 @@ async function run (option) {
                 print(`===== Local Compiler was successfully started on port:${ option.compilerPort }! =====`);
 
             } catch (error) {
-
                 await spawn('docker-compose', ['down', '-v'], {});
                 print('===== Node was successfully stopped! =====');
 
@@ -270,6 +296,11 @@ function startLocalCompiler (port) {
 
 function readErrorSpawnOutput (spawnError) {
     const buffMessage = Buffer.from(spawnError.stderr);
+    return buffMessage.toString('utf8');
+}
+
+function readSpawnOutput (spawnError) {
+    const buffMessage = Buffer.from(spawnError.stdout);
     return buffMessage.toString('utf8');
 }
 
