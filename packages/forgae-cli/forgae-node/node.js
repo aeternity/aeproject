@@ -49,41 +49,25 @@ async function waitForContainer (dockerImage) {
 
     let running = false;
 
-    const nodes = [
-        'test_compiler_1',
-        'test_node1_1',
-        'test_node2_1',
-        'test_node3_1',
-    ]
+    let result = await spawn('docker-compose', ['ps']);
+    let res = readSpawnOutput(result);
+    if (res) {
+        res = res.split('\n');
+    }
 
-    try {
-
-        let result = await spawn('docker-compose', ['ps']);
-        let res = readSpawnOutput(result);
-        if (res) {
-            res = res.split('\n');
-        }
-
-        if (Array.isArray(res)) {
-            res.map(line => {
-                if (line.includes(dockerImage) && line.includes('healthy')) {
-                    console.log('=> included')
-                    running = true
-                } else {
-                    console.log('=> NOT included')
-                }
-            })
-        }
-    } catch (error) {
-
-        throw Error(error)
+    if (Array.isArray(res)) {
+        res.map(line => {
+            if (line.includes(dockerImage) && line.includes('healthy')) {
+                running = true
+            }
+        })
     }
 
     return running;
 }
 
-async function fundWallets () {
-    await waitToMineCoins()
+async function fundWallets (nodeIp) {
+    await waitToMineCoins(nodeIp);
 
     let walletIndex = 0;
 
@@ -108,7 +92,12 @@ async function printWallet (client, keyPair, label) {
     print(`Wallet's balance is ${ keyPairBalance }`);
 }
 
-async function waitToMineCoins () {
+async function waitToMineCoins (nodeIp) {
+
+    if (nodeIp) {
+        network = JSON.parse(JSON.stringify(network).replace(/localhost/g, nodeIp));
+    }
+
     let client = await utils.getClient(network);
     let heightOptions = {
         interval: 8000,
@@ -144,7 +133,12 @@ function hasNodeConfigFiles () {
     return true;
 }
 
-function stopLocalCompiler () {
+function stopLocalCompiler (isWindowsEnv) {
+
+    if (isWindowsEnv) {
+        //print('===== Local Compiler was successfully stopped! =====');
+        return;
+    }
 
     // get docker container ID - compiler
     let tempOutput = [];
@@ -184,11 +178,19 @@ function stopLocalCompiler () {
 
 async function run (option) {
 
-    const dockerImage = 'node1' // dockerConfiguration.dockerImage
+    const dockerImage = option.windows ? dockerConfiguration.dockerServiceNodeName : dockerConfiguration.dockerImage;
+
     try {
         let running = await waitForContainer(dockerImage);
 
         if (option.stop) {
+
+            // if not running, current env may be windows
+            // to reduce optional params we check is it running on windows env
+            if (!running) {
+                running = await waitForContainer(dockerConfiguration.dockerServiceNodeName);
+            }
+
             if (!running) {
                 print('===== Node is not running! =====');
                 return
@@ -200,7 +202,7 @@ async function run (option) {
 
             print('===== Node was successfully stopped! =====');
 
-            stopLocalCompiler();
+            stopLocalCompiler(option.windows);
 
             return;
         }
@@ -242,7 +244,7 @@ async function run (option) {
             // prevent infinity loop
             counter++;
             if (counter >= MAX_SECONDS_TO_RUN_NODE) {
-                // TODO: if node is started, and error message is another,
+                // if node is started and error message is another,
                 // we should stop docker
                 
                 await spawn('docker-compose', ['down', '-v'], {});
@@ -255,10 +257,16 @@ async function run (option) {
         if (!option.only) {
 
             try {
-                await startLocalCompiler(option.compilerPort);
+                let isCompilerRunning = await waitForContainer(dockerConfiguration.dockerServiceCompilerName);
+                if (!isCompilerRunning && !option.windows) {
+                    await startLocalCompiler(option.compilerPort);
 
-                print(`===== Local Compiler was successfully started on port:${ option.compilerPort }! =====`);
+                    print(`===== Local Compiler was successfully started on port:${ option.compilerPort }! =====`);
+                } else {
+                    print('===== Local compiler is already running! =====')
+                }
 
+                
             } catch (error) {
                 await spawn('docker-compose', ['down', '-v'], {});
                 print('===== Node was successfully stopped! =====');
@@ -276,7 +284,13 @@ async function run (option) {
 
         print('===== Funding default wallets! =====');
 
-        await fundWallets();
+        if (option.windows) {
+            let dockerIp = removePrefixFromIp(option.dockerIp);
+            await fundWallets(dockerIp);
+        } else {
+            await fundWallets();
+        }
+        
 
         print('\r\n===== Default wallets was successfully funded! =====');
     } catch (e) {
@@ -302,6 +316,14 @@ function readErrorSpawnOutput (spawnError) {
 function readSpawnOutput (spawnError) {
     const buffMessage = Buffer.from(spawnError.stdout);
     return buffMessage.toString('utf8');
+}
+
+function removePrefixFromIp (ip) {
+    if (!ip) {
+        return '';
+    }
+
+    return ip.replace('http://', '').replace('https://', '');
 }
 
 module.exports = {

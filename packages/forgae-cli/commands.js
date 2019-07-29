@@ -65,6 +65,8 @@ const addNodeOption = (program) => {
         .option('--start', 'Start the node')
         .option('--only', 'Start only the node without local compiler')
         .option('--compiler-port [compiler port]', 'Run a desired compiler at specific port', localCompiler.port)
+        .option('--windows', 'Start the node in windows env')
+        .option('--docker-ip [default docker machine ip]', 'Set docker machine IP, default is "192.168.99.100"', '192.168.99.100')
         .action(async (options) => {
             await node.run(options);
         })
