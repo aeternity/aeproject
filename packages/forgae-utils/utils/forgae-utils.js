@@ -10,6 +10,7 @@ const mainContractsPathRgx = /.*\//g;
 let match;
 
 const config = require('../../forgae-config/config/config.json');
+const nodeConfig = require('./../..//forgae-config/config/node-config').nodeConfiguration;
 const {
     printError
 } = require('./fs-utils')
@@ -136,7 +137,7 @@ const winExec = async (cli, cmd, args = [], options = {}) => {
     } catch (e) {
         let result = readSpawnOutput(e);
         result += readErrorSpawnOutput(e);
-        
+
         return result;
     }
 }
@@ -168,9 +169,9 @@ async function contractCompile (source, contractPath, compileOptions) {
     let options = {
         "file_system": null
     }
-    
+
     let dependencies = getDependencies(source, contractPath)
-    
+
     options["file_system"] = dependencies
 
     let body = {
@@ -189,7 +190,7 @@ function checkNestedProperty (obj, property) {
     if (!obj || !obj.hasOwnProperty(property)) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -233,7 +234,7 @@ function getActualContract (contractContent) {
     return content;
 }
 
-function normalizeCompilerUrl(url) {
+function normalizeCompilerUrl (url) {
 
     if (!url.startsWith('http')) {
         url = 'http://' + url;
@@ -250,11 +251,34 @@ function normalizeCompilerUrl(url) {
     return url;
 }
 
-async function waitForContainer (dockerImage, options = {}) {
-
+async function waitForContainer (dockerImage = nodeConfig.dockerImage, options = {}) {
     let running = false;
+    let result = await spawn('docker', ['ps'], options);
+    let res = readSpawnOutput(result);
+    if (res) {
+        res = res.split('\n');
+    }
 
-    let result = await spawn('docker-compose', ['ps'], options);
+    if (Array.isArray(res)) {
+        res.map(line => {
+            if (line.includes(dockerImage) && line.includes('healthy')) {
+                running = true
+            }
+        })
+    }
+
+    return running;
+}
+
+async function waitForContainerCompose (dockerImage = nodeConfig.dockerServiceNodeName, options = {}) {
+    let running = false;
+    let result = await spawn('docker-compose', [
+        '-f',
+        'docker-compose.yml',
+        '-f',
+        'docker-compose.compiler.yml',
+        'ps'
+    ], options);
     let res = readSpawnOutput(result);
     if (res) {
         res = res.split('\n');
@@ -284,5 +308,6 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
-    waitForContainer
+    waitForContainer,
+    waitForContainerCompose
 }

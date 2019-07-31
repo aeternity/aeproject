@@ -3,8 +3,9 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
-const waitForContainer = require('../utils').waitForContainer;
+const utils = require('../../packages/forgae-utils/utils/forgae-utils.js');
+const execute = utils.forgaeExecute;
+const waitForContainer = utils.waitForContainer;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
 
@@ -193,14 +194,7 @@ describe('ForgAE Deploy', () => {
 
         it('with network and secret on test network', async () => {
             let testSecretKey = constants.privateKeyTestnetDeploy;
-            let result = '';
-
-            try {
-                result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
-            } catch (err) {
-                console.log(err);
-                console.log(err.stdout.toString('utf8'));
-            }
+            let result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
 
             process.chdir(mainForgaeProjectDir);
 
@@ -253,8 +247,9 @@ describe('ForgAE Deploy', () => {
 
     after(async () => {
 
-        let running = await waitForContainer();
+        let running = await waitForContainer('aeternity/aeternity', executeOptions);
         if (running) {
+
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 
