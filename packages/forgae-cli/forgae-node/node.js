@@ -18,7 +18,8 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 
 const {
     printError,
-    print
+    print,
+    waitForContainer
 } = require('forgae-utils');
 const utils = require('forgae-utils');
 const {
@@ -42,26 +43,26 @@ network.compilerUrl = utils.config.compilerUrl
 
 const MAX_SECONDS_TO_RUN_NODE = 90;
 
-async function waitForContainer (dockerImage) {
+// async function waitForContainer (dockerImage) {
 
-    let running = false;
+//     let running = false;
 
-    let result = await spawn('docker-compose', ['ps']);
-    let res = readSpawnOutput(result);
-    if (res) {
-        res = res.split('\n');
-    }
+//     let result = await spawn('docker-compose', ['ps']);
+//     let res = readSpawnOutput(result);
+//     if (res) {
+//         res = res.split('\n');
+//     }
 
-    if (Array.isArray(res)) {
-        res.map(line => {
-            if (line.includes(dockerImage) && line.includes('healthy')) {
-                running = true
-            }
-        })
-    }
+//     if (Array.isArray(res)) {
+//         res.map(line => {
+//             if (line.includes(dockerImage) && line.includes('healthy')) {
+//                 running = true
+//             }
+//         })
+//     }
 
-    return running;
-}
+//     return running;
+// }
 
 async function fundWallets (nodeIp) {
     await waitToMineCoins(nodeIp);
@@ -137,17 +138,17 @@ function hasNodeConfigFiles () {
 
 async function run (option) {
 
-    const dockerImage = option.windows ? dockerConfiguration.dockerServiceNodeName : dockerConfiguration.dockerImage;
-
+    const dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
+    
     try {
         let running = await waitForContainer(dockerImage);
-
+        
         if (option.stop) {
 
             // if not running, current env may be windows
             // to reduce optional params we check is it running on windows env
             if (!running) {
-                running = await waitForContainer(dockerConfiguration.dockerServiceNodeName);
+                running = await waitForContainer(nodeConfiguration.dockerServiceNodeName);
             }
 
             if (!running) {
@@ -213,7 +214,7 @@ async function run (option) {
         if (!option.only) {
 
             try {
-                let isCompilerRunning = await waitForContainer(dockerConfiguration.dockerServiceCompilerName);
+                let isCompilerRunning = await waitForContainer(nodeConfiguration.dockerServiceCompilerName);
                 if (!isCompilerRunning && !option.windows) {
                     await startLocalCompiler(option.compilerPort);
 

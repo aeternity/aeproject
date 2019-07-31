@@ -2,10 +2,12 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
 const exec = require('../../packages/forgae-utils/utils/forgae-utils.js').execute;
-const waitForContainer = require('../utils').waitForContainer;
+const winExec = require('../../packages/forgae-utils/utils/forgae-utils.js').winExec;
+// const waitForContainer = require('../utils').waitForContainer;
+const waitForContainer = require('../../packages/forgae-utils/utils/forgae-utils.js').waitForContainer;
 const waitUntilFundedBlocks = require('../utils').waitUntilFundedBlocks;
 const constants = require('../constants.json')
-const fs = require('fs-extra')
+const fs = require('fs-extra');
 const nodeConfig = require('../../packages/forgae-config/config/node-config.json')
 const utils = require('../../packages/forgae-utils/utils/forgae-utils')
 let executeOptions = {
@@ -23,6 +25,8 @@ let balanceOptions = {
 
 let network = utils.config.localhostParams;
 network.compilerUrl = utils.config.compilerUrl
+
+const isWindowsPlatform = process.platform === 'win32';
 
 describe("Forgae Node and Compiler Tests", () => {
 
@@ -252,4 +256,78 @@ describe("Forgae Node and Compiler Tests", () => {
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
+
+    if (isWindowsPlatform) {
+        describe("ForgAE Node --windows", async () => {
+
+            const dockerServiceNodeName = nodeConfig.nodeConfiguration.dockerServiceNodeName;
+            const cliCommand = 'forgae';
+
+            network = JSON.parse(JSON.stringify(network).replace(/localhost/g, nodeConfig.nodeConfiguration.dockerMachineIP));
+
+            before(async () => {
+                fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`);
+                
+                await winExec(cliCommand, constants.cliCommands.INIT, [], executeOptions);
+                await winExec(cliCommand, constants.cliCommands.NODE, [ '--windows' ], executeOptions);
+            })
+
+            it('Should start the node successfully', async () => {
+                let running = await waitForContainer(dockerServiceNodeName, executeOptions);
+                assert.isTrue(running, "node wasn't started properly");
+            })
+
+            it('Should check if the wallets are funded', async () => {
+
+                let client = await utils.getClient(network);
+                await waitUntilFundedBlocks(client, {blocks: 8, containerName: dockerServiceNodeName, executeOptions })
+                for (let wallet in defaultWallets) {
+                    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                    assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
+                }
+            })
+
+            it('Should check if the wallets are funded with the exact amount', async () => {
+                let client = await utils.getClient(network);
+                for (let wallet in defaultWallets) {
+                    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                    assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
+                }
+            })
+
+            // this test should be ok when we update init files with ones that contains 2 docker-compose files (compiler one too)
+            xit('Process should start local compiler', async () => {
+                let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL.replace('localhost', nodeConfig.nodeConfiguration.dockerMachineIP));
+                let isContainCurrentVersion = result.indexOf(`{"version"`) >= 0;
+                
+                assert.isOk(isContainCurrentVersion);
+            })
+
+            it('Should stop the node successfully', async () => {
+                await winExec(cliCommand, constants.cliCommands.NODE, [ constants.cliCommandsOptions.STOP ], executeOptions)
+                let running = await waitForContainer(dockerServiceNodeName, executeOptions);
+                assert.isNotTrue(running, "node wasn't stopped properly");
+            })
+
+            it('Process should stop when command is started in wrong folder.', async () => {
+                let result = await winExec(cliCommand, constants.cliCommands.NODE, [ '--windows' ], {
+                    cwd: process.cwd()
+                });
+
+                if (!(result.includes('Process will be terminated!') || result.includes('Process exited with code 1'))) {
+                    assert.isOk(false, "Process is still running in wrong folder.")
+                }
+            })
+
+            after(async () => {
+
+                let running = await waitForContainer(dockerServiceNodeName, executeOptions);
+                if (running) {
+                    await winExec(cliCommand, constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+                }
+
+                fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            })
+        })
+    }
 })

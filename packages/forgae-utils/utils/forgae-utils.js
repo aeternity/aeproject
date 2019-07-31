@@ -15,7 +15,8 @@ const {
 } = require('./fs-utils')
 
 const {
-    spawn
+    spawn,
+    exec
 } = require('promisify-child-process');
 
 const COMPILER_URL_POSTFIX = '/compile';
@@ -122,6 +123,23 @@ const execute = async (cli, command, args = [], options = {}) => {
         return result;
     }
 };
+
+const winExec = async (cli, cmd, args = [], options = {}) => {
+    try {
+
+        const child = await exec(`${ cli } ${ cmd } ${ args.join(' ') }`, options);
+
+        let result = readSpawnOutput(child);
+        result += readErrorSpawnOutput(child);
+
+        return result;
+    } catch (e) {
+        let result = readSpawnOutput(e);
+        result += readErrorSpawnOutput(e);
+        
+        return result;
+    }
+}
 
 const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -232,6 +250,27 @@ function normalizeCompilerUrl(url) {
     return url;
 }
 
+async function waitForContainer (dockerImage, options = {}) {
+
+    let running = false;
+
+    let result = await spawn('docker-compose', ['ps'], options);
+    let res = readSpawnOutput(result);
+    if (res) {
+        res = res.split('\n');
+    }
+
+    if (Array.isArray(res)) {
+        res.map(line => {
+            if (line.includes(dockerImage) && line.includes('healthy')) {
+                running = true
+            }
+        })
+    }
+
+    return running;
+}
+
 module.exports = {
     config,
     getClient,
@@ -243,5 +282,7 @@ module.exports = {
     execute,
     timeout,
     contractCompile,
-    checkNestedProperty
+    checkNestedProperty,
+    winExec,
+    waitForContainer
 }

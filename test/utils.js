@@ -1,23 +1,27 @@
 const dockerCLI = require('docker-cli-js');
 const docker = new dockerCLI.Docker();
 
-async function waitForContainer () {
-    let running = false
+const waitForContainer = require('./../packages/forgae-utils/index').waitForContainer;
+const defaultAeDockerImage = require('./../packages/forgae-config/index').nodeConfiguration.dockerImage;
+// console.log(defaultAeDockerImage)
 
-    await docker.command('ps', function (err, data) {
-        data.containerList.forEach(function (container) {
-            if (container.image.startsWith("aeternity") && container.status.indexOf("healthy") != -1) {
-                running = true;
-            }
-        })
-    });
+// async function waitForContainer () {
+//     let running = false
 
-    return running;
-}
+//     await docker.command('ps', function (err, data) {
+//         data.containerList.forEach(function (container) {
+//             if (container.image.startsWith("aeternity") && container.status.indexOf("healthy") != -1) {
+//                 running = true;
+//             }
+//         })
+//     });
 
-async function waitUntilFundedBlocks (client, blocks = 8) {
-    await waitForContainer()
-    await client.awaitHeight(blocks)
+//     return running;
+// }
+
+async function waitUntilFundedBlocks (client, options = { blocks: 8,  containerName: defaultAeDockerImage, executeOptions: {}}) {
+    await waitForContainer(options.containerName, options.executeOptions)
+    await client.awaitHeight(options.blocks)
 }
 
 function convertToPerson (data) {
