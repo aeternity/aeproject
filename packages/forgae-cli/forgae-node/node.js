@@ -158,7 +158,7 @@ async function run (option) {
 
             print('===== Stopping node and compiler  =====');
 
-            await spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'down', '-v', '--remove-orphans']);
+            await stopNodeAndCompiler();
             print('===== Node was successfully stopped! =====');
             print('===== Compiler was successfully stopped! =====');
 
@@ -176,7 +176,7 @@ async function run (option) {
         }
 
         print('===== Starting node =====');
-        let startingNodeSpawn = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
+        let startingNodeSpawn = await startNodeAndCompiler();
 
         startingNodeSpawn.stdout.on('data', (data) => {
             print(data.toString());
@@ -191,7 +191,7 @@ async function run (option) {
         let counter = 0;
         while (!(await waitForContainer(dockerImage))) {
             if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
-                await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down', '-v', '--remove-orphans'], {});
+                await stopNodeAndCompiler();
                 throw new Error(`Cannot start AE node, port is already allocated!`)
             }
 
@@ -204,7 +204,7 @@ async function run (option) {
                 // if node is started and error message is another,
                 // we should stop docker
                 
-                await spawn('docker-compose', ['down', '-v'], {});
+                await stopNodeAndCompiler();
                 throw new Error("Cannot start AE Node!")
             }
         }
@@ -222,11 +222,9 @@ async function run (option) {
                 } else {
                     print('===== Local compiler is already running! =====')
                 }
-
-                
             } catch (error) {
 
-                await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down', '-v', '--remove-orphans'], {});
+                await stopNodeAndCompiler();
                 print('===== Node was successfully stopped! =====');
 
                 const errorMessage = readErrorSpawnOutput(error);
@@ -249,15 +247,22 @@ async function run (option) {
             await fundWallets();
         }
         
-
         print('\r\n===== Default wallets was successfully funded! =====');
     } catch (e) {
         printError(e.message || e);
     }
 }
 
-function startLocalCompiler () {
+async function startLocalCompiler () {
     return spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
+}
+
+async function startNodeAndCompiler () {
+    return spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+}
+
+async function stopNodeAndCompiler () {
+    return spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'down', '-v', '--remove-orphans']);
 }
 
 function readErrorSpawnOutput (spawnError) {
