@@ -130,7 +130,9 @@ async function checkForAllocatedPort (port) {
             return scanForAllocatedPort.stdout.toString('utf8').indexOf(port) >= 0
         }
     } catch (e) {
-        console.log(e)
+
+        // it is throw error when there is no running port
+        // console.log(e)
     }
 
     return false;
