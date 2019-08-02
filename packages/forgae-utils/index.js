@@ -30,7 +30,6 @@ const contractCompile = forgaeUtils.contractCompile;
 const checkNestedProperty = forgaeUtils.checkNestedProperty;
 const winExec = forgaeUtils.winExec;
 const waitForContainer = forgaeUtils.waitForContainer;
-const waitForContainerCompose = forgaeUtils.waitForContainerCompose;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -76,6 +75,5 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer,
-    waitForContainerCompose
+    waitForContainer
 }

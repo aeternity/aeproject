@@ -3,12 +3,11 @@ let chaiAsPromised = require("chai-as-promised");
 const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
 const exec = require('../../packages/forgae-utils/utils/forgae-utils.js').execute;
 const winExec = require('../../packages/forgae-utils/utils/forgae-utils.js').winExec;
-// const waitForContainer = require('../utils').waitForContainer;
 const waitForContainer = require('../../packages/forgae-utils/utils/forgae-utils.js').waitForContainer;
 const waitUntilFundedBlocks = require('../utils').waitUntilFundedBlocks;
 const constants = require('../constants.json')
 const fs = require('fs-extra');
-const nodeConfig = require('../../packages/forgae-config/config/node-config.json')
+const nodeConfig = require('../../packages/forgae-config/config/node-config.json');
 const utils = require('../../packages/forgae-utils/utils/forgae-utils')
 let executeOptions = {
     cwd: process.cwd() + constants.nodeTestsFolderPath
@@ -28,6 +27,11 @@ network.compilerUrl = utils.config.compilerUrl
 
 const isWindowsPlatform = process.platform === 'win32';
 
+const waitForContainerOpts = {
+    dockerImage: nodeConfig.nodeConfiguration.dockerServiceNodeName,
+    options: executeOptions
+}
+
 describe("Forgae Node and Compiler Tests", () => {
 
     describe('ForgAE Node', () => {
@@ -35,19 +39,19 @@ describe("Forgae Node and Compiler Tests", () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
-            await execute(constants.cliCommands.INIT, [], executeOptions)
-            await execute(constants.cliCommands.NODE, [], executeOptions)
+            await execute(constants.cliCommands.INIT, [], executeOptions);
+            let result = await execute(constants.cliCommands.NODE, [], executeOptions);
         })
 
         it('Should start the node successfully', async () => {
-            let running = await waitForContainer();
+            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             assert.isTrue(running, "node wasn't started properly");
         })
 
         it('Should check if the wallets are funded', async () => {
 
             let client = await utils.getClient(network);
-            await waitUntilFundedBlocks(client)
+            await waitUntilFundedBlocks(client, waitForContainerOpts)
             for (let wallet in defaultWallets) {
                 let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
                 assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
@@ -71,7 +75,7 @@ describe("Forgae Node and Compiler Tests", () => {
 
         it('Should stop the node successfully', async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            let running = await waitForContainer();
+            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             assert.isNotTrue(running, "node wasn't stopped properly");
         })
 
@@ -80,14 +84,14 @@ describe("Forgae Node and Compiler Tests", () => {
                 cwd: process.cwd()
             });
 
-            if (result.indexOf('Process will be terminated!') < 0) {
+            if (!(result.indexOf('Process will be terminated!') >= 0 || result.indexOf('Process exited with code 1') >= 0)) {
                 assert.isOk(false, "Process is still running in wrong folder.")
             }
         })
 
         after(async () => {
 
-            let running = await waitForContainer();
+            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             if (running) {
                 await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             }
@@ -113,7 +117,7 @@ describe("Forgae Node and Compiler Tests", () => {
 
         after(async () => {
 
-            let running = await waitForContainer();
+            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             if (running) {
                 await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             }
@@ -127,7 +131,7 @@ describe("Forgae Node and Compiler Tests", () => {
                 cwd: process.cwd()
             });
 
-            if (result.indexOf('Process will be terminated!') < 0) {
+            if (!(result.indexOf('Process will be terminated!') >= 0 || result.indexOf('Process exited with code 1') >= 0)) {
                 assert.isOk(false, "Process is still running in wrong folder.")
             }
         })
@@ -144,12 +148,13 @@ describe("Forgae Node and Compiler Tests", () => {
 
         it('Process should NOT start local compiler', async () => {
             let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
+
             assert.isOk(result.indexOf('Connection refused') >= 0, "There is a port that listening on compiler's port.");
         })
 
         afterEach(async () => {
 
-            let running = await waitForContainer();
+            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             if (running) {
                 await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             }
@@ -188,11 +193,14 @@ describe("Forgae Node and Compiler Tests", () => {
             // test
             let result = await execute(constants.cliCommands.NODE, [], executeOptions);
 
-            const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0;
-            const isSamePort = result.indexOf(`:${ port }`) >= 0;
+            const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
+                result.indexOf('port is already allocated') >= 0 ||
+                result.indexOf(`address already in use`) >= 0;
+
+            // const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
             assert.isOk(isPortAllocated, 'Node does not throw exception on allocated port!');
-            assert.isOk(isSamePort, 'Error message does not contains expected port!');
+            // assert.isOk(isSamePort, 'Error message does not contains expected port!');
 
             // stop server
             app.close();
@@ -221,10 +229,15 @@ describe("Forgae Node and Compiler Tests", () => {
             // test
             let result = await execute(constants.cliCommands.NODE, [], executeOptions);
 
-            const isPortAllocated = result.indexOf('port is already allocated') >= 0 || result.indexOf(`address already in use`) >= 0 || result.indexOf(`Process exited with code 125`) >= 0;
-            // const isSamePort = result.indexOf(`:${ port }`) >= 0;
+            const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
+            result.indexOf('port is already allocated') >= 0 ||
+            result.indexOf(`address already in use`) >= 0 ||
+            result.indexOf(`Process exited with code 125`) >= 0;
 
-            assert.isOk(isPortAllocated, 'Local compiler does not throw exception on allocated port!');
+            // const isSamePort = result.indexOf(`:${ port }`) >= 0;
+            const isNodeStarted = result.indexOf('Node already started and healthy!') >= 0;
+
+            assert.isOk(isPortAllocated || isNodeStarted, 'Local compiler does not throw exception on allocated port!');
             // assert.isOk(isSamePort, 'Error message does not contains expected port!');
 
             // stop server
@@ -249,7 +262,7 @@ describe("Forgae Node and Compiler Tests", () => {
 
         after(async () => {
 
-            let running = await waitForContainer();
+            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             if (running) {
                 await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             }
@@ -267,9 +280,9 @@ describe("Forgae Node and Compiler Tests", () => {
 
             before(async () => {
                 fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`);
-                
+
                 await winExec(cliCommand, constants.cliCommands.INIT, [], executeOptions);
-                await winExec(cliCommand, constants.cliCommands.NODE, [ '--windows' ], executeOptions);
+                await winExec(cliCommand, constants.cliCommands.NODE, ['--windows'], executeOptions);
             })
 
             it('Should start the node successfully', async () => {
@@ -280,7 +293,11 @@ describe("Forgae Node and Compiler Tests", () => {
             it('Should check if the wallets are funded', async () => {
 
                 let client = await utils.getClient(network);
-                await waitUntilFundedBlocks(client, {blocks: 8, containerName: dockerServiceNodeName, executeOptions })
+                await waitUntilFundedBlocks(client, {
+                    blocks: 8,
+                    containerName: dockerServiceNodeName,
+                    options: executeOptions
+                })
                 for (let wallet in defaultWallets) {
                     let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
                     assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
@@ -299,18 +316,18 @@ describe("Forgae Node and Compiler Tests", () => {
             xit('Process should start local compiler', async () => {
                 let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL.replace('localhost', nodeConfig.nodeConfiguration.dockerMachineIP));
                 let isContainCurrentVersion = result.indexOf(`{"version"`) >= 0;
-                
+
                 assert.isOk(isContainCurrentVersion);
             })
 
             it('Should stop the node successfully', async () => {
-                await winExec(cliCommand, constants.cliCommands.NODE, [ constants.cliCommandsOptions.STOP ], executeOptions)
+                await winExec(cliCommand, constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
                 let running = await waitForContainer(dockerServiceNodeName, executeOptions);
                 assert.isNotTrue(running, "node wasn't stopped properly");
             })
 
             it('Process should stop when command is started in wrong folder.', async () => {
-                let result = await winExec(cliCommand, constants.cliCommands.NODE, [ '--windows' ], {
+                let result = await winExec(cliCommand, constants.cliCommands.NODE, ['--windows'], {
                     cwd: process.cwd()
                 });
 

@@ -11,7 +11,7 @@ const constants = require('./../constants.json');
 const Deployer = require('./../../packages/forgae-lib/dist/forgae-deployer').Deployer;
 const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
 const waitForContainer = require('../utils').waitForContainer;
-const convertToPerson = require('../utils').convertToPerson;
+const nodeConfig = require('./../../packages/forgae-config/config/node-config.json');
 
 const contractPath = './contracts/example-contract.aes';
 
@@ -344,7 +344,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
     after(async () => {
         // stop node
-        let running = await waitForContainer();
+        let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
         }

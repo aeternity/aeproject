@@ -10,7 +10,6 @@ const mainContractsPathRgx = /.*\//g;
 let match;
 
 const config = require('../../forgae-config/config/config.json');
-const nodeConfig = require('./../..//forgae-config/config/node-config').nodeConfiguration;
 const {
     printError
 } = require('./fs-utils')
@@ -84,6 +83,7 @@ const handleApiError = async (fn) => {
 
         return await fn()
     } catch (e) {
+        console.log(e)
         const response = e.response
         logApiError(response && response.data ? response.data.reason : e)
         process.exit(1)
@@ -111,15 +111,15 @@ const execute = async (cli, command, args = [], options = {}) => {
     try {
         const child = await spawn(cli, [command, ...args], options);
 
-        let result = readSpawnOutput(child);
-        if (!result) {
-            result = readErrorSpawnOutput(child);
-        }
+        let result = child.stdout.toString('utf8');
+        result += child.stderr.toString('utf8');
 
         return result;
     } catch (e) {
-        let result = readSpawnOutput(e);
-        result += readErrorSpawnOutput(e);
+        console.log(e)
+        
+        let result = e.stdout ? e.stdout.toString('utf8') : e.message;
+        result += e.stderr ? e.stderr.toString('utf8') : e.message;
 
         return result;
     }
@@ -251,48 +251,41 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
-async function waitForContainer (dockerImage = nodeConfig.dockerImage, options = {}) {
-    let running = false;
-    let result = await spawn('docker', ['ps'], options);
-    let res = readSpawnOutput(result);
-    if (res) {
-        res = res.split('\n');
+async function waitForContainer (dockerImage, options) {
+    try {
+        let running = false;
+        let result = await spawn('docker-compose', [
+            '-f',
+            'docker-compose.yml',
+            '-f',
+            'docker-compose.compiler.yml',
+            'ps'
+        ], options);
+
+        let res = readSpawnOutput(result);
+        
+        if (res) {
+            res = res.split('\n');
+        }
+
+        if (Array.isArray(res)) {
+            res.map(line => {
+                if (line.indexOf(dockerImage) >= 0 && line.includes('healthy')) {
+                    running = true
+                }
+            })
+        }
+
+        return running;
+    } catch (error) {
+        if (error.stderr) {
+            console.log(error.stderr.toString('utf8'))
+        } else {
+            console.log(error.message || error)
+        }
+
+        throw Error(error);
     }
-
-    if (Array.isArray(res)) {
-        res.map(line => {
-            if (line.includes(dockerImage) && line.includes('healthy')) {
-                running = true
-            }
-        })
-    }
-
-    return running;
-}
-
-async function waitForContainerCompose (dockerImage = nodeConfig.dockerServiceNodeName, options = {}) {
-    let running = false;
-    let result = await spawn('docker-compose', [
-        '-f',
-        'docker-compose.yml',
-        '-f',
-        'docker-compose.compiler.yml',
-        'ps'
-    ], options);
-    let res = readSpawnOutput(result);
-    if (res) {
-        res = res.split('\n');
-    }
-
-    if (Array.isArray(res)) {
-        res.map(line => {
-            if (line.includes(dockerImage) && line.includes('healthy')) {
-                running = true
-            }
-        })
-    }
-
-    return running;
 }
 
 module.exports = {
@@ -308,6 +301,5 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
-    waitForContainer,
-    waitForContainerCompose
+    waitForContainer
 }
