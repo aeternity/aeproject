@@ -54,7 +54,10 @@
 	"nodeConfiguration": {
 		"configFileName": "docker-compose.yml",
 		"textToSearch": "image: aeternity/",
-		"dockerImage": "aeternity/aeternity"
+		"dockerImage": "aeternity/aeternity",
+		"dockerServiceNodeName" : "node1",
+		"dockerServiceCompilerName" : "compiler",
+		"dockerMachineIP" : "192.168.99.100"
 	},
 
 	"compilerConfiguration": {

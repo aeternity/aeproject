@@ -31,7 +31,8 @@ describe('ForgAE Shape React', async () => {
 
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.packageJson)), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.packageLockJson)), "package-lock.json doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeYml)), "docker-compose.yml doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeNodeYml)), "docker-compose.yml doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeCompilerYml)), "docker-compose.yml doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoTestContractPath)), "test contract doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.deployScriptsPath)), "deploy scripts doesn't exists");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.contractsAeppSettings)), "contracts aepp settings file doesn't exist");
