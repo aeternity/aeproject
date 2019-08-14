@@ -5,7 +5,6 @@ const utils = require('./fs-utils');
 // contract Assert =
 //     public function require : (bool,string) => ()
 
-
 // `;
 
 class SophiaUtil {
@@ -18,9 +17,9 @@ class SophiaUtil {
         }
 
         for (let path of contractPath) {
-            
+
             const result = parseContractInfo(path);
-            
+
             if (contracts.has(result.contractName)) {
                 const existingContract = contracts.get(result.contractName);
 
@@ -32,7 +31,7 @@ class SophiaUtil {
 
             contracts.set(result.contractName, result);
         }
-        
+
         return contracts;
     }
 
@@ -46,20 +45,17 @@ class SophiaUtil {
 
         return match[1];
     }
-    
+
     static getTestFunctions (source) {
 
         const functions = [];
-        const rgx = /^\s+public\s+(?:stateful\s+)?function\s+([a-zA-Z\'_\d]+)/gm;
+        const rgx = /^\s+(?:stateful\s+)?entrypoint\s+([a-zA-Z\'_\d]+)/gm;
 
         let match = rgx.exec(source);
-
         while (match) {
-
             if (match.length >= 2 && match[1].startsWith('test_')) {
                 functions.push(match[1]);
             }
-
             match = rgx.exec(source);
         }
 
@@ -68,25 +64,22 @@ class SophiaUtil {
 
     static generateCompleteSource (source, tests) {
         // index of 'space/new line' before first public function
-        const rgx = /^\s+public/gm;
+        const rgx = /^\s+entrypoint/gm;
 
         let match = rgx.exec(tests);
         if (!match) {
             throw new Error(`Missing public function! Data: ${ tests }`);
         }
-
         tests = tests.substr(match.index);
-
         return `${ source }\n${ tests }`;
     }
 }
 
-function parseContractInfo(contractPath) {
+function parseContractInfo (contractPath) {
 
     const source = utils.readFile(contractPath, 'utf8');
     const contractName = SophiaUtil.getContractName(source);
     const functions = SophiaUtil.getTestFunctions(source);
-    
     return {
         contractName: contractName,
         source: source,

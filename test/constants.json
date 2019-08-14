@@ -11,7 +11,9 @@
 	"historyTestsFolderPath": "/test/commands-tests/historyTestFolder",
 	"shapeVueTestsFolderPath": "/test/commands-tests/shapeVueTestFolder",
 	"shapeAngularTestsFolderPath": "/test/commands-tests/shapeAngularTestFolder",
+	"shapeReactTestsFolderPath": "/test/commands-tests/shapeReactTestFolder",
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
+	"exportForgaeConfigTestsFolderPath": "/test/commands-tests/exportForgaeConfigTestFolder",
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
@@ -25,7 +27,8 @@
 	},
 	"cliSubCommands": {
 		"VUE": "vue",
-		"ANGULAR": "angular"
+		"ANGULAR": "angular",
+		"REACT": "react"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",
@@ -41,7 +44,8 @@
 	"testsFiles": {
 		"packageJson": "/package.json",
 		"packageLockJson": "/package-lock.json",
-		"dockerComposeYml": "/docker-compose.yml",
+		"dockerComposeNodeYml": "/docker-compose.yml",
+		"dockerComposeCompilerYml": "/docker-compose.compiler.yml",
 		"testContractPath": "/test/exampleTest.js",
 		"deployScriptsPath": "/deployment/deploy.js",
 		"contractsPath": "/contracts/ExampleContract.aes",

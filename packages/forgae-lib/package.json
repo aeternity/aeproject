@@ -1,6 +1,6 @@
 {
   "name": "forgae-lib",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -10,8 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "forgae-config": "^1.0.0",
-    "forgae-logger": "^1.0.0",
-    "forgae-utils": "^1.0.0"
+    "forgae-config": "^2.0.0",
+    "forgae-logger": "^2.0.0",
+    "forgae-utils": "^2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.5.2"
   }
 }

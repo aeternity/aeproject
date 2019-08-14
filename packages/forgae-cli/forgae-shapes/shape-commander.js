@@ -8,7 +8,6 @@ class ShapeCommander {
 
     init () {
         let files = fs.readdirSync(__dirname);
-		
         for (let file of files) {
 
             if (file.includes('-cmd.js') > 0) {
