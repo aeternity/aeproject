@@ -15,8 +15,11 @@ const {
 } = require('./fs-utils')
 
 const {
-    spawn
+    spawn,
+    exec
 } = require('promisify-child-process');
+
+const COMPILER_URL_POSTFIX = '/compile';
 
 const getClient = async function (network, keypair = config.keypair) {
     let client;
@@ -80,6 +83,7 @@ const handleApiError = async (fn) => {
 
         return await fn()
     } catch (e) {
+        console.log(e)
         const response = e.response
         logApiError(response && response.data ? response.data.reason : e)
         process.exit(1)
@@ -107,10 +111,27 @@ const execute = async (cli, command, args = [], options = {}) => {
     try {
         const child = await spawn(cli, [command, ...args], options);
 
+        let result = child.stdout.toString('utf8');
+        result += child.stderr.toString('utf8');
+
+        return result;
+    } catch (e) {
+        console.log(e)
+        
+        let result = e.stdout ? e.stdout.toString('utf8') : e.message;
+        result += e.stderr ? e.stderr.toString('utf8') : e.message;
+
+        return result;
+    }
+};
+
+const winExec = async (cli, cmd, args = [], options = {}) => {
+    try {
+
+        const child = await exec(`${ cli } ${ cmd } ${ args.join(' ') }`, options);
+
         let result = readSpawnOutput(child);
-        if (!result) {
-            result = readErrorSpawnOutput(child);
-        }
+        result += readErrorSpawnOutput(child);
 
         return result;
     } catch (e) {
@@ -119,7 +140,7 @@ const execute = async (cli, command, args = [], options = {}) => {
 
         return result;
     }
-};
+}
 
 const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -148,17 +169,19 @@ async function contractCompile (source, contractPath, compileOptions) {
     let options = {
         "file_system": null
     }
-    
+
     let dependencies = getDependencies(source, contractPath)
-    
+
     options["file_system"] = dependencies
 
     let body = {
         code: source,
         options
     };
-    
-    result = await axios.post(compileOptions.compilerUrl, body, options);
+
+    const url = normalizeCompilerUrl(compileOptions.compilerUrl);
+
+    result = await axios.post(url, body, options);
 
     return result;
 }
@@ -167,7 +190,7 @@ function checkNestedProperty (obj, property) {
     if (!obj || !obj.hasOwnProperty(property)) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -211,6 +234,60 @@ function getActualContract (contractContent) {
     return content;
 }
 
+function normalizeCompilerUrl (url) {
+
+    if (!url.startsWith('http')) {
+        url = 'http://' + url;
+    }
+
+    if (!url.endsWith(COMPILER_URL_POSTFIX)) {
+        if (url.endsWith('/')) {
+            url += COMPILER_URL_POSTFIX.substr(1);
+        } else {
+            url += COMPILER_URL_POSTFIX
+        }
+    }
+
+    return url;
+}
+
+async function waitForContainer (dockerImage, options) {
+    try {
+        let running = false;
+        let result = await spawn('docker-compose', [
+            '-f',
+            'docker-compose.yml',
+            '-f',
+            'docker-compose.compiler.yml',
+            'ps'
+        ], options);
+
+        let res = readSpawnOutput(result);
+        
+        if (res) {
+            res = res.split('\n');
+        }
+
+        if (Array.isArray(res)) {
+            res.map(line => {
+                if (line.indexOf(dockerImage) >= 0 && line.includes('healthy')) {
+                    running = true
+                }
+            })
+        }
+
+        return running;
+    } catch (error) {
+        if (error.stderr) {
+            console.log(error.stderr.toString('utf8'))
+        } else {
+            console.log(error.message || error)
+        }
+
+        throw Error(error);
+    }
+}
+
 module.exports = {
     config,
     getClient,
@@ -222,5 +299,7 @@ module.exports = {
     execute,
     timeout,
     contractCompile,
-    checkNestedProperty
+    checkNestedProperty,
+    winExec,
+    waitForContainer
 }

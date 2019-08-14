@@ -28,6 +28,8 @@ const logApiError = forgaeUtils.logApiError;
 const timeout = forgaeUtils.timeout;
 const contractCompile = forgaeUtils.contractCompile;
 const checkNestedProperty = forgaeUtils.checkNestedProperty;
+const winExec = forgaeUtils.winExec;
+const waitForContainer = forgaeUtils.waitForContainer;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -71,5 +73,7 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     createDirIfNotExists,
-    writeFileSync
+    writeFileSync,
+    winExec,
+    waitForContainer
 }
