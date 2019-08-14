@@ -15,7 +15,7 @@ const testWorkingDir = constants.shapeAngularTestsFolderPath;
 
 let cwd = process.cwd();
 
-describe.only('ForgAE Shape Angular', async () => {
+describe('ForgAE Shape Angular', async () => {
 
 	let workingDir;
 
