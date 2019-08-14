@@ -3,7 +3,7 @@
   "version": "0.0.9",
   "private": true,
   "scripts": {
-    "test": "mocha './test/**/*.js' --timeout 0 --exit",
+    "test": "mocha ./test/**/*.js --timeout 0 --exit",
     "link": "lerna bootstrap && cd packages/forgae-cli && yarn link",
     "develop": "lerna bootstrap && cd packages/forgae-cli && yarn link && cd .. && cd forgae-config && npm install && yarn link && cd .. && cd forgae-logger && npm install && yarn link && cd .. && cd forgae-utils && npm install && yarn link && cd .. && cd forgae-lib && npm install && yarn link && yarn link forgae-config && yarn link forgae-logger && yarn link forgae-utils",
     "unlink": "cd packages/forgae-cli && yarn unlink && cd .. && cd forgae-lib && yarn unlink && yarn unlink forgae-config && yarn unlink forgae-utils && yarn unlink forgae-logger && cd .. && cd forgae-config && yarn unlink && cd .. && cd forgae-logger && yarn unlink && cd .. && cd forgae-utils && yarn unlink"
