@@ -230,9 +230,9 @@ describe("Forgae Node and Compiler Tests", () => {
             let result = await execute(constants.cliCommands.NODE, [], executeOptions);
 
             const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
-            result.indexOf('port is already allocated') >= 0 ||
-            result.indexOf(`address already in use`) >= 0 ||
-            result.indexOf(`Process exited with code 125`) >= 0;
+                result.indexOf('port is already allocated') >= 0 ||
+                result.indexOf(`address already in use`) >= 0 ||
+                result.indexOf(`Process exited with code 125`) >= 0;
 
             // const isSamePort = result.indexOf(`:${ port }`) >= 0;
             const isNodeStarted = result.indexOf('Node already started and healthy!') >= 0;

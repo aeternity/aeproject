@@ -51,6 +51,7 @@ async function fundWallets (nodeIp) {
     let walletIndex = 0;
 
     let client = await utils.getClient(network);
+    client.addAccount(config.keyPair)
     await printBeneficiaryKey(client);
     for (let wallet in defaultWallets) {
         await fundWallet(client, defaultWallets[wallet].publicKey)
@@ -91,10 +92,7 @@ async function waitToMineCoins (nodeIp) {
 }
 
 async function fundWallet (client, recipient) {
-
-    client.setKeypair(config.keyPair)
     await client.spend(config.amountToFund, recipient)
-
 }
 
 function hasNodeConfigFiles () {
@@ -180,7 +178,7 @@ async function run (option) {
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE node, port is already allocated!`);
         }
-        
+
         if (!option.only && await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
             print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
