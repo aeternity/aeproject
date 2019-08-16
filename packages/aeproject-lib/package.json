@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aeproject-config": "^2.0.0",
-    "aeproject-logger": "^2.0.0",
-    "aeproject-utils": "^2.0.0"
+    "aeproject-config": "^0.0.1",
+    "aeproject-logger": "^0.0.1",
+    "aeproject-utils": "^0.0.1"
   },
   "devDependencies": {
     "typescript": "^3.5.2"
