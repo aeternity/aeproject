@@ -1,8 +1,8 @@
 const dockerCLI = require('docker-cli-js');
 const docker = new dockerCLI.Docker();
 
-const waitForContainer = require('./../packages/forgae-utils/index').waitForContainer;
-const defaultAeDockerImage = require('./../packages/forgae-config/index').nodeConfiguration.dockerImage;
+const waitForContainer = require('./../packages/aeproject-utils/index').waitForContainer;
+const defaultAeDockerImage = require('./../packages/aeproject-config/index').nodeConfiguration.dockerImage;
 
 async function waitUntilFundedBlocks (client, options) {
     if (!options.blocks) {

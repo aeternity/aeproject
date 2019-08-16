@@ -14,7 +14,7 @@ services:
 install:
   - npm install
   - lerna bootstrap
-  - cd packages/forgae-cli
+  - cd packages/aeproject-cli
   - yarn link
   - cd ../..
 script:

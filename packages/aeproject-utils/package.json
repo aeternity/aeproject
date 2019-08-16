@@ -1,0 +1,24 @@
+{
+  "name": "aeproject-utils",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@aeternity/aepp-sdk": "4.4.0",
+    "chalk": "^2.4.1",
+    "cli-table": "^0.3.1",
+    "esm": "^3.0.77",
+    "aeproject-config": "^2.0.0",
+    "fs-extra": "^7.0.1",
+    "moment": "^2.23.0",
+    "node-dir": "^0.1.17",
+    "path": "^0.12.7",
+    "promisify-child-process": "^2.1.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

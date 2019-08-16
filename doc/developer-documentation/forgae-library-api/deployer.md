@@ -3,7 +3,7 @@
 ## Install
 
 ```text
-npm install forgae-lib
+npm install aeproject-lib
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install forgae-lib
 Require of the package is done as follows:
 
 ```javascript
-const Deployer = require('forgae-lib').Deployer;
+const Deployer = require('aeproject-lib').Deployer;
 ```
 
 **Deployer.deploy\(path, initState, options\)** function can take up to 3 parameters:

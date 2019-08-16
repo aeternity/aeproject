@@ -3,16 +3,16 @@ const chaiFiles = require('chai-files');
 const assert = chai.assert;
 chai.use(chaiFiles);
 
-const forgaeExecute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const aeprojectExecute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra');
 const path = require('path');
 
-const forgaeConfigDefaultFileName = require('./../../packages/forgae-cli/forgae-export/constants').forgaeConfigFileName;
+const aeprojectConfigDefaultFileName = require('./../../packages/aeproject-cli/aeproject-export/constants').aeprojectConfigFileName;
 const constants = require('../constants.json');
 // const cliCmds = constants.cliCommands;
 // const cliSubCmds = constants.cliSubCommands;
 
-const testWorkingDir = constants.exportForgaeConfigTestsFolderPath;
+const testWorkingDir = constants.exportAEprojectConfigTestsFolderPath;
 
 let cwd = process.cwd();
 
@@ -40,7 +40,7 @@ const expectedTerminalOutput = {
     ]
 };
 
-describe('ForgAE Export Forgae Config', async () => {
+describe('AEproject Export AEproject Config', async () => {
 
     let workingDir;
 
@@ -52,65 +52,65 @@ describe('ForgAE Export Forgae Config', async () => {
     });
 
     it('Should terminal output is correct', async () => {
-        let result = await forgaeExecute('export-config');
+        let result = await aeprojectExecute('export-config');
         result = JSON.parse(result);
-        
+
         assert.equal(JSON.stringify(result), JSON.stringify(expectedTerminalOutput), "Configuration mismatch!");
     });
 
-    it('Should export forgae config file with default path', async () => {
-        await forgaeExecute('export-config');
-        assert.isOk(fs.existsSync('./forgaeConfig.json'), "Missing forgae config json file!");
+    it('Should export aeproject config file with default path', async () => {
+        await aeprojectExecute('export-config');
+        assert.isOk(fs.existsSync('./aeprojectConfig.json'), "Missing aeproject config json file!");
     });
 
-    it('Should export forgae config file with random path', async () => {
+    it('Should export aeproject config file with random path', async () => {
         const someRandomPath = './wer/fvfgbh/setsdg/sdg.asd.json'
-        await forgaeExecute('export-config', [
+        await aeprojectExecute('export-config', [
             '--path',
             someRandomPath
         ]);
-        assert.isOk(fs.existsSync(someRandomPath), "Missing forgae config json file!");
+        assert.isOk(fs.existsSync(someRandomPath), "Missing aeproject config json file!");
     });
 
-    it('Exported forgae configuration should be equal to expected one with default path', async () => {
-        await forgaeExecute('export-config');
-        let exportedForgaeConfig = fs.readFileSync('./forgaeConfig.json', 'utf8');
+    it('Exported aeproject configuration should be equal to expected one with default path', async () => {
+        await aeprojectExecute('export-config');
+        let exportedAEprojectConfig = fs.readFileSync('./aeprojectConfig.json', 'utf8');
 
-        assert.equal(JSON.stringify(JSON.parse(exportedForgaeConfig)), JSON.stringify(expectedTerminalOutput));
+        assert.equal(JSON.stringify(JSON.parse(exportedAEprojectConfig)), JSON.stringify(expectedTerminalOutput));
     });
 
-    it('Exported forgae configuration should be equal to expected one with random path', async () => {
+    it('Exported aeproject configuration should be equal to expected one with random path', async () => {
         const someRandomPath = './oeirhjg/ierugn/dfhtf/sgsrr/ertrd.json'
-        await forgaeExecute('export-config', [
+        await aeprojectExecute('export-config', [
             '--path',
             someRandomPath
         ]);
 
-        let exportedForgaeConfig = fs.readFileSync(someRandomPath, 'utf8');
+        let exportedAEprojectConfig = fs.readFileSync(someRandomPath, 'utf8');
 
-        assert.equal(JSON.stringify(JSON.parse(exportedForgaeConfig)), JSON.stringify(expectedTerminalOutput));
+        assert.equal(JSON.stringify(JSON.parse(exportedAEprojectConfig)), JSON.stringify(expectedTerminalOutput));
     });
 
-    it('Should export forgae configuration, destination is only directories without filename and extension', async () => {
+    it('Should export aeproject configuration, destination is only directories without filename and extension', async () => {
         const someRandomPath = './a3///tyjtjtyr/sfgedgb/dgnfhf/ththrth///ethrhr'
-        await forgaeExecute('export-config', [
+        await aeprojectExecute('export-config', [
             '--path',
             someRandomPath
         ]);
 
-        assert.isOk(fs.existsSync(path.join(someRandomPath, forgaeConfigDefaultFileName)), "Missing forgae config json file!");
+        assert.isOk(fs.existsSync(path.join(someRandomPath, aeprojectConfigDefaultFileName)), "Missing aeproject config json file!");
     });
 
-    it('Exported forgae configuration should be equal to expected one, destination is only directories without filename and extension', async () => {
+    it('Exported aeproject configuration should be equal to expected one, destination is only directories without filename and extension', async () => {
         const someRandomPath = './a2/rgdt/dehthrth/edthr///sdfsgsgweq3332/ethreth'
-        await forgaeExecute('export-config', [
+        await aeprojectExecute('export-config', [
             '--path',
             someRandomPath
         ]);
 
-        let exportedForgaeConfig = fs.readFileSync(path.join(someRandomPath, forgaeConfigDefaultFileName), 'utf8');
+        let exportedAEprojectConfig = fs.readFileSync(path.join(someRandomPath, aeprojectConfigDefaultFileName), 'utf8');
 
-        assert.equal(JSON.stringify(JSON.parse(exportedForgaeConfig)), JSON.stringify(expectedTerminalOutput));
+        assert.equal(JSON.stringify(JSON.parse(exportedAEprojectConfig)), JSON.stringify(expectedTerminalOutput));
     });
 
     afterEach(async () => {

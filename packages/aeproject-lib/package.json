@@ -1,0 +1,20 @@
+{
+  "name": "aeproject-lib",
+  "version": "2.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aeproject-config": "^2.0.0",
+    "aeproject-logger": "^2.0.0",
+    "aeproject-utils": "^2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.5.2"
+  }
+}

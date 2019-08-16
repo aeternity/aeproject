@@ -1,4 +1,4 @@
 [![npm 
-version](https://badge.fury.io/js/forgae.svg)](https://badge.fury.io/js/forgae)
+version](https://badge.fury.io/js/aeproject.svg)](https://badge.fury.io/js/aeproject)
 
-# forgae-cli
+# aeproject-cli
