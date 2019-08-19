@@ -1,6 +1,7 @@
 {
     "repos": {
         "vue": "https://github.com/aeternity/aepp-forgae-shape-vue.git",
+        "angular": "https://github.com/aeternity/aepp-forgae-shape-angular.git",
         "react": "https://github.com/aeternity/aepp-forgae-shape-react.git"
     }
 }
