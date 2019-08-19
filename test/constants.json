@@ -64,7 +64,8 @@
 		"toDoContract": "/contracts/ToDoManager.aes",
 		"toDoTestContractPath": "/test/toDoManagerTests.js",
 		"vueWebProjectPath": "/aepp-aeproject-shape-vue",
-		"angularWebProjectPath": "/aepp-forgae-shape-angular",
+		"reactWebProjectPath": "/aepp-aeproject-shape-react",
+		"angularWebProjectPath": "/aepp-aeproject-shape-angular",
 		"shapeAeppProjectPath": "/aepp",
 		"shapeIdentityProviderProjectPath": "/identity-provider"
 	},

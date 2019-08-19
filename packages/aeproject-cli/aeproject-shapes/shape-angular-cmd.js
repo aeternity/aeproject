@@ -1,15 +1,15 @@
 const util = require('util');
 const childProcess = util.promisify(require('child_process').exec);
-const utils = require('forgae-utils');
+const utils = require('aeproject-utils');
 const exec = utils.execute;
 
 const angularRepo = require('./constants.json').repos.angular;
-const constants = require('../forgae-init/constants.json');
-const angularAeppProjectPath = './aepp-forgae-shape-angular/aepp';
-const angularIdentityProviderProjectPath = './aepp-forgae-shape-angular/identity-provider';
+const constants = require('../aeproject-init/constants.json');
+const angularAeppProjectPath = './aepp-aeproject-shape-angular/aepp';
+const angularIdentityProviderProjectPath = './aepp-aeproject-shape-angular/identity-provider';
 
-const initCommandObject = require("../forgae-init/init");
-const createForgaeProjectStructure = initCommandObject.createForgaeProjectStructure;
+const initCommandObject = require("../aeproject-init/init");
+const createAEprojectProjectStructure = initCommandObject.createAEprojectProjectStructure;
 
 let self;
 
@@ -20,7 +20,7 @@ class AngularSubCommand {
     }
 
     async run () {
-        await createForgaeProjectStructure(true);
+        await createAEprojectProjectStructure(true);
 
         await self.prepareAngularProject();
 
@@ -28,7 +28,7 @@ class AngularSubCommand {
     }
 
     async prepareAngularProject () {
-        console.log('===== Preparation of a ready-to-use aepp with predefined Angular.js frontend framework and forgae integration =====');
+        console.log('===== Preparation of a ready-to-use aepp with predefined Angular.js frontend framework and aeproject integration =====');
 
         await exec('git', 'clone', [angularRepo]);
 
