@@ -31,7 +31,9 @@ const getClient = async function (network, keypair = config.keypair) {
         client = await Universal({
             url: network.url,
             internalUrl,
-            keypair: keypair,
+            accounts: [AeSDK.MemoryAccount({
+                keypair
+            })],
             nativeMode: true,
             networkId: network.networkId,
             compilerUrl: network.compilerUrl
@@ -117,7 +119,7 @@ const execute = async (cli, command, args = [], options = {}) => {
         return result;
     } catch (e) {
         console.log(e)
-        
+
         let result = e.stdout ? e.stdout.toString('utf8') : e.message;
         result += e.stderr ? e.stderr.toString('utf8') : e.message;
 
@@ -263,7 +265,7 @@ async function waitForContainer (dockerImage, options) {
         ], options);
 
         let res = readSpawnOutput(result);
-        
+
         if (res) {
             res = res.split('\n');
         }

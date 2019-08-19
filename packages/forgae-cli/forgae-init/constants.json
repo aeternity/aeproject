@@ -25,5 +25,5 @@
 	"dockerCompilerYmlFile": "docker-compose.compiler.yml",
 	"dockerNodeYmlFileDestination": "./docker-compose.yml",
 	"dockerCompilerYmlFileDestination": "./docker-compose.compiler.yml",
-	"sdkVersion": "4.2.0"
+	"sdkVersion": "4.4.0"
 }
