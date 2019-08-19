@@ -115,7 +115,7 @@ export class Deployer {
         try {
             contractInstance = await client.getContractInstance(contract);
             deployedContract = await contractInstance.deploy(initState, options);
-
+          
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             await generateInstancesWithWallets(this.network, deployedContract.address);
             let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(contractInstance);
