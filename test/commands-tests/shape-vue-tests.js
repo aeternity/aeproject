@@ -48,6 +48,8 @@ describe('AEproject Shape Vue', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.aeprojectStore)), "aeproject store folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.vueWebProjectPath)), "vue web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoContract)), "ToDo Manager contract doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.gitIgnoreFile)), "Git ignore file doesnt' exist");
+        
     });
 
     after(async () => {

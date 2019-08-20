@@ -50,6 +50,7 @@ describe('Aeproject Shape Angular', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.angularWebProjectPath)), "angular web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.angularWebProjectPath + constants.testsFiles.shapeAeppProjectPath)), "React aepp web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.angularWebProjectPath + constants.testsFiles.shapeIdentityProviderProjectPath)), "React identity-provider web project folder doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.gitIgnoreFile)), "Git ignore file doesnt' exist");
     });
 
     after(async () => {
