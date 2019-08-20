@@ -27,7 +27,7 @@ const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
 const mainAEprojectProjectDir = process.cwd();
 
-function insertAdditionalFiles() {
+function insertAdditionalFiles () {
     // copy needed files into test folder to run the specific tests
     let cwd = process.cwd();
     let testFolder = path.join(cwd, '/test/commands-tests/deployTest');
