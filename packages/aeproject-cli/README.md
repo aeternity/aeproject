@@ -10,7 +10,7 @@ AEproject consists of 5 separated packages. There are two main packages.
 - aeproject-lib - installing this package will give you access to the Deployer, which gives you the ability to deploy compiled contracts.
 - aeproject-logger - Using this package will give you the ability to print your historical deployments on the console.
 - aeproject-config - This package is used as helper where all the necessary configuration files are included.
-- aeproject-utils - Similarly to config this package helps with functions like **ReadFile**  & **keyToHex**, etc.
+- aeproject-utils - Similarly to config this package helps with functions like **ReadFile**  & **keyToHex**, etc. 
 
 
 ### Installing
