@@ -20,4 +20,4 @@ install:
   - yarn link
   - cd ../..
 script:
-  - npm testгит 
+  - npm test
