@@ -51,6 +51,7 @@ describe('AEproject Shape React', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.reactWebProjectPath)), "React web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.reactWebProjectPath + constants.testsFiles.shapeAeppProjectPath)), "React aepp web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.reactWebProjectPath + constants.testsFiles.shapeIdentityProviderProjectPath)), "React identity-provider web project folder doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.gitIgnoreFile)), "Git ignore file doesnt' exist");
     });
 
     after(async () => {

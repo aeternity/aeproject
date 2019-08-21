@@ -4,7 +4,6 @@ const assert = chai.assert;
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
-const packageJson = require('../../packages/aeproject-cli/package.json')
 const utilsPackageJson = require('../../packages/aeproject-utils/package.json')
 const aeprojectLibVersion = require('../../packages/aeproject-lib/package.json').version;
 
@@ -40,6 +39,7 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
     it('Should update project successfully', async () => {
@@ -82,6 +82,7 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
     after(async () => {

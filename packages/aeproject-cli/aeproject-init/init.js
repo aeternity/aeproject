@@ -51,6 +51,7 @@ const createAEprojectProjectStructure = async (shape) => {
     setupIntegrations();
     await setupDeploy(shape);
     setupDocker();
+    addIgnoreFile();
 
     print('===== AEproject was successfully initialized! =====');
 }
@@ -132,6 +133,12 @@ const setupDocker = () => {
     const dockerCompilerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerCompilerYmlFile }`;
     copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, copyOptions)
     copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
+}
+
+const addIgnoreFile = () => {
+    print(`==== Adding additional files ====`)
+    const ignoreFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.gitIgnoreFile }`;
+    copyFileOrDir(ignoreFileSource, constants.gitIgnoreFile)
 }
 
 module.exports = {
