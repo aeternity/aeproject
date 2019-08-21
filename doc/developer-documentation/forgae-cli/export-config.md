@@ -16,7 +16,7 @@ Example:
 aeproject export-config --path ./../my-dir/my-aeproject-config.json
 ```
 
-Also you can type only directory path where you want to saved it, then command automatically would append filename with extension, by default it's 'aeprojectConfig.json'
+Also you can type only directory path where you want to save it, then command automatically would append filename with extension, by default it's 'aeprojectConfig.json'
 Example:
 
 ```text
