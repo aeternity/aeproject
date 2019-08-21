@@ -2,12 +2,12 @@
 {
   "compilerOptions": {
       "baseUrl": ".",
-      "paths": { "*": ["packages/forgae-lib/types/*"] },
+      "paths": { "*": ["packages/aeproject-lib/types/*"] },
   "module": "commonjs",
   "esModuleInterop": true,
   "target": "es6",
   "moduleResolution": "node",
   "sourceMap": true,
-  "outDir": "./packages/forgae-lib/dist"
+  "outDir": "./packages/aeproject-lib/dist"
   }
 }

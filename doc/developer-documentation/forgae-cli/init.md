@@ -1,9 +1,9 @@
-# forgae init
+# aeproject init
 
-## Initialize Forgae
+## Initialize AEproject
 
 ```text
-forgae init
+aeproject init
 ```
 
 The **init** command creates aeternity project structure with a few folders in which the developer can create

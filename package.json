@@ -1,12 +1,12 @@
 {
-  "name": "forgae-monorepo",
-  "version": "0.0.9",
+  "name": "aeproject-monorepo",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "test": "mocha ./test/**/*.js --timeout 0 --exit",
-    "link": "lerna bootstrap && cd packages/forgae-cli && yarn link",
-    "develop": "lerna bootstrap && cd packages/forgae-cli && yarn link && cd .. && cd forgae-config && npm install && yarn link && cd .. && cd forgae-logger && npm install && yarn link && cd .. && cd forgae-utils && npm install && yarn link && cd .. && cd forgae-lib && npm install && yarn link && yarn link forgae-config && yarn link forgae-logger && yarn link forgae-utils",
-    "unlink": "cd packages/forgae-cli && yarn unlink && cd .. && cd forgae-lib && yarn unlink && yarn unlink forgae-config && yarn unlink forgae-utils && yarn unlink forgae-logger && cd .. && cd forgae-config && yarn unlink && cd .. && cd forgae-logger && yarn unlink && cd .. && cd forgae-utils && yarn unlink"
+    "link": "lerna bootstrap && cd packages/aeproject-cli && yarn link",
+    "develop": "lerna bootstrap && cd packages/aeproject-cli && yarn link && cd .. && cd aeproject-config && npm install && yarn link && cd .. && cd aeproject-logger && npm install && yarn link && cd .. && cd aeproject-utils && npm install && yarn link && cd .. && cd aeproject-lib && npm install && yarn link && yarn link aeproject-config && yarn link aeproject-logger && yarn link aeproject-utils",
+    "unlink": "cd packages/aeproject-cli && yarn unlink && cd .. && cd aeproject-lib && yarn unlink && yarn unlink aeproject-config && yarn unlink aeproject-utils && yarn unlink aeproject-logger && cd .. && cd aeproject-config && yarn unlink && cd .. && cd aeproject-logger && yarn unlink && cd .. && cd aeproject-utils && yarn unlink"
   },
   "dependencies": {
     "esm": "^3.0.77",

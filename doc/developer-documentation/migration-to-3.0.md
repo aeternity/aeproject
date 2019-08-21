@@ -6,7 +6,7 @@ Our team has made some fixes to contracts wrappers and we are now more tight wit
 
 ### Contract Wrappers
 
-Deploying a smart contract via Forgae's deployer returns contract instance with predefined functions and ability to call them **from** another account. 
+Deploying a smart contract via AEproject's deployer returns contract instance with predefined functions and ability to call them **from** another account. 
 
 In the latest version when calling a function from the contract instance, you must use the **decodedResult** property to get the result. In order for your previous calls to work you simply need to use the **decodedResult** property of the transaction execution result.
 
@@ -22,7 +22,7 @@ In the latest version when calling a function from the contract instance, you mu
 
 *This is an example from the unit tests* ****
 
-    const Deployer = require('forgae-lib').Deployer;
+    const Deployer = require('aeproject-lib').Deployer;
     const EXAMPLE_CONTRACT_PATH = "./contracts/ExampleContract.aes";
     
     describe('Example Contract', () => {
@@ -42,13 +42,13 @@ In the latest version when calling a function from the contract instance, you mu
         })
     })
 
-In the current version of forgae (2.1) The result is provided from calling the function without the need of decoding it.
+In the current version of aeproject (2.1) The result is provided from calling the function without the need of decoding it.
 
 **Version 3.0:**
 
 *This is an example from the unit tests* ****
 
-    const Deployer = require('forgae-lib').Deployer;
+    const Deployer = require('aeproject-lib').Deployer;
     const EXAMPLE_CONTRACT_PATH = "./contracts/ExampleContract.aes";
     
     describe('Example Contract', () => {

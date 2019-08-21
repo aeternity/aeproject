@@ -8,10 +8,10 @@ const fs = require('fs-extra');
 
 const constants = require('./../constants.json');
 
-const Deployer = require('./../../packages/forgae-lib/dist/forgae-deployer').Deployer;
-const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const Deployer = require('./../../packages/aeproject-lib/dist/aeproject-deployer').Deployer;
+const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const waitForContainer = require('../utils').waitForContainer;
-const nodeConfig = require('./../../packages/forgae-config/config/node-config.json');
+const nodeConfig = require('./../../packages/aeproject-config/config/node-config.json');
 
 const contractPath = './contracts/example-contract.aes';
 

@@ -1,0 +1,7 @@
+{
+    "repos": {
+        "vue": "https://github.com/aeternity/aepp-aeproject-shape-vue.git",
+        "react": "https://github.com/aeternity/aepp-aeproject-shape-react.git",
+        "angular": "https://github.com/aeternity/aepp-aeproject-shape-angular.git"
+    }
+}

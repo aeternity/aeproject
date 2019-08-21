@@ -1,2 +1,2 @@
-# ForgAE CLI
+# AEproject CLI
 
