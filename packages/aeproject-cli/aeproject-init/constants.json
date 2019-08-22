@@ -26,5 +26,5 @@
 	"dockerNodeYmlFileDestination": "./docker-compose.yml",
 	"dockerCompilerYmlFileDestination": "./docker-compose.compiler.yml",
 	"gitIgnoreFile": ".gitignore",
-	"sdkVersion": "4.4.0"
+	"sdkVersion": "4.5.0"
 }
