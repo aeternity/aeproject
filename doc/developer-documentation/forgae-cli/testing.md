@@ -1,14 +1,14 @@
-# forgae test
+# aeproject test
 
 ## Run unit tests
 
 ```text
-forgae test
+aeproject test
 ```
 
 The **test** command help developers run their unit tests for aeternity projects. The command executes the tests scripts that are located in the **test** folder of your aeternity project. Additional **--path** param is available, which can specify the path to the tests
 
-Sophia developers can write tests in sophia language. They should create files including their tests with ".aes" extension in the "/test" folder. **forgae test** will look "sophia-tests.aes" file/s,  from which it will get the contract's name and check if this contract exists in "/contracts" folder. If it does, forgae will append the tests to the contract and will generate regular js file that will be executed. 
+Sophia developers can write tests in sophia language. They should create files including their tests with ".aes" extension in the "/test" folder. **aeproject test** will look "sophia-tests.aes" file/s,  from which it will get the contract's name and check if this contract exists in "/contracts" folder. If it does, aeproject will append the tests to the contract and will generate regular js file that will be executed. 
 Sophia tests should have a certain syntax. Test functions that will be called and execute tests should start with  **test_** and should not accept parameters.
 ```
 contract Calculator =
@@ -39,11 +39,11 @@ It would have been deployed and called test's functions.
 
 ### Special global variables and modules available for unit tests
 
-forgae exposes special convenience global variables and functions that can be used in the unit tests.
+aeproject exposes special convenience global variables and functions that can be used in the unit tests.
 
 #### Wallets
 
-Global wallets array is available to be used by the developer. Wallets has 10 items all representing the 10 `forgae node` wallets created on the node start. Every item has the structure of:
+Global wallets array is available to be used by the developer. Wallets has 10 items all representing the 10 `aeproject node` wallets created on the node start. Every item has the structure of:
 
 ```text
 {

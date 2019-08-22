@@ -1,12 +1,11 @@
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
-const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra')
 const constants = require('../constants.json')
-const packageJson = require('../../packages/forgae-cli/package.json')
-const utilsPackageJson = require('../../packages/forgae-utils/package.json')
-const forgaeLibVersion = require('../../packages/forgae-lib/package.json').version;
+const utilsPackageJson = require('../../packages/aeproject-utils/package.json')
+const aeprojectLibVersion = require('../../packages/aeproject-lib/package.json').version;
 
 let executeOptions = {
     cwd: process.cwd() + constants.initTestsFolderPath
@@ -14,7 +13,7 @@ let executeOptions = {
 
 chai.use(chaiFiles);
 
-describe('ForgAE Init', () => {
+describe('AEproject Init', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -40,6 +39,7 @@ describe('ForgAE Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
     it('Should update project successfully', async () => {
@@ -59,11 +59,11 @@ describe('ForgAE Init', () => {
         const projectPackageJson = require("./initTests/package.json");
 
         const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk'];
-        const forgaeLibInProject = projectPackageJson.dependencies['forgae-lib'];
+        const aeprojectLibInProject = projectPackageJson.dependencies['aeproject-lib'];
 
         assert.notEqual(editedDockerComposeYml, editedContent);
         assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
-        assert.equal(forgaeLibVersion, forgaeLibInProject, "forgae-lib is not updated properly");
+        assert.equal(aeprojectLibVersion, aeprojectLibInProject, "aeproject-lib is not updated properly");
 
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
@@ -82,6 +82,7 @@ describe('ForgAE Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
     after(async () => {

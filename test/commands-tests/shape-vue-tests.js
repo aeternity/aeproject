@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
-const forgaeExecute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
+const aeprojectExecute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -15,7 +15,7 @@ const testWorkingDir = constants.shapeVueTestsFolderPath;
 
 let cwd = process.cwd();
 
-describe('ForgAE Shape Vue', async () => {
+describe('AEproject Shape Vue', async () => {
 
     let workingDir;
 
@@ -27,7 +27,7 @@ describe('ForgAE Shape Vue', async () => {
     });
 
     it('Should init shape vue project successfully', async () => {
-        await forgaeExecute(cliCmds.SHAPE, [cliSubCmds.VUE]);
+        await aeprojectExecute(cliCmds.SHAPE, [cliSubCmds.VUE]);
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.packageJson)), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.packageLockJson)), "package-lock.json doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerComposeNodeYml)), "docker-compose.yml doesn't exist");
@@ -45,9 +45,11 @@ describe('ForgAE Shape Vue', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerNginxDefault)), "docker nginx-default doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerNginxWs)), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerKeys)), "docker keys folder doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.forgaeStore)), "forgae store folder doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.aeprojectStore)), "aeproject store folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.vueWebProjectPath)), "vue web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoContract)), "ToDo Manager contract doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.gitIgnoreFile)), "Git ignore file doesnt' exist");
+        
     });
 
     after(async () => {

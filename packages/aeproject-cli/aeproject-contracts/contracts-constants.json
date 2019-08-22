@@ -1,0 +1,18 @@
+{
+   "NODE_MODULES_LITERAL": "node_modules",
+   "CONTRACTS_AEPP_LITERAL": "contracts-aepp",
+   "YARN_LITERAL": "yarn",
+   "CONTRACTS_AEPP_GITHUB_URL": "git+https://github.com/aeternity/aepp-contracts#master",
+   "CONTRACTS_SETTINGS_PATH": "/src/settings.js",
+   "AEPROJECT_SETTINGS_PATH": "./integrations/contractsAeppSettings.js",
+   "DEFAULT_CONTRACTS_AEPP_URL": "http://localhost:8080/",
+   "DEFAULT_LOCAL_NODE_URL": "http://localhost:3001/",
+   "SPECIFIC_LOCAL_NODE_URL": "http://localhost:3002/",
+   "EXPORT_FILE_LITERAL": "export default",
+   "CONTRACTS_STARTING_SUCCESSFULLY": "Compiled successfully",
+   "LOG_FILE": "./contractLogFile.log",
+   "LOCALHOST_SUCCESS": "Contracts web Aepp",
+   "UPDATE_FLAG_CHECK_CONDITION": "Installing Contracts web Aepp",
+   "AEPROJECT_CLI_COMMAND": "aeproject",
+   "STARTING_AEPP_TIMEOUT": 150000
+}
