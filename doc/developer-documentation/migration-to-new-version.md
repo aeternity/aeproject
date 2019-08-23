@@ -1,4 +1,4 @@
-# Migration from version 1.4 to 2.0
+# Migratе Forgae 1.4 to 2.0
 
 ## Breaking changes
 
