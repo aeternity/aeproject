@@ -24,5 +24,6 @@
   * [aeproject-history](developer-documentation/aeproject-config-1/history.md)
 * [Migration from version 1.4 to 2.0](developer-documentation/migration-to-new-version.md)
 * [Migration from version 2.0 to 3.0](developer-documentation/migration-to-3.0.md)
+* [Migration from ForgAE to AEproject](developer-documentation/migration-to-new-version.md)
 * [License](developer-documentation/licence.md)
 
