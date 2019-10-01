@@ -91,7 +91,6 @@ const installYarn = async () => {
 }
 
 const setupContracts = (shape) => {
-    print(`this is gona be the shiet ${shape}`)
     print(`===== Creating contracts directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeContractTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.contractTemplateFile }`;
     createMissingFolder(constants.contractsDir);
