@@ -19,7 +19,7 @@ chai.use(chaiAsPromised);
 const LOCAL_COMPILER_URL = constants.LOCAL_COMPILER_URL;
 const INVALID_COMPILER_URL = 'https://compiler.somewhere.com';
 
-describe('AEproject Compile', () => {
+describe.only('AEproject Compile', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
