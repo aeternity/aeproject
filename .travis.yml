@@ -1,7 +1,5 @@
 language:
-  - node_js
-node_js:
-  - 9.5.0
+- node_js:
 before_install:
   - npm install -g lerna
   # Repo for Yarn
@@ -18,6 +16,9 @@ install:
   - lerna bootstrap
   - cd packages/aeproject-cli
   - yarn link
+  - cd ..
+  - cd aeproject-lib
+  - npm run tsc
   - cd ../..
 script:
   - npm test
