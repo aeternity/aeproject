@@ -1,6 +1,6 @@
 const util = require('util');
 const childProcess = util.promisify(require('child_process').exec);
-const utils = require('forgae-utils');
+const utils = require('aeproject-utils');
 const exec = utils.execute;
 
 const reactRepo = require('./constants.json').repos.react;
@@ -8,7 +8,7 @@ const reactRepo = require('./constants.json').repos.react;
 const reactAeppProjectPath = './aepp-forgae-shape-react/aepp';
 const reactIdentityProviderProjectPath = './aepp-forgae-shape-react/identity-provider';
 
-const initCommandObject = require("./../forgae-init/init");
+const initCommandObject = require("./../aeproject-init/init");
 const createForgaeProjectStructure = initCommandObject.createForgaeProjectStructure;
 
 let self;

@@ -23,6 +23,7 @@ const createMissingFolder = utils.createMissingFolder;
 const copyFileOrDir = utils.copyFileOrDir;
 
 const sdkVersion = constants.sdkVersion;
+const MAX_TIMEOUT = 1000 * 60;
 
 async function run (update) {
     if (update) {
@@ -43,15 +44,13 @@ const createAEprojectProjectStructure = async (shape) => {
     print('===== Initializing AEproject =====');
 
     await installLibraries()
-
     print(`===== Creating project file & dir structure =====`);
-
-    setupContracts(shape);
-    setupTests(shape);
-    setupIntegrations();
+    await setupContracts(shape);
+    await setupTests(shape);
+    await setupIntegrations();
     await setupDeploy(shape);
     setupDocker();
-    addIgnoreFile();
+    await addIgnoreFile();
 
     print('===== AEproject was successfully initialized! =====');
 }
@@ -67,76 +66,25 @@ const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     print('===== AEproject was successfully updated! =====');
 }
 
-async function prompt(error) {
-    const args = [...arguments];
-    // [0] - error
-    // [1] - function to execute
-    // [..] rest = function arguments 
-
-    const funcToExecute = args[1];
-
-    let inputData = '';
-
-    // Get process.stdin as the standard input object.
-    const input = process.stdin;
-
-    // Set input character encoding.
-    input.setEncoding('utf-8');
-
-    // Prompt user to input data in console.
-    console.log("'package.json' already exists, Do you want to overwrite it? (YES/no):");
-
-    // When user input data and click enter key.
-    input.on('data', function (data) {
-        inputData += data.toString().trim();
-    });
-
-    const MAX_TIMEOUT = 10000;
-    const INTERVAL_TIME = 400;
-    let passedMs = 0;
-
-    let inputInterval = setInterval(function () {
-
-        if (inputData === 'YES') {
-            console.log('===> 3.1');
-            clearInterval(inputInterval);
-            // copyFileOrDir(fileSource, "./package.json", { overwrite: true });
-
-            !!!
-            funcToExecute(...args.slice(2));
-            console.log('===> 3.2');
-        } // else {
-        //     //inputData = '';
-        // }
-
-        passedMs += INTERVAL_TIME;
-
-        if (passedMs >= MAX_TIMEOUT) {
-            throw Error(error);
-        }
-    }, INTERVAL_TIME);
-}
-
 const installLibraries = async () => {
-    console.log('====> 1');
     const fileSource = `${ __dirname }${ constants.artifactsDir }/package.json`;
     try {
         copyFileOrDir(fileSource, "./package.json")
     } catch (error) {
         if (error.message.includes('already exists')) {
-
-            await prompt(error, copyFileOrDir, fileSource, "./package.json")
-
-            await utils.timeout(10000);
-
+            await prompt(error, copyFileOrDir, fileSource, "./package.json");
+            // should pass this 'timeout' to prompt ?!
+            let timeout = await utils.timeout(MAX_TIMEOUT);
         } else {
             throw Error(error);
         }
     }
-    
+
     await installAeppSDK(sdkVersion)
     await installAEproject()
     await installYarn()
+
+    return options;
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
@@ -154,25 +102,58 @@ const installYarn = async () => {
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
-const setupContracts = (shape) => {
+const setupContracts = async (shape) => {
+
     print(`===== Creating contracts directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeContractTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.contractTemplateFile }`;
     createMissingFolder(constants.contractsDir);
-    copyFileOrDir(fileSource, shape ? constants.shapeContractFileDestination : constants.contractFileDestination)
+
+    const destination = shape ? constants.shapeContractFileDestination : constants.contractFileDestination;
+
+    try {
+        copyFileOrDir(fileSource, destination)
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, fileSource, destination)
+            await utils.timeout(MAX_TIMEOUT);
+        } else {
+            throw Error(error);
+        }
+    }
 }
 
-const setupIntegrations = () => {
+const setupIntegrations = async () => {
     print(`===== Creating integrations directory =====`);
     const fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.contratsAeppSetting }`;
     createMissingFolder(constants.integrationsDir);
-    copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination)
+    
+    try {
+        copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination)
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, fileSource, constants.contratsAeppSettingFileDestination)
+            await utils.timeout(MAX_TIMEOUT);
+        } else {
+            throw Error(error);
+        }
+    }
 }
 
-const setupTests = (shape) => {
+const setupTests = async (shape) => {
     print(`===== Creating tests directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeTestTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.testTemplateFile }`;
     createMissingFolder(constants.testDir, "Creating tests file structure");
-    copyFileOrDir(fileSource, shape ? constants.shapeTestFileDestination : constants.testFileDestination)
+    
+    try {
+        copyFileOrDir(fileSource, shape ? constants.shapeTestFileDestination : constants.testFileDestination)
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, fileSource, constants.testFileDestination)
+            await utils.timeout(MAX_TIMEOUT);
+        } else {
+            throw Error(error);
+        }
+    }
 }
 
 const setupDeploy = async (shape) => {
@@ -180,7 +161,17 @@ const setupDeploy = async (shape) => {
     print(`===== Creating deploy directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeDeployTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.deployTemplateFile }`;
     createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
-    copyFileOrDir(fileSource, constants.deployFileDestination)
+    
+    try {
+        copyFileOrDir(fileSource, constants.deployFileDestination)
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, fileSource, constants.deployFileDestination)
+            await utils.timeout(MAX_TIMEOUT);
+        } else {
+            throw Error(error);
+        }
+    }
 }
 
 const setupDocker = () => {
@@ -199,10 +190,71 @@ const setupDocker = () => {
     copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
 }
 
-const addIgnoreFile = () => {
+const addIgnoreFile = async () => {
     print(`==== Adding additional files ====`)
     const ignoreFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.gitIgnoreFile }`;
-    copyFileOrDir(ignoreFileSource, constants.gitIgnoreFile)
+    
+    try {
+        copyFileOrDir(ignoreFileSource, constants.gitIgnoreFile)
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, ignoreFileSource, constants.gitIgnoreFile)
+            await utils.timeout(MAX_TIMEOUT);
+        } else {
+            throw Error(error);
+        }
+    }
+}
+
+async function prompt (error) {
+    const args = [...arguments];
+    // [0] - error
+    // [1] - function to execute
+    // [..] rest = function arguments 
+
+    const funcToExecute = args[1];
+    // let timeout = args[args.length - 1];
+
+    let inputData = '';
+
+    // Get process.stdin as the standard input object.
+    const input = process.stdin;
+
+    // Set input character encoding.
+    input.setEncoding('utf-8');
+
+    // Prompt user to input data in console.
+    console.log();
+    console.log(`${ error.message }\nDo you want to overwrite '${ error.message.replace(' already exists.', '') }'? (YES/no):`);
+
+    // When user input data and click enter key.
+    input.on('data', function (data) {
+        inputData += data.toString().trim();
+    });
+
+    const INTERVAL_TIME = 400;
+    let passedMs = 0;
+
+    let inputInterval = setInterval(function () {
+
+        if (inputData === 'YES' || inputData === 'yes' || inputData === 'Y' || inputData === 'y') {
+            clearInterval(inputInterval);
+            funcToExecute(...args.slice(2), { overwrite: true });
+        } else {
+            if (inputData) {
+                clearInterval(inputInterval);
+                // clearTimeout(timeout)
+                console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
+            }
+        }
+
+        passedMs += INTERVAL_TIME;
+
+        if (passedMs >= MAX_TIMEOUT) {
+            clearInterval(inputInterval);
+            console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
+        }
+    }, INTERVAL_TIME);
 }
 
 module.exports = {
