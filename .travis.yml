@@ -1,7 +1,7 @@
 language:
   - node_js
 node_js:
-  - 9.5.0
+  - 10.16.3
 before_install:
   - npm install -g lerna
   # Repo for Yarn
