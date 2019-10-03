@@ -1,7 +1,5 @@
 language:
-  - node_js
-node_js:
-  - 10.16.3
+- node_js:
 before_install:
   - npm install -g lerna
   # Repo for Yarn
@@ -11,8 +9,6 @@ before_install:
   - sudo apt-get install -y -qq yarn
 cache:
   yarn: true
-services:
-  - docker
 install:
   - npm install
   - lerna bootstrap
@@ -22,5 +18,7 @@ install:
   - cd aeproject-lib
   - npm run tsc
   - cd ../..
+services:
+  - docker
 script:
   - npm test
