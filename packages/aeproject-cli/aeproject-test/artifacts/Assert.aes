@@ -1,0 +1,4 @@
+contract Assert =
+    // function require(expression: bool, error_message: string) =
+    //     if(!expression)
+    //         abort(error_message)

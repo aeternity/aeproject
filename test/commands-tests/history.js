@@ -3,16 +3,16 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
-const cliUtils = require('../../packages/forgae-utils/utils/forgae-utils.js');
-const execute = cliUtils.forgaeExecute;
+const cliUtils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
+const execute = cliUtils.aeprojectExecute;
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const _store = require('../../packages/forgae-logger/logger-service/log-store-service')
+const _store = require('../../packages/aeproject-logger/logger-service/log-store-service')
 
 const constants = require('../constants.json');
 const TEMP_TEST_PATH = constants.historyTestsFolderPath;
-const PATH_TO_STORE_DIRECTORY = '.forgae-store';
+const PATH_TO_STORE_DIRECTORY = '.aeproject-store';
 
 const deployerPublicKey = 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU';
 
@@ -62,7 +62,7 @@ function countHistoryLogs (result) {
     return counter;
 }
 
-describe('ForgAE History', async () => {
+describe('AEproject History', async () => {
 
     describe('Log store service tests', () => {
 
@@ -98,7 +98,7 @@ describe('ForgAE History', async () => {
             let history = store.getHistory();
 
             assert(result, "It's not initialized correct!");
-            assert(store._historyStore.path.endsWith('.forgae-store/.history.json'), 'Incorrect path');
+            assert(store._historyStore.path.endsWith('.aeproject-store/.history.json'), 'Incorrect path');
             assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
         });
 

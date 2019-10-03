@@ -3,10 +3,12 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
-const waitForContainer = require('../utils').waitForContainer;
+const utils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
+const execute = utils.aeprojectExecute;
+const waitForContainer = utils.waitForContainer;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
+const nodeConfig = require('../../packages/aeproject-config/config/node-config.json');
 
 let executeOptions = {
     cwd: process.cwd() + constants.deployTestsFolderPath
@@ -15,7 +17,7 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require('./../../packages/forgae-lib/dist/forgae-deployer').Deployer;
+const Deployer = require('./../../packages/aeproject-lib/dist/aeproject-deployer').Deployer;
 const config = require('./../constants.json');
 
 const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
@@ -23,9 +25,9 @@ const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
-const mainForgaeProjectDir = process.cwd();
+const mainAEprojectProjectDir = process.cwd();
 
-function insertAdditionalFiles() {
+function insertAdditionalFiles () {
     // copy needed files into test folder to run the specific tests
     let cwd = process.cwd();
     let testFolder = path.join(cwd, '/test/commands-tests/deployTest');
@@ -40,16 +42,16 @@ function insertAdditionalFiles() {
 }
 
 async function linkLocalPackages() {
-    const forgaeLibDir = `${ process.cwd() }/packages/forgae-lib/`
-    const forgaeUtilsDir = `${ process.cwd() }/packages/forgae-utils/`
-    const forgaeConfigDir = `${ process.cwd() }/packages/forgae-config/`
+    const aeprojectLibDir = `${ process.cwd() }/packages/aeproject-lib/`
+    const aeprojectUtilsDir = `${ process.cwd() }/packages/aeproject-utils/`
+    const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
 
     process.chdir(executeOptions.cwd);
-    await exec('npm link forgae-lib')
+    await exec('npm link aeproject-lib')
 
 }
 
-describe('ForgAE Deploy', () => {
+describe('AEproject Deploy', () => {
     const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
     before(async () => {
         fs.ensureDirSync(`.${ constants.deployTestsFolderPath }`)
@@ -113,7 +115,7 @@ describe('ForgAE Deploy', () => {
             let result;
 
             await linkLocalPackages();
-            process.chdir(mainForgaeProjectDir)
+            process.chdir(mainAEprojectProjectDir)
 
             result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);
 
@@ -191,18 +193,12 @@ describe('ForgAE Deploy', () => {
             assert.include(result, expectedDeployResult)
         })
 
-        it('with network and secret on test network', async () => {
+        // Currently: Error: Unsupported node version 4.0.0. Supported: >= 3.0.1 < 4.0.0
+        xit('with network and secret on test network', async () => {
             let testSecretKey = constants.privateKeyTestnetDeploy;
-            let result = '';
+            let result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
 
-            try {
-                result = await execute(constants.cliCommands.DEPLOY, ["-n", "testnet", "-s", testSecretKey], executeOptions);
-            } catch (err) {
-                console.log(err);
-                console.log(err.stdout.toString('utf8'));
-            }
-
-            process.chdir(mainForgaeProjectDir);
+            process.chdir(mainAEprojectProjectDir);
 
             assert.include(result, expectedDeployResult)
         });
@@ -245,7 +241,7 @@ describe('ForgAE Deploy', () => {
         })
 
         it('try to deploy SC with missing init parameters from another deployment script', async () => {
-            let error = `${ `Error data` }: ${ `{"reason":"Type errors\\nUnbound variable` }`;
+            let error = `${ `Error: Function "init" require 1 arguments` }`;
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
             assert.include(result, error);
         })
@@ -253,8 +249,9 @@ describe('ForgAE Deploy', () => {
 
     after(async () => {
 
-        let running = await waitForContainer();
+        let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
+
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 

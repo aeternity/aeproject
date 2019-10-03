@@ -1,15 +1,24 @@
 # Quick Start
 
+## Requirements
+In order to have aeproject working you must have installed the following:
+```
+nodejs 
+python 
+docker 
+```
+
+Note: For older versions on widnows you can use docker-toolbox
 ## Install
 
 ```text
-npm install -g forgae
+npm install -g aeproject
 ```
 
 ## Init a project
 
 ```text
-forgae init
+aeproject init
 ```
 
 This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
@@ -17,10 +26,10 @@ This will create `deployment` directory with `deploy.js` file inside. You can us
 ## Running local node
 In a project folder:
 ```text
-forgae node
+aeproject node
 ```
 
-To spwan a temporary local chain, use `forgae node --stop` to stop it.
+To spwan a temporary local chain, use `aeproject node --stop` to stop it.
 
 ## Access deployed smart contract functions
 
@@ -60,10 +69,10 @@ await deployedContract.donate({ value: 991 });
 
 ## Deploying
 
-Run the following in order to execute the deployment file created from the **forgae init** command:
+Run the following in order to execute the deployment file created from the **aeproject init** command:
 
 ```text
-forgae deploy
+aeproject deploy
 ```
 
 ## History of your deploys
@@ -71,6 +80,6 @@ forgae deploy
 In order to see a list of what you've deployed you can run the following command:
 
 ```text
-forgae history
+aeproject history
 ```
 

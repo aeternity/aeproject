@@ -3,10 +3,10 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const assert = chai.assert;
-const execute = require('../../packages/forgae-utils/utils/forgae-utils.js').forgaeExecute;
-const timeout = require('../../packages/forgae-utils/utils/forgae-utils.js').timeout;
+const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const timeout = require('../../packages/aeproject-utils/utils/aeproject-utils.js').timeout;
 const constants = require('../constants.json');
-const contractsConstants = require('../../packages/forgae-cli/forgae-contracts/contracts-constants.json');
+const contractsConstants = require('../../packages/aeproject-cli/aeproject-contracts/contracts-constants.json');
 const {
     spawn
 } = require('promisify-child-process');
@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe('ForgAE contracts', () => {
+describe('AEproject contracts', () => {
     let contractsResult;
     let projectDir;
     let testFolderDir;
@@ -40,7 +40,7 @@ describe('ForgAE contracts', () => {
         const logStream = fs.createWriteStream(contractsConstants.LOG_FILE, {
             flags: 'a'
         });
-        contractsResult = spawn(contractsConstants.FORGAE_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.IGNORE_OPENING], {});
+        contractsResult = spawn(contractsConstants.AEPROJECT_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.IGNORE_OPENING], {});
         contractsResult.stdout.pipe(logStream);
         await timeout(contractsConstants.STARTING_AEPP_TIMEOUT);
         const logContent = fs.readFileSync(contractsConstants.LOG_FILE, 'utf8');
@@ -52,9 +52,9 @@ describe('ForgAE contracts', () => {
         const logStream = fs.createWriteStream(contractsConstants.LOG_FILE, {
             flags: 'a'
         });
-        contractsResult = spawn(contractsConstants.FORGAE_CLI_COMMAND, [
-            constants.cliCommands.CONTRACTS, 
-            constants.cliCommandsOptions.UPDATE, 
+        contractsResult = spawn(contractsConstants.AEPROJECT_CLI_COMMAND, [
+            constants.cliCommands.CONTRACTS,
+            constants.cliCommandsOptions.UPDATE,
             constants.cliCommandsOptions.IGNORE_OPENING
         ], {});
         contractsResult.stdout.pipe(logStream);
@@ -69,7 +69,7 @@ describe('ForgAE contracts', () => {
         const logStream = fs.createWriteStream(contractsConstants.LOG_FILE, {
             flags: 'a'
         });
-        contractsResult = spawn(contractsConstants.FORGAE_CLI_COMMAND, [
+        contractsResult = spawn(contractsConstants.AEPROJECT_CLI_COMMAND, [
             constants.cliCommands.CONTRACTS,
             constants.cliCommandsOptions.NODE_URL,
             contractsConstants.SPECIFIC_LOCAL_NODE_URL,

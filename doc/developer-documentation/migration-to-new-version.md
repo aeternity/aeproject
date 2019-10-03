@@ -1,22 +1,22 @@
-# Migration from version 1.4 to 2.0
+# Migratе Forgae 1.4 to 2.0
 
 ## Breaking changes
 
 **Important** We have decided to separate our project to several packages as it's now getting bigger and the need of separation of concerns would become inevitable. Listed below are all the required steps we would like you to guide you through. Please note that all the steps are being made from the **root** folder of your project and are processed in due course.
 
-* We strongly recommend that you do global uninstall of **forgae** with `npm uninstall -g forgae` and reinstall the newer version - `npm install -g forgae`
+* We strongly recommend that you do global uninstall of **aeproject** with `npm uninstall -g aeproject` and reinstall the newer version - `npm install -g aeproject`
 * Delete your node\_modules folder, so that you do not keep the deprecated module in your project.
-* Delete your old dependency to **forgae** in the package.json file.
+* Delete your old dependency to **aeproject** in the package.json file.
 * Do `npm install`
-* Now that you have **forgae** globally, run `forgae init --update` in your root directory. This will incorporate [forgae-lib](forgae-library-api/deployer.md) to your existing project
-* Everywhere you have `require('forgae').Deployer;` now should be amended to `require('forgae-lib').Deployer`. 
+* Now that you have **aeproject** globally, run `aeproject init --update` in your root directory. This will incorporate [aeproject-lib](aeproject-library-api/deployer.md) to your existing project
+* Everywhere you have `require('aeproject').Deployer;` now should be amended to `require('aeproject-lib').Deployer`. 
 
 ### Deploying in v1.4
 
 Example:
 
 ```javascript
-const Deployer = require('forgae').Deployer;
+const Deployer = require('aeproject').Deployer;
 
 const deploy = async (network, privateKey, compiler) => {
     let deployer = new Deployer(network, privateKey, compiler)
@@ -31,10 +31,10 @@ module.exports = {
 
 ### Deploying in v2.0
 
-Here in v2.0 the Deployer is exposed through `forgae-lib`
+Here in v2.0 the Deployer is exposed through `aeproject-lib`
 
 ```javascript
-const Deployer = require('forgae-lib').Deployer;
+const Deployer = require('aeproject-lib').Deployer;
 
 const deploy = async (network, privateKey, compiler) => {
     let deployer = new Deployer(network, privateKey, compiler)
@@ -100,7 +100,7 @@ describe('Example Contract', () => {
 Now the test file is completely reworked.
 
 ```javascript
-const Deployer = require('forgae-lib').Deployer;
+const Deployer = require('aeproject-lib').Deployer;
 const EXAMPLE_CONTRACT_PATH = "./contracts/ExampleContract.aes";
 
 describe('Example Contract', () => {
