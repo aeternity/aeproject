@@ -39,8 +39,6 @@ async function run (update) {
         printError(e.message)
         console.error(e);
     }
-
-    process.exit(0);
 }
 
 const createAEprojectProjectStructure = async (shape) => {
