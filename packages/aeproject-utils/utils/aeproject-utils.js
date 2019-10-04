@@ -269,6 +269,12 @@ async function waitForContainer (dockerImage, options) {
         if (res) {
             res = res.split('\n');
         }
+        console.log('====== print status');
+        console.log(res)
+        console.log('====== print status');
+
+        console.log('===>>> next <=====');
+        
 
         if (Array.isArray(res)) {
             res.map(line => {
