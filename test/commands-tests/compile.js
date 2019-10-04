@@ -20,22 +20,22 @@ chai.use(chaiAsPromised);
 const LOCAL_COMPILER_URL = constants.LOCAL_COMPILER_URL;
 const INVALID_COMPILER_URL = 'https://compiler.somewhere.com';
 
-describe.only('AEproject Compile', () => {
+describe('AEproject Compile', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        let test = await execute(constants.cliCommands.NODE, [], executeOptions)
-        
-        console.log('================');
+        await execute(constants.cliCommands.NODE, [], executeOptions)
+        // let test = await execute(constants.cliCommands.NODE, [], executeOptions)
+        // console.log('================');
 
-        let runningImages = await dockerExec('docker', ['ps'])
-        console.log(runningImages);
-        console.log('================');
-        console.log(test);
-        console.log('================');        
+        // let runningImages = await dockerExec('docker', ['ps'])
+        // console.log(runningImages);
+        // console.log('================');
+        // console.log(test);
+        // console.log('================');        
     })
 
-    describe.only('Compile', () => {
+    describe('Compile', () => {
      
         it('Should compile contract successfully with specif contract path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ executeOptions.cwd }/contracts/ExampleContract.aes`])
