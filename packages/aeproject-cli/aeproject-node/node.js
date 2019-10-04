@@ -217,7 +217,7 @@ async function run (option) {
                 // if node is started and error message is another,
                 // we should stop docker
 
-                // await stopNodeAndCompiler();
+                await stopNodeAndCompiler();
                 throw new Error("Cannot start AE Node!")
             }
         }
