@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const dockerExec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').execute
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
@@ -24,9 +25,16 @@ describe.only('AEproject Compile', () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
+        
+        console.log('================');
+
+        let runningImages = await dockerExec('docker', ['ps'])
+        console.log(runningImages);
+        console.log('================');
     })
 
-    describe('Compile', () => {
+    describe.only('Compile', () => {
+     
         it('Should compile contract successfully with specif contract path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ executeOptions.cwd }/contracts/ExampleContract.aes`])
             assert.include(result, expectedCompileResultExampleContract)
