@@ -5,11 +5,11 @@ const exec = utils.execute;
 
 const reactRepo = require('./constants.json').repos.react;
 
-const reactAeppProjectPath = './aepp-forgae-shape-react/aepp';
-const reactIdentityProviderProjectPath = './aepp-forgae-shape-react/identity-provider';
+const reactAeppProjectPath = './aepp-aeproject-shape-react/aepp';
+const reactIdentityProviderProjectPath = './aepp-aeproject-shape-react/identity-provider';
 
 const initCommandObject = require("./../aeproject-init/init");
-const createForgaeProjectStructure = initCommandObject.createForgaeProjectStructure;
+const createAEprojectProjectStructure = initCommandObject.createAEprojectProjectStructure;
 
 let self;
 
@@ -20,7 +20,7 @@ class ReactSubCommand {
     }
 
     async run () {
-        await createForgaeProjectStructure(true);
+        await createAEprojectProjectStructure(true);
 
         await self.prepareProject();
 
@@ -28,7 +28,7 @@ class ReactSubCommand {
     }
 
     async prepareProject () {
-        console.log(`===== Preparation of a ready-to-use aepp with predefined '${ self.name }' frontend framework and forgae integration =====`);
+        console.log(`===== Preparation of a ready-to-use aepp with predefined '${ self.name }' frontend framework and aeproject integration =====`);
 
         await exec('git', 'clone', [ reactRepo ]);
 
