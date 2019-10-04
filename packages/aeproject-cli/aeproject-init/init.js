@@ -15,6 +15,8 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 const constants = require('./constants.json');
+const sdkVersion = constants.sdkVersion;
+
 const utils = require('aeproject-utils');
 const execute = utils.execute;
 const printError = utils.printError;
@@ -22,8 +24,7 @@ const print = utils.print;
 const createMissingFolder = utils.createMissingFolder;
 const copyFileOrDir = utils.copyFileOrDir;
 
-const sdkVersion = constants.sdkVersion;
-const MAX_TIMEOUT = 1000 * 60;
+const prompts = require('prompts');
 
 async function run (update) {
     if (update) {
@@ -38,12 +39,14 @@ async function run (update) {
         printError(e.message)
         console.error(e);
     }
+
+    process.exit(0);
 }
 
 const createAEprojectProjectStructure = async (shape) => {
     print('===== Initializing AEproject =====');
+    await installLibraries();
 
-    await installLibraries()
     print(`===== Creating project file & dir structure =====`);
     await setupContracts(shape);
     await setupTests(shape);
@@ -73,8 +76,6 @@ const installLibraries = async () => {
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, "./package.json");
-            // should pass this 'timeout' to prompt ?!
-            let timeout = await utils.timeout(MAX_TIMEOUT);
         } else {
             throw Error(error);
         }
@@ -83,8 +84,6 @@ const installLibraries = async () => {
     await installAeppSDK(sdkVersion)
     await installAEproject()
     await installYarn()
-
-    return options;
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
@@ -115,7 +114,6 @@ const setupContracts = async (shape) => {
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, destination)
-            await utils.timeout(MAX_TIMEOUT);
         } else {
             throw Error(error);
         }
@@ -132,7 +130,6 @@ const setupIntegrations = async () => {
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, constants.contratsAeppSettingFileDestination)
-            await utils.timeout(MAX_TIMEOUT);
         } else {
             throw Error(error);
         }
@@ -149,7 +146,6 @@ const setupTests = async (shape) => {
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, constants.testFileDestination)
-            await utils.timeout(MAX_TIMEOUT);
         } else {
             throw Error(error);
         }
@@ -167,7 +163,6 @@ const setupDeploy = async (shape) => {
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, constants.deployFileDestination)
-            await utils.timeout(MAX_TIMEOUT);
         } else {
             throw Error(error);
         }
@@ -199,7 +194,6 @@ const addIgnoreFile = async () => {
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, ignoreFileSource, constants.gitIgnoreFile)
-            await utils.timeout(MAX_TIMEOUT);
         } else {
             throw Error(error);
         }
@@ -213,48 +207,21 @@ async function prompt (error) {
     // [..] rest = function arguments 
 
     const funcToExecute = args[1];
-    // let timeout = args[args.length - 1];
 
-    let inputData = '';
-
-    // Get process.stdin as the standard input object.
-    const input = process.stdin;
-
-    // Set input character encoding.
-    input.setEncoding('utf-8');
-
-    // Prompt user to input data in console.
-    console.log();
-    console.log(`${ error.message }\nDo you want to overwrite '${ error.message.replace(' already exists.', '') }'? (YES/no):`);
-
-    // When user input data and click enter key.
-    input.on('data', function (data) {
-        inputData += data.toString().trim();
+    // // Prompt user to input data in console.
+    const response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: `${ error.message }\nDo you want to overwrite '${ error.message.replace(' already exists.', '') }'? (YES/no):`
+        // validate: value => value < 18 ? `some validation text` : true
     });
 
-    const INTERVAL_TIME = 400;
-    let passedMs = 0;
-
-    let inputInterval = setInterval(function () {
-
-        if (inputData === 'YES' || inputData === 'yes' || inputData === 'Y' || inputData === 'y') {
-            clearInterval(inputInterval);
-            funcToExecute(...args.slice(2), { overwrite: true });
-        } else {
-            if (inputData) {
-                clearInterval(inputInterval);
-                // clearTimeout(timeout)
-                console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
-            }
-        }
-
-        passedMs += INTERVAL_TIME;
-
-        if (passedMs >= MAX_TIMEOUT) {
-            clearInterval(inputInterval);
-            console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
-        }
-    }, INTERVAL_TIME);
+    let input = response.value;
+    if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y') {
+        funcToExecute(...args.slice(2), { overwrite: true });
+    } else {
+        console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
+    }
 }
 
 module.exports = {
