@@ -41,7 +41,7 @@ let balanceOptions = {
 let network = utils.config.localhostParams
 network.compilerUrl = utils.config.compilerUrl
 
-const MAX_SECONDS_TO_RUN_NODE = 90;
+const MAX_SECONDS_TO_RUN_NODE = 190;
 const DEFAULT_NODE_PORT = 3001;
 const DEFAULT_COMPILER_PORT = 3080;
 

@@ -32,9 +32,7 @@ describe.only('AEproject Compile', () => {
         console.log(runningImages);
         console.log('================');
         console.log(test);
-        console.log('================');
-
-        
+        console.log('================');        
     })
 
     describe.only('Compile', () => {
