@@ -24,13 +24,17 @@ describe.only('AEproject Compile', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [], executeOptions)
+        let test = await execute(constants.cliCommands.NODE, [], executeOptions)
         
         console.log('================');
 
         let runningImages = await dockerExec('docker', ['ps'])
         console.log(runningImages);
         console.log('================');
+        console.log(test);
+        console.log('================');
+
+        
     })
 
     describe.only('Compile', () => {
