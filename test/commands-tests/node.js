@@ -162,7 +162,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe.only("AEproject Node -- allocated port's tests", () => {
+    xdescribe("AEproject Node -- allocated port's tests", () => {
 
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
