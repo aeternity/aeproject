@@ -1,7 +1,6 @@
 language:
 - node_js:
 before_install:
-  - sudo apt update && apt upgrade <docker>
   - npm install -g lerna
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
@@ -24,3 +23,7 @@ services:
 script:
   - 'docker version'
   - npm test
+addons:
+  apt:
+    packages:
+      - docker-ce
