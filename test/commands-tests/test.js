@@ -25,16 +25,7 @@ describe('AEproject Test', () => {
         before(async function () {
             fs.ensureDirSync(`.${ constants.testTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions)
-            // await execute(constants.cliCommands.NODE, [], executeOptions)
-
-            let test = await execute(constants.cliCommands.NODE, [], executeOptions)
-            console.log('================');
-
-            let runningImages = await dockerExec('docker', ['ps'])
-            console.log(runningImages);
-            console.log('================');
-            console.log(test);
-            console.log('================');   
+            await execute(constants.cliCommands.NODE, [], executeOptions)
         })
 
         it('should work on unexisting test folder', async function () {
