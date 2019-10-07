@@ -5,7 +5,6 @@ const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js
 const fs = require('fs-extra')
 const constants = require('../constants.json')
 const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
-const dockerExec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').execute;
 let expectedResult1 = "ExampleContract1.aes has been successfully compiled"
 let expectedResult2 = "ExampleContract2.aes has been successfully compiled"
 let expectedResult3 = "ExampleContract3.aes has been successfully compiled"
@@ -24,10 +23,6 @@ describe('AEproject Compile', () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
-        let test = await dockerExec('docker-compose', ['--version'])
-        console.log('docker compose version: ');
-        console.log(test);
-        
     })
 
     describe('Compile', () => {
