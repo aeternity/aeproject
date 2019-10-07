@@ -30,6 +30,9 @@ describe.only('AEproject Compile', () => {
 
         let version = await dockerExec('docker', ['--version'])
         let runningImages = await dockerExec('docker', ['ps'])
+        console.log('version');
+        console.log(version);
+        
         console.log('runningImages');
         console.log(runningImages);
         console.log('================');
