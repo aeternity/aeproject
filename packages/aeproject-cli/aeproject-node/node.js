@@ -46,13 +46,21 @@ const DEFAULT_NODE_PORT = 3001;
 const DEFAULT_COMPILER_PORT = 3080;
 
 async function fundWallets (nodeIp) {
+    console.log('in fund wallets');
+    console.log('before wait to mine coins');
+    
     await waitToMineCoins(nodeIp);
 
     let walletIndex = 0;
-
+    console.log('before client');
+    
     let client = await utils.getClient(network);
-    // client.addAccount(config.keyPair)
+    console.log('before add accout');
+    client.addAccount(config.keyPair)
+    console.log('before print beneficiary');
+    
     await printBeneficiaryKey(client);
+    
     for (let wallet in defaultWallets) {
         await fundWallet(client, defaultWallets[wallet].publicKey)
         await printWallet(client, defaultWallets[wallet], `#${ walletIndex++ }`)
@@ -226,9 +234,12 @@ async function run (option) {
         print('===== Funding default wallets! =====');
 
         if (option.windows) {
+            console.log('in the docker ip');
+            
             let dockerIp = removePrefixFromIp(option.dockerIp);
             await fundWallets(dockerIp);
         } else {
+            console.log('not in the docker ip');
             await fundWallets();
         }
 
