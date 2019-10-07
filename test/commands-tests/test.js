@@ -4,7 +4,6 @@ chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
-const dockerExec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').execute
 const test = require('../../packages/aeproject-cli/aeproject-test/test')
 const sinon = require('sinon')
 const constants = require('./../constants.json')

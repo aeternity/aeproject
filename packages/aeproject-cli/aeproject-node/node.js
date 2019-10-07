@@ -46,15 +46,13 @@ const DEFAULT_NODE_PORT = 3001;
 const DEFAULT_COMPILER_PORT = 3080;
 
 async function fundWallets (nodeIp) {
-
     await waitToMineCoins(nodeIp);
 
     let walletIndex = 0;
+
     let client = await utils.getClient(network);
     client.addAccount(config.keyPair)
-    
     await printBeneficiaryKey(client);
-    
     for (let wallet in defaultWallets) {
         await fundWallet(client, defaultWallets[wallet].publicKey)
         await printWallet(client, defaultWallets[wallet], `#${ walletIndex++ }`)

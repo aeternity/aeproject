@@ -198,7 +198,7 @@ describe("AEproject Node and Compiler Tests", () => {
                 result.indexOf(`address already in use`) >= 0;
 
             // const isSamePort = result.indexOf(`:${ port }`) >= 0;
-            
+
             assert.isOk(isPortAllocated, 'Node does not throw exception on allocated port!');
             // assert.isOk(isSamePort, 'Error message does not contains expected port!');
 
@@ -233,7 +233,7 @@ describe("AEproject Node and Compiler Tests", () => {
                 result.indexOf('port is already allocated') >= 0 ||
                 result.indexOf(`address already in use`) >= 0 ||
                 result.indexOf(`Process exited with code 125`) >= 0;
-            
+
             // const isSamePort = result.indexOf(`:${ port }`) >= 0;
             const isNodeStarted = result.indexOf('Node already started and healthy!') >= 0;
 
