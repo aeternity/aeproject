@@ -125,7 +125,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe.only('AEproject Node', async () => {
+    describe('AEproject Node', async () => {
         it('Process should stop when command is started in wrong folder.', async () => {
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START], {
                 cwd: process.cwd()
@@ -137,7 +137,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe('AEproject Node --only', () => {
+    describe.only('AEproject Node --only', () => {
 
         beforeEach(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
