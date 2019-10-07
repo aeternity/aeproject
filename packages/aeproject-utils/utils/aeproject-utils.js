@@ -263,21 +263,12 @@ async function waitForContainer (dockerImage, options) {
             'docker-compose.compiler.yml',
             'ps'
         ], options);
-        // let result = await spawn('docker', ['ps']);
 
         let res = readSpawnOutput(result);
 
         if (res) {
             res = res.split('\n');
         }
-        console.log('====== print status');
-        console.log(dockerImage);
-        
-        console.log(res)
-        console.log('====== print status');
-
-        console.log('===>>> next <=====');
-        
 
         if (Array.isArray(res)) {
             res.map(line => {

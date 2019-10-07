@@ -25,22 +25,7 @@ describe.only('AEproject Compile', () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
-        let test = await execute(constants.cliCommands.NODE, [], executeOptions)
-        console.log('================');
-
-        let dockerVersion = await dockerExec('docker', ['--version'])
-        let dockercomposeVersion = await dockerExec('docker-compose', ['--version'])
-        let runningImages = await dockerExec('docker', ['ps'])
-        console.log('dockerVersion');
-        console.log(dockerVersion);
-        console.log('dockercomposeVersion');
-        console.log(dockercomposeVersion);
-        
-        console.log('runningImages');
-        console.log(runningImages);
-        console.log('================');
-        console.log(test);
-        console.log('================');        
+        await execute(constants.cliCommands.NODE, [], executeOptions)
     })
 
     describe('Compile', () => {
