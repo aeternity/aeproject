@@ -1,6 +1,7 @@
 language:
 - node_js:
 before_install:
+  - './main.sh'
   - npm install -g lerna
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
@@ -21,4 +22,5 @@ install:
 services:
   - docker
 script:
+  - 'docker version'
   - npm test

@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe.only('AEproject Test', () => {
+describe('AEproject Test', () => {
 
     describe('AEproject Test - js tests', () => {
 
