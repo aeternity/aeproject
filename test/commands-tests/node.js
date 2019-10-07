@@ -198,10 +198,18 @@ describe("AEproject Node and Compiler Tests", () => {
                 result.indexOf(`address already in use`) >= 0;
 
             // const isSamePort = result.indexOf(`:${ port }`) >= 0;
-
+            console.log('>>>>>>>>>>>>>>>');
+            
+            console.log('result in Process should NOT start AE node');
+            console.log(result);
+            
             assert.isOk(isPortAllocated, 'Node does not throw exception on allocated port!');
             // assert.isOk(isSamePort, 'Error message does not contains expected port!');
 
+            console.log('isPortAllocated');
+            console.log(isPortAllocated);
+            
+            console.log('<<<<<<<<<<<<<<<<');
             // stop server
             app.close();
         });
@@ -229,13 +237,25 @@ describe("AEproject Node and Compiler Tests", () => {
             // test
             let result = await execute(constants.cliCommands.NODE, [], executeOptions);
 
+            console.log('>>>>>>>>>>>>>>>');
+
+            console.log('result in Process should NOT start AE node');
+            console.log(result);
+
             const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
                 result.indexOf('port is already allocated') >= 0 ||
                 result.indexOf(`address already in use`) >= 0 ||
                 result.indexOf(`Process exited with code 125`) >= 0;
-
+            
             // const isSamePort = result.indexOf(`:${ port }`) >= 0;
             const isNodeStarted = result.indexOf('Node already started and healthy!') >= 0;
+
+            console.log('isPortAllocated');
+            console.log(isPortAllocated);
+            console.log('isNodeStarted');
+            console.log(isNodeStarted);
+            
+            console.log('<<<<<<<<<<<<<<<<');
 
             assert.isOk(isPortAllocated || isNodeStarted, 'Local compiler does not throw exception on allocated port!');
             // assert.isOk(isSamePort, 'Error message does not contains expected port!');
