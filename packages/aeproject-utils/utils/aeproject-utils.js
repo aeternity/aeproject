@@ -256,14 +256,14 @@ function normalizeCompilerUrl (url) {
 async function waitForContainer (dockerImage, options) {
     try {
         let running = false;
-        // let result = await spawn('docker-compose', [
-        //     '-f',
-        //     'docker-compose.yml',
-        //     '-f',
-        //     'docker-compose.compiler.yml',
-        //     'ps'
-        // ], options);
-        let result = await spawn('docker', ['ps']);
+        let result = await spawn('docker-compose', [
+            '-f',
+            'docker-compose.yml',
+            '-f',
+            'docker-compose.compiler.yml',
+            'ps'
+        ], options);
+        // let result = await spawn('docker', ['ps']);
 
         let res = readSpawnOutput(result);
 
