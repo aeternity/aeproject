@@ -24,7 +24,7 @@ describe.only('AEproject Compile', () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
-        let test = dockerExec('docker-compose', ['--version'])
+        let test = await dockerExec('docker-compose', ['--version'])
         console.log('docker compose version: ');
         console.log(test);
         
