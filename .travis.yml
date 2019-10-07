@@ -23,7 +23,3 @@ services:
 script:
   - 'docker version'
   - npm test
-addons:
-  apt:
-    packages:
-      - docker-ce
