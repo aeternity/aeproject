@@ -4,6 +4,7 @@ chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const dockerExec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').execute
 const test = require('../../packages/aeproject-cli/aeproject-test/test')
 const sinon = require('sinon')
 const constants = require('./../constants.json')
@@ -17,14 +18,23 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe('AEproject Test', () => {
+describe.only('AEproject Test', () => {
 
     describe('AEproject Test - js tests', () => {
 
         before(async function () {
             fs.ensureDirSync(`.${ constants.testTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions)
-            await execute(constants.cliCommands.NODE, [], executeOptions)
+            // await execute(constants.cliCommands.NODE, [], executeOptions)
+
+            let test = await execute(constants.cliCommands.NODE, [], executeOptions)
+            console.log('================');
+
+            let runningImages = await dockerExec('docker', ['ps'])
+            console.log(runningImages);
+            console.log('================');
+            console.log(test);
+            console.log('================');   
         })
 
         it('should work on unexisting test folder', async function () {

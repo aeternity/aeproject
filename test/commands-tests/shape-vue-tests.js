@@ -15,7 +15,7 @@ const testWorkingDir = constants.shapeVueTestsFolderPath;
 
 let cwd = process.cwd();
 
-describe('AEproject Shape Vue', async () => {
+describe.only('AEproject Shape Vue', async () => {
 
     let workingDir;
 
