@@ -23,3 +23,9 @@ services:
 script:
   - 'docker version'
   - npm test
+addons:
+  apt:
+    packages:
+      - docker-ce
+env:
+  - DOCKER_COMPOSE_VERSION=1.24.1
