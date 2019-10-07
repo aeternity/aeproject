@@ -2,10 +2,10 @@ language:
 - node_js:
 before_install:
   # Install certain version of docker-compose
-  #- sudo rm /usr/local/bin/docker-compose
-  #- curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  #- chmod +x docker-compose
-  #- sudo mv docker-compose /usr/local/bin
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
   - npm install -g lerna
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
@@ -28,5 +28,5 @@ services:
 script:
   - npm test
 
-#env:
-#  - DOCKER_COMPOSE_VERSION=1.24.1
+env:
+  - DOCKER_COMPOSE_VERSION=1.24.1
