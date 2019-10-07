@@ -34,7 +34,7 @@ const waitForContainerOpts = {
 
 describe("AEproject Node and Compiler Tests", () => {
 
-    describe('AEproject Node', () => {
+    describe.only('AEproject Node', () => {
 
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
