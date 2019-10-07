@@ -28,7 +28,9 @@ describe.only('AEproject Compile', () => {
         let test = await execute(constants.cliCommands.NODE, [], executeOptions)
         console.log('================');
 
+        let version = await dockerExec('docker', ['--version'])
         let runningImages = await dockerExec('docker', ['ps'])
+        console.log('runningImages');
         console.log(runningImages);
         console.log('================');
         console.log(test);
