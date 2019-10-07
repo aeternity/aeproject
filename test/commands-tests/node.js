@@ -32,7 +32,7 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", () => {
+describe.only("AEproject Node and Compiler Tests", () => {
 
     describe('AEproject Node', () => {
 
