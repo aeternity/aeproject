@@ -23,7 +23,8 @@ const {
 } = require('aeproject-utils');
 const utils = require('aeproject-utils');
 const {
-    spawn
+    spawn,
+    exec
 } = require('promisify-child-process');
 
 const fs = require('fs');
@@ -194,8 +195,11 @@ async function run (option) {
             console.log('confirmed?');
             
             // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
-            let scanForAllocatedPort = await spawn('lsof', ['-i', `-:${port}`]);
+            // let scanForAllocatedPort = await spawn('lsof', ['-i', `-:${port}`]);
             //lsof -i :3001
+            let result = await exec(`netstat -anv | grep [.]${port}`);
+            let res = readSpawnOutput(result);
+            console.log(res)
             console.log(scanForAllocatedPort);
             console.log('testtesttest');
             
