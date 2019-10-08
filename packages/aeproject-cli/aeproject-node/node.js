@@ -208,7 +208,8 @@ async function run (option) {
             // console.log(scanForAllocatedPort.stdout.toString('utf8'));
         } catch (e) {
             console.log('keep walking ...');
-            console.log(e);
+            let res = Buffer.from(e.stderr).toString('utf-8');
+            console.log(res);
             console.log(' ======== after error =======');
         }
 
