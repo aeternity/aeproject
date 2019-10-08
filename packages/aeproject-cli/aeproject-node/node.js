@@ -194,9 +194,9 @@ async function run (option) {
         try {
             console.log('confirmed?');
             
-            let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ 3001 }`]);
-            // let scanForAllocatedPort = await spawn('lsof', ['-i', `-:${port}`]);
-            //lsof -i :3001
+            // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ 3001 }`]);
+            let scanForAllocatedPort = await spawn('lsof', ['-i', `-:${3001}`]);
+            // lsof -i :3001
           
             console.log(scanForAllocatedPort)
             let test = readSpawnOutput(scanForAllocatedPort)
