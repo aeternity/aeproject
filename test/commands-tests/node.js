@@ -171,7 +171,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         // try to run AE node on already allocated port , process should stop
-        it.only('Process should NOT start AE node', async () => {
+        it('Process should NOT start AE node', async () => {
 
             const port = 3001;
 
