@@ -205,17 +205,17 @@ describe("AEproject Node and Compiler Tests", () => {
             console.log(result);
             console.log('========');
             
-            // const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
-            //     result.indexOf('port is already allocated') >= 0 ||
-            //     result.indexOf(`address already in use`) >= 0;
+            const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
+                result.indexOf('port is already allocated') >= 0 ||
+                result.indexOf(`address already in use`) >= 0;
 
-            // // const isSamePort = result.indexOf(`:${ port }`) >= 0;
+            // const isSamePort = result.indexOf(`:${ port }`) >= 0;
 
-            // assert.isOk(isPortAllocated, 'Node does not throw exception on allocated port!');
-            // // assert.isOk(isSamePort, 'Error message does not contains expected port!');
+            assert.isOk(isPortAllocated, 'Node does not throw exception on allocated port!');
+            // assert.isOk(isSamePort, 'Error message does not contains expected port!');
 
-            // // stop server
-            // app.close();
+            // stop server
+            app.close();
         });
 
         // try to run compiler on already allocated port, process should stop

@@ -43,8 +43,8 @@ let network = utils.config.localhostParams
 network.compilerUrl = utils.config.compilerUrl
 
 const MAX_SECONDS_TO_RUN_NODE = 90;
-const DEFAULT_NODE_PORT = 3001;
-const DEFAULT_COMPILER_PORT = 3080;
+const DEFAULT_NODE_PORT = '3001';
+const DEFAULT_COMPILER_PORT = '3080';
 
 async function fundWallets (nodeIp) {
     await waitToMineCoins(nodeIp);
@@ -125,10 +125,15 @@ async function checkForAllocatedPort (port) {
     try {
         console.log(`======> checking for allocated port ${ port } result <======`);
         let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
+        // let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
         console.log(scanForAllocatedPort.stdout.toString('utf8'));
+        console.log('produljvame napred');
         
         if (scanForAllocatedPort.stdout) {
-            return scanForAllocatedPort.stdout.toString('utf8').indexOf(port) >= 0
+            console.log('in the if');
+            console.log(scanForAllocatedPort.stdout);
+            
+            return scanForAllocatedPort.stdout.toString('utf8').length >= 0
         }
     } catch (e) {
 
@@ -191,23 +196,23 @@ async function run (option) {
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
         }
         console.log("========= BEFORE STARTING NODE SEE THIS =============");
-        try {
-            console.log('confirmed?');
-            let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ 3001 }`]);
-            // let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ 3001 }`]);
-            let test = readSpawnOutput(scanForAllocatedPort)
-            console.log(test);
+        // try {
+        //     console.log('confirmed?');
+        //     // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ 3001 }`]);
+        //     // let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ 3001 }`]);
+        //     let test = readSpawnOutput(scanForAllocatedPort)
+        //     console.log(test);
             
-            // console.log(scanForAllocatedPort);
-            console.log('testtesttest');
+        //     // console.log(scanForAllocatedPort);
+        //     console.log('testtesttest');
             
-            // console.log(scanForAllocatedPort.stdout.toString('utf8'));
-        } catch (e) {
-            console.log('keep walking ...');
-            let res = Buffer.from(e.stderr).toString('utf-8');
-            console.log(res);
-            console.log(' ======== after error =======');
-        }
+        //     // console.log(scanForAllocatedPort.stdout.toString('utf8'));
+        // } catch (e) {
+        //     console.log('keep walking ...');
+        //     let res = Buffer.from(e.stderr).toString('utf-8');
+        //     console.log(res);
+        //     console.log(' ======== after error =======');
+        // }
 
         print('===== Starting node =====');
         let startingNodeSpawn = startNodeAndCompiler(option.only);
