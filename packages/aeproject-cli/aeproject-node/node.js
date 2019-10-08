@@ -123,32 +123,12 @@ function hasNodeConfigFiles () {
 
 async function checkForAllocatedPort (port) {
     try {
-        console.log(`======> checking for allocated port ${ port } result <======`);
-
-        // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${port}`]);
-
-        // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${port}`]);
         let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
-        console.log(scanForAllocatedPort.stdout.toString('utf8'));
-        console.log('produljvame napred');
         
         if (scanForAllocatedPort.stdout) {
-            console.log('in the if');
-            console.log(scanForAllocatedPort.stdout);
-            
             return scanForAllocatedPort.stdout.toString('utf8').length >= 0
         }
     } catch (e) {
-        console.log('keep digging');
-        console.log(e);
-        console.log('===========');
-        if (e.stderr) {
-            console.log(Buffer.from(e.stderr).toString('utf-8'));
-            
-        }
-        
-        // let res = ;
-        // console.log(res);
         // Throws an error when there is no running port. Exceptions are handled elsewhere.
         // console.log(e)
     }
@@ -193,8 +173,6 @@ async function run (option) {
             print('\r\n===== Node already started and healthy! =====');
             return;
         }
-        console.log('is checking here? ');
-        console.log(process.platform);
         
         if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
             console.log('====== default node port ===== ', DEFAULT_NODE_PORT);
@@ -207,24 +185,6 @@ async function run (option) {
             print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
         }
-        console.log("========= BEFORE STARTING NODE SEE THIS =============");
-        // try {
-        //     console.log('confirmed?');
-        //     // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ 3001 }`]);
-        //     // let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ 3001 }`]);
-        //     let test = readSpawnOutput(scanForAllocatedPort)
-        //     console.log(test);
-            
-        //     // console.log(scanForAllocatedPort);
-        //     console.log('testtesttest');
-            
-        //     // console.log(scanForAllocatedPort.stdout.toString('utf8'));
-        // } catch (e) {
-        //     console.log('keep walking ...');
-        //     let res = Buffer.from(e.stderr).toString('utf-8');
-        //     console.log(res);
-        //     console.log(' ======== after error =======');
-        // }
 
         print('===== Starting node =====');
         let startingNodeSpawn = startNodeAndCompiler(option.only);

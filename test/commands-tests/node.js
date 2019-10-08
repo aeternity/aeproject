@@ -187,24 +187,12 @@ describe("AEproject Node and Compiler Tests", () => {
                 res.end('Hello World!\n');
             });
 
-  
-
             // Start the server on specific port
             app.listen(port);
-
-            console.log('=========');
-            // console.log(app);
-            console.log(app.address());
-            console.log('=========');
-            
             
             // test
             let result = await execute(constants.cliCommands.NODE, [], executeOptions)
 
-            console.log('======== result =======');
-            console.log(result);
-            console.log('========');
-            
             const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
                 result.indexOf('port is already allocated') >= 0 ||
                 result.indexOf(`address already in use`) >= 0;
