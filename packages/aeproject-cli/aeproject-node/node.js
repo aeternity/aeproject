@@ -123,8 +123,8 @@ function hasNodeConfigFiles () {
 
 async function checkForAllocatedPort (port) {
     try {
+        console.log(`======> checking for allocated port ${ port } result <======`);
         let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
-        console.log('======> checking for allocated port result <======');
         console.log(scanForAllocatedPort.stdout.toString('utf8'));
         
         if (scanForAllocatedPort.stdout) {
@@ -193,9 +193,8 @@ async function run (option) {
         console.log("========= BEFORE STARTING NODE SEE THIS =============");
         try {
             console.log('confirmed?');
-            
-            // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ 3001 }`]);
-            let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ 3001 }`]);
+            let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ 3001 }`]);
+            // let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ 3001 }`]);
             let test = readSpawnOutput(scanForAllocatedPort)
             console.log(test);
             
