@@ -125,10 +125,10 @@ async function checkForAllocatedPort (port) {
     try {
         console.log(`======> checking for allocated port ${ port } result <======`);
 
-        let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${port}`]);
+        // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${port}`]);
 
         // let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${port}`]);
-        // let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
+        let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
         console.log(scanForAllocatedPort.stdout.toString('utf8'));
         console.log('produljvame napred');
         
