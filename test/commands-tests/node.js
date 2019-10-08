@@ -198,29 +198,12 @@ describe("AEproject Node and Compiler Tests", () => {
             console.log('=========');
             console.log(app.address());
             
-            let testapp = http.createServer((req, res) => {
-
-                // Set a response type of plain text for the response
-                res.writeHead(200, {
-                    'Content-Type': 'text/plain'
-                });
-
-                // Send back a response and end the connection
-                res.end('Hello World!\n');
-            });
-            
-            let test = testapp.listen(port)
-            console.log(test);
-            
             // test
             let result = await execute(constants.cliCommands.NODE, [], executeOptions)
 
             console.log('======== result =======');
             console.log(result);
             console.log('========');
-            result = await exec('docker', ['-ps'])
-            
-            console.log(result);
             
             // const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
             //     result.indexOf('port is already allocated') >= 0 ||

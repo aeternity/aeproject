@@ -123,7 +123,9 @@ function hasNodeConfigFiles () {
 async function checkForAllocatedPort (port) {
     try {
         let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
-
+        console.log('======> checking for allocated port result <======');
+        console.log(scanForAllocatedPort.stdout.toString('utf8'));
+        
         if (scanForAllocatedPort.stdout) {
             return scanForAllocatedPort.stdout.toString('utf8').indexOf(port) >= 0
         }
