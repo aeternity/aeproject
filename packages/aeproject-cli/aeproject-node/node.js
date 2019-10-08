@@ -190,6 +190,8 @@ async function run (option) {
         }
         console.log("========= BEFORE STARTING NODE SEE THIS =============");
         try {
+            console.log('confirmed?');
+            
             let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
             console.log(scanForAllocatedPort.stdout.toString('utf8'));
         } catch (e) {
