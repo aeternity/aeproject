@@ -200,10 +200,10 @@ async function run (option) {
             let result = await exec(`netstat -anv | grep [.]${port}`);
             let res = readSpawnOutput(result);
             console.log(res)
-            console.log(scanForAllocatedPort);
+            // console.log(scanForAllocatedPort);
             console.log('testtesttest');
             
-            console.log(scanForAllocatedPort.stdout.toString('utf8'));
+            // console.log(scanForAllocatedPort.stdout.toString('utf8'));
         } catch (e) {
             console.log('keep walking ...');
             console.log(e);
