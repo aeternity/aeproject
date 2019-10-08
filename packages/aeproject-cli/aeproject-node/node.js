@@ -176,6 +176,7 @@ async function run (option) {
             return;
         }
         console.log('is checking here? ');
+        console.log(process.platform);
         
         if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
             console.log('====== default node port ===== ', DEFAULT_NODE_PORT);
@@ -198,8 +199,6 @@ async function run (option) {
             console.log('keep walking ...');
             console.log(e);
             console.log(' ======== after error =======');
-            
-            
         }
 
         print('===== Starting node =====');
