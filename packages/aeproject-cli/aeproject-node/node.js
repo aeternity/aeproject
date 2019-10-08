@@ -196,6 +196,9 @@ async function run (option) {
             console.log(scanForAllocatedPort.stdout.toString('utf8'));
         } catch (e) {
             console.log('keep walking ...');
+            console.log(e);
+            console.log(' ======== after error =======');
+            
             
         }
 
