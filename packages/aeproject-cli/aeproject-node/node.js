@@ -175,15 +175,26 @@ async function run (option) {
             print('\r\n===== Node already started and healthy! =====');
             return;
         }
-
+        console.log('is checking here? ');
+        
         if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
+            console.log('====== default node port ===== ', DEFAULT_NODE_PORT);
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE node, port is already allocated!`);
         }
 
         if (!option.only && await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
+            console.log('====== default compiler port ===== ', DEFAULT_COMPILER_PORT);
             print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
+        }
+        console.log("========= BEFORE STARTING NODE SEE THIS =============");
+        try {
+            let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
+            console.log(scanForAllocatedPort.stdout.toString('utf8'));
+        } catch (e) {
+            console.log('keep walking ...');
+            
         }
 
         print('===== Starting node =====');

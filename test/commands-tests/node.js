@@ -193,10 +193,10 @@ describe("AEproject Node and Compiler Tests", () => {
             app.listen(port);
 
             console.log('=========');
-            console.log(app);
-
-            console.log('=========');
+            // console.log(app);
             console.log(app.address());
+            console.log('=========');
+            
             
             // test
             let result = await execute(constants.cliCommands.NODE, [], executeOptions)
