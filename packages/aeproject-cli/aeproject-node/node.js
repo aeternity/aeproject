@@ -23,8 +23,7 @@ const {
 } = require('aeproject-utils');
 const utils = require('aeproject-utils');
 const {
-    spawn,
-    exec
+    spawn
 } = require('promisify-child-process');
 
 const fs = require('fs');
