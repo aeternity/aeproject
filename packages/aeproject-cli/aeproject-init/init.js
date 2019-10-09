@@ -21,6 +21,8 @@ const printError = utils.printError;
 const print = utils.print;
 const createMissingFolder = utils.createMissingFolder;
 const copyFileOrDir = utils.copyFileOrDir;
+const writeFileRelative = utils.writeFileRelative;
+const readFileRelative = utils.readFileRelative;
 
 const sdkVersion = constants.sdkVersion;
 
@@ -112,7 +114,6 @@ const setupTests = (shape) => {
 }
 
 const setupDeploy = async (shape) => {
-
     print(`===== Creating deploy directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeDeployTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.deployTemplateFile }`;
     createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
@@ -137,8 +138,8 @@ const setupDocker = () => {
 
 const addIgnoreFile = () => {
     print(`==== Adding additional files ====`)
-    const ignoreFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.gitIgnoreFile }`;
-    copyFileOrDir(ignoreFileSource, constants.gitIgnoreFile)
+    const ignoreFileContent = readFileRelative(`${__dirname}${constants.artifactsDir}/${constants.gitIgnoreContent }`)
+    writeFileRelative(constants.gitIgnoreFile, ignoreFileContent)
 }
 
 module.exports = {
