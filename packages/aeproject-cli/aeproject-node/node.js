@@ -42,8 +42,8 @@ let network = utils.config.localhostParams
 network.compilerUrl = utils.config.compilerUrl
 
 const MAX_SECONDS_TO_RUN_NODE = 90;
-const DEFAULT_NODE_PORT = '3001';
-const DEFAULT_COMPILER_PORT = '3080';
+const DEFAULT_NODE_PORT = 3001;
+const DEFAULT_COMPILER_PORT = 3080;
 
 async function fundWallets (nodeIp) {
     await waitToMineCoins(nodeIp);
@@ -172,15 +172,13 @@ async function run (option) {
             print('\r\n===== Node already started and healthy! =====');
             return;
         }
-        
+
         if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
-            console.log('====== default node port ===== ', DEFAULT_NODE_PORT);
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE node, port is already allocated!`);
         }
 
         if (!option.only && await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
-            console.log('====== default compiler port ===== ', DEFAULT_COMPILER_PORT);
             print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
         }

@@ -189,7 +189,7 @@ describe("AEproject Node and Compiler Tests", () => {
 
             // Start the server on specific port
             app.listen(port);
-            
+
             // test
             let result = await execute(constants.cliCommands.NODE, [], executeOptions)
 
