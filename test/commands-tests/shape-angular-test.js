@@ -45,7 +45,7 @@ describe('Aeproject Shape Angular', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerNginxDefault)), "docker nginx-default doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerNginxWs)), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerKeys)), "docker keys folder doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.aeprojectStore)), "forgae store folder doesn't exist");
+        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.aeprojectStore)), "aeproject store folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.toDoContract)), "ToDo Manager contract doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.angularWebProjectPath)), "angular web project folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.angularWebProjectPath + constants.testsFiles.shapeAeppProjectPath)), "React aepp web project folder doesn't exist");
