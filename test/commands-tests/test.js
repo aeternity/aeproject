@@ -63,19 +63,15 @@ describe('AEproject Test', () => {
 
     describe('AEproject Test - sophia tests', () => {
 
-        before(async function () {
-            fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
-            await execute(constants.cliCommands.INIT, [], executeOptions);
-            await execute(constants.cliCommands.NODE, [], executeOptions)
-        })
-
         beforeEach(async function () {
             fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
             await execute(constants.cliCommands.INIT, [], executeOptions);
+            await execute(constants.cliCommands.NODE, [], executeOptions)
         });
 
         it('should parse sophia tests, create regular js file with tests and execute it.', async function () {
             await insertAdditionalFiles(executeOptions.cwd);
+
             let result = await execute(constants.cliCommands.TEST, [], executeOptions);
             let indexOfSophiaTests = result.indexOf('Sophia tests');
             if (indexOfSophiaTests <= 0) {
@@ -90,12 +86,12 @@ describe('AEproject Test', () => {
 
         it('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
             insertAdditionalFiles(executeOptions.cwd, true);
-
+            
             let result = await execute(constants.cliCommands.TEST, [
                 '--path',
                 constants.testTestsFolderPath
             ], executeOptions);
-
+            
             if (result.indexOf('Cannot append sophia tests to existing contract!') < 0) {
                 assert.isOk(false, "Sophia tests were appended to invalid smart contract!");
             }
@@ -103,11 +99,12 @@ describe('AEproject Test', () => {
 
         it('should run only "sophia test"', async function () {
             insertAdditionalFiles(executeOptions.cwd);
+            
             let result = await execute(constants.cliCommands.TEST, [
                 '--path',
                 '/test/calculator-tests.aes'
             ], executeOptions);
-
+            
             let count = countPhraseRepeats(result, '===== Starting Tests =====');
 
             assert.isOk(count === 1, "More than one file with tests were executed!");
@@ -115,14 +112,6 @@ describe('AEproject Test', () => {
         })
 
         afterEach(async function () {
-            fs.removeSync(`.${ constants.testTestsFolderPath }`);
-        })
-
-        after(async function () {
-            // this folder structure is needed for NODE --STOP command
-            fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
-            await execute(constants.cliCommands.INIT, [], executeOptions);
-
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
             fs.removeSync(`.${ constants.testTestsFolderPath }`);
         })
