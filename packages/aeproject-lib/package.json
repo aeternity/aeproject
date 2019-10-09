@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -12,9 +13,7 @@
   "dependencies": {
     "aeproject-config": "^1.0.0",
     "aeproject-logger": "^1.0.0",
-    "aeproject-utils": "^1.0.0"
-  },
-  "devDependencies": {
+    "aeproject-utils": "^1.0.0",
     "typescript": "^3.5.2"
   }
 }
