@@ -61,59 +61,85 @@ describe('AEproject Test', () => {
         })
     })
 
-    describe('AEproject Test - sophia tests', () => {
+    describe('AEproject Test - sophia tests - Wrapper - Start Node', function() {
 
-        beforeEach(async function () {
-            fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
-            await execute(constants.cliCommands.INIT, [], executeOptions);
-            await execute(constants.cliCommands.NODE, [], executeOptions)
-        });
+        const nodeCWD = path.resolve(process.cwd(), constants.nodeDockerFilesFolderPath);
+        const prevCWD = executeOptions.cwd;
 
-        it('should parse sophia tests, create regular js file with tests and execute it.', async function () {
-            await insertAdditionalFiles(executeOptions.cwd);
+        before(async function () {
+            let dockerComposePath = path.join(process.cwd(), constants.folderPaths.dockerInitResourcesPath, constants.testsFiles.dockerComposeNodeYml) 
+            let dockerComposeCompilerPath = path.join(process.cwd(), constants.folderPaths.dockerInitResourcesPath, constants.testsFiles.dockerComposeCompilerYml)
+            let dockerPath = path.join(process.cwd(), constants.folderPaths.dockerInitResourcesPath, '/docker')
 
-            let result = await execute(constants.cliCommands.TEST, [], executeOptions);
-            let indexOfSophiaTests = result.indexOf('Sophia tests');
-            if (indexOfSophiaTests <= 0) {
-                assert.isOk(false, "Missing sophia tests");
-            }
+            fs.ensureDirSync(nodeCWD);
+            fs.copyFileSync(dockerComposePath, `${ nodeCWD }${ constants.testsFiles.dockerComposeNodeYml }`);
+            fs.copyFileSync(dockerComposeCompilerPath, `${ nodeCWD }${ constants.testsFiles.dockerComposeCompilerYml }`);
+            fs.copySync(dockerPath, `${ nodeCWD }/docker`);
 
-            let shouldHaveSuccessfulTest = result.indexOf('1 passing', indexOfSophiaTests) > 0;
-            let shouldHaveUnsuccessfulTest = result.indexOf('1 failing', indexOfSophiaTests) > 0;
-
-            assert.isOk(shouldHaveSuccessfulTest && shouldHaveUnsuccessfulTest, "Tests have unexpected results.");
+            executeOptions.cwd = nodeCWD
+            await execute(constants.cliCommands.NODE, [], executeOptions);
+            executeOptions.cwd = prevCWD;
         })
 
-        it('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
-            insertAdditionalFiles(executeOptions.cwd, true);
-            
-            let result = await execute(constants.cliCommands.TEST, [
-                '--path',
-                constants.testTestsFolderPath
-            ], executeOptions);
-            
-            if (result.indexOf('Cannot append sophia tests to existing contract!') < 0) {
-                assert.isOk(false, "Sophia tests were appended to invalid smart contract!");
-            }
+        describe('AEproject Test - sophia tests', () => {
+
+            beforeEach(async function () {
+                fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
+                await execute(constants.cliCommands.INIT, [], executeOptions);
+            });
+    
+            it('should parse sophia tests, create regular js file with tests and execute it.', async function () {
+                await insertAdditionalFiles(executeOptions.cwd);
+    
+                let result = await execute(constants.cliCommands.TEST, [], executeOptions);
+                let indexOfSophiaTests = result.indexOf('Sophia tests');
+                if (indexOfSophiaTests <= 0) {
+                    assert.isOk(false, "Missing sophia tests");
+                }
+    
+                let shouldHaveSuccessfulTest = result.indexOf('1 passing', indexOfSophiaTests) > 0;
+                let shouldHaveUnsuccessfulTest = result.indexOf('1 failing', indexOfSophiaTests) > 0;
+    
+                assert.isOk(shouldHaveSuccessfulTest && shouldHaveUnsuccessfulTest, "Tests have unexpected results.");
+            })
+    
+            it('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
+                insertAdditionalFiles(executeOptions.cwd, true);
+                
+                let result = await execute(constants.cliCommands.TEST, [
+                    '--path',
+                    constants.testTestsFolderPath
+                ], executeOptions);
+    
+                if (result.indexOf('Cannot append sophia tests to existing contract!') < 0) {
+                    assert.isOk(false, "Sophia tests were appended to invalid smart contract!");
+                }
+            })
+    
+            it('should run only "sophia test"', async function () {
+                insertAdditionalFiles(executeOptions.cwd);
+                
+                let result = await execute(constants.cliCommands.TEST, [
+                    '--path',
+                    '/test/calculator-tests.aes'
+                ], executeOptions);
+                
+                let count = countPhraseRepeats(result, '===== Starting Tests =====');
+    
+                assert.isOk(count === 1, "More than one file with tests were executed!");
+                assert.isOk(result.indexOf('Sophia tests') >= 0, "Missing sophia tests!");
+            })
+    
+            afterEach(async function () {
+                fs.removeSync(`.${ constants.testTestsFolderPath }`);
+            })
         })
 
-        it('should run only "sophia test"', async function () {
-            insertAdditionalFiles(executeOptions.cwd);
-            
-            let result = await execute(constants.cliCommands.TEST, [
-                '--path',
-                '/test/calculator-tests.aes'
-            ], executeOptions);
-            
-            let count = countPhraseRepeats(result, '===== Starting Tests =====');
-
-            assert.isOk(count === 1, "More than one file with tests were executed!");
-            assert.isOk(result.indexOf('Sophia tests') >= 0, "Missing sophia tests!");
-        })
-
-        afterEach(async function () {
+        after(async function() {
+            executeOptions.cwd = nodeCWD;
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
-            fs.removeSync(`.${ constants.testTestsFolderPath }`);
+            fs.removeSync(nodeCWD);
+            executeOptions.cwd = prevCWD
         })
     })
 
