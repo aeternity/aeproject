@@ -118,7 +118,9 @@ export class Deployer {
           
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             await generateInstancesWithWallets(this.network, deployedContract.address);
-            let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(contractInstance);
+            let additionalFuncs = addSpendFuncToContractInstance(contractInstance.methods, client);
+            let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(additionalFuncs);
+
             deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -126,7 +128,7 @@ export class Deployer {
             txInfo = await getTxInfo(deployedContract.transaction);
 
             if (deployedContract && deployedContract.transaction) {
-
+                
                 info.transactionHash = deployedContract.transaction;
                 info.gasPrice = txInfo.gasPrice;
                 info.gasUsed = txInfo.gasUsed;
@@ -156,8 +158,6 @@ export class Deployer {
             let newInstanceWithAddedAdditionalFunctionality = Object.assign(contractInstanceWrapperFuncs, deployedContract);
             return newInstanceWithAddedAdditionalFunctionality;
         }
-
-
     }
 }
 
@@ -171,8 +171,7 @@ async function generateInstancesWithWallets(network: Network, contractAddress) {
     }
 }
 
-async function generateFunctionsFromSmartContract(contractInstance: ContractInstance): Promise<Object> {
-    let contractFunctions = contractInstance.methods;
+async function generateFunctionsFromSmartContract(contractFunctions: Object): Promise<Object> {
 
     contractFunctions['from'] = async function (userWallet: any) {
         let walletToPass = userWallet
@@ -181,9 +180,29 @@ async function generateFunctionsFromSmartContract(contractInstance: ContractInst
             walletToPass = walletToPass.secretKey
         }
         const keyPair: KeyPair = await utils.generateKeyPairFromSecretKey(walletToPass);
-        return instancesMap[keyPair.publicKey].methods
 
+        // iteration of origin deployed instance
+        // when we create new 'client', it does not have deployed tx info and additional functions like 'spend'
+        // if function or property is missing from new 'client' we assigned it
+        for (let funcName in contractFunctions) {
+
+            if (!instancesMap[keyPair.publicKey].methods[funcName]) {
+                instancesMap[keyPair.publicKey].methods[funcName] = contractFunctions[funcName];
+            }
+        }
+
+        return instancesMap[keyPair.publicKey].methods
     }
+
+    return contractFunctions;
+}
+
+function addSpendFuncToContractInstance(contractFunctions: Object, client: Client) {
+
+    contractFunctions['spend'] = async function(amount: number, to: string){
+        return client.spend(amount, to);
+    }
+
     return contractFunctions;
 }
 
