@@ -23,6 +23,8 @@ const printError = utils.printError;
 const print = utils.print;
 const createMissingFolder = utils.createMissingFolder;
 const copyFileOrDir = utils.copyFileOrDir;
+const writeFileRelative = utils.writeFileRelative;
+const readFileRelative = utils.readFileRelative;
 
 const prompts = require('prompts');
 
@@ -151,7 +153,6 @@ const setupTests = async (shape) => {
 }
 
 const setupDeploy = async (shape) => {
-
     print(`===== Creating deploy directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeDeployTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.deployTemplateFile }`;
     createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
@@ -183,19 +184,10 @@ const setupDocker = () => {
     copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
 }
 
-const addIgnoreFile = async () => {
+const addIgnoreFile = () => {
     print(`==== Adding additional files ====`)
-    const ignoreFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.gitIgnoreFile }`;
-    
-    try {
-        copyFileOrDir(ignoreFileSource, constants.gitIgnoreFile)
-    } catch (error) {
-        if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, ignoreFileSource, constants.gitIgnoreFile)
-        } else {
-            throw Error(error);
-        }
-    }
+    const ignoreFileContent = readFileRelative(`${ __dirname }${ constants.artifactsDir }/${ constants.gitIgnoreContent }`)
+    writeFileRelative(constants.gitIgnoreFile, ignoreFileContent)
 }
 
 async function prompt (error) {

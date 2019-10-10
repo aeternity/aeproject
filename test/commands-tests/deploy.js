@@ -231,7 +231,7 @@ describe('AEproject Deploy', () => {
             const zeroBalanceSecretKey = '922bf2635813fb51827dcdb8fff38d0c16c447594b60bc523f5e5c10a876d1b14701787d0fe30d8f50cf340262daee1204f3c881a9ce8c5c9adccfb0e1de40e5';
             let result = await execute(constants.cliCommands.DEPLOY, ["-s", zeroBalanceSecretKey], executeOptions);
 
-            assert.include(result, 'Account not found');
+            assert.include(result, 'failed with 404: Account not found');
         })
 
         it('try to deploy SC with invalid init parameters from another deployment script', async () => {
