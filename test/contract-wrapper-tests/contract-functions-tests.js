@@ -35,6 +35,13 @@ const unavailableSmartContratsFunctions = [
     '_get_person_by_id'
 ];
 
+const additionalInstanceFunctions = [
+    'from',
+    'spend'
+];
+
+const randomAEAddress = 'ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ';
+
 let executeOptions = {
     cwd: process.cwd() + constants.contractWrapperTestsFolderPath
 };
@@ -56,7 +63,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
     describe("Test Extract smart contract's functions", async () => {
 
-        it("Are all public functions available in contract's instance", async () => {
+        it("Public functions should be available in contract's instance", async () => {
             for (let functionName of availableSmartContratsFunctions) {
                 if (!deployedContract[functionName]) {
                     assert.isOk(false, 'Function is not extracted from smart contract');
@@ -73,6 +80,13 @@ describe("Deployed contract instance additional functionality", async () => {
             }
         });
 
+        it("Additional functions should be available in contract's instance", async () => {
+            for (let functionName of additionalInstanceFunctions) {
+                if (!deployedContract[functionName]) {
+                    assert.isOk(false, 'Missing additional functionality');
+                }
+            }
+        });
     });
 
     describe("Test extracted functions", async () => {
@@ -340,6 +354,30 @@ describe("Deployed contract instance additional functionality", async () => {
 
             assert.equal(addListResult.decodedResult.length, humanIds.length, "Error when calling and setting functions with list arguments")
         })
+
+        it("Spend tx should be successful", async () => {
+            let spendTx = await fromInstance.spend(1, randomAEAddress);
+            
+            assert.isOk(spendTx.hash, "Result is not expected one.");
+            assert.isOk(spendTx.tx, "Result is not expected one.");
+        });
+    });
+
+    describe("Test 'spend' functionality", async () => {
+        it("Spend tx should be successful", async () => {
+            let spendTx = await deployedContract.spend(1, randomAEAddress);
+            
+            assert.isOk(spendTx.hash, "Result is not expected one.");
+            assert.isOk(spendTx.tx, "Result is not expected one.");
+        });
+
+        it("'FROM' instance, spend tx should be successful", async () => {
+            const fromInstance = await deployedContract.from(notOwnerKeyPair.secretKey);
+            const spendTx = await fromInstance.spend(1, randomAEAddress);
+            
+            assert.isOk(spendTx.hash, "Result is not expected one.");
+            assert.isOk(spendTx.tx, "Result is not expected one.");
+        });
     });
 
     after(async () => {
