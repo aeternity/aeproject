@@ -65,7 +65,7 @@ const executeAndPassInput = async (cli, command, args = [], options = {}) => {
     }
 };
 
-describe('AEproject Init', () => {
+describe.only('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -95,6 +95,9 @@ describe('AEproject Init', () => {
     });
 
     it('Should update project successfully', async () => {
+
+        throw Error('test_error');
+
         // Arrange
         const editedContent = "edited content"
         await execute(constants.cliCommands.INIT, [], executeOptions)
@@ -102,7 +105,9 @@ describe('AEproject Init', () => {
         // Act
         fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedContent)
 
-        await execute(constants.cliCommands.INIT, ["--update"], executeOptions)
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, ["--update"], executeOptions)
+        console.log(result);
+        // await execute(constants.cliCommands.INIT, ["--update"], executeOptions)
 
         // //assert
         let editedDockerComposeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')

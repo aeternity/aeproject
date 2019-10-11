@@ -38,7 +38,7 @@ async function run (update) {
         await createAEprojectProjectStructure();
 
     } catch (e) {
-        printError(e.message)
+        printError(e.message);
         console.error(e);
     }
 }
@@ -52,7 +52,7 @@ const createAEprojectProjectStructure = async (shape) => {
     await setupTests(shape);
     await setupIntegrations();
     await setupDeploy(shape);
-    setupDocker();
+    await setupDocker();
     await addIgnoreFile();
 
     print('===== AEproject was successfully initialized! =====');
@@ -61,10 +61,10 @@ const createAEprojectProjectStructure = async (shape) => {
 const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     print(`===== Updating AEproject files =====`);
 
-    setupDocker();
-    await installAEproject()
-    await installAeppSDK(_sdkVersion)
-    await installYarn()
+    await setupDocker();
+    await installAEproject();
+    await installAeppSDK(_sdkVersion);
+    await installYarn();
 
     print('===== AEproject was successfully updated! =====');
 }
@@ -72,7 +72,7 @@ const updateAEprojectProjectLibraries = async (_sdkVersion) => {
 const installLibraries = async () => {
     const fileSource = `${ __dirname }${ constants.artifactsDir }/package.json`;
     try {
-        copyFileOrDir(fileSource, "./package.json")
+        copyFileOrDir(fileSource, "./package.json");
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, "./package.json");
@@ -110,10 +110,10 @@ const setupContracts = async (shape) => {
     const destination = shape ? constants.shapeContractFileDestination : constants.contractFileDestination;
 
     try {
-        copyFileOrDir(fileSource, destination)
+        copyFileOrDir(fileSource, destination);
     } catch (error) {
         if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, fileSource, destination)
+            await prompt(error, copyFileOrDir, fileSource, destination);
         } else {
             throw Error(error);
         }
@@ -126,10 +126,10 @@ const setupIntegrations = async () => {
     createMissingFolder(constants.integrationsDir);
     
     try {
-        copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination)
+        copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination);
     } catch (error) {
         if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, fileSource, constants.contratsAeppSettingFileDestination)
+            await prompt(error, copyFileOrDir, fileSource, constants.contratsAeppSettingFileDestination);
         } else {
             throw Error(error);
         }
@@ -142,10 +142,10 @@ const setupTests = async (shape) => {
     createMissingFolder(constants.testDir, "Creating tests file structure");
     
     try {
-        copyFileOrDir(fileSource, shape ? constants.shapeTestFileDestination : constants.testFileDestination)
+        copyFileOrDir(fileSource, shape ? constants.shapeTestFileDestination : constants.testFileDestination);
     } catch (error) {
         if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, fileSource, constants.testFileDestination)
+            await prompt(error, copyFileOrDir, fileSource, constants.testFileDestination);
         } else {
             throw Error(error);
         }
@@ -158,35 +158,60 @@ const setupDeploy = async (shape) => {
     createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
     
     try {
-        copyFileOrDir(fileSource, constants.deployFileDestination)
+        copyFileOrDir(fileSource, constants.deployFileDestination);
     } catch (error) {
         if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, fileSource, constants.deployFileDestination)
+            await prompt(error, copyFileOrDir, fileSource, constants.deployFileDestination);
         } else {
             throw Error(error);
         }
     }
 }
 
-const setupDocker = () => {
+const setupDocker = async () => {
     print(`===== Creating docker directory =====`);
     const dockerFilesSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerTemplateDir }`;
     const copyOptions = {
-        overwrite: true
+        overwrite: false
     }
 
     const dockerNodeYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerNodeYmlFile }`;
-    copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination, copyOptions)
-    copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
+    
+    try {
+        copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
+        } else {
+            throw Error(error);
+        }
+    }
+
+    try {
+        copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination);
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, dockerFilesSource, constants.dockerFilesDestination);
+        } else {
+            throw Error(error);
+        }
+    }
 
     const dockerCompilerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerCompilerYmlFile }`;
-    copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, copyOptions)
-    copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination, copyOptions)
+    try {
+        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
+        } else {
+            throw Error(error);
+        }
+    }
 }
 
 const addIgnoreFile = () => {
     print(`==== Adding additional files ====`)
-    const ignoreFileContent = readFileRelative(`${ __dirname }${ constants.artifactsDir }/${ constants.gitIgnoreContent }`)
+    const ignoreFileContent = readFileRelative(`${ __dirname }${ constants.artifactsDir }/${ constants.gitIgnoreContent }`);
     writeFileRelative(constants.gitIgnoreFile, ignoreFileContent)
 }
 
