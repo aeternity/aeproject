@@ -20,8 +20,8 @@ const {
 const executeAndKill = async (cli, command, args = [], options = {}) => {
     try {
         const child = spawn(cli, [command, ...args], options);
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             process.kill(child.pid)
         }, 4000)
 
@@ -41,7 +41,7 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 const executeAndPassInput = async (cli, command, args = [], options = {}) => {
     try {
         const child = spawn(cli, [command, ...args], options);
-        
+
         // pass needed input to 'terminal'
         child.stdin.write('y\n');
 
@@ -65,7 +65,7 @@ const executeAndPassInput = async (cli, command, args = [], options = {}) => {
     }
 };
 
-describe('AEproject Init', () => {
+describe.only('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -142,26 +142,30 @@ describe('AEproject Init', () => {
 
     it('Should terminate init process and re-inited project successfully', async () => {
 
-        let expectedResult = 
-`===== Installing aepp-sdk =====
-===== Installing AEproject locally =====
-===== Installing yarn locally =====
-===== Creating project file & dir structure =====
-===== Creating contracts directory =====
-===== Creating tests directory =====
-===== Creating integrations directory =====
-===== Creating deploy directory =====
-===== Creating docker directory =====
-==== Adding additional files ====
-===== AEproject was successfully initialized! =====`;
+        let expectedResult = [
+            `===== Installing aepp-sdk =====`,
+            `===== Installing AEproject locally =====`,
+            `===== Installing yarn locally =====`,
+            `===== Creating project file & dir structure =====`,
+            `===== Creating contracts directory =====`,
+            `===== Creating tests directory =====`,
+            `===== Creating integrations directory =====`,
+            `===== Creating deploy directory =====`,
+            `===== Creating docker directory =====`,
+            `==== Adding additional files ====`,
+            `===== AEproject was successfully initialized! =====`
+        ];
 
         await executeAndKill('aeproject', constants.cliCommands.INIT, [], executeOptions)
 
-        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions)
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
 
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
-        assert.isOk(result.trim().includes(expectedResult.trim()), `'Init' command do not produce expected result`);
-
+        
+        for (let line of expectedResult) {
+            assert.isOk(result.trim().includes(line.trim()), `There is missing initialization action.`);
+        }
+        
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeNodeYml }`), "docker-compose.yml doesn't exist");
