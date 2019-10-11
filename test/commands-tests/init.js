@@ -65,7 +65,7 @@ const executeAndPassInput = async (cli, command, args = [], options = {}) => {
     }
 };
 
-describe.only('AEproject Init', () => {
+describe('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -95,8 +95,6 @@ describe.only('AEproject Init', () => {
     });
 
     it('Should update project successfully', async () => {
-
-        throw Error('test_error');
 
         // Arrange
         const editedContent = "edited content"
