@@ -1,4 +1,5 @@
 node_modules
+.aeproject-node-store
 .aeproject-store
 .vscode
 .idea/

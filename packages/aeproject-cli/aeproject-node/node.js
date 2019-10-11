@@ -35,6 +35,9 @@ const defaultWallets = nodeConfig.defaultWallets;
 const localCompilerConfig = nodeConfig.compilerConfiguration;
 const nodeConfiguration = nodeConfig.nodeConfiguration;
 
+let { LogNodeService } = require('../../aeproject-logger/logger-service/log-node-service')
+let nodeService;
+
 let balanceOptions = {
     format: false
 }
@@ -122,10 +125,10 @@ function hasNodeConfigFiles () {
 
 async function checkForAllocatedPort (port) {
     try {
-        let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
+        let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
 
         if (scanForAllocatedPort.stdout) {
-            return scanForAllocatedPort.stdout.toString('utf8').indexOf(port) >= 0
+            return scanForAllocatedPort.stdout.toString('utf8').length > 0
         }
     } catch (e) {
 
@@ -137,11 +140,14 @@ async function checkForAllocatedPort (port) {
 }
 
 async function run (option) {
+    nodeService = new LogNodeService(process.cwd())
+
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
 
     try {
         let running = await waitForContainer(dockerImage);
+
         if (option.stop) {
 
             // if not running, current env may be windows
@@ -245,14 +251,21 @@ async function startLocalCompiler () {
 async function startNodeAndCompiler (startOnlyNode) {
 
     if (startOnlyNode) {
-        return spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
+        spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
+        return nodeService.save('node');
+    } else {
+        spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+        return nodeService.save();
     }
-
-    return spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
 }
 
 async function stopNodeAndCompiler () {
-    return spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'down', '-v', '--remove-orphans']);
+    try {
+        spawn('docker-compose', ['-f', `${ nodeService.getNodePath() }`, '-f', `${ nodeService.getCompilerPath() }`, 'down', '-v', '--remove-orphans']);
+        return nodeService.deletePaths()
+    } catch (error) {
+        console.log(Buffer.from(error.stderr).toString('utf-8'))
+    }
 }
 
 function readErrorSpawnOutput (spawnError) {

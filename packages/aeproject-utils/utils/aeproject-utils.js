@@ -9,6 +9,9 @@ let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
 let match;
 
+let { LogNodeService } = require('../../aeproject-logger/logger-service/log-node-service')
+let nodeService;
+
 const config = require('../../aeproject-config/config/config.json');
 const {
     printError
@@ -254,13 +257,16 @@ function normalizeCompilerUrl (url) {
 }
 
 async function waitForContainer (dockerImage, options) {
+    nodeService = new LogNodeService(process.cwd())
+
     try {
         let running = false;
+
         let result = await spawn('docker-compose', [
             '-f',
-            'docker-compose.yml',
+            `${ nodeService.getNodePath() }`,
             '-f',
-            'docker-compose.compiler.yml',
+            `${ nodeService.getCompilerPath() }`,
             'ps'
         ], options);
 
@@ -280,7 +286,14 @@ async function waitForContainer (dockerImage, options) {
 
         return running;
     } catch (error) {
+
+        if (checkForMissingDirectory(error)) {
+            nodeService.deletePaths()
+            return false
+        }
+
         if (error.stderr) {
+            
             console.log(error.stderr.toString('utf8'))
         } else {
             console.log(error.message || error)
@@ -288,6 +301,10 @@ async function waitForContainer (dockerImage, options) {
 
         throw Error(error);
     }
+}
+
+function checkForMissingDirectory (e) {
+    return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'))
 }
 
 module.exports = {

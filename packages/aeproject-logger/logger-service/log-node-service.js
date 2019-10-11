@@ -1,138 +1,35 @@
-const fs = require('fs-extra')
-const path = require('path')
-const {
-    spawn
-} = require('promisify-child-process');
 
-let instance;
-const storageDir = '.aeproject-node-store/.node-store.json'
-
-const dockerConfig = 'docker-compose.yml'
-const compilerConfig = 'docker-compose.compiler.yml'
+const LogJSONNode = require('../logger-store/log-json-node');
 
 class LogNodeService {
     constructor (_path) {
-        
-        this.nodeStore = path.resolve(`${ path.dirname(require.main.filename) }/${ storageDir }`)
-        this.dockerComposePath = _path + '/';
-        this.compilerPath = _path + '/'
-        
-        if (this.ensureStoreExists()) {
-            fs.outputJsonSync(this.nodeStore, { 
-                node: this.dockerComposePath,
-                compiler: this.compilerPath
-            });
-        }
-
-        this.store = require(this.nodeStore);
-    }
-
-    ensureStoreExists () {
-        return !fs.existsSync(this.nodeStore)
-    }
-
-    writeNodePathToStore () {
-        this.store.node = this.dockerComposePath
-        this.save()
-    }
-
-    writeCompilerPathToStore () {
-        this.store.compiler = this.dockerComposePath
-        this.save()
-    }
-
-    writeNodeAndCompilerToStore () {
-        this.writeNodePathToStore();
-        this.writeCompilerPathToStore();
+        this._nodeStore = LogJSONNode(_path)
     }
 
     getNodePath () {
-        return this.store.node ? this.store.node + dockerConfig : dockerConfig
-
-    } 
+        return this._nodeStore.getNodePath()
+    }
 
     getCompilerPath () {
-        return this.store.compiler ? this.store.compiler + compilerConfig : compilerConfig
-    }
-    clearPaths () {
-        this.store = {}
-        this.save()
+        return this._nodeStore.getCompilerPath()
     }
 
-    save () {
-        fs.outputJsonSync(this.nodeStore, this.store);
+    deletePaths () {
+        return this._nodeStore.clearPaths({})
     }
 
-    printValue () {
-        // console.log(this.nodeStore); // where the file is gonna be stored
-        // console.log(this.dockerComposePath); // where it has been called from
-        console.log(this.store.node);
-        console.log(this.store.compile);
-    }
-
-    async tryToRunDockerAndCompiler () {
-        console.log(`${ this.store.node }/${ dockerConfig }`);
-        console.log(`${ this.store.compiler }/${ compilerConfig }`);
+    save (unit) {
         
-        try {
-            let res = await spawn(
-                'docker-compose', 
-                ['-f',
-                    `${ this.store.node }/${ dockerConfig }`,
-                    '-f',
-                    `${ this.store.compiler }/${ compilerConfig }`,
-                    'up',
-                    '-d']);
-        } catch (error) {
-            console.log(Buffer.from(error.stderr).toString('utf-8'));
-        }
-    }
-
-    async tryToStopDockerAndCompiler () {
-        console.log(`${ this.store.path }/${ dockerConfig }`);
-        
-        try {
-            let res = await spawn(
-                'docker-compose',
-                ['-f',
-                    `${ this.store.node }/${ dockerConfig }`,
-                    '-f',
-                    `${ this.store.compiler }/${ compilerConfig }`,
-                    'down',
-                    '-v',
-                    '--remove-orphans']);
-
-            console.log('tru tur tur');
+        if (unit === 'compiler') {
+            return this._nodeStore.writeCompilerPathToStore()
             
-            console.log(Buffer.from(res.stdout).toString('utf-8'));
-                    
-        } catch (error) {
-            console.log('in the error');
+        }
+        if (unit === 'node') {
+            return this._nodeStore.writeNodePathToStore()
             
-            console.log(Buffer.from(error.stderr).toString('utf-8'));
-        }
-    }
-
-    async checkNodeAndCompilersAreUp () {
-        try {
-            let res = await spawn(
-                'docker-compose',
-                ['-f',
-                    `${ this.store.node }/${ dockerConfig }`,
-                    '-f',
-                    `${ this.store.compiler }/${ compilerConfig }`,
-                    'ps'])
-        } catch (error) {
-            console.log(Buffer.from(error.stderr).toString('utf-8'));
-        }
-    }
-
-    static getInstance (_path) {
-        if (!instance) {
-            instance = new LogNodeService(_path)
         }
 
-        return instance
+        return this._nodeStore.writeNodeAndCompilerToStore()
     }
 }
 
