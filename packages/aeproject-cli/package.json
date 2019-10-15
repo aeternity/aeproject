@@ -1,6 +1,6 @@
 {
   "name": "aeproject",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "bin": {
