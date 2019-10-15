@@ -33,20 +33,26 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe.only("AEproject Node and Compiler Tests", () => {
+describe("AEproject Node and Compiler Tests", () => {
 
     describe('AEproject Node', () => {
-
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
             await execute(constants.cliCommands.INIT, [], executeOptions);
-            let result = await execute(constants.cliCommands.NODE, [], executeOptions);
+            await execute(constants.cliCommands.NODE, [], executeOptions);
         })
 
         it('Should start the node successfully', async () => {
+            let mainDir = process.cwd();
+            let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
+            
+            process.chdir(nodeTestDir)
+
             let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             assert.isTrue(running, "node wasn't started properly");
+
+            process.chdir(mainDir)
         })
 
         it('Should check if the wallets are funded', async () => {
@@ -91,12 +97,7 @@ describe.only("AEproject Node and Compiler Tests", () => {
         })
 
         after(async () => {
-
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            if (running) {
-                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            }
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
     })
 
@@ -117,11 +118,8 @@ describe.only("AEproject Node and Compiler Tests", () => {
         })
 
         after(async () => {
-
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            if (running) {
-                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            }
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -154,11 +152,7 @@ describe.only("AEproject Node and Compiler Tests", () => {
         })
 
         afterEach(async () => {
-
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            if (running) {
-                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            }
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -282,9 +276,8 @@ describe.only("AEproject Node and Compiler Tests", () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`) 
             await execute(constants.cliCommands.INIT, [], executeOptions);
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPathSecondProject }`) 
-            await execute(constants.cliCommands.INIT, [], executeOptions)
+            await execute(constants.cliCommands.INIT, [], { cwd: secondNodeTestDir })
         })
-        
         it('Should correctly record where the node and compiler has been run from', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             nodeStore = await fs.readJson(nodeStorePath)
@@ -296,40 +289,39 @@ describe.only("AEproject Node and Compiler Tests", () => {
         it('Should correctly record absolute path where the node has been run from', async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
             nodeStore = await fs.readJson(nodeStorePath)
-            
             assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(executeOptions.cwd) }`), "node path has not been saved correcty");
             assert.isTrue((nodeStore.compiler === ''), "compiler should be empty");
         })
-
+        
         it('Should clear log file after node has been stopped', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
 
             nodeStore = await fs.readJson(nodeStorePath)
-            
+
             assert.isTrue(Object.keys(nodeStore).length === 0 && nodeStore.constructor === Object, "log file has not been cleared properly");
         })
 
-        it('Should try to stop node and compiler from current folder if node store is empty', async () => {
+        it('Should try to stop node and compiler from current directory if node store is empty', async () => {
           
             // change dir to project directory
-            process.chdir(nodeTestDir)
+            process.chdir(nodeTestDir) 
 
-            let startResult = await execute(constants.cliCommands.NODE, [])
+            let startResult = await execute(constants.cliCommands.NODE, [], executeOptions)
             let hasNodeStarted = startResult.indexOf(`Node was successfully started`) >= 0;
 
             assert.isOk(hasNodeStarted);
             
-            nodeStore = await fs.readJson(nodeStorePath)
-            nodeStore = {}
-            
             // overwrite file with no data
+            nodeStore = {}
             await fs.outputJSONSync(nodeStorePath, nodeStore);
 
             // try to stop node and compiler while log file is empty
             let stopResult = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
+            
             let hasNodeStopped = stopResult.indexOf(`Node was successfully stopped`) >= 0;
-
+            process.chdir(mainDir) 
+            
             assert.isOk(hasNodeStopped)
         })
 
@@ -337,10 +329,8 @@ describe.only("AEproject Node and Compiler Tests", () => {
             // init project from nodeTest directory
             await execute(constants.cliCommands.NODE, [], executeOptions)
 
-            process.chdir(secondNodeTestDir)
-
             // try to stop the node from secondNodeTestDir
-            let stopResult = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
+            let stopResult = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], { cwd: secondNodeTestDir })
             let hasNodeStopped = stopResult.indexOf(`Node was successfully stopped`) >= 0;
 
             assert.isOk(hasNodeStopped)
@@ -350,21 +340,13 @@ describe.only("AEproject Node and Compiler Tests", () => {
             fs.ensureDirSync(path.resolve(secondNodeTestDir))
             
             process.chdir(secondNodeTestDir)
-            
-            await execute(constants.cliCommands.INIT, []); 
-            await execute(constants.cliCommands.NODE, [])
+            await execute(constants.cliCommands.NODE, [], { cwd: secondNodeTestDir })
 
             fs.removeSync(process.cwd())
             
-            try {
-                await killRunningNodes()
-            } catch (error) {
-                console.log(Buffer.from(error.stderr).toString('utf8'))
-            }
+            await killRunningNodes()
 
-            process.chdir(nodeTestDir)
-
-            let startResult = await execute(constants.cliCommands.NODE, [])
+            let startResult = await execute(constants.cliCommands.NODE, [], executeOptions)
             let hasNodeStarted = startResult.indexOf(`Node was successfully started`) >= 0;
             let nodeStore = await fs.readJSONSync(nodeStorePath)
             
@@ -416,16 +398,10 @@ describe.only("AEproject Node and Compiler Tests", () => {
         }
 
         afterEach(async () => {
-
-            process.chdir(nodeTestDir)
-            
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
-            
-            process.chdir(mainDir)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
 
         after(async () => {
-
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
