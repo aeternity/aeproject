@@ -1,4 +1,3 @@
-
 const LogJSONNode = require('../logger-store/log-json-node');
 
 class LogNodeService {
@@ -15,7 +14,7 @@ class LogNodeService {
     }
 
     deletePaths () {
-        return this._nodeStore.clearPaths({})
+        return this._nodeStore.clearPaths()
     }
 
     save (unit) {

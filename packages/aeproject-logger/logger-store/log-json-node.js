@@ -10,8 +10,6 @@ let instance
 class LogJSONNode {
     constructor (_path) {
         this.nodeStore = path.resolve(`${ path.dirname(require.main.filename) }/${ storageDir }`)
-        console.log('path.dirname(require.main.filename)');
-        console.log(path.dirname(require.main.filename));
         
         this.dockerComposePath = _path + '/';
         this.compilerPath = _path + '/'
@@ -33,6 +31,7 @@ class LogJSONNode {
 
     writeNodePathToStore () {
         this.store.node = this.dockerComposePath
+        this.store.compiler = ''
         this.save()
     }
 
@@ -53,8 +52,8 @@ class LogJSONNode {
     getCompilerPath () {
         return this.store.compiler ? this.store.compiler + compilerConfig : compilerConfig
     }
-    clearPaths (newStore) {
-        this.store = newStore
+    clearPaths () {
+        this.store = {}
         this.save()
     }
 
