@@ -28,7 +28,7 @@ const readFileRelative = utils.readFileRelative;
 
 const prompts = require('prompts');
 
-async function run (update) {
+async function run(update) {
     if (update) {
         await updateAEprojectProjectLibraries(sdkVersion);
         return;
@@ -124,7 +124,7 @@ const setupIntegrations = async () => {
     print(`===== Creating integrations directory =====`);
     const fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.contratsAeppSetting }`;
     createMissingFolder(constants.integrationsDir);
-    
+
     try {
         copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination);
     } catch (error) {
@@ -140,7 +140,7 @@ const setupTests = async (shape) => {
     print(`===== Creating tests directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeTestTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.testTemplateFile }`;
     createMissingFolder(constants.testDir, "Creating tests file structure");
-    
+
     try {
         copyFileOrDir(fileSource, shape ? constants.shapeTestFileDestination : constants.testFileDestination);
     } catch (error) {
@@ -156,7 +156,7 @@ const setupDeploy = async (shape) => {
     print(`===== Creating deploy directory =====`);
     const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeDeployTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.deployTemplateFile }`;
     createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
-    
+
     try {
         copyFileOrDir(fileSource, constants.deployFileDestination);
     } catch (error) {
@@ -176,7 +176,7 @@ const setupDocker = async () => {
     }
 
     const dockerNodeYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerNodeYmlFile }`;
-    
+
     try {
         copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
     } catch (error) {
@@ -215,7 +215,7 @@ const addIgnoreFile = () => {
     writeFileRelative(constants.gitIgnoreFile, ignoreFileContent)
 }
 
-async function prompt (error) {
+async function prompt(error) {
     const args = [...arguments];
     // [0] - error
     // [1] - function to execute
@@ -233,7 +233,9 @@ async function prompt (error) {
 
     let input = response.value;
     if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y') {
-        funcToExecute(...args.slice(2), { overwrite: true });
+        funcToExecute(...args.slice(2), {
+            overwrite: true
+        });
     } else {
         console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
     }
