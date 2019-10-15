@@ -41,13 +41,14 @@ function insertAdditionalFiles () {
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
 }
 
-async function linkLocalPackages() {
+async function linkLocalPackages () {
     const aeprojectLibDir = `${ process.cwd() }/packages/aeproject-lib/`
     const aeprojectUtilsDir = `${ process.cwd() }/packages/aeproject-utils/`
     const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
 
     process.chdir(executeOptions.cwd);
     await exec('npm link aeproject-lib')
+    await exec('yarn link aeproject-utils')
 
 }
 
@@ -58,6 +59,9 @@ describe('AEproject Deploy', () => {
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
+
+        await linkLocalPackages()
+
     })
 
     describe('Deployer', async () => {
@@ -231,7 +235,7 @@ describe('AEproject Deploy', () => {
             const zeroBalanceSecretKey = '922bf2635813fb51827dcdb8fff38d0c16c447594b60bc523f5e5c10a876d1b14701787d0fe30d8f50cf340262daee1204f3c881a9ce8c5c9adccfb0e1de40e5';
             let result = await execute(constants.cliCommands.DEPLOY, ["-s", zeroBalanceSecretKey], executeOptions);
 
-            assert.include(result, 'Error: Giving up after 10 blocks mined');
+            assert.include(result, 'failed with 404: Account not found');
         })
 
         it('try to deploy SC with invalid init parameters from another deployment script', async () => {

@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "esm": "^3.0.77",
-    "fs-extra": "^7.0.1"
+    "fs-extra": "^7.0.1",
+    "prompts": "^2.2.1"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^1.7.0",
