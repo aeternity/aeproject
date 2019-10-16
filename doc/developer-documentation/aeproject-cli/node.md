@@ -15,7 +15,6 @@ aeproject node
 ### If you are running on Windows environment and it is before `Windows 10` 
 * You need to start manualy your `Docker Quickstart Terminal`. 
 * Optional parameter **\-\-windows** allows you run AE node and compiler with predefined configuration. It uses **docker-compose** cli commands and it starts with the default docker machine with IP "192.168.99.100"
-* **IMPORTANT** - Your docker-compose version must be at least @**1.20.0**
 
 ```text
 aeproject node --windows
