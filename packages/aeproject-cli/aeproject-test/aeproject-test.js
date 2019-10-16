@@ -27,26 +27,21 @@ chai.use(chaiAsPromised);
 const nodeConfig = require('aeproject-config')
 
 async function run (files) {
-    try {
-        print('===== Starting Tests =====');
-        let mochaConfig = {
-            useColors: true,
-            timeout: 550000,
-            exit: true
-        };
-        let mocha = await createMocha(mochaConfig, files);
-        setGlobalOptions();
+    print('===== Starting Tests =====');
+    let mochaConfig = {
+        useColors: true,
+        timeout: 550000,
+        exit: true
+    };
+    let mocha = await createMocha(mochaConfig, files);
+    setGlobalOptions();
 
-        for (let i = 0; i < files.length; i++) {
-            delete originalRequire.cache[files[i]];
-            mocha.addFile(files[i]);
-        }
-
-        await runMocha(mocha);
-
-    } catch (e) {
-        console.error(e);
+    for (let i = 0; i < files.length; i++) {
+        delete originalRequire.cache[files[i]];
+        mocha.addFile(files[i]);
     }
+
+    await runMocha(mocha);
 }
 
 const createMocha = async (config, files) => {
@@ -64,7 +59,7 @@ const runMocha = (mocha) => {
 
     return new Promise((resolve, reject) => {
         mocha.run(failures => {
-
+            process.exitCode = failures ? 1 : 0;
             if (failures) {
                 reject(failures);
             } else {

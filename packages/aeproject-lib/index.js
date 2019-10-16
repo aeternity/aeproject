@@ -1,5 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var aeproject_deployer_1 = require("./aeproject-deployer");
-exports.Deployer = aeproject_deployer_1.Deployer;
+var forgae_deployer_1 = require("./forgae-deployer");
+exports.Deployer = forgae_deployer_1.Deployer;
 //# sourceMappingURL=index.js.map
