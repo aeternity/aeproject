@@ -1,12 +1,12 @@
 import utils from 'aeproject-utils';
 import * as fs from 'fs';
-import { history } from 'aeproject-logger';
+import * as loggerServices from 'aeproject-logger';
 import config from 'aeproject-config';
 import nodeConfig from 'aeproject-config';
 import { KeyPair, ParsedContractFunction, AciFunctions, DeployedContract, Info, TxInfo, Client, ContractInstance, Network } from "./contractTypes";
 import { format } from 'path';
 
-const logStoreService = history;
+const logStoreService = loggerServices.history;
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -92,7 +92,7 @@ export class Deployer {
      * @param {object} options - Initial options that will be passed to init function.
      */
     async deploy(contractPath: string, initState: Array<string | number> = [], options: object = opts): Promise<DeployedContract> {
-
+        
         this.network.compilerUrl = this.compilerUrl;
         client = await utils.getClient(this.network, this.keypair);
         contract = await this.readFile(contractPath);

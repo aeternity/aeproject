@@ -43,9 +43,7 @@ describe("AEproject Node and Compiler Tests", () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
             await execute(constants.cliCommands.INIT, [], executeOptions);
-            let test = await execute(constants.cliCommands.NODE, [], executeOptions);
-            console.log(test);
-            
+            await execute(constants.cliCommands.NODE, [], executeOptions);
         })
 
         it('Should start the node successfully', async () => {
@@ -104,7 +102,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         after(async () => {
-            let res = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -114,12 +112,8 @@ describe("AEproject Node and Compiler Tests", () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
-            let inited = await execute(constants.cliCommands.INIT, [], executeOptions)
-            // console.log(inited);
-            
-            let res = await execute(constants.cliCommands.NODE, [], executeOptions)
-            // console.log(res);
-            
+            await execute(constants.cliCommands.INIT, [], executeOptions)
+            await execute(constants.cliCommands.NODE, [], executeOptions)
         })
 
         it('Local compiler should be running.', async () => {
@@ -361,6 +355,8 @@ describe("AEproject Node and Compiler Tests", () => {
             let startResult = await execute(constants.cliCommands.NODE, [], executeOptions)
             let hasNodeStarted = startResult.indexOf(`Node was successfully started`) >= 0;
             let nodeStore = await fs.readJSONSync(nodeStorePath)
+
+            process.chdir(mainDir)
             
             assert.isOk(hasNodeStarted);
             assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(nodeTestDir) }`), "node path has not been updated correcty");

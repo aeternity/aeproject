@@ -20,10 +20,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const aeproject_utils_1 = __importDefault(require("aeproject-utils"));
 const fs = __importStar(require("fs"));
-const aeproject_logger_1 = require("aeproject-logger");
+const loggerServices = __importStar(require("aeproject-logger"));
 const aeproject_config_1 = __importDefault(require("aeproject-config"));
 const aeproject_config_2 = __importDefault(require("aeproject-config"));
-const logStoreService = aeproject_logger_1.history;
+const logStoreService = loggerServices.history;
 const decodedHexAddressToPublicAddress = aeproject_utils_1.default.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
