@@ -23,6 +23,9 @@ let balanceOptions = {
     format: false
 }
 
+let mainDir = process.cwd();
+let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
+
 let network = utils.config.localhostParams;
 network.compilerUrl = utils.config.compilerUrl
 
@@ -33,7 +36,7 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe.only("AEproject Node and Compiler Tests", () => {
+describe("AEproject Node and Compiler Tests", () => {
 
     describe('AEproject Node', () => {
         before(async () => {
@@ -102,9 +105,7 @@ describe.only("AEproject Node and Compiler Tests", () => {
 
         after(async () => {
             let res = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            console.log('==== after ==== ');
-            console.log(res);
-            
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 
@@ -113,9 +114,11 @@ describe.only("AEproject Node and Compiler Tests", () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
-            await execute(constants.cliCommands.INIT, [], executeOptions)
+            let inited = await execute(constants.cliCommands.INIT, [], executeOptions)
+            // console.log(inited);
+            
             let res = await execute(constants.cliCommands.NODE, [], executeOptions)
-            console.log(res);
+            // console.log(res);
             
         })
 
@@ -278,8 +281,8 @@ describe.only("AEproject Node and Compiler Tests", () => {
         const nodeStorePath = path.resolve(process.cwd() + '/.aeproject-node-store/.node-store.json')
         let nodeStore;
 
-        let mainDir = process.cwd();
-        let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
+        // let mainDir = process.cwd();
+        // let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
         let secondNodeTestDir = process.cwd() + constants.nodeTestsFolderPathSecondProject;
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`) 

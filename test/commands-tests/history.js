@@ -314,7 +314,6 @@ describe('AEproject History', async () => {
         afterEach(async () => {
 
             await execute(constants.cliCommands.NODE, ['--stop']);
-
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
         });
