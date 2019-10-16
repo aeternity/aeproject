@@ -1,11 +1,12 @@
 import utils from 'aeproject-utils';
 import * as fs from 'fs';
-import logStoreService from 'aeproject-logger';
+import { history } from 'aeproject-logger';
 import config from 'aeproject-config';
 import nodeConfig from 'aeproject-config';
 import { KeyPair, ParsedContractFunction, AciFunctions, DeployedContract, Info, TxInfo, Client, ContractInstance, Network } from "./contractTypes";
 import { format } from 'path';
 
+const logStoreService = history;
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {

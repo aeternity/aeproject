@@ -13,7 +13,7 @@ let executeOptions = {
 
 chai.use(chaiFiles);
 
-describe('AEproject Init', () => {
+describe.only('AEproject Init', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -63,6 +63,8 @@ describe('AEproject Init', () => {
 
         assert.notEqual(editedDockerComposeYml, editedContent);
         assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
+        console.log(aeprojectLibVersion)
+        console.log(aeprojectLibInProject)
         assert.equal(aeprojectLibVersion, aeprojectLibInProject, "aeproject-lib is not updated properly");
 
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
@@ -85,7 +87,7 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    after(async () => {
-        fs.removeSync(`.${ constants.initTestsFolderPath }`);
-    })
+    // after(async () => {
+    //     fs.removeSync(`.${ constants.initTestsFolderPath }`);
+    // })
 })

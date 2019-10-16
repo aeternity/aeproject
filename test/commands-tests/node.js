@@ -50,6 +50,7 @@ describe("AEproject Node and Compiler Tests", () => {
             process.chdir(nodeTestDir)
 
             let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
+            console.log(running)
             assert.isTrue(running, "node wasn't started properly");
 
             process.chdir(mainDir)

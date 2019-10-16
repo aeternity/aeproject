@@ -22,12 +22,15 @@ const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('aeproject-config');
 const localCompiler = config.localCompiler;
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
-const history = require('aeproject-logger');
+const { history } = require('aeproject-logger');
 const printReportTable = require('aeproject-utils').printReportTable;
 const contracts = require('./aeproject-contracts/aeproject-contracts.js');
 const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
+
+// console.log('=====history====');
+// console.log(history);
 
 const addInitOption = (program) => {
     program

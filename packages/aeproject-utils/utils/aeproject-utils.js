@@ -9,7 +9,7 @@ let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
 let match;
 
-let { LogNodeService } = require('../../aeproject-logger/logger-service/log-node-service')
+let { LogNodeService } = require('aeproject-logger')
 let nodeService;
 
 const config = require('../../aeproject-config/config/config.json');
