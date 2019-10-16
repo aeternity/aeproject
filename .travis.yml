@@ -1,8 +1,11 @@
 language:
-  - node_js
-node_js:
-  - 9.5.0
+- node_js:
 before_install:
+  # Install certain version of docker-compose
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
   - npm install -g lerna
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
@@ -11,8 +14,6 @@ before_install:
   - sudo apt-get install -y -qq yarn
 cache:
   yarn: true
-services:
-  - docker
 install:
   - npm install
   - lerna bootstrap
@@ -22,5 +23,10 @@ install:
   - cd aeproject-lib
   - npm run tsc
   - cd ../..
+services:
+  - docker
 script:
   - npm test
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.20.0

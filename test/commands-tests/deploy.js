@@ -41,13 +41,14 @@ function insertAdditionalFiles () {
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
 }
 
-async function linkLocalPackages() {
+async function linkLocalPackages () {
     const aeprojectLibDir = `${ process.cwd() }/packages/aeproject-lib/`
     const aeprojectUtilsDir = `${ process.cwd() }/packages/aeproject-utils/`
     const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
 
     process.chdir(executeOptions.cwd);
     await exec('npm link aeproject-lib')
+    await exec('yarn link aeproject-utils')
 
 }
 
@@ -58,6 +59,9 @@ describe('AEproject Deploy', () => {
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await execute(constants.cliCommands.NODE, [], executeOptions)
+
+        await linkLocalPackages()
+
     })
 
     describe('Deployer', async () => {

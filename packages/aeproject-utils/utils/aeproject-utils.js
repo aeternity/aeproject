@@ -1,9 +1,10 @@
-require = require('esm')(module /*, options */) // use to handle es6 import/export 
+require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
+const Node = AeSDK.Node;
 let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
 let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
@@ -30,16 +31,26 @@ const getClient = async function (network, keypair = config.keypair) {
     if (network.url.includes("localhost")) {
         internalUrl = internalUrl + "/internal"
     }
+
+    let node = await Node({
+        url: network.url,
+        internalUrl: internalUrl,
+        forceCompatibility: true
+    })
+
     await handleApiError(async () => {
         client = await Universal({
-            url: network.url,
-            internalUrl,
+            nodes: [{
+                name: 'ANY_NAME',
+                instance: node
+            }],
             accounts: [AeSDK.MemoryAccount({
                 keypair
             })],
             nativeMode: true,
             networkId: network.networkId,
-            compilerUrl: network.compilerUrl
+            compilerUrl: network.compilerUrl,
+            forceCompatibility: true
         })
     });
 
@@ -95,7 +106,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError (error) {
+function logApiError(error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -151,7 +162,7 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-function readErrorSpawnOutput (spawnResult) {
+function readErrorSpawnOutput(spawnResult) {
     if (!spawnResult.stderr || spawnResult.stderr === '') {
         return '';
     }
@@ -160,7 +171,7 @@ function readErrorSpawnOutput (spawnResult) {
     return '\n' + buffMessage.toString('utf8');
 }
 
-function readSpawnOutput (spawnResult) {
+function readSpawnOutput(spawnResult) {
     if (!spawnResult.stdout || spawnResult.stdout === '') {
         return '';
     }
@@ -169,7 +180,7 @@ function readSpawnOutput (spawnResult) {
     return buffMessage.toString('utf8');
 }
 
-async function contractCompile (source, contractPath, compileOptions) {
+async function contractCompile(source, contractPath, compileOptions) {
     let result;
     let options = {
         "file_system": null
@@ -191,7 +202,7 @@ async function contractCompile (source, contractPath, compileOptions) {
     return result;
 }
 
-function checkNestedProperty (obj, property) {
+function checkNestedProperty(obj, property) {
     if (!obj || !obj.hasOwnProperty(property)) {
         return false;
     }
@@ -199,7 +210,7 @@ function checkNestedProperty (obj, property) {
     return true;
 }
 
-function getDependencies (contractContent, contractPath) {
+function getDependencies(contractContent, contractPath) {
     let allDependencies = [];
     let dependencyFromContract;
     let dependencyContractContent;
@@ -232,14 +243,14 @@ function getDependencies (contractContent, contractPath) {
     return dependencies;
 }
 
-function getActualContract (contractContent) {
+function getActualContract(contractContent) {
     let contentStartIndex = contractContent.indexOf('contract ');
     let content = contractContent.substr(contentStartIndex);
 
     return content;
 }
 
-function normalizeCompilerUrl (url) {
+function normalizeCompilerUrl(url) {
 
     if (!url.startsWith('http')) {
         url = 'http://' + url;

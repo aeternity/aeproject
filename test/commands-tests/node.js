@@ -33,7 +33,7 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", () => {
+describe.only("AEproject Node and Compiler Tests", () => {
 
     describe('AEproject Node', () => {
         before(async () => {
@@ -47,10 +47,11 @@ describe("AEproject Node and Compiler Tests", () => {
             let mainDir = process.cwd();
             let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
             
+            // We need to change directory where docker-compose config is located, so we can gatcher proper information for the node
             process.chdir(nodeTestDir)
 
             let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            console.log(running)
+            
             assert.isTrue(running, "node wasn't started properly");
 
             process.chdir(mainDir)
@@ -98,7 +99,10 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         after(async () => {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            let res = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            console.log('==== after ==== ');
+            console.log(res);
+            
         })
     })
 
@@ -108,7 +112,9 @@ describe("AEproject Node and Compiler Tests", () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
             await execute(constants.cliCommands.INIT, [], executeOptions)
-            await execute(constants.cliCommands.NODE, [], executeOptions)
+            let res = await execute(constants.cliCommands.NODE, [], executeOptions)
+            console.log(res);
+            
         })
 
         it('Local compiler should be running.', async () => {
