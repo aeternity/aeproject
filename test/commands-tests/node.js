@@ -40,7 +40,9 @@ describe.only("AEproject Node and Compiler Tests", () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
             await execute(constants.cliCommands.INIT, [], executeOptions);
-            await execute(constants.cliCommands.NODE, [], executeOptions);
+            let test = await execute(constants.cliCommands.NODE, [], executeOptions);
+            console.log(test);
+            
         })
 
         it('Should start the node successfully', async () => {
