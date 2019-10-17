@@ -51,7 +51,6 @@ async function fundWallets (nodeIp) {
     let walletIndex = 0;
 
     let client = await utils.getClient(network);
-    client.addAccount(config.keyPair)
     await printBeneficiaryKey(client);
     for (let wallet in defaultWallets) {
         await fundWallet(client, defaultWallets[wallet].publicKey)
