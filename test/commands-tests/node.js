@@ -275,8 +275,6 @@ describe("AEproject Node and Compiler Tests", () => {
         const nodeStorePath = path.resolve(process.cwd() + '/.aeproject-node-store/.node-store.json')
         let nodeStore;
 
-        // let mainDir = process.cwd();
-        // let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
         let secondNodeTestDir = process.cwd() + constants.nodeTestsFolderPathSecondProject;
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`) 
