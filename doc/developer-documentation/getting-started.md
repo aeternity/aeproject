@@ -3,12 +3,12 @@
 ## Requirements
 In order to have aeproject working you must have installed the following:
 ```
-nodejs 
+nodejs 9.5.0
 python 
 docker 
 ```
 
-Note: For older versions on widnows you can use docker-toolbox
+**Note:** For older versions on widnows you can use docker-toolbox. This will install docker-compose as part of the toolkit. Please bear in mind that the your docker-compose version must be at least @**1.20.0** <i>
 ## Install
 
 ```text

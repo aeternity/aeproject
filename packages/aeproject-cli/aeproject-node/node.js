@@ -121,14 +121,13 @@ function hasNodeConfigFiles () {
 
 async function checkForAllocatedPort (port) {
     try {
-        let scanForAllocatedPort = await spawn('lsof', ['-nP', `-i4TCP:${ port }`]);
-
+        let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
+        
         if (scanForAllocatedPort.stdout) {
-            return scanForAllocatedPort.stdout.toString('utf8').indexOf(port) >= 0
+            return scanForAllocatedPort.stdout.toString('utf8').length >= 0
         }
     } catch (e) {
-
-        // it is throw error when there is no running port
+        // Throws an error when there is no running port. Exceptions are handled elsewhere.
         // console.log(e)
     }
 
