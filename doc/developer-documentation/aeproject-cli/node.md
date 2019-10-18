@@ -36,6 +36,11 @@ To stop the local node, simply run
 aeproject node --stop
 ```
 
+To see whether you have running instances of the nodes along with a compiler you could run the following command
+```text
+aeproject node --info
+```
+
 Additional **--compiler-port** parameter is available, which can specify on which port would local compiler start (default is 3080).
 Example:
 ```
