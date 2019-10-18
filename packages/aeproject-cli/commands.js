@@ -29,9 +29,6 @@ const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
 
-// console.log('=====history====');
-// console.log(history);
-
 const addInitOption = (program) => {
     program
         .command('init')
@@ -70,6 +67,7 @@ const addNodeOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--only', 'Start only the node without local compiler')
+        .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
         .action(async (options) => {

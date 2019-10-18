@@ -19,7 +19,9 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     printError,
     print,
-    waitForContainer
+    waitForContainer, 
+    dockerComposePS,
+    readSpawnOutput
 } = require('aeproject-utils');
 const utils = require('aeproject-utils');
 const {
@@ -139,14 +141,38 @@ async function checkForAllocatedPort (port) {
     return false;
 }
 
+async function displayInfoOnly (info, running) {
+    if (!info) return info
+
+    if (!running) {
+        print('===== Node is not running! =====');
+        return
+    }
+    
+    let buff = await dockerComposePS();
+    let res = readSpawnOutput(buff)
+    print(res);
+    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
+    print(`Nodes path: ${ nodeService.getNodePath() }`)
+    print(`Compiler path: ${ nodeService.getCompilerPath() }`)
+    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
+    
+    return info
+}
+
 async function run (option) {
     nodeService = new LogNodeService(process.cwd())
-
+    
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
 
     try {
         let running = await waitForContainer(dockerImage);
+
+        if (option.info) {
+            await displayInfoOnly(option.info, running)
+            return
+        }
 
         if (option.stop) {
 
@@ -266,16 +292,6 @@ async function stopNodeAndCompiler () {
     } catch (error) {
         console.log(Buffer.from(error.stderr).toString('utf-8'))
     }
-}
-
-function readErrorSpawnOutput (spawnError) {
-    const buffMessage = Buffer.from(spawnError.stderr);
-    return buffMessage.toString('utf8');
-}
-
-function readSpawnOutput (spawnError) {
-    const buffMessage = Buffer.from(spawnError.stdout);
-    return buffMessage.toString('utf8');
 }
 
 function removePrefixFromIp (ip) {

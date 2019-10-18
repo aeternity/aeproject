@@ -20,12 +20,12 @@ const INVALID_COMPILER_URL = 'https://compiler.somewhere.com';
 
 describe('AEproject Compile', () => {
     before(async () => {
-        fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
-        await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [], executeOptions)
+        // fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
+        // await execute(constants.cliCommands.INIT, [], executeOptions)
+        // await execute(constants.cliCommands.NODE, [], executeOptions)
     })
 
-    describe('Compile', () => {
+    describe.only('Compile', () => {
         it('Should compile contract successfully with specif contract path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ executeOptions.cwd }/contracts/ExampleContract.aes`])
             assert.include(result, expectedCompileResultExampleContract)
@@ -36,7 +36,7 @@ describe('AEproject Compile', () => {
             assert.include(result, expectedCompileResultExampleContract)
         })
 
-        it('Should compile multiple contracts successfully with path', async () => {
+        it.only('Should compile multiple contracts successfully with path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder"], executeOptions)
 
             assert.include(result, expectedResult1)
@@ -58,7 +58,7 @@ describe('AEproject Compile', () => {
     })
 
     after(async () => {
-        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        fs.removeSync(`.${ constants.compileTestsFolderPath }`);
+        // await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        // fs.removeSync(`.${ constants.compileTestsFolderPath }`);
     })
 })

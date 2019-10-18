@@ -30,6 +30,8 @@ const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
 const waitForContainer = aeprojectUtils.waitForContainer;
+const dockerComposePS = aeprojectUtils.dockerComposePS;
+const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -75,5 +77,7 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer
+    waitForContainer,
+    dockerComposePS,
+    readSpawnOutput
 }
