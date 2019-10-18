@@ -142,7 +142,7 @@ async function checkForAllocatedPort (port) {
 }
 
 async function displayInfoOnly (info, running) {
-    if (!info) return info
+    if (!info) return
 
     if (!running) {
         print('===== Node is not running! =====');
@@ -151,13 +151,12 @@ async function displayInfoOnly (info, running) {
     
     let buff = await dockerComposePS();
     let res = readSpawnOutput(buff)
+    
     print(res);
     print('-------------------------------------------------------------------------------------------------------------------------------------------------')
     print(`Nodes path: ${ nodeService.getNodePath() }`)
     print(`Compiler path: ${ nodeService.getCompilerPath() }`)
     print('-------------------------------------------------------------------------------------------------------------------------------------------------')
-    
-    return info
 }
 
 async function run (option) {
