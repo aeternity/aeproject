@@ -29,9 +29,6 @@ const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
 
-// console.log('=====history====');
-// console.log(history);
-
 const addInitOption = (program) => {
     program
         .command('init')
