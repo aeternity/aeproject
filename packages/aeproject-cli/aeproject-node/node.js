@@ -54,7 +54,6 @@ async function fundWallets (nodeIp) {
     let walletIndex = 0;
 
     let client = await utils.getClient(network);
-    client.addAccount(config.keyPair)
     await printBeneficiaryKey(client);
     for (let wallet in defaultWallets) {
         await fundWallet(client, defaultWallets[wallet].publicKey)
@@ -131,8 +130,7 @@ async function checkForAllocatedPort (port) {
             return scanForAllocatedPort.stdout.toString('utf8').length > 0
         }
     } catch (e) {
-
-        // it is throw error when there is no running port
+        // Throws an error when there is no running port. Exceptions are handled elsewhere.
         // console.log(e)
     }
 

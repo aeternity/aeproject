@@ -163,7 +163,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    xdescribe("AEproject Node -- allocated port's tests", () => {
+    describe("AEproject Node -- allocated port's tests", () => {
 
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -192,7 +192,7 @@ describe("AEproject Node and Compiler Tests", () => {
             app.listen(port);
 
             // test
-            let result = await execute(constants.cliCommands.NODE, [], executeOptions);
+            let result = await execute(constants.cliCommands.NODE, [], executeOptions)
 
             const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
                 result.indexOf('port is already allocated') >= 0 ||
