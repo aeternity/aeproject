@@ -46,8 +46,6 @@ describe('AEproject Test', () => {
         })
 
         it('should work on existing test folder', async function () {
-            // let aa = await test.run(constants.testTestsFolderPath);
-            // console.log(aa)
             await assert.isFulfilled(test.run(constants.testTestsFolderPath))
         })
 
@@ -74,8 +72,7 @@ describe('AEproject Test', () => {
             etherlimeTestSpy.restore();
         });
 
-        after(async function () {
-            fs.removeSync(path.join(process.cwd(), `.${ constants.testTestsFolderPath }`));
+        after(function () {
             fs.removeSync(path.join(process.cwd(), `.${ constants.testTestsFolderPath }`));
         })
     })
@@ -195,5 +192,4 @@ describe('AEproject Test', () => {
         fs.removeSync(nodeCWD);
         executeOptions.cwd = prevCWD;
     })
-
 })
