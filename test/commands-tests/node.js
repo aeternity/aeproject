@@ -163,6 +163,31 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
+    describe('Aeproject Node --info', () => {
+        before(async () => {
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+            await execute(constants.cliCommands.INIT, [], executeOptions)
+        })
+
+        it('Should display info that node is not running', async () => {
+            let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
+            assert.isOk(result.indexOf('Node is not running') >= 0, "Nodes are running");
+        })
+
+        it('Should display info for running instances', async () => {
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+            
+            let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
+            
+            assert.isOk(result.indexOf('Nodes path') >= 0, "Nodes are running");
+            assert.isOk(result.indexOf('Compiler path') >= 0, "Nodes are running");
+        })
+        after(async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        })
+    })
+
     xdescribe("AEproject Node -- allocated port's tests", () => {
 
         before(async () => {
