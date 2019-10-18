@@ -47,8 +47,8 @@ async function linkLocalPackages () {
     const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
 
     process.chdir(executeOptions.cwd);
-    await exec('npm link aeproject-lib')
-    await exec('yarn link aeproject-utils')
+    await exec('npm install aeproject-lib')
+    await exec('npm install aeproject-utils')
 
 }
 
@@ -58,9 +58,8 @@ describe('AEproject Deploy', () => {
         fs.ensureDirSync(`.${ constants.deployTestsFolderPath }`)
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [], executeOptions)
-
         await linkLocalPackages()
+        await execute(constants.cliCommands.NODE, [], executeOptions)
 
     })
 

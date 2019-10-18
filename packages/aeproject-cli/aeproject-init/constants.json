@@ -27,5 +27,5 @@
 	"dockerCompilerYmlFileDestination": "./docker-compose.compiler.yml",
 	"gitIgnoreFile": ".gitignore",
 	"gitIgnoreContent": "git_ignore",
-	"sdkVersion": "5.0.0"
+	"sdkVersion": "6.0.0"
 }
