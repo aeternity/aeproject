@@ -184,14 +184,11 @@ async function contractCompile(source, contractPath, compileOptions) {
     }
 
     let dependencies = getDependencies(source, contractPath)
-
     options["file_system"] = dependencies
-
     let body = {
         code: source,
         options
     };
-
     const url = normalizeCompilerUrl(compileOptions.compilerUrl);
 
     result = await axios.post(url, body, options);
@@ -216,7 +213,6 @@ function getDependencies(contractContent, contractPath) {
     let dependencies = {}
 
     match = rgx.exec(contractContent)
-
     if (!match) {
         return dependencies;
     }
@@ -225,13 +221,11 @@ function getDependencies(contractContent, contractPath) {
     for (let index = 0; index < allDependencies.length; index++) {
         dependencyFromContract = dependencyPathRgx.exec(allDependencies[index])
         dependencyPathRgx.lastIndex = 0;
-
         contractPath = mainContractsPathRgx.exec(contractPath)
         mainContractsPathRgx.lastIndex = 0;
         dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
         dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
         actualContract = getActualContract(dependencyContractContent)
-
         dependencies[dependencyFromContract[1]] = actualContract;
 
         Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath))
@@ -241,7 +235,7 @@ function getDependencies(contractContent, contractPath) {
 }
 
 function getActualContract(contractContent) {
-    let contentStartIndex = contractContent.indexOf('contract ');
+    let contentStartIndex = contractContent.indexOf('namespace ');
     let content = contractContent.substr(contentStartIndex);
 
     return content;
