@@ -65,6 +65,15 @@ async function printBeneficiaryKey (client) {
     await printWallet(client, config.keyPair, "Miner")
 }
 
+function printSuccessMsg (onlyCompiler) {
+    if (onlyCompiler) {
+        print('\n\r===== Compiler was successfully started! =====');
+        return
+    }
+    print('\n\r===== Node was successfully started! =====');
+    print('===== Funding default wallets! =====');
+}
+
 async function printWallet (client, keyPair, label) {
     let keyPairBalance = await client.balance(keyPair.publicKey, balanceOptions)
 
@@ -137,12 +146,66 @@ async function checkForAllocatedPort (port) {
     return false;
 }
 
+async function toggleLoader (startingNodeSpawn, image) {
+ 
+    if (startingNodeSpawn.stdout) {
+        startingNodeSpawn.stdout.on('data', (data) => {
+            print(data.toString());
+        });
+    }
+
+    let errorMessage = '';
+    if (startingNodeSpawn.stderr) {
+        startingNodeSpawn.stderr.on('data', (data) => {
+            errorMessage += data.toString();
+            print(data.toString())
+        });
+    }
+
+    let counter = 0;
+    while (!(await waitForContainer(`${ image }`))) {
+        if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
+            await stopNodeAndCompiler();
+            throw new Error(`Cannot start AE node, port is already allocated!`)
+        }
+
+        process.stdout.write(".");
+        utils.sleep(1000);
+
+        // prevent infinity loop
+        counter++;
+        if (counter >= MAX_SECONDS_TO_RUN_NODE) {
+            // if node is started and error message is another,
+            // we should stop docker
+
+            await stopNodeAndCompiler();
+            throw new Error("Cannot start AE Node!")
+        }
+    }
+} 
+
+async function fundWalletsIfNeccessary (option) {
+    if (option.onlyCompiler) return
+
+    if (option.windows) {
+        let dockerIp = removePrefixFromIp(option.dockerIp);
+        await fundWallets(dockerIp);
+    } else {
+        await fundWallets();
+    }
+
+    print('\r\n===== Default wallets was successfully funded! =====');
+}
+
 async function run (option) {
     nodeService = new LogNodeService(process.cwd())
 
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
 
+    // TODO check what is the proper configuration for windows
+    let compilerImage = option.onlyCompiler ? nodeConfiguration.dockerServiceCompilerName : nodeConfiguration.dockerImage;
+    
     try {
         let running = await waitForContainer(dockerImage);
 
@@ -179,78 +242,44 @@ async function run (option) {
         }
 
         if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
+            print('===== Starting compiler =====');
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE node, port is already allocated!`);
         }
 
         if (!option.only && await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
+            console.log('in check for option only and allocated port');
             print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
         }
 
-        print('===== Starting node =====');
-        let startingNodeSpawn = startNodeAndCompiler(option.only);
+        // if (option.onlyCompiler && !await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
+        //     print('===== Starting compiler =====');
+        //     startLocalCompiler()
+        //     return
+        // }
 
-        if (startingNodeSpawn.stdout) {
-            startingNodeSpawn.stdout.on('data', (data) => {
-                print(data.toString());
-            });
-        }
+        option.onlyCompiler ? print('===== Starting compiler =====') : print('===== Starting node =====');
+        let startingNodeSpawn = startNodeAndCompiler(option);
 
-        let errorMessage = '';
-        if (startingNodeSpawn.stderr) {
-            startingNodeSpawn.stderr.on('data', (data) => {
-                errorMessage += data.toString();
-                print(data.toString())
-            });
-        }
+        await toggleLoader(startingNodeSpawn, option.onlyCompiler ? compilerImage : dockerImage)
 
-        let counter = 0;
-        while (!(await waitForContainer(dockerImage))) {
-            if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
-                await stopNodeAndCompiler();
-                throw new Error(`Cannot start AE node, port is already allocated!`)
-            }
+        printSuccessMsg(option.onlyCompiler)
 
-            process.stdout.write(".");
-            utils.sleep(1000);
-
-            // prevent infinity loop
-            counter++;
-            if (counter >= MAX_SECONDS_TO_RUN_NODE) {
-                // if node is started and error message is another,
-                // we should stop docker
-
-                await stopNodeAndCompiler();
-                throw new Error("Cannot start AE Node!")
-            }
-        }
-
-        print('\n\r===== Node was successfully started! =====');
-        print('===== Funding default wallets! =====');
-
-        if (option.windows) {
-            let dockerIp = removePrefixFromIp(option.dockerIp);
-            await fundWallets(dockerIp);
-        } else {
-            await fundWallets();
-        }
-
-        print('\r\n===== Default wallets was successfully funded! =====');
+        await fundWalletsIfNeccessary(option)
     } catch (e) {
         printError(e.message || e);
     }
 }
 
-async function startLocalCompiler () {
-    return spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
-}
+async function startNodeAndCompiler (option) {
 
-async function startNodeAndCompiler (startOnlyNode) {
-
-    if (startOnlyNode) {
+    if (option.only) {
         spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
         return nodeService.save('node');
+    } else if (option.onlyCompiler) {
+        spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
+        return nodeService.save('compiler');
     } else {
         spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
         return nodeService.save();

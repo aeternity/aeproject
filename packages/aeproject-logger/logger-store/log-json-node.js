@@ -31,12 +31,11 @@ class LogJSONNode {
 
     writeNodePathToStore () {
         this.store.node = this.dockerComposePath
-        this.store.compiler = ''
         this.save()
     }
 
     writeCompilerPathToStore () {
-        this.store.compiler = this.dockerComposePath
+        this.store.compiler = this.compilerPath
         this.save()
     }
 
