@@ -207,7 +207,7 @@ async function run (option) {
     let compilerImage = option.onlyCompiler ? nodeConfiguration.dockerServiceCompilerName : nodeConfiguration.dockerImage;
     
     try {
-        let running = await waitForContainer(dockerImage);
+        let running = await waitForContainer(option.onlyCompiler ? compilerImage : dockerImage);
 
         if (option.stop) {
 
@@ -237,7 +237,7 @@ async function run (option) {
         }
 
         if (running) {
-            print('\r\n===== Node already started and healthy! =====');
+            option.onlyCompiler ? print('\r\n===== Compiler already started and healthy! =====') : print('\r\n===== Node already started and healthy! =====');
             return;
         }
 
@@ -248,16 +248,9 @@ async function run (option) {
         }
 
         if (!option.only && await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
-            console.log('in check for option only and allocated port');
             print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
         }
-
-        // if (option.onlyCompiler && !await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
-        //     print('===== Starting compiler =====');
-        //     startLocalCompiler()
-        //     return
-        // }
 
         option.onlyCompiler ? print('===== Starting compiler =====') : print('===== Starting node =====');
         let startingNodeSpawn = startNodeAndCompiler(option);
