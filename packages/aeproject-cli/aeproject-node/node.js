@@ -146,6 +146,8 @@ async function run (option) {
     try {
         let running = await waitForContainer(dockerImage);
 
+        console.log('running');
+        console.log(running);
         if (option.stop) {
 
             // if not running, current env may be windows
@@ -162,8 +164,6 @@ async function run (option) {
             print('===== Stopping node and compiler  =====');
 
             await stopNodeAndCompiler();
-            print('===== Node was successfully stopped! =====');
-            print('===== Compiler was successfully stopped! =====');
 
             return;
         }
@@ -242,25 +242,15 @@ async function run (option) {
     }
 }
 
-async function startLocalCompiler () {
-    return spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
-}
+
 
 async function startNodeAndCompiler (startOnlyNode) {
-
-    if (startOnlyNode) {
-        spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
-        return nodeService.save('node');
-    } else {
-        spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
-        return nodeService.save();
-    }
+    return nodeService.start(startOnlyNode)
 }
 
 async function stopNodeAndCompiler () {
     try {
-        spawn('docker-compose', ['-f', `${ nodeService.getNodePath() }`, '-f', `${ nodeService.getCompilerPath() }`, 'down', '-v', '--remove-orphans']);
-        return nodeService.deletePaths()
+        nodeService.stop();
     } catch (error) {
         console.log(Buffer.from(error.stderr).toString('utf-8'))
     }

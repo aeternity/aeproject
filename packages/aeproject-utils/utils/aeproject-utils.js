@@ -1,4 +1,4 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
@@ -106,7 +106,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -162,7 +162,7 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-function readErrorSpawnOutput(spawnResult) {
+function readErrorSpawnOutput (spawnResult) {
     if (!spawnResult.stderr || spawnResult.stderr === '') {
         return '';
     }
@@ -171,8 +171,9 @@ function readErrorSpawnOutput(spawnResult) {
     return '\n' + buffMessage.toString('utf8');
 }
 
-function readSpawnOutput(spawnResult) {
-    if (!spawnResult.stdout || spawnResult.stdout === '') {
+function readSpawnOutput (spawnResult) {
+
+    if (!spawnResult || !spawnResult.stdout || spawnResult.stdout === '') {
         return '';
     }
 
@@ -180,7 +181,7 @@ function readSpawnOutput(spawnResult) {
     return buffMessage.toString('utf8');
 }
 
-async function contractCompile(source, contractPath, compileOptions) {
+async function contractCompile (source, contractPath, compileOptions) {
     let result;
     let options = {
         "file_system": null
@@ -199,7 +200,7 @@ async function contractCompile(source, contractPath, compileOptions) {
     return result;
 }
 
-function checkNestedProperty(obj, property) {
+function checkNestedProperty (obj, property) {
     if (!obj || !obj.hasOwnProperty(property)) {
         return false;
     }
@@ -207,7 +208,7 @@ function checkNestedProperty(obj, property) {
     return true;
 }
 
-function getDependencies(contractContent, contractPath) {
+function getDependencies (contractContent, contractPath) {
     let allDependencies = [];
     let dependencyFromContract;
     let dependencyContractContent;
@@ -237,14 +238,14 @@ function getDependencies(contractContent, contractPath) {
     return dependencies;
 }
 
-function getActualContract(contractContent) {
+function getActualContract (contractContent) {
     let contentStartIndex = contractContent.indexOf('namespace ');
     let content = contractContent.substr(contentStartIndex);
 
     return content;
 }
 
-function normalizeCompilerUrl(url) {
+function normalizeCompilerUrl (url) {
 
     if (!url.startsWith('http')) {
         url = 'http://' + url;
@@ -261,22 +262,38 @@ function normalizeCompilerUrl(url) {
     return url;
 }
 
-async function waitForContainer (dockerImage, options) {
-    nodeService = new LogNodeService(process.cwd())
-
-    try {
-        let running = false;
-
-        let result = await spawn('docker-compose', [
+async function getSpawnResult (options) {
+    let result;
+    let nodePath = nodeService.getNodePath()
+    let compilerPath = nodeService.getCompilerPath()
+    
+    if (nodePath && compilerPath) {
+        result = await spawn('docker-compose', [
             '-f',
-            `${ nodeService.getNodePath() }`,
+            `${ nodePath }`,
             '-f',
-            `${ nodeService.getCompilerPath() }`,
+            `${ compilerPath }`,
             'ps'
         ], options);
+    } else if (nodePath) {
+        result = await spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
+    } else if (compilerPath) {
+        result = await spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
+    }
+    
+    return result
+}
 
+async function waitForContainer (dockerImage, options) {
+    nodeService = new LogNodeService(process.cwd())
+    
+    try {
+        let running = false;
+        
+        let result = await getSpawnResult(options);
+        
         let res = readSpawnOutput(result);
-
+        
         if (res) {
             res = res.split('\n');
         }
@@ -291,10 +308,12 @@ async function waitForContainer (dockerImage, options) {
 
         return running;
     } catch (error) {
-
+        // console.log('Buffer.from(error.stderr).toString(utf8)');
+        // console.log(Buffer.from(error.stderr).toString('utf8'));
+        
         if (checkForMissingDirectory(error)) {
-            nodeService.deletePaths()
-            return false
+            // nodeService.deletePaths()
+            throw Error('===== File configuration which you started your nodes from do not exist anymore! =====')
         }
 
         if (error.stderr) {
