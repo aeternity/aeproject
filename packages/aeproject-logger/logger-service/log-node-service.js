@@ -91,6 +91,28 @@ class LogNodeService {
 
         return this.deletePaths()
     }
+
+    async dockerComposePs (options) {
+        let result;
+        let nodePath = this.getNodePath()
+        let compilerPath = this.getCompilerPath()
+
+        if (nodePath && compilerPath) {
+            result = await spawn('docker-compose', [
+                '-f',
+                `${ nodePath }`,
+                '-f',
+                `${ compilerPath }`,
+                'ps'
+            ], options);
+        } else if (nodePath) {
+            result = await spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
+        } else if (compilerPath) {
+            result = await spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
+        }
+
+        return result
+    }
 }
 
 module.exports = {

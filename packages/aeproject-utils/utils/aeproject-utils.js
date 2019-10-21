@@ -262,27 +262,7 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
-async function getSpawnResult (options) {
-    let result;
-    let nodePath = nodeService.getNodePath()
-    let compilerPath = nodeService.getCompilerPath()
-    
-    if (nodePath && compilerPath) {
-        result = await spawn('docker-compose', [
-            '-f',
-            `${ nodePath }`,
-            '-f',
-            `${ compilerPath }`,
-            'ps'
-        ], options);
-    } else if (nodePath) {
-        result = await spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
-    } else if (compilerPath) {
-        result = await spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
-    }
-    
-    return result
-}
+
 
 async function waitForContainer (dockerImage, options) {
     nodeService = new LogNodeService(process.cwd())
@@ -290,8 +270,7 @@ async function waitForContainer (dockerImage, options) {
     try {
         let running = false;
         
-        let result = await getSpawnResult(options);
-        
+        let result = await nodeService.dockerComposePs(options);
         let res = readSpawnOutput(result);
         
         if (res) {
@@ -312,8 +291,8 @@ async function waitForContainer (dockerImage, options) {
         // console.log(Buffer.from(error.stderr).toString('utf8'));
         
         if (checkForMissingDirectory(error)) {
-            // nodeService.deletePaths()
-            throw Error('===== File configuration which you started your nodes from do not exist anymore! =====')
+            nodeService.deletePaths()
+            throw Error('===== File configuration which you started your nodes do not exist anymore! =====\n===== Please restart your docker! =====')
         }
 
         if (error.stderr) {
