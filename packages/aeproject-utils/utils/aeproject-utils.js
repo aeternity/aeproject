@@ -291,9 +291,7 @@ async function waitForContainer (dockerImage, options) {
     } catch (error) {
 
         if (checkForMissingDirectory(error)) {
-            nodeService.deletePaths()
             return false
-            // throw Error('===== File configuration which you started your nodes do not exist anymore! =====\n===== Please restart your docker! =====')
         }
 
         if (error.stderr) {

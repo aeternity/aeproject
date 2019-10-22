@@ -9,8 +9,6 @@ const {
 
 async function start (option) {
     if (option) {
-        console.log('hererere');
-        
         spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
         return nodeService.save('node');
     } else {
@@ -65,7 +63,7 @@ async function info (options) {
     let nodePath = nodeService.getNodePath()
     let compilerPath = nodeService.getCompilerPath()
 
-    if (nodePath && compilerPath) {
+    if (nodePath && compilerPath) {        
         result = await spawn('docker-compose', [
             '-f',
             `${ nodePath }`,

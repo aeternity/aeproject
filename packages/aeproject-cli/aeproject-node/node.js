@@ -153,10 +153,6 @@ async function displayInfoOnly (_info, running) {
     let res = readSpawnOutput(buff)
     
     print(res);
-    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
-    if (nodeService.getNodePath()) print(`Nodes path: ${ nodeService.getNodePath() }`)
-    if (nodeService.getCompilerPath()) print(`Compiler path: ${ nodeService.getCompilerPath() }`)
-    print('-------------------------------------------------------------------------------------------------------------------------------------------------')
 }
 
 async function run (option) {
