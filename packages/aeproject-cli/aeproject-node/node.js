@@ -19,8 +19,13 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     printError,
     print,
-    waitForContainer
+    readSpawnOutput,
+    waitForContainer,
+    start,
+    stop,
+    info
 } = require('aeproject-utils');
+
 const utils = require('aeproject-utils');
 const {
     spawn
@@ -34,8 +39,7 @@ const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
 const localCompilerConfig = nodeConfig.compilerConfiguration;
 const nodeConfiguration = nodeConfig.nodeConfiguration;
-
-let { LogNodeService } = require('../../aeproject-logger/logger-service/log-node-service')
+let { LogNodeService } = require('aeproject-logger')
 let nodeService;
 
 let balanceOptions = {
@@ -197,8 +201,21 @@ async function fundWalletsIfNeccessary (option) {
     print('\r\n===== Default wallets was successfully funded! =====');
 }
 
+async function printDockerInfo (option, running) {
+
+    if (!running) {
+        option.onlyCompiler ? print('===== Compiler is not running! =====') : print('===== Node is not running! =====');
+        return
+    }
+    
+    let buff = await info();
+    let res = readSpawnOutput(buff)
+    
+    print(res);
+}
+
 async function run (option) {
-    nodeService = new LogNodeService(process.cwd())
+    nodeService = new LogNodeService(process.cwd());
 
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
@@ -208,6 +225,11 @@ async function run (option) {
     
     try {
         let running = await waitForContainer(option.onlyCompiler ? compilerImage : dockerImage);
+
+        if (option.info) {
+            await printDockerInfo(option, running)
+            return
+        }
 
         if (option.stop) {
 
@@ -225,8 +247,6 @@ async function run (option) {
             print('===== Stopping node and compiler  =====');
 
             await stopNodeAndCompiler();
-            print('===== Node was successfully stopped! =====');
-            print('===== Compiler was successfully stopped! =====');
 
             return;
         }
@@ -266,36 +286,15 @@ async function run (option) {
 }
 
 async function startNodeAndCompiler (option) {
-
-    if (option.only) {
-        spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
-        return nodeService.save('node');
-    } else if (option.onlyCompiler) {
-        spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
-        return nodeService.save('compiler');
-    } else {
-        spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
-        return nodeService.save();
-    }
+    return start(option)
 }
 
 async function stopNodeAndCompiler () {
     try {
-        spawn('docker-compose', ['-f', `${ nodeService.getNodePath() }`, '-f', `${ nodeService.getCompilerPath() }`, 'down', '-v', '--remove-orphans']);
-        return nodeService.deletePaths()
+        stop();
     } catch (error) {
         console.log(Buffer.from(error.stderr).toString('utf-8'))
     }
-}
-
-function readErrorSpawnOutput (spawnError) {
-    const buffMessage = Buffer.from(spawnError.stderr);
-    return buffMessage.toString('utf8');
-}
-
-function readSpawnOutput (spawnError) {
-    const buffMessage = Buffer.from(spawnError.stdout);
-    return buffMessage.toString('utf8');
 }
 
 function removePrefixFromIp (ip) {

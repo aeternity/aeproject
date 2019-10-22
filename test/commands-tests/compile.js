@@ -59,7 +59,7 @@ describe('AEproject Compile', () => {
     })
 
     after(async () => {
-        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        fs.removeSync(`.${ constants.compileTestsFolderPath }`);
+        // await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        // fs.removeSync(`.${ constants.compileTestsFolderPath }`);
     })
 })

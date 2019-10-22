@@ -30,12 +30,12 @@ class LogJSONNode {
     }
 
     writeNodePathToStore () {
-        this.store.node = this.dockerComposePath
+        this.store.node = this.dockerComposePath + dockerConfig
         this.save()
     }
 
     writeCompilerPathToStore () {
-        this.store.compiler = this.compilerPath
+        this.store.compiler = this.compilerPath + compilerConfig
         this.save()
     }
 
@@ -45,11 +45,11 @@ class LogJSONNode {
     }
 
     getNodePath () {
-        return this.store.node ? this.store.node + dockerConfig : path.resolve(dockerConfig)
+        return this.store.node
     }
 
     getCompilerPath () {
-        return this.store.compiler ? this.store.compiler + compilerConfig : compilerConfig
+        return this.store.compiler
     }
     clearPaths () {
         this.store = {}

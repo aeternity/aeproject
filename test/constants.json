@@ -41,6 +41,7 @@
 		"NODE_URL": "--nodeUrl",
 		"IGNORE_OPENING": "--ignoreOpenInBrowser",
 		"ONLY": "--only",
+		"INFO": "--info",
 		"COMPILER_PORT": "--compiler-port"
 	},
 	"testsFiles": {
