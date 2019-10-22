@@ -1,6 +1,7 @@
 node_modules
 .aeproject-node-store
 .aeproject-store
+.aeproject-node-store
 .vscode
 .idea/
 contractLogFile.log

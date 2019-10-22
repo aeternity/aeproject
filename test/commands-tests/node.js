@@ -47,8 +47,6 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         it('Should start the node successfully', async () => {
-            let mainDir = process.cwd();
-            let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
             
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(nodeTestDir)
