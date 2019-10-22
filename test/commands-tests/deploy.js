@@ -47,20 +47,19 @@ async function linkLocalPackages () {
     const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
 
     process.chdir(executeOptions.cwd);
-    await exec('npm link aeproject-lib')
-    await exec('yarn link aeproject-utils')
+    await exec('npm install aeproject-lib')
+    await exec('npm install aeproject-utils')
 
 }
 
-xdescribe('AEproject Deploy', () => {
+describe('AEproject Deploy', () => {
     const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
     before(async () => {
         fs.ensureDirSync(`.${ constants.deployTestsFolderPath }`)
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.NODE, [], executeOptions)
-
         await linkLocalPackages()
+        await execute(constants.cliCommands.NODE, [], executeOptions)
 
     })
 

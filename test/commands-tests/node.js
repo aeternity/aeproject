@@ -47,10 +47,8 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         it('Should start the node successfully', async () => {
-            let mainDir = process.cwd();
-            let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
             
-            // We need to change directory where docker-compose config is located, so we can gatcher proper information for the node
+            // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(nodeTestDir)
 
             let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
@@ -217,7 +215,7 @@ describe("AEproject Node and Compiler Tests", () => {
             app.listen(port);
 
             // test
-            let result = await execute(constants.cliCommands.NODE, [], executeOptions);
+            let result = await execute(constants.cliCommands.NODE, [], executeOptions)
 
             const isPortAllocated = result.indexOf('is already allocated!') >= 0 ||
                 result.indexOf('port is already allocated') >= 0 ||
@@ -297,7 +295,9 @@ describe("AEproject Node and Compiler Tests", () => {
     })
 
     describe("AEproject node - handle if nodes of other project are running", () => {
-        const nodeStorePath = path.resolve(process.cwd() + '/.aeproject-node-store/.node-store.json')
+        const nodeStorePath = path.resolve(process.cwd() + '/.aeproject-node-store/.node-store.json');
+        let dockerConfig = '/docker-compose.yml';
+        let compilerConfig = '/docker-compose.compiler.yml';
         let nodeStore;
 
         let secondNodeTestDir = process.cwd() + constants.nodeTestsFolderPathSecondProject;
@@ -310,16 +310,17 @@ describe("AEproject Node and Compiler Tests", () => {
         it('Should correctly record where the node and compiler has been run from', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             nodeStore = await fs.readJson(nodeStorePath)
-
-            assert.isTrue((`${ path.resolve(executeOptions.cwd) }` === path.resolve(nodeStore.node)), "node path has not been saved correcty");
-            assert.isTrue((`${ path.resolve(executeOptions.cwd) }` === path.resolve(nodeStore.compiler)), "compiler path has not been saved correcty");
+            
+            assert.isTrue((`${ path.resolve(executeOptions.cwd + dockerConfig) }` === path.resolve(nodeStore.node)), "node path has not been saved correcty");
+            assert.isTrue((`${ path.resolve(executeOptions.cwd + compilerConfig) }` === path.resolve(nodeStore.compiler)), "compiler path has not been saved correcty");
         })
 
         it('Should correctly record absolute path where the node has been run from', async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
             nodeStore = await fs.readJson(nodeStorePath)
-            assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(executeOptions.cwd) }`), "node path has not been saved correcty");
-            assert.isTrue((nodeStore.compiler === ''), "compiler should be empty");
+
+            assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(executeOptions.cwd + dockerConfig) }`), "node path has not been saved correcty");
+            assert.isTrue((!nodeStore.compiler), "compiler should be empty");
         })
         
         it('Should clear log file after node has been stopped', async () => {
@@ -329,29 +330,6 @@ describe("AEproject Node and Compiler Tests", () => {
             nodeStore = await fs.readJson(nodeStorePath)
 
             assert.isTrue(Object.keys(nodeStore).length === 0 && nodeStore.constructor === Object, "log file has not been cleared properly");
-        })
-
-        it('Should try to stop node and compiler from current directory if node store is empty', async () => {
-          
-            // change dir to project directory
-            process.chdir(nodeTestDir) 
-
-            let startResult = await execute(constants.cliCommands.NODE, [], executeOptions)
-            let hasNodeStarted = startResult.indexOf(`Node was successfully started`) >= 0;
-
-            assert.isOk(hasNodeStarted);
-            
-            // overwrite file with no data
-            nodeStore = {}
-            await fs.outputJSONSync(nodeStorePath, nodeStore);
-
-            // try to stop node and compiler while log file is empty
-            let stopResult = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
-            
-            let hasNodeStopped = stopResult.indexOf(`Node was successfully stopped`) >= 0;
-            process.chdir(mainDir) 
-            
-            assert.isOk(hasNodeStopped)
         })
 
         it('Should run AEproject node from one project directory and stop it from another', async () => {
@@ -364,15 +342,14 @@ describe("AEproject Node and Compiler Tests", () => {
 
             assert.isOk(hasNodeStopped)
         })
-
         it('Should run Aeproject node from current folder, if the folder it has previously been run, do not exist anymore', async () => {
             fs.ensureDirSync(path.resolve(secondNodeTestDir))
-            
+
             process.chdir(secondNodeTestDir)
             await execute(constants.cliCommands.NODE, [], { cwd: secondNodeTestDir })
 
             fs.removeSync(process.cwd())
-            
+
             await killRunningNodes()
 
             let startResult = await execute(constants.cliCommands.NODE, [], executeOptions)
@@ -380,9 +357,9 @@ describe("AEproject Node and Compiler Tests", () => {
             let nodeStore = await fs.readJSONSync(nodeStorePath)
 
             process.chdir(mainDir)
-            
+
             assert.isOk(hasNodeStarted);
-            assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(nodeTestDir) }`), "node path has not been updated correcty");
+            assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(nodeTestDir + dockerConfig) }`), "node path has not been updated correcty");
         })
 
         async function killRunningNodes () {
@@ -390,11 +367,11 @@ describe("AEproject Node and Compiler Tests", () => {
 
             let pathDir = (process.cwd())
             let dirName = dirNameRgx.exec(pathDir)[0].toLowerCase()
-            
+
             try {
                 let res = await exec('docker', ['ps'])
                 let container = getImageNames(res, dirName)
-                
+
                 await shutDownContainers(container)
             } catch (error) {
                 console.log(error);
@@ -434,6 +411,7 @@ describe("AEproject Node and Compiler Tests", () => {
 
         after(async () => {
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
         })
     })
 

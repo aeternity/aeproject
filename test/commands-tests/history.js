@@ -262,7 +262,7 @@ describe('AEproject History', async () => {
 
             insertAdditionalFiles(currentCwd);
             
-            let test = await execute(constants.cliCommands.DEPLOY, [
+            await execute(constants.cliCommands.DEPLOY, [
                 "--path",
                 `${ invalidParamDeploymentScriptPath }`
             ]);

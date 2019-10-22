@@ -13,6 +13,10 @@ let match;
 let { LogNodeService } = require('aeproject-logger')
 let nodeService = new LogNodeService(process.cwd())
 
+const {
+    info
+} = require('./node-utils');
+
 const config = require('../../aeproject-config/config/config.json');
 const {
     printError
@@ -172,7 +176,8 @@ function readErrorSpawnOutput (spawnResult) {
 }
 
 function readSpawnOutput (spawnResult) {
-    if (!spawnResult.stdout || spawnResult.stdout === '') {
+
+    if (!spawnResult || !spawnResult.stdout || spawnResult.stdout === '') {
         return '';
     }
 
@@ -187,14 +192,11 @@ async function contractCompile (source, contractPath, compileOptions) {
     }
 
     let dependencies = getDependencies(source, contractPath)
-    console.log(dependencies)
     options["file_system"] = dependencies
-
     let body = {
         code: source,
         options
     };
-
     const url = normalizeCompilerUrl(compileOptions.compilerUrl);
 
     result = await axios.post(url, body, options);
@@ -219,7 +221,6 @@ function getDependencies (contractContent, contractPath) {
     let dependencies = {}
 
     match = rgx.exec(contractContent)
-
     if (!match) {
         return dependencies;
     }
@@ -228,13 +229,11 @@ function getDependencies (contractContent, contractPath) {
     for (let index = 0; index < allDependencies.length; index++) {
         dependencyFromContract = dependencyPathRgx.exec(allDependencies[index])
         dependencyPathRgx.lastIndex = 0;
-
         contractPath = mainContractsPathRgx.exec(contractPath)
         mainContractsPathRgx.lastIndex = 0;
         dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
         dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
         actualContract = getActualContract(dependencyContractContent)
-
         dependencies[dependencyFromContract[1]] = actualContract;
 
         Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath))
@@ -244,7 +243,7 @@ function getDependencies (contractContent, contractPath) {
 }
 
 function getActualContract (contractContent) {
-    let contentStartIndex = contractContent.indexOf('contract ');
+    let contentStartIndex = contractContent.indexOf('namespace ');
     let content = contractContent.substr(contentStartIndex);
 
     return content;
@@ -267,26 +266,15 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
-async function dockerComposePS (options) {
-    return spawn('docker-compose', [
-        '-f',
-        `${ nodeService.getNodePath() }`,
-        '-f',
-        `${ nodeService.getCompilerPath() }`,
-        'ps'
-    ], options);
-}
-
 async function waitForContainer (dockerImage, options) {
-
-
+    nodeService = new LogNodeService(process.cwd())
+    
     try {
         let running = false;
-
-        let result = await dockerComposePS(options)
-
+        
+        let result = await info(options);
         let res = readSpawnOutput(result);
-
+        
         if (res) {
             res = res.split('\n');
         }
@@ -305,6 +293,7 @@ async function waitForContainer (dockerImage, options) {
         if (checkForMissingDirectory(error)) {
             nodeService.deletePaths()
             return false
+            // throw Error('===== File configuration which you started your nodes do not exist anymore! =====\n===== Please restart your docker! =====')
         }
 
         if (error.stderr) {
@@ -336,6 +325,5 @@ module.exports = {
     checkNestedProperty,
     winExec,
     waitForContainer,
-    dockerComposePS,
     readSpawnOutput
 }
