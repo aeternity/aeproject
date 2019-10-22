@@ -140,28 +140,40 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe('AEproject Node --only', () => {
+    describe('AEproject Node --only && --only-compiler', () => {
 
-        beforeEach(async () => {
+        before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
             await execute(constants.cliCommands.INIT, [], executeOptions)
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
         })
 
         it('Process should NOT start local compiler', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
+
             let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
 
             assert.isOk(result.indexOf('Connection refused') >= 0, "There is a port that listening on compiler's port.");
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+
+        })
+
+        it('Process should NOT start local nodes', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
+
+            let result = await exec(constants.cliCommands.CURL, constants.getNodeVersionURL);
+
+            assert.isOk(result.indexOf('Connection refused') >= 0, "There is a port that listening on compiler's port.");
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
+
         })
 
         afterEach(async () => {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 
-    describe.only('Aeproject Node --info', () => {
+    describe('Aeproject Node --info', () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions)
@@ -295,7 +307,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe.only("AEproject node - handle if nodes of other project are running", () => {
+    describe("AEproject node - handle if nodes of other project are running", () => {
         const nodeStorePath = path.resolve(process.cwd() + '/.aeproject-node-store/.node-store.json');
         let dockerConfig = '/docker-compose.yml';
         let compilerConfig = '/docker-compose.compiler.yml';
