@@ -4,9 +4,7 @@ import logStoreService from 'aeproject-logger';
 import config from 'aeproject-config';
 import nodeConfig from 'aeproject-config';
 import { KeyPair, ParsedContractFunction, AciFunctions, DeployedContract, Info, TxInfo, Client, ContractInstance, Network } from "./contractTypes";
-import { format } from 'path';
 
-const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
     ttl: ttl
@@ -93,6 +91,7 @@ export class Deployer {
     async deploy(contractPath: string, initState: Array<string | number> = [], options: object = opts): Promise<DeployedContract> {
 
         this.network.compilerUrl = this.compilerUrl;
+
         client = await utils.getClient(this.network, this.keypair);
         contract = await this.readFile(contractPath);
 
@@ -142,6 +141,16 @@ export class Deployer {
             info.error = e.message;
             info.initState = initState;
             info.options = JSON.stringify(options);
+
+            if (e.rawTx) {
+                console.log('[INFO] raw Tx:');
+                console.log(e.rawTx);
+                console.log('[INFO] verify Tx:');
+                console.log(await e.verifyTx(e.rawTx));
+                console.log('[INFO] network');
+                console.log(this.network);
+                console.log();
+            }
         }
 
         logStoreService.logAction(info);

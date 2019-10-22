@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -24,7 +23,6 @@ const fs = __importStar(require("fs"));
 const aeproject_logger_1 = __importDefault(require("aeproject-logger"));
 const aeproject_config_1 = __importDefault(require("aeproject-config"));
 const aeproject_config_2 = __importDefault(require("aeproject-config"));
-const decodedHexAddressToPublicAddress = aeproject_utils_1.default.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
     ttl: ttl
@@ -137,6 +135,15 @@ class Deployer {
                 info.error = e.message;
                 info.initState = initState;
                 info.options = JSON.stringify(options);
+                if (e.rawTx) {
+                    console.log('[INFO] raw Tx:');
+                    console.log(e.rawTx);
+                    console.log('[INFO] verify Tx:');
+                    console.log(yield e.verifyTx(e.rawTx));
+                    console.log('[INFO] network');
+                    console.log(this.network);
+                    console.log();
+                }
             }
             aeproject_logger_1.default.logAction(info);
             if (!isSuccess) {
