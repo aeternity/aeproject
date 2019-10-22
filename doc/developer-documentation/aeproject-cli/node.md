@@ -31,7 +31,7 @@ Together with AE node `node` command run a local compiler that response at `http
 aeproject node --only
 ```
 
-To stop the local node, simply run
+You have the availability to start your compiler separately by running `aeproject node --only-compiler` respectively.
 
 ```text
 aeproject node --stop
@@ -40,6 +40,11 @@ aeproject node --stop
 To see whether you have running instances of the nodes along with a compiler you could run the following command
 ```text
 aeproject node --info
+```
+
+If you dont have running instances of the node started from `aeproject` you could check inforation about the compiler with 
+```text
+aeproject node --info --only-compiler
 ```
 
 Additional **--compiler-port** parameter is available, which can specify on which port would local compiler start (default is 3080).
