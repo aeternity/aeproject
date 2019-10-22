@@ -1,7 +1,4 @@
 const LogJSONNode = require('../logger-store/log-json-node');
-const {
-    spawn
-} = require('promisify-child-process');
 
 class LogNodeService {
     constructor (_path) {
@@ -32,79 +29,6 @@ class LogNodeService {
         }
 
         return this._nodeStore.writeNodeAndCompilerToStore()
-    }
-
-    async start (option) {
-        if (option) {
-            spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
-            return this.save('node');
-        } else {
-            spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
-            return this.save();
-        }
-    }
-
-    async stop () {
-        
-        if (this.getNodePath() && this.getCompilerPath()) {
-            
-            spawn('docker-compose', [
-                '-f',
-                `${ this.getNodePath() }`,
-                '-f',
-                `${ this.getCompilerPath() }`,
-                'down',
-                '-v',
-                '--remove-orphans'
-            ]);
-
-            console.log('===== Node was successfully stopped! =====');
-            console.log('===== Compiler was successfully stopped! =====');
-        } else if (this.getNodePath()) {
-            spawn('docker-compose', [
-                '-f',
-                `${ this.getNodePath() }`,
-                'down',
-                '-v',
-                '--remove-orphans'
-            ]);
-
-            console.log('===== Node was successfully stopped! =====');
-        } else if (this.getCompilerPath()) {
-            
-            spawn('docker-compose', [
-                '-f',
-                `${ this.getCompilerPath() }`,
-                'down',
-                '-v',
-                '--remove-orphans'
-            ]);
-            console.log('===== Compiler was successfully stopped! =====');
-        }
-
-        return this.deletePaths()
-    }
-
-    async dockerComposePs (options) {
-        let result;
-        let nodePath = this.getNodePath()
-        let compilerPath = this.getCompilerPath()
-
-        if (nodePath && compilerPath) {
-            result = await spawn('docker-compose', [
-                '-f',
-                `${ nodePath }`,
-                '-f',
-                `${ compilerPath }`,
-                'ps'
-            ], options);
-        } else if (nodePath) {
-            result = await spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
-        } else if (compilerPath) {
-            result = await spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
-        }
-
-        return result
     }
 }
 

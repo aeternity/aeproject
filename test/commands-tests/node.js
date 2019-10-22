@@ -50,7 +50,7 @@ describe("AEproject Node and Compiler Tests", () => {
             let mainDir = process.cwd();
             let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
             
-            // We need to change directory where docker-compose config is located, so we can gatcher proper information for the node
+            // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(nodeTestDir)
 
             let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
@@ -326,6 +326,7 @@ describe("AEproject Node and Compiler Tests", () => {
 
         after(async () => {
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
         })
     })
 

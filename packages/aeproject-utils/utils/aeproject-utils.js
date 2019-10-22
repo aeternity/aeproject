@@ -13,6 +13,10 @@ let match;
 let { LogNodeService } = require('aeproject-logger')
 let nodeService;
 
+const {
+    info
+} = require('./node-utils');
+
 const config = require('../../aeproject-config/config/config.json');
 const {
     printError
@@ -262,15 +266,13 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
-
-
 async function waitForContainer (dockerImage, options) {
     nodeService = new LogNodeService(process.cwd())
     
     try {
         let running = false;
         
-        let result = await nodeService.dockerComposePs(options);
+        let result = await info(options);
         let res = readSpawnOutput(result);
         
         if (res) {
@@ -287,9 +289,7 @@ async function waitForContainer (dockerImage, options) {
 
         return running;
     } catch (error) {
-        // console.log('Buffer.from(error.stderr).toString(utf8)');
-        // console.log(Buffer.from(error.stderr).toString('utf8'));
-        
+
         if (checkForMissingDirectory(error)) {
             nodeService.deletePaths()
             throw Error('===== File configuration which you started your nodes do not exist anymore! =====\n===== Please restart your docker! =====')

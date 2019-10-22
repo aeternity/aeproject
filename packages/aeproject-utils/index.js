@@ -39,6 +39,11 @@ const generateKeyPairFromSecretKey = contractUtils.generateKeyPairFromSecretKey;
 const decodedHexAddressToPublicAddress = contractUtils.decodedHexAddressToPublicAddress;
 const trimAdresseses = contractUtils.trimAdresseses;
 
+const nodeUtils = require('./utils/node-utils');
+const start = nodeUtils.start;
+const stop = nodeUtils.stop;
+const info = nodeUtils.info; 
+
 const SophiaUtil = require('./utils/sophia-util');
 
 module.exports = {
@@ -75,5 +80,8 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer
+    waitForContainer,
+    start,
+    stop,
+    info
 }

@@ -19,7 +19,9 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     printError,
     print,
-    waitForContainer
+    waitForContainer,
+    start,
+    stop
 } = require('aeproject-utils');
 const utils = require('aeproject-utils');
 const {
@@ -34,9 +36,6 @@ const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
 const localCompilerConfig = nodeConfig.compilerConfiguration;
 const nodeConfiguration = nodeConfig.nodeConfiguration;
-
-let { LogNodeService } = require('../../aeproject-logger/logger-service/log-node-service')
-let nodeService;
 
 let balanceOptions = {
     format: false
@@ -138,7 +137,6 @@ async function checkForAllocatedPort (port) {
 }
 
 async function run (option) {
-    nodeService = new LogNodeService(process.cwd())
 
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
@@ -241,12 +239,12 @@ async function run (option) {
 }
 
 async function startNodeAndCompiler (startOnlyNode) {
-    return nodeService.start(startOnlyNode)
+    return start(startOnlyNode)
 }
 
 async function stopNodeAndCompiler () {
     try {
-        nodeService.stop();
+        stop();
     } catch (error) {
         console.log(Buffer.from(error.stderr).toString('utf-8'))
     }
