@@ -2,9 +2,6 @@ const LogJSONNode = require('../logger-store/log-json-node');
 const {
     spawn
 } = require('promisify-child-process');
-// const {
-//     print
-// } = require('aeproject-utils');
 
 class LogNodeService {
     constructor (_path) {
@@ -48,9 +45,8 @@ class LogNodeService {
     }
 
     async stop () {
-
+        
         if (this.getNodePath() && this.getCompilerPath()) {
-            console.log('node and compiler');
             
             spawn('docker-compose', [
                 '-f',
@@ -65,8 +61,6 @@ class LogNodeService {
             console.log('===== Node was successfully stopped! =====');
             console.log('===== Compiler was successfully stopped! =====');
         } else if (this.getNodePath()) {
-            console.log('only node');
-            
             spawn('docker-compose', [
                 '-f',
                 `${ this.getNodePath() }`,
@@ -77,7 +71,6 @@ class LogNodeService {
 
             console.log('===== Node was successfully stopped! =====');
         } else if (this.getCompilerPath()) {
-            console.log('compiler');
             
             spawn('docker-compose', [
                 '-f',

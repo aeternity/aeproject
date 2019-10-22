@@ -146,8 +146,6 @@ async function run (option) {
     try {
         let running = await waitForContainer(dockerImage);
 
-        console.log('running');
-        console.log(running);
         if (option.stop) {
 
             // if not running, current env may be windows
@@ -241,8 +239,6 @@ async function run (option) {
         printError(e.message || e);
     }
 }
-
-
 
 async function startNodeAndCompiler (startOnlyNode) {
     return nodeService.start(startOnlyNode)
