@@ -136,20 +136,18 @@ export class Deployer {
             }
 
         } catch (e) {
+
             isSuccess = false;
             error = e;
             info.error = e.message;
             info.initState = initState;
             info.options = JSON.stringify(options);
-
+            
             if (e.rawTx) {
-                console.log('[INFO] raw Tx:');
-                console.log(e.rawTx);
-                console.log('[INFO] verify Tx:');
-                console.log(await e.verifyTx(e.rawTx));
-                console.log('[INFO] network');
-                console.log(this.network);
-                console.log();
+                info.rawTx = e.rawTx;
+                info.verifiedTx = await e.verifyTx(e.rawTx);
+
+                printTxNetworkInfo(info, this.network)
             }
         }
 
@@ -194,5 +192,15 @@ async function generateFunctionsFromSmartContract(contractInstance: ContractInst
 
     }
     return contractFunctions;
+}
+
+function printTxNetworkInfo (info: Info, network: Network){
+    console.log('[INFO] raw Tx:');
+    console.log(info.rawTx);
+    console.log('[INFO] verified Tx:');
+    console.log(info.verifiedTx);
+    console.log('[INFO] network');
+    console.log(network);
+    console.log();
 }
 

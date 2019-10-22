@@ -136,13 +136,9 @@ class Deployer {
                 info.initState = initState;
                 info.options = JSON.stringify(options);
                 if (e.rawTx) {
-                    console.log('[INFO] raw Tx:');
-                    console.log(e.rawTx);
-                    console.log('[INFO] verify Tx:');
-                    console.log(yield e.verifyTx(e.rawTx));
-                    console.log('[INFO] network');
-                    console.log(this.network);
-                    console.log();
+                    info.rawTx = e.rawTx;
+                    info.verifiedTx = yield e.verifyTx(e.rawTx);
+                    printTxNetworkInfo(info, this.network);
                 }
             }
             aeproject_logger_1.default.logAction(info);
@@ -184,5 +180,14 @@ function generateFunctionsFromSmartContract(contractInstance) {
         };
         return contractFunctions;
     });
+}
+function printTxNetworkInfo(info, network) {
+    console.log('[INFO] raw Tx:');
+    console.log(info.rawTx);
+    console.log('[INFO] verified Tx:');
+    console.log(info.verifiedTx);
+    console.log('[INFO] network');
+    console.log(network);
+    console.log();
 }
 //# sourceMappingURL=aeproject-deployer.js.map
