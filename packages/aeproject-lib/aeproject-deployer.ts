@@ -147,7 +147,7 @@ export class Deployer {
                 info.rawTx = e.rawTx;
                 info.verifiedTx = await e.verifyTx(e.rawTx);
 
-                printTxNetworkInfo(info, this.network)
+                printTxNetworkInfo(info, this.network);
             }
         }
 
@@ -163,8 +163,6 @@ export class Deployer {
             let newInstanceWithAddedAdditionalFunctionality = Object.assign(contractInstanceWrapperFuncs, deployedContract);
             return newInstanceWithAddedAdditionalFunctionality;
         }
-
-
     }
 }
 
