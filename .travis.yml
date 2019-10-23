@@ -24,7 +24,7 @@ install:
   # - yarn link
   # - cd ..
   # - cd aeproject-lib
-  - cd node_modules/aeproject-cli
+  - cd packages/aeproject-cli
   - npm run tsc
   - cd ../..
 services:
