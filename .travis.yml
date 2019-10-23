@@ -19,10 +19,12 @@ cache:
 install:
   - npm install
   - lerna bootstrap
-  - cd packages/aeproject-cli
-  - yarn link
-  - cd ..
-  - cd aeproject-lib
+  - npm run develop
+  # - cd packages/aeproject-cli
+  # - yarn link
+  # - cd ..
+  # - cd aeproject-lib
+  - cd node_modules/aeproject-cli
   - npm run tsc
   - cd ../..
 services:

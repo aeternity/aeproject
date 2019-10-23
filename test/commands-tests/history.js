@@ -87,7 +87,7 @@ async function linkPackages () {
         'aeproject-lib'
     ])
 
-    console.log('link ae lib')
+    console.log('>> link ae lib')
     console.log(a)
 }
 
@@ -362,13 +362,12 @@ describe('AEproject History', async () => {
 
         it.only('With account that has no aettos, deployment should be unsuccessful and should has an error', async () => {
 
-            console.log(111);
             let client = await cliUtils.getClient(network, moneyKeyPair);
-            console.log(222);
+
             // account should have minimum of 1 aettos 
             // or will throw exception of "account not found"
             await client.spend(1, keyPair.publicKey);
-            console.log(333);
+
             await linkPackages();
 
             await execute(constants.cliCommands.DEPLOY, [
