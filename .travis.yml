@@ -24,9 +24,9 @@ install:
   # - yarn link
   # - cd ..
   # - cd aeproject-lib
-  - cd packages/aeproject-cli
-  - npm run tsc
-  - cd ../..
+  # - cd packages/aeproject-cli
+  # - npm run tsc
+  # - cd ../..
 services:
   - docker
 script:
