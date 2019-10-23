@@ -20,13 +20,6 @@ install:
   - npm install
   - lerna bootstrap
   - npm run develop
-  # - cd packages/aeproject-cli
-  # - yarn link
-  # - cd ..
-  # - cd aeproject-lib
-  # - cd packages/aeproject-cli
-  # - npm run tsc
-  # - cd ../..
 services:
   - docker
 script:
