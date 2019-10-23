@@ -13,7 +13,15 @@ class LogNodeService {
         return this._nodeStore.getCompilerPath()
     }
 
-    deletePaths () {
+    delete (unit) {
+        if (unit === 'compiler') {
+            return this._nodeStore.deleteCompilerPathFromStore()
+
+        }
+        if (unit === 'node') {
+            return this._nodeStore.deleteNodePathFromStore()
+
+        }
         return this._nodeStore.clearPaths()
     }
 

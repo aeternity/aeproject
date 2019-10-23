@@ -6,6 +6,7 @@ const {
 const {
     print
 } = require('./fs-utils')
+const readErrorSpawnOutput = require('./aeproject-utils').readErrorSpawnOutput
 
 async function start (option) {
     if (option.only) {
@@ -20,45 +21,65 @@ async function start (option) {
     }
 }
 
-async function stop () {
-
+async function stopAll () {
+    
     if (nodeService.getNodePath() && nodeService.getCompilerPath()) {
-
-        spawn('docker-compose', [
-            '-f',
-            `${ nodeService.getNodePath() }`,
-            '-f',
-            `${ nodeService.getCompilerPath() }`,
-            'down',
-            '-v',
-            '--remove-orphans'
-        ]);
-
-        print('===== Node was successfully stopped! =====');
-        print('===== Compiler was successfully stopped! =====');
+        await stopNode()
+        await stopCompiler()
     } else if (nodeService.getNodePath()) {
-        spawn('docker-compose', [
+        await stopNode()
+    } else if (nodeService.getCompilerPath()) {
+        await stopCompiler()
+    }
+}
+
+async function stopNode () {
+    try {
+        await spawn('docker-compose', [
             '-f',
             `${ nodeService.getNodePath() }`,
-            'down',
-            '-v',
-            '--remove-orphans'
+            'down'
         ]);
 
-        print('===== Node was successfully stopped! =====');
-    } else if (nodeService.getCompilerPath()) {
+        print('===== Node was successfully stopped! ====='); 
 
-        spawn('docker-compose', [
+        return nodeService.delete('node')
+    } catch (error) {
+        // TODO see why readErrorSpawnOutput is not working
+        if (Buffer.from(error.stderr).toString('utf8').indexOf('active endpoints')) {
+            nodeService.delete('node')
+            return print('===== Node was successfully stopped! =====');
+        } 
+        
+        throw new Error(error)
+    }
+}
+
+async function stopCompiler () {
+    try {
+        await spawn('docker-compose', [
             '-f',
             `${ nodeService.getCompilerPath() }`,
-            'down',
-            '-v',
-            '--remove-orphans'
+            'down'
         ]);
-        print('===== Compiler was successfully stopped! =====');
-    }
 
-    return nodeService.deletePaths()
+        print('===== Compiler was successfully stopped! =====');
+        
+        return nodeService.delete('compiler')
+    } catch (error) {
+        // TODO see why readErrorSpawnOutput is not working
+        if (Buffer.from(error.stderr).toString('utf8').indexOf('active endpoints')) {
+            nodeService.delete('compiler')
+            return print('===== Compiler was successfully stopped! =====');
+        }
+
+        throw new Error(error)
+    }
+    
+}
+
+function stopSeparately (options) {
+    return options.only ? stopNode() : stopCompiler()
 }
 
 async function info (options) {
@@ -94,6 +115,7 @@ async function info (options) {
 
 module.exports = {
     start,
-    stop,
+    stopAll,
+    stopSeparately,
     info
 }

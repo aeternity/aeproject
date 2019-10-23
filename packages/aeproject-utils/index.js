@@ -31,6 +31,7 @@ const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
 const waitForContainer = aeprojectUtils.waitForContainer;
 const readSpawnOutput = aeprojectUtils.readSpawnOutput;
+const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -42,7 +43,8 @@ const trimAdresseses = contractUtils.trimAdresseses;
 
 const nodeUtils = require('./utils/node-utils');
 const start = nodeUtils.start;
-const stop = nodeUtils.stop;
+const stopAll = nodeUtils.stopAll;
+const stopSeparately = nodeUtils.stopSeparately;
 const info = nodeUtils.info; 
 
 const SophiaUtil = require('./utils/sophia-util');
@@ -83,7 +85,9 @@ module.exports = {
     winExec,
     waitForContainer,
     readSpawnOutput,
+    readErrorSpawnOutput,
     start,
-    stop,
+    stopAll,
+    stopSeparately,
     info
 }

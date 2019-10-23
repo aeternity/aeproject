@@ -323,5 +323,6 @@ module.exports = {
     checkNestedProperty,
     winExec,
     waitForContainer,
-    readSpawnOutput
+    readSpawnOutput, 
+    readErrorSpawnOutput
 }

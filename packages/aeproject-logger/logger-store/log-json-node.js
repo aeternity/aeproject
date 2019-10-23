@@ -44,16 +44,26 @@ class LogJSONNode {
         this.writeCompilerPathToStore()
     }
 
+    deleteCompilerPathFromStore () {
+        this.store.compiler = "";
+        this.save()
+    }
+
+    deleteNodePathFromStore () {
+        this.store.node = "";
+        this.save()
+    }
+    clearPaths () {
+        this.store = {}
+        this.save()
+    }
+
     getNodePath () {
         return this.store.node
     }
 
     getCompilerPath () {
         return this.store.compiler
-    }
-    clearPaths () {
-        this.store = {}
-        this.save()
     }
 
     save () {

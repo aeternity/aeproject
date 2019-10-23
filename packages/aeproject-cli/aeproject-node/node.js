@@ -22,7 +22,8 @@ const {
     readSpawnOutput,
     waitForContainer,
     start,
-    stop,
+    stopAll,
+    stopSeparately,
     info
 } = require('aeproject-utils');
 
@@ -225,7 +226,7 @@ async function run (option) {
     
     try {
         let running = await waitForContainer(option.onlyCompiler ? compilerImage : dockerImage);
-
+        
         if (option.info) {
             await printDockerInfo(option, running)
             return
@@ -236,7 +237,7 @@ async function run (option) {
             // if not running, current env may be windows
             // to reduce optional params we check is it running on windows env
             if (!running) {
-                running = await waitForContainer(dockerImage);
+                running = await waitForContainer(option.onlyCompiler ? compilerImage : dockerImage);
             }
 
             if (!running) {
@@ -246,7 +247,7 @@ async function run (option) {
 
             print('===== Stopping node and compiler  =====');
 
-            await stopNodeAndCompiler();
+            await stopNodeAndCompiler(option);
 
             return;
         }
@@ -261,8 +262,7 @@ async function run (option) {
             return;
         }
 
-        if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
-            print('===== Starting compiler =====');
+        if (!option.onlyCompiler && await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE node, port is already allocated!`);
         }
@@ -289,9 +289,14 @@ async function startNodeAndCompiler (option) {
     return start(option)
 }
 
-async function stopNodeAndCompiler () {
+async function stopNodeAndCompiler (option) {
     try {
-        stop();
+        if (option.stop && (option.only || option.onlyCompiler)) {
+            stopSeparately(option)
+            return
+        }
+        
+        stopAll();
     } catch (error) {
         console.log(Buffer.from(error.stderr).toString('utf-8'))
     }
