@@ -8,7 +8,11 @@ const execute = cliUtils.aeprojectExecute;
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const _store = require('../../packages/aeproject-logger/logger-service/log-store-service')
+const _store = require('../../packages/aeproject-logger/logger-service/log-store-service');
+
+// const utils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 const constants = require('../constants.json');
 const TEMP_TEST_PATH = constants.historyTestsFolderPath;
@@ -19,6 +23,10 @@ const deployerPublicKey = 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
+
+let executeOptions = {
+    cwd: path.join(process.cwd(), TEMP_TEST_PATH)
+};
 
 function insertAdditionalFiles (oldCWD) {
 
@@ -62,7 +70,7 @@ function countHistoryLogs (result) {
     return counter;
 }
 
-async function linkPackages() {
+async function linkPackages () {
     await cliUtils.execute('yarn', 'link', [
         'aeproject-config'
     ])
@@ -75,12 +83,26 @@ async function linkPackages() {
         'aeproject-utils'
     ])
 
-    await cliUtils.execute('yarn', 'link', [
+    let a = await cliUtils.execute('yarn', 'link', [
         'aeproject-lib'
     ])
+
+    console.log('link ae lib')
+    console.log(a)
 }
 
-describe.only('AEproject History', async () => {
+async function linkPackages1 () {
+
+    console.log('executeOptions.cwd');
+    console.log(executeOptions.cwd);
+
+    process.chdir(executeOptions.cwd);
+    await exec('npm unlink aeproject-lib')
+    await exec('npm unlink aeproject-utils')
+
+}
+
+describe('AEproject History', async () => {
 
     describe('Log store service tests', () => {
 
@@ -252,7 +274,7 @@ describe.only('AEproject History', async () => {
         });
     });
 
-    describe('History - test deployment failures', async () => {
+    describe.only('History - test deployment failures', async () => {
         let currentCwd;
         let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
@@ -338,14 +360,15 @@ describe.only('AEproject History', async () => {
             assert.isOk(hasFail && hasError, 'History log is not correct!');
         });
 
-        it('With account that has no aettos, deployment should be unsuccessful and should has an error', async () => {
+        it.only('With account that has no aettos, deployment should be unsuccessful and should has an error', async () => {
 
+            console.log(111);
             let client = await cliUtils.getClient(network, moneyKeyPair);
-
+            console.log(222);
             // account should have minimum of 1 aettos 
             // or will throw exception of "account not found"
             await client.spend(1, keyPair.publicKey);
-
+            console.log(333);
             await linkPackages();
 
             await execute(constants.cliCommands.DEPLOY, [
@@ -354,6 +377,9 @@ describe.only('AEproject History', async () => {
             ]);
 
             let result = await execute(constants.cliCommands.HISTORY, []);
+            console.log('result');
+            console.log(result);
+            console.log();
 
             let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
             let hasError = result.indexOf('│ Error') > 0;
@@ -387,7 +413,7 @@ describe.only('AEproject History', async () => {
 
             await execute(constants.cliCommands.NODE, ['--stop']);
 
-            fsExtra.removeSync(tempTestPath);
+            //fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
         });
     });
