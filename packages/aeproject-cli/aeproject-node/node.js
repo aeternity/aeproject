@@ -200,6 +200,13 @@ async function fundWalletsIfNeccessary (option) {
     print('\r\n===== Default wallets was successfully funded! =====');
 }
 
+async function printInitialStopingMsg (option) {
+    if (option.only) return print('===== Stopping node  =====')
+    if (option.onlyCompiler) return print('===== Stopping compiler  =====')
+
+    return print('===== Stopping node and compiler  =====')
+}
+
 async function printDockerInfo (option, running) {
 
     if (!running) {
@@ -241,7 +248,7 @@ async function run (option) {
                 return
             }
 
-            print('===== Stopping node and compiler  =====');
+            printInitialStopingMsg(option)
 
             await stopNodeAndCompiler(option);
 
