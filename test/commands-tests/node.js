@@ -282,6 +282,8 @@ describe.only("AEproject Node and Compiler Tests", async () => {
             assert.isOk(result.indexOf('node1') >= 0, "Nodes are running");
             assert.isOk(result.indexOf('node2') >= 0, "Nodes are running");
             assert.isOk(result.indexOf('compiler') >= 0, "Nodes are running");
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
         it('Should display info for compiler only', async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
