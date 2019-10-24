@@ -16,6 +16,9 @@ let executeOptions = {
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
+const util = require('util');
+const cliExec = util.promisify(require('child_process').exec);
+
 const http = require('http');
 
 const defaultWallets = nodeConfig.defaultWallets
@@ -33,26 +36,26 @@ const isWindowsPlatform = process.platform === 'win32';
 
 const waitForContainerOpts = {
     dockerImage: nodeConfig.nodeConfiguration.dockerServiceNodeName,
+    compilerImage: nodeConfig.nodeConfiguration.dockerServiceCompilerName,
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", () => {
+describe.only("AEproject Node and Compiler Tests", () => {
 
     describe('AEproject Node', () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-
             await execute(constants.cliCommands.INIT, [], executeOptions);
             await execute(constants.cliCommands.NODE, [], executeOptions);
+
         })
 
         it('Should start the node successfully', async () => {
-            
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(nodeTestDir)
-
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
             
+            let running = await waitForContainer(waitForContainerOpts.dockerImage);
+
             assert.isTrue(running, "node wasn't started properly");
 
             process.chdir(mainDir)
@@ -101,6 +104,7 @@ describe("AEproject Node and Compiler Tests", () => {
 
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            process.chdir(mainDir)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -123,7 +127,7 @@ describe("AEproject Node and Compiler Tests", () => {
 
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            
+
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -140,12 +144,13 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe('AEproject Node --only && --only-compiler', () => {
+    describe.only('AEproject Node --only && --only-compiler', () => {
 
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
             await execute(constants.cliCommands.INIT, [], executeOptions)
+            process.chdir(nodeTestDir)
         })
 
         it('Process should NOT start local compiler', async () => {
@@ -155,7 +160,30 @@ describe("AEproject Node and Compiler Tests", () => {
 
             assert.isOk(result.indexOf('Connection refused') >= 0, "There is a port that listening on compiler's port.");
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        })
 
+        it('Process should start local nodes only', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
+
+            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+
+            assert.isTrue(dockerRunning, 'node were not started successfully')
+            assert.isNotTrue(compilerRunning, "compiler should not be running");
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLY], executeOptions)
+        })
+
+        it('Process should start local compiler only', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
+
+            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            
+            assert.isTrue(compilerRunning, 'compiler was not started')
+            assert.isNotTrue(dockerRunning, "node should not be running");
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
         })
 
         it('Process should NOT start local nodes', async () => {
@@ -168,7 +196,42 @@ describe("AEproject Node and Compiler Tests", () => {
 
         })
 
-        afterEach(async () => {
+        it('Process should start local compiler while the node images are already running', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
+
+            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+
+            assert.isTrue(dockerRunning, 'node was not started successfully')
+            assert.isFalse(compilerRunning, 'compiler is running')
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
+            compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            
+            assert.isTrue(compilerRunning, 'compiler was not started successfully')
+            
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        })
+
+        it('Process should start local node while the compiler image is already running', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
+
+            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+
+            assert.isTrue(compilerRunning, 'compiler was not started successfully')
+            assert.isFalse(dockerRunning, 'docker is running')
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
+
+            dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            
+            assert.isTrue(dockerRunning, 'node was not started successfully')
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        })
+
+        after(async () => {
+            process.chdir(mainDir)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -186,12 +249,20 @@ describe("AEproject Node and Compiler Tests", () => {
 
         it('Should display info for running instances', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
-            
+
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
-            
+
             assert.isOk(result.indexOf('node1') >= 0, "Nodes are running");
             assert.isOk(result.indexOf('node2') >= 0, "Nodes are running");
             assert.isOk(result.indexOf('compiler') >= 0, "Nodes are running");
+        })
+        it('Should display info for compiler only', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
+
+            let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
+            assert.isOk(result.indexOf('compiler') >= 0, "Nodes are running");
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
         })
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
@@ -315,15 +386,15 @@ describe("AEproject Node and Compiler Tests", () => {
 
         let secondNodeTestDir = process.cwd() + constants.nodeTestsFolderPathSecondProject;
         before(async () => {
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`) 
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions);
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPathSecondProject }`) 
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
             await execute(constants.cliCommands.INIT, [], { cwd: secondNodeTestDir })
         })
         it('Should correctly record where the node and compiler has been run from', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             nodeStore = await fs.readJson(nodeStorePath)
-            
+
             assert.isTrue((`${ path.resolve(executeOptions.cwd + dockerConfig) }` === path.resolve(nodeStore.node)), "node path has not been saved correcty");
             assert.isTrue((`${ path.resolve(executeOptions.cwd + compilerConfig) }` === path.resolve(nodeStore.compiler)), "compiler path has not been saved correcty");
         })
@@ -335,14 +406,15 @@ describe("AEproject Node and Compiler Tests", () => {
             assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(executeOptions.cwd + dockerConfig) }`), "node path has not been saved correcty");
             assert.isTrue((!nodeStore.compiler), "compiler should be empty");
         })
-        
+
         it('Should clear log file after node has been stopped', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
 
             nodeStore = await fs.readJson(nodeStorePath)
 
-            assert.isTrue(Object.keys(nodeStore).length === 0 && nodeStore.constructor === Object, "log file has not been cleared properly");
+            assert.isTrue(nodeStore.node === '', "log file has not been cleared properly");
+            assert.isTrue(nodeStore.compiler === '', "log file has not been cleared properly");
         })
 
         it('Should run AEproject node from one project directory and stop it from another', async () => {
