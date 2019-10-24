@@ -263,7 +263,7 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
-async function waitForContainer (dockerImage, options) {
+async function waitForContainer (image, options) {
     
     try {
         let running = false;
@@ -277,7 +277,7 @@ async function waitForContainer (dockerImage, options) {
 
         if (Array.isArray(res)) {
             res.map(line => {
-                if (line.indexOf(dockerImage) >= 0 && line.includes('healthy')) {
+                if (line.indexOf(image) >= 0 && line.includes('healthy')) {
                     running = true
                 }
             })
