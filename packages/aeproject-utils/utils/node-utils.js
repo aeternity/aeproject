@@ -45,7 +45,6 @@ async function stopNode () {
 
         return nodeService.delete('node')
     } catch (error) {
-        // TODO see why readErrorSpawnOutput is not working
         if (Buffer.from(error.stderr).toString('utf8').indexOf('active endpoints')) {
             nodeService.delete('node')
             return print('===== Node was successfully stopped! =====');
