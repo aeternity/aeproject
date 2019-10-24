@@ -191,7 +191,7 @@ describe('AEproject History', async () => {
             process.chdir(tempTestPath);
 
             await execute(constants.cliCommands.INIT, []);
-            await execute(constants.cliCommands.NODE, ['--start']);
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START]);
         });
 
         it('History should be empty', async () => {
@@ -219,7 +219,7 @@ describe('AEproject History', async () => {
 
             let result = await execute(constants.cliCommands.HISTORY, []);
             let numberOfLogs = countHistoryLogs(result);
-
+            
             // !!! => 2 records from this test and 1 from previous
             assert.equal(numberOfLogs, 3, "Incorrect number of logs!");
         });
@@ -237,7 +237,7 @@ describe('AEproject History', async () => {
 
         it('History should return 10 records, test --limit parameter', async () => {
             let numberOfExpectedLogs = 10;
-            let result = await execute(constants.cliCommands.HISTORY, ['--limit', numberOfExpectedLogs]);
+            let result = await execute(constants.cliCommands.HISTORY, [constants.cliCommandsOptions.LIMIT, numberOfExpectedLogs]);
             let numberOfLogs = countHistoryLogs(result);
 
             assert.equal(numberOfLogs, numberOfExpectedLogs, "Incorrect number of logs!");
@@ -245,7 +245,7 @@ describe('AEproject History', async () => {
 
         after(async () => {
 
-            await execute(constants.cliCommands.NODE, ['--stop']);
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP]);
 
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
@@ -282,7 +282,7 @@ describe('AEproject History', async () => {
             process.chdir(tempTestPath);
 
             await execute(constants.cliCommands.INIT, []);
-            await execute(constants.cliCommands.NODE, ['--start']);
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START]);
         });
 
         it('log should have additional info like error, init state and options', async () => {
@@ -309,7 +309,7 @@ describe('AEproject History', async () => {
             insertAdditionalFiles(currentCwd);
 
             await execute(constants.cliCommands.DEPLOY, [
-                "--path",
+                constants.cliCommandsOptions.PATH,
                 `${ invalidParamDeploymentScriptPath }`
             ]);
 
@@ -326,7 +326,7 @@ describe('AEproject History', async () => {
             insertAdditionalFiles(currentCwd);
 
             await execute(constants.cliCommands.DEPLOY, [
-                "--path",
+                constants.cliCommandsOptions.PATH,
                 `${ missingParamDeploymentScriptPath }`
             ]);
 
@@ -349,7 +349,7 @@ describe('AEproject History', async () => {
             await linkPackages();
 
             await execute(constants.cliCommands.DEPLOY, [
-                "--secretKey",
+                constants.cliCommandsOptions.SECRET_KEY,
                 `fd1932a9bb48bd978038de6c67620a68839353e48318c556ec739ce50071d34a2aa0e018f23047098289fb12e03d8ce48dcf51bdf2f9eaf9f3fcd2cc4800bf06`
             ]);
 
@@ -367,9 +367,9 @@ describe('AEproject History', async () => {
             await linkPackages();
 
             await execute(constants.cliCommands.DEPLOY, [
-                "--network",
+                constants.cliCommandsOptions.NETWORK,
                 "http://127.0.0.1:3001",
-                "--networkId",
+                constants.cliCommandsOptions.NETWORK_ID,
                 `ae_some_cool_network`
             ]);
 
@@ -385,7 +385,7 @@ describe('AEproject History', async () => {
 
         afterEach(async () => {
 
-            await execute(constants.cliCommands.NODE, ['--stop']);
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP]);
 
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
