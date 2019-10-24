@@ -6,7 +6,6 @@ const {
 const {
     print
 } = require('./fs-utils')
-const readErrorSpawnOutput = require('./aeproject-utils').readErrorSpawnOutput
 
 async function start (option) {
     if (option.only) {
