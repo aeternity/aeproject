@@ -51,8 +51,6 @@ describe.only("AEproject Node and Compiler Tests", async () => {
         process.chdir(mainDir)
     }
 
-    
-
     describe('AEproject Node', () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
