@@ -23,6 +23,9 @@ let balanceOptions = {
     format: false
 }
 
+const util = require('util');
+const cliExec = util.promisify(require('child_process').exec);
+
 let mainDir = process.cwd();
 let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
 
@@ -37,7 +40,18 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe.only("AEproject Node and Compiler Tests", () => {
+describe.only("AEproject Node and Compiler Tests", async () => {
+
+    async function linkLocalUtilsToProject () {
+        process.chdir(path.resolve(nodeTestDir));
+
+        await cliExec('yarn link aeproject-utils')
+        await cliExec('yarn link aeproject-logger')
+
+        process.chdir(mainDir)
+    }
+
+    await linkLocalUtilsToProject()
 
     describe('AEproject Node', () => {
         before(async () => {

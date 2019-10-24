@@ -19,12 +19,7 @@ cache:
 install:
   - npm install
   - lerna bootstrap
-  - cd packages/aeproject-cli
-  - yarn link
-  - cd ..
-  - cd aeproject-lib
-  - npm run tsc
-  - cd ../..
+  - npm run develop
 services:
   - docker
 script:
