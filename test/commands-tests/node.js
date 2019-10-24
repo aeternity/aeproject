@@ -16,9 +16,6 @@ let executeOptions = {
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
-const util = require('util');
-const cliExec = util.promisify(require('child_process').exec);
-
 const http = require('http');
 
 const defaultWallets = nodeConfig.defaultWallets
@@ -144,7 +141,7 @@ describe.only("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe.only('AEproject Node --only && --only-compiler', () => {
+    describe('AEproject Node --only && --only-compiler', () => {
 
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -230,6 +227,21 @@ describe.only("AEproject Node and Compiler Tests", () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
 
+        it('Process should stop only the nodes', async () => {
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLY])
+            
+            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            assert.isNotTrue(dockerRunning, 'node was not stopped successfully')
+        })
+        it('Process should stop only the compiler', async () => {
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER])
+
+            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            assert.isNotTrue(compilerRunning, 'compiler was not stopped successfully')
+        })
+
         after(async () => {
             process.chdir(mainDir)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
@@ -260,7 +272,8 @@ describe.only("AEproject Node and Compiler Tests", () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
 
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
-            assert.isOk(result.indexOf('compiler') >= 0, "Nodes are running");
+            assert.isOk(result.indexOf('compiler') >= 0, "Compiler is not running");
+            assert.isOk(result.indexOf('node1') < 0, "Node is running");
 
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
         })
