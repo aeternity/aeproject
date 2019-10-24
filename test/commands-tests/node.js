@@ -59,9 +59,9 @@ describe.only("AEproject Node and Compiler Tests", async () => {
 
         })
 
-        it('Should start the node successfully', async () => {
+        it.only('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
-            await linkLocalUtilsToProject()
+            // await linkLocalUtilsToProject()
             process.chdir(nodeTestDir)
             
             let running = await waitForContainer(waitForContainerOpts.dockerImage);

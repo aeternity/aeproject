@@ -6,7 +6,7 @@
     "test": "mocha ./test/**/*.js --timeout 0 --exit",
     "link": "lerna bootstrap && cd packages/aeproject-cli && yarn link",
     "develop": "lerna bootstrap && cd packages/aeproject-cli && yarn link && cd .. && cd aeproject-config && npm install && yarn link && cd .. && cd aeproject-logger && npm install && yarn link && cd .. && cd aeproject-utils && npm install && yarn link && yarn link aeproject-logger && cd .. && cd aeproject-lib && npm install && yarn link && yarn link aeproject-config && yarn link aeproject-logger && yarn link aeproject-utils",
-    "unlink": "cd packages/aeproject-cli && yarn unlink && cd .. && cd aeproject-lib && yarn unlink && yarn unlink aeproject-config && yarn unlink aeproject-utils && yarn unlink aeproject-logger && cd .. && cd aeproject-config && yarn unlink && cd .. && cd aeproject-logger && yarn unlink && cd .. && cd aeproject-utils && yarn unlink"
+    "unlink": "cd packages/aeproject-cli && yarn unlink && cd .. && cd aeproject-lib && yarn unlink && yarn unlink aeproject-config && yarn unlink aeproject-utils && yarn unlink aeproject-logger && cd .. && cd aeproject-config && yarn unlink && cd .. && cd aeproject-logger && yarn unlink && cd .. && cd aeproject-utils && yarn unlink && yarn unlink aeproject-logger"
   },
   "dependencies": {
     "esm": "^3.0.77",
