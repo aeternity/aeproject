@@ -55,7 +55,9 @@ describe("AEproject Node and Compiler Tests", async () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions);
-            process.chdir(nodeTestDir)
+            process.chdir(path.resolve(nodeTestDir))
+            console.log('current directory >>>', process.cwd());
+            
             let test = await execute(constants.cliCommands.NODE, []);
             console.log('node console result >>>>');
             console.log(test);
@@ -66,7 +68,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         it.only('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             await linkLocalUtilsToProject()
-            process.chdir(nodeTestDir)
+            process.chdir(path.resolve(nodeTestDir))
             
             let running = await waitForContainer(waitForContainerOpts.dockerImage);
 
