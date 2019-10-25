@@ -55,6 +55,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions);
+            process.chdir(nodeTestDir)
             let test = await execute(constants.cliCommands.NODE, [], executeOptions);
             console.log('node console result >>>>');
             console.log(test);
@@ -67,11 +68,11 @@ describe("AEproject Node and Compiler Tests", async () => {
             await linkLocalUtilsToProject()
             // process.chdir(nodeTestDir)
             
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
+            let running = await waitForContainer(waitForContainerOpts.dockerImage);
 
             assert.isTrue(running, "node wasn't started properly");
 
-            // process.chdir(mainDir)
+            process.chdir(mainDir)
         })
 
         it('Should check if the wallets are funded', async () => {
