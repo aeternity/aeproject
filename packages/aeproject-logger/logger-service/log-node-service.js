@@ -13,7 +13,7 @@ class LogNodeService {
         return this._nodeStore.getCompilerPath()
     }
 
-    delete (unit) {
+    async delete (unit) {
         if (unit === 'compiler') {
             return this._nodeStore.deleteCompilerPathFromStore()
 
@@ -25,7 +25,7 @@ class LogNodeService {
         return this._nodeStore.clearPaths()
     }
 
-    save (unit) {
+    async save (unit) {
         
         if (unit === 'compiler') {
             return this._nodeStore.writeCompilerPathToStore()
