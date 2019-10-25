@@ -53,28 +53,35 @@ describe("AEproject Node and Compiler Tests", async () => {
 
     describe('AEproject Node', () => {
         before(async () => {
+
+            console.log('1 before', process.cwd())
+            console.log('2 executeOptions', executeOptions)
+
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-            await execute(constants.cliCommands.INIT, [], executeOptions);
+            // await execute(constants.cliCommands.INIT, [], executeOptions);
             process.chdir(path.resolve(nodeTestDir))
-            console.log('current directory >>>', process.cwd());
+
+            console.log('3 process.chdir(path.resolve(nodeTestDir))', path.resolve(nodeTestDir));
             
             let test = await execute(constants.cliCommands.NODE, []);
-            console.log('node console result >>>>');
-            console.log(test);
-            console.log('=========================');
-            
+
+            console.log(test)
+
+            console.log('4 after node', process.cwd())
         })
 
         it.only('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             // await linkLocalUtilsToProject()
             // process.chdir(path.resolve(nodeTestDir))
+
             
-            let running = await waitForContainer(waitForContainerOpts.dockerImage);
+            
+            // let running = await waitForContainer(waitForContainerOpts.dockerImage);
 
-            assert.isTrue(running, "node wasn't started properly");
+            // assert.isTrue(running, "node wasn't started properly");
 
-            process.chdir(mainDir)
+            // process.chdir(mainDir)
         })
 
         it('Should check if the wallets are funded', async () => {
@@ -121,7 +128,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             process.chdir(mainDir)
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            // fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 

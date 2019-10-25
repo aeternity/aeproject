@@ -1,27 +1,36 @@
 const path = require('path')
 const fs = require('fs-extra')
 
-const storageDir = '../../.aeproject-node-store/.node-store.json'
-const dockerConfig = 'docker-compose.yml'
-const compilerConfig = 'docker-compose.compiler.yml'
+const storageDir = '/.aeproject-node-store/.node-store.json'
+const dockerConfig = '/docker-compose.yml'
+const compilerConfig = '/docker-compose.compiler.yml'
 
 let instance
 
 class LogJSONNode {
     constructor (_path) {
-        this.nodeStore = path.resolve(`${ path.dirname(require.main.filename) }/${ storageDir }`)
+        console.log('__dirname', path.resolve('../', __dirname) + '/' + storageDir)
+        // this.globalStore = './../' + __dirname
+        console.log('101.1 LogJSONNode', process.cwd())
+        console.log('101.2 LogJSONNode', _path)
+        console.log('101.31 LogJSONNode', path.resolve(`${ path.dirname(require.main.filename) }/${ storageDir }`))
+        console.log('101.32 LogJSONNode', path.join(`${ _path }/${ storageDir }`))
+        this.nodeStore = path.resolve(`${ _path }/${ storageDir }`)
         
-        this.dockerComposePath = _path + '/';
-        this.compilerPath = _path + '/'
+        // this.dockerComposePath = _path + '/';
+        this.dockerComposePath = this.nodeStore;
+        // this.compilerPath = _path + '/'
+        this.compilerPath = this.nodeStore
 
-        console.log('>>>> dockerComposePath in thge constructor In the ', this.dockerComposePath);
+        // console.log('>>>> dockerComposePath in thge constructor In the ', this.dockerComposePath);
 
         if (this.ensureStoreExists()) {
-            console.log('if in the constructor >>>>> ', process.cwd())
+            console.log('101.5 LogJSONNode this.dockerComposePath', this.dockerComposePath)
+            console.log('101.6 LogJSONNode this.compilerPath', this.compilerPath)
             
             fs.outputJsonSync(this.nodeStore, {
-                node: this.dockerComposePath,
-                compiler: this.compilerPath
+                node: '', //this.dockerComposePath,
+                compiler: '' //this.compilerPath
             });
         }
 
@@ -33,20 +42,20 @@ class LogJSONNode {
     }
 
     writeNodePathToStore () {
-        this.store.node = path.resolve(this.dockerComposePath + dockerConfig)
+        this.store.node = path.resolve(process.cwd() + dockerConfig)
         this.save()
     }
 
     writeCompilerPathToStore () {
-        this.store.compiler = path.resolve(this.compilerPath + compilerConfig)
+        this.store.compiler = path.resolve(process.cwd() + compilerConfig)
         this.save()
     }
 
     writeNodeAndCompilerToStore () {
+        console.log('201.1', this.store);
+        console.log('201.2', process.cwd());
         this.writeNodePathToStore()
         this.writeCompilerPathToStore()
-        console.log('>>>> 1 this.store', this.store);
-        
     }
 
     deleteCompilerPathFromStore () {
@@ -64,13 +73,13 @@ class LogJSONNode {
     }
 
     getNodePath () {
-        console.log('this.nodeStore path on geth>>>>>>>>>');
-        console.log(this.nodeStore);
-        console.log('=====================');
+        // console.log('110.1 getNodePath this.nodeStore');
+        // console.log(this.nodeStore);
+        // console.log();
         
-        console.log('node path saved in the nodeStore >>>>>>>>>');
-        console.log(this.store.node);
-        console.log('=====================');
+        // console.log('110.2 getNodePath this.store.node');
+        // console.log(this.store.node);
+        // console.log();
 
         return this.store.node
     }
@@ -80,11 +89,11 @@ class LogJSONNode {
     }
 
     save () {
-        console.log('on save method');
-        
-        console.log('node store path ==>>>>>', this.nodeStore);
-        console.log('node path saved ==>>>>>', this.store.node);
-
+        // ./../__filename
+        // // get file path
+        // ??? aepp-aeproject-js path
+        console.log('300 KYP', this.store)
+        console.log('300 1 KYP', this.nodeStore)
         fs.outputJsonSync(this.nodeStore, this.store);
     }
 

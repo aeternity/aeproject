@@ -1,4 +1,5 @@
 let { LogNodeService } = require('aeproject-logger')
+console.log('100.1', process.cwd())
 let nodeService = new LogNodeService(process.cwd())
 const {
     spawn
@@ -20,6 +21,7 @@ async function start (option) {
         return nodeService.save('compiler');
     } else {
         spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+        console.log('200 save', process.cwd())
         return nodeService.save();
     }
 }
@@ -84,6 +86,10 @@ function stopSeparately (options) {
 }
 
 async function info (options) {
+
+    // console.log('7.1 info', process.cwd());
+    // console.log('7.2 info', options);
+
     let nodePath = nodeService.getNodePath()
     let compilerPath = nodeService.getCompilerPath()
 
@@ -99,21 +105,22 @@ async function info (options) {
         return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
     } else if (compilerPath) {
         return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
-    } 
-        
-    return spawn('docker-compose', [
-        '-f',
-        `${ 'docker-compose.yml' }`,
-        '-f',
-        `${ 'docker-compose.compiler.yml' }`,
-        'ps'
-    ], options);
+    } else {
+        return spawn('docker-compose', [
+            '-f',
+            `${ 'docker-compose.yml' }`,
+            '-f',
+            `${ 'docker-compose.compiler.yml' }`,
+            'ps'
+        ], options)
+    }
 }
 
 async function waitForContainer (image, options) {
-    console.log('Process Current Directory  waitForContainer >>>');
-    console.log(process.cwd());
-    console.log('===============================');
+    
+    // console.log('6.1 wait for c', process.cwd());
+    // console.log('6.2 wait for c', image);
+    // console.log('6.3 wait for c', options);
     
     try {
         let running = false;
