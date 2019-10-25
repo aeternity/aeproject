@@ -270,7 +270,7 @@ async function run (option) {
 
         printStarMsg(option)
         
-        let startingNodeSpawn = await startNodeAndCompiler(option);
+        let startingNodeSpawn = startNodeAndCompiler(option);
 
         await toggleLoader(startingNodeSpawn, option.onlyCompiler ? compilerImage : dockerImage)
 

@@ -29,14 +29,14 @@ class LogJSONNode {
         return !fs.existsSync(this.nodeStore)
     }
 
-    async writeNodePathToStore () {
+    writeNodePathToStore () {
         this.store.node = this.dockerComposePath + dockerConfig
-        await this.save()
+        this.save()
     }
 
-    async writeCompilerPathToStore () {
+    writeCompilerPathToStore () {
         this.store.compiler = this.compilerPath + compilerConfig
-        await this.save()
+        this.save()
     }
 
     writeNodeAndCompilerToStore () {
@@ -46,18 +46,18 @@ class LogJSONNode {
         
     }
 
-    async deleteCompilerPathFromStore () {
+    deleteCompilerPathFromStore () {
         this.store.compiler = "";
-        await this.save()
+        this.save()
     }
 
-    async deleteNodePathFromStore () {
+    deleteNodePathFromStore () {
         this.store.node = "";
-        await this.save()
+        this.save()
     }
-    async clearPaths () {
+    clearPaths () {
         this.store = {}
-        await this.save()
+        this.save()
     }
 
     getNodePath () {
@@ -76,13 +76,13 @@ class LogJSONNode {
         return this.store.compiler
     }
 
-    async save () {
+    save () {
         console.log('on save method');
         
         console.log('node store path ==>>>>>', this.nodeStore);
         console.log('node path saved ==>>>>>', this.store.node);
 
-        await fs.outputJsonSync(this.nodeStore, this.store);
+        fs.outputJsonSync(this.nodeStore, this.store);
     }
 
     static getInstance (_path) {
