@@ -42,6 +42,8 @@ class LogJSONNode {
     writeNodeAndCompilerToStore () {
         this.writeNodePathToStore()
         this.writeCompilerPathToStore()
+        console.log('>>>> 1 this.store', this.store);
+        
     }
 
     deleteCompilerPathFromStore () {
@@ -59,6 +61,10 @@ class LogJSONNode {
     }
 
     getNodePath () {
+        console.log('this.nodeStore path on geth>>>>>>>>>');
+        console.log(this.nodeStore);
+        console.log('=====================');
+        
         return this.store.node
     }
 

@@ -111,7 +111,10 @@ async function info (options) {
 }
 
 async function waitForContainer (image, options) {
-
+    console.log('Process Current Directory  waitForContainer >>>');
+    console.log(process.cwd());
+    console.log('===============================');
+    
     try {
         let running = false;
 

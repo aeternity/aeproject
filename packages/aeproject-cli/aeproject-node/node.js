@@ -53,6 +53,8 @@ network.compilerUrl = utils.config.compilerUrl
 const MAX_SECONDS_TO_RUN_NODE = 90;
 const DEFAULT_NODE_PORT = 3001;
 const DEFAULT_COMPILER_PORT = 3080;
+let { LogNodeService } = require('aeproject-logger')
+let nodeService = new LogNodeService(process.cwd())
 
 async function fundWallets (nodeIp) {
     await waitToMineCoins(nodeIp);
