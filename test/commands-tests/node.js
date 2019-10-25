@@ -40,7 +40,7 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe.only("AEproject Node and Compiler Tests", async () => {
+describe("AEproject Node and Compiler Tests", async () => {
 
     async function linkLocalUtilsToProject () {
         process.chdir(path.resolve(nodeTestDir));
@@ -59,7 +59,7 @@ describe.only("AEproject Node and Compiler Tests", async () => {
 
         })
 
-        it.only('Should start the node successfully', async () => {
+        it('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             // await linkLocalUtilsToProject()
             process.chdir(nodeTestDir)
@@ -277,9 +277,8 @@ describe.only("AEproject Node and Compiler Tests", async () => {
 
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
 
-            assert.isOk(result.indexOf('node1') >= 0, "Nodes are running");
-            assert.isOk(result.indexOf('node2') >= 0, "Nodes are running");
-            assert.isOk(result.indexOf('compiler') >= 0, "Nodes are running");
+            assert.isOk(result.indexOf('node1') >= 0, "Node is not running");
+            assert.isOk(result.indexOf('compiler') >= 0, "Compiler is not running");
 
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
