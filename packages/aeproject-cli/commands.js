@@ -28,6 +28,7 @@ const contracts = require('./aeproject-contracts/aeproject-contracts.js');
 const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
+const txInspector = require('./aeproject-tx-inspector/tx-inspector');
 
 const addInitOption = (program) => {
     program
@@ -135,6 +136,16 @@ const addExportConfigOption = (program) => {
         })
 };
 
+const addTxInspector = (program) => {
+    program
+        .command('inspect')
+        .description('A simple way to decode and verify encoded transactions for the æternity network.')
+        .option('--tx [tx]', 'Raw tx to inspect')
+        .action(async (options) => {
+            await txInspector.run(options);
+        })
+};
+
 const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
@@ -145,6 +156,7 @@ const initCommands = (program) => {
     addContractsAeppIntegrationOption(program)
     addShapeOption(program);
     addExportConfigOption(program);
+    addTxInspector(program)
 }
 
 module.exports = {

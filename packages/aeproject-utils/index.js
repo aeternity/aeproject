@@ -30,6 +30,7 @@ const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
 const waitForContainer = aeprojectUtils.waitForContainer;
+const txValidator = aeprojectUtils.TransactionValidator;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -75,5 +76,6 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer
+    waitForContainer,
+    txValidator
 }

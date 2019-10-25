@@ -5,6 +5,8 @@ const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const Node = AeSDK.Node;
+const TransactionValidator = AeSDK.TransactionValidator;
+
 let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
 let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
@@ -308,5 +310,6 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
-    waitForContainer
+    waitForContainer,
+    TransactionValidator
 }
