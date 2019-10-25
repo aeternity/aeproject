@@ -65,6 +65,10 @@ class LogJSONNode {
         console.log(this.nodeStore);
         console.log('=====================');
         
+        console.log('node path saved in the nodeStore >>>>>>>>>');
+        console.log(this.store.node);
+        console.log('=====================');
+
         return this.store.node
     }
 
@@ -73,6 +77,11 @@ class LogJSONNode {
     }
 
     save () {
+        console.log('on save method');
+        
+        console.log('node store path ==>>>>>', this.nodeStore);
+        console.log('node path saved ==>>>>>', this.store.node);
+
         fs.outputJsonSync(this.nodeStore, this.store);
     }
 
