@@ -24,7 +24,10 @@ const {
     start,
     stopAll,
     stopSeparately,
-    info
+    info,
+    printSuccessMsg,
+    printStarMsg,
+    printInitialStopingMsg
 } = require('aeproject-utils');
 
 const utils = require('aeproject-utils');
@@ -66,15 +69,6 @@ async function fundWallets (nodeIp) {
 
 async function printBeneficiaryKey (client) {
     await printWallet(client, config.keyPair, "Miner")
-}
-
-function printSuccessMsg (onlyCompiler) {
-    if (onlyCompiler) {
-        print('\n\r===== Compiler was successfully started! =====');
-        return
-    }
-    print('\n\r===== Node was successfully started! =====');
-    print('===== Funding default wallets! =====');
 }
 
 async function printWallet (client, keyPair, label) {
@@ -200,13 +194,6 @@ async function fundWalletsIfNeccessary (option) {
     print('\r\n===== Default wallets was successfully funded! =====');
 }
 
-async function printInitialStopingMsg (option) {
-    if (option.only) return print('===== Stopping node  =====')
-    if (option.onlyCompiler) return print('===== Stopping compiler  =====')
-
-    return print('===== Stopping node and compiler  =====')
-}
-
 async function printDockerInfo (option, running) {
 
     if (!running) {
@@ -275,12 +262,13 @@ async function run (option) {
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
         }
 
-        option.onlyCompiler ? print('===== Starting compiler =====') : print('===== Starting node =====');
+        printStarMsg(option)
+        
         let startingNodeSpawn = startNodeAndCompiler(option);
 
         await toggleLoader(startingNodeSpawn, option.onlyCompiler ? compilerImage : dockerImage)
 
-        printSuccessMsg(option.onlyCompiler)
+        printSuccessMsg(option)
 
         await fundWalletsIfNeccessary(option)
     } catch (e) {

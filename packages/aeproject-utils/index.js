@@ -29,7 +29,6 @@ const timeout = aeprojectUtils.timeout;
 const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
-const waitForContainer = aeprojectUtils.waitForContainer;
 const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
 
@@ -45,7 +44,11 @@ const nodeUtils = require('./utils/node-utils');
 const start = nodeUtils.start;
 const stopAll = nodeUtils.stopAll;
 const stopSeparately = nodeUtils.stopSeparately;
-const info = nodeUtils.info; 
+const info = nodeUtils.info;
+const waitForContainer = nodeUtils.waitForContainer;
+const printSuccessMsg = nodeUtils.printSuccessMsg;
+const printStarMsg = nodeUtils.printStarMsg;
+const printInitialStopingMsg = nodeUtils.printInitialStopingMsg;
 
 const SophiaUtil = require('./utils/sophia-util');
 
@@ -89,5 +92,8 @@ module.exports = {
     start,
     stopAll,
     stopSeparately,
-    info
+    info,
+    printSuccessMsg,
+    printStarMsg,
+    printInitialStopingMsg
 }

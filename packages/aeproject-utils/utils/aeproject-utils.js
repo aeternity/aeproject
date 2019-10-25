@@ -10,10 +10,6 @@ let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
 let match;
 
-const {
-    info
-} = require('./node-utils');
-
 const config = require('../../aeproject-config/config/config.json');
 const {
     printError
@@ -263,48 +259,6 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
-async function waitForContainer (image, options) {
-    
-    try {
-        let running = false;
-        
-        let result = await info(options);
-        let res = readSpawnOutput(result);
-        
-        if (res) {
-            res = res.split('\n');
-        }
-
-        if (Array.isArray(res)) {
-            res.map(line => {
-                if (line.indexOf(image) >= 0 && line.includes('healthy')) {
-                    running = true
-                }
-            })
-        }
-
-        return running;
-    } catch (error) {
-
-        if (checkForMissingDirectory(error)) {
-            return false
-        }
-
-        if (error.stderr) {
-            
-            console.log(error.stderr.toString('utf8'))
-        } else {
-            console.log(error.message || error)
-        }
-
-        throw Error(error);
-    }
-}
-
-function checkForMissingDirectory (e) {
-    return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'))
-}
-
 module.exports = {
     config,
     getClient,
@@ -318,7 +272,6 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
-    waitForContainer,
     readSpawnOutput, 
     readErrorSpawnOutput
 }

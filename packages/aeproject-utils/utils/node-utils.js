@@ -6,6 +6,10 @@ const {
 const {
     print
 } = require('./fs-utils')
+const {
+    readSpawnOutput, 
+    readErrorSpawnOutput
+} = require('./aeproject-utils');
 
 async function start (option) {
     if (option.only) {
@@ -44,7 +48,7 @@ async function stopNode () {
 
         return nodeService.delete('node')
     } catch (error) {
-        if (Buffer.from(error.stderr).toString('utf8').indexOf('active endpoints')) {
+        if (readErrorSpawnOutput(error).indexOf('active endpoints')) {
             nodeService.delete('node')
             return print('===== Node was successfully stopped! =====');
         } 
@@ -65,8 +69,7 @@ async function stopCompiler () {
         
         return nodeService.delete('compiler')
     } catch (error) {
-        // TODO see why readErrorSpawnOutput is not working
-        if (Buffer.from(error.stderr).toString('utf8').indexOf('active endpoints')) {
+        if (readErrorSpawnOutput(error).indexOf('active endpoints')) {
             nodeService.delete('compiler')
             return print('===== Compiler was successfully stopped! =====');
         }
@@ -111,9 +114,78 @@ async function info (options) {
     return result
 }
 
+async function waitForContainer (image, options) {
+
+    try {
+        let running = false;
+
+        let result = await info(options);
+        let res = readSpawnOutput(result);
+
+        if (res) {
+            res = res.split('\n');
+        }
+
+        if (Array.isArray(res)) {
+            res.map(line => {
+                if (line.indexOf(image) >= 0 && line.includes('healthy')) {
+                    running = true
+                }
+            })
+        }
+
+        return running;
+    } catch (error) {
+
+        if (checkForMissingDirectory(error)) {
+            return false
+        }
+
+        if (error.stderr) {
+
+            console.log(error.stderr.toString('utf8'))
+        } else {
+            console.log(error.message || error)
+        }
+
+        throw Error(error);
+    }
+}
+
+function checkForMissingDirectory (e) {
+    return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'))
+}
+
+function printSuccessMsg (option) {
+    if (option.only) return print('\n\r===== Node was successfully started! =====');
+    if (option.onlyCompiler) return print('\n\r===== Compiler was successfully started! =====');
+   
+    print('\n\r===== Node was successfully started! =====');
+    print('===== Compiler was successfully started! =====');
+    print('===== Funding default wallets! =====');
+}
+
+function printStarMsg (option) {
+    if (option.only) return print('===== Starting node =====');
+    if (option.onlyCompiler) return print('===== Starting compiler =====')
+
+    print('===== Starting node and compiler =====');
+}
+
+async function printInitialStopingMsg(option) {
+    if (option.only) return print('===== Stopping node  =====')
+    if (option.onlyCompiler) return print('===== Stopping compiler  =====')
+
+    print('===== Stopping node and compiler  =====')
+}
+
 module.exports = {
     start,
     stopAll,
     stopSeparately,
-    info
+    info,
+    waitForContainer,
+    printSuccessMsg,
+    printStarMsg,
+    printInitialStopingMsg
 }
