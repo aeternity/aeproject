@@ -55,7 +55,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions);
-            let test = await execute(constants.cliCommands.NODE, [], executeOptions);
+            let test = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions);
             console.log('node console result >>>>');
             console.log(test);
             console.log('=========================');
