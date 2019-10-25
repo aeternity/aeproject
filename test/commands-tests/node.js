@@ -55,9 +55,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions);
-            let test = await execute(constants.cliCommands.NODE, [], executeOptions);
-            console.log('>>>>>>>>>> 1');
-            console.log(test);
+            await execute(constants.cliCommands.NODE, [], executeOptions);
             
         })
 
@@ -67,11 +65,6 @@ describe("AEproject Node and Compiler Tests", async () => {
             process.chdir(nodeTestDir)
             
             let running = await waitForContainer(waitForContainerOpts.dockerImage);
-
-            let dockerPs = await cliExec('docker ps')
-            console.log(' >>>>>>>>> 2');
-            console.log(dockerPs);
-            
 
             assert.isTrue(running, "node wasn't started properly");
 
