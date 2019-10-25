@@ -176,9 +176,12 @@ describe("AEproject Node and Compiler Tests", () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
-            
-            assert.isOk(result.indexOf('Nodes path') >= 0, "Nodes are running");
-            assert.isOk(result.indexOf('Compiler path') >= 0, "Nodes are running");
+
+            assert.isOk(result.indexOf('node1') >= 0, "Nodes are running");
+            assert.isOk(result.indexOf('node2') >= 0, "Nodes are running");
+            assert.isOk(result.indexOf('compiler') >= 0, "Nodes are running");
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
