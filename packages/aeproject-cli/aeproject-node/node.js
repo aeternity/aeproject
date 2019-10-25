@@ -210,6 +210,10 @@ async function printDockerInfo (option, running) {
 }
 
 async function run (option) {
+    console.log('>>> process cwd in the node');
+    console.log(process.cwd());
+    console.log('===========================');
+    
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
 
