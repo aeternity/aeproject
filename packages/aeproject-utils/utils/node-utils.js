@@ -172,7 +172,7 @@ function printStarMsg (option) {
     print('===== Starting node and compiler =====');
 }
 
-async function printInitialStopingMsg(option) {
+async function printInitialStopMsg (option) {
     if (option.only) return print('===== Stopping node  =====')
     if (option.onlyCompiler) return print('===== Stopping compiler  =====')
 
@@ -187,5 +187,5 @@ module.exports = {
     waitForContainer,
     printSuccessMsg,
     printStarMsg,
-    printInitialStopingMsg
+    printInitialStopMsg
 }

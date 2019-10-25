@@ -48,7 +48,7 @@ const info = nodeUtils.info;
 const waitForContainer = nodeUtils.waitForContainer;
 const printSuccessMsg = nodeUtils.printSuccessMsg;
 const printStarMsg = nodeUtils.printStarMsg;
-const printInitialStopingMsg = nodeUtils.printInitialStopingMsg;
+const printInitialStopMsg = nodeUtils.printInitialStopMsg;
 
 const SophiaUtil = require('./utils/sophia-util');
 
@@ -95,5 +95,5 @@ module.exports = {
     info,
     printSuccessMsg,
     printStarMsg,
-    printInitialStopingMsg
+    printInitialStopMsg
 }

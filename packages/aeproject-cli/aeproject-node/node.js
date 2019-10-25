@@ -27,7 +27,7 @@ const {
     info,
     printSuccessMsg,
     printStarMsg,
-    printInitialStopingMsg
+    printInitialStopMsg
 } = require('aeproject-utils');
 
 const utils = require('aeproject-utils');
@@ -235,7 +235,7 @@ async function run (option) {
                 return
             }
 
-            printInitialStopingMsg(option)
+            printInitialStopMsg(option)
 
             await stopNodeAndCompiler(option);
 
