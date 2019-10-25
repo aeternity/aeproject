@@ -14,7 +14,10 @@ class LogJSONNode {
         this.dockerComposePath = _path + '/';
         this.compilerPath = _path + '/'
 
+        console.log('>>>> dockerComposePath in thge constructor In the ', this.dockerComposePath);
+
         if (this.ensureStoreExists()) {
+            console.log('if in the constructor >>>>> ', process.cwd())
             
             fs.outputJsonSync(this.nodeStore, {
                 node: this.dockerComposePath,
@@ -30,12 +33,12 @@ class LogJSONNode {
     }
 
     writeNodePathToStore () {
-        this.store.node = this.dockerComposePath + dockerConfig
+        this.store.node = path.resolve(this.dockerComposePath + dockerConfig)
         this.save()
     }
 
     writeCompilerPathToStore () {
-        this.store.compiler = this.compilerPath + compilerConfig
+        this.store.compiler = path.resolve(this.compilerPath + compilerConfig)
         this.save()
     }
 
