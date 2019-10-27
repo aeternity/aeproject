@@ -40,7 +40,7 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", async () => {
+describe.only("AEproject Node and Compiler Tests", async () => {
 
     // TO DO this to be removed if not neccessary
     async function linkLocalUtilsToProject () {
@@ -52,7 +52,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         process.chdir(mainDir)
     }
 
-    describe.only('AEproject Node', () => {
+    describe('AEproject Node', () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions);
