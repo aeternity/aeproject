@@ -64,7 +64,6 @@ describe("AEproject Node and Compiler Tests", async () => {
             process.chdir(path.resolve(nodeTestDir))
             
             let running = await waitForContainer(waitForContainerOpts.dockerImage);
-            console.log('In ONlY 1 : running: ', running);
             
             assert.isTrue(running, "node wasn't started properly");
 
@@ -114,7 +113,6 @@ describe("AEproject Node and Compiler Tests", async () => {
 
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            process.chdir(mainDir)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
