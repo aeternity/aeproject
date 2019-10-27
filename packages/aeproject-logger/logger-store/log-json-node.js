@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs-extra')
 
-const storageDir = '/.aeproject-node-store/.node-store.json'
+const storageDir = '../../../.aeproject-node-store/.node-store.json'
 const dockerConfig = '/docker-compose.yml'
 const compilerConfig = '/docker-compose.compiler.yml'
 
@@ -9,13 +9,17 @@ let instance
 
 class LogJSONNode {
     constructor (_path) {
-        console.log('__dirname', path.resolve('../', __dirname) + '/' + storageDir)
-        // this.globalStore = './../' + __dirname
-        console.log('101.1 LogJSONNode', process.cwd())
-        console.log('101.2 LogJSONNode', _path)
-        console.log('101.31 LogJSONNode', path.resolve(`${ path.dirname(require.main.filename) }/${ storageDir }`))
-        console.log('101.32 LogJSONNode', path.join(`${ _path }/${ storageDir }`))
-        this.nodeStore = path.resolve(`${ _path }/${ storageDir }`)
+        // console.log('__dirname', path.resolve('../', __dirname) + storageDir)
+        // // this.globalStore = './../' + __dirname
+        // console.log('101.1 LogJSONNode', process.cwd())
+        // console.log('101.2 LogJSONNode', _path)
+        // console.log('101.31 LogJSONNode', path.resolve(`${ path.dirname(require.main.filename) }/${ storageDir }`))
+        // console.log('101.32 LogJSONNode', path.join(`${ _path }/${ storageDir }`))
+        // console.log('101.33 PathToSaveNodeStore', path.resolve('../', __dirname) + storageDir);
+        // OK
+        console.log('101.34 PathToSaveNodeStoreGlobally', path.resolve(__dirname, storageDir));
+        // this.nodeStore = path.resolve(`${_path}/${storageDir}`)
+        this.nodeStore = path.resolve(__dirname, storageDir);
         
         // this.dockerComposePath = _path + '/';
         this.dockerComposePath = this.nodeStore;
@@ -29,8 +33,8 @@ class LogJSONNode {
             console.log('101.6 LogJSONNode this.compilerPath', this.compilerPath)
             
             fs.outputJsonSync(this.nodeStore, {
-                node: '', //this.dockerComposePath,
-                compiler: '' //this.compilerPath
+                node: '', // this.dockerComposePath,
+                compiler: '' // this.compilerPath
             });
         }
 

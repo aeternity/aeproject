@@ -64,8 +64,8 @@ describe("AEproject Node and Compiler Tests", async () => {
             console.log('3 process.chdir(path.resolve(nodeTestDir))', path.resolve(nodeTestDir));
             
             let test = await execute(constants.cliCommands.NODE, []);
-
-            console.log(test)
+            console.log(test);
+            
 
             console.log('4 after node', process.cwd())
         })
@@ -77,11 +77,12 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             
             
-            // let running = await waitForContainer(waitForContainerOpts.dockerImage);
+            let running = await waitForContainer(waitForContainerOpts.dockerImage);
+            console.log('In ONlY 1 : running: ', running);
+            
+            assert.isTrue(running, "node wasn't started properly");
 
-            // assert.isTrue(running, "node wasn't started properly");
-
-            // process.chdir(mainDir)
+            process.chdir(mainDir)
         })
 
         it('Should check if the wallets are funded', async () => {

@@ -1,0 +1,16 @@
+{
+  "name": "aeproject-project",
+  "version": "1.0.0",
+  "description": "This is the default package.json generated for your project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aeternity/aepp-sdk": "6.0.0",
+    "aeproject-lib": "1.0.2",
+    "yarn": "1.19.1"
+  }
+}

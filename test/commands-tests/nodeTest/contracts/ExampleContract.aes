@@ -1,0 +1,2 @@
+contract ExampleContract =
+   entrypoint main(x : int) = x 
