@@ -1,6 +1,5 @@
 let { LogNodeService } = require('aeproject-logger')
-console.log('100.1', process.cwd())
-let nodeService = new LogNodeService(process.cwd())
+let nodeService = new LogNodeService()
 const {
     spawn
 } = require('promisify-child-process');
@@ -13,17 +12,17 @@ const {
 } = require('./aeproject-utils');
 
 async function start (option) {
+
     if (option.only) {
         spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
         return nodeService.save('node');
     } else if (option.onlyCompiler) {
         spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
         return nodeService.save('compiler');
-    } else {
-        spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
-        console.log('200 save', process.cwd())
-        return nodeService.save();
-    }
+    } 
+
+    spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+    return nodeService.save();
 }
 
 async function stopAll () {
@@ -86,10 +85,6 @@ function stopSeparately (options) {
 }
 
 async function info (options) {
-
-    // console.log('7.1 info', process.cwd());
-    // console.log('7.2 info', options);
-
     let nodePath = nodeService.getNodePath()
     let compilerPath = nodeService.getCompilerPath()
 
@@ -118,10 +113,6 @@ async function info (options) {
 
 async function waitForContainer (image, options) {
     
-    // console.log('6.1 wait for c', process.cwd());
-    // console.log('6.2 wait for c', image);
-    // console.log('6.3 wait for c', options);
-    
     try {
         let running = false;
 
@@ -148,7 +139,6 @@ async function waitForContainer (image, options) {
         }
 
         if (error.stderr) {
-
             console.log(error.stderr.toString('utf8'))
         } else {
             console.log(error.message || error)

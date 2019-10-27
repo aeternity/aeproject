@@ -211,9 +211,6 @@ async function printDockerInfo (option, running) {
 
 async function run (option) {
 
-    console.log('5.1', process.cwd());
-    // console.log('5.2', option);
-    
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
 
