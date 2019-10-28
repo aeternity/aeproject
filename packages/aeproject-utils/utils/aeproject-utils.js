@@ -82,15 +82,24 @@ const getNetwork = (network, networkId) => {
 };
 
 const createCustomNetwork = (network, networkId) => {
-    if (network.includes('local') || networkId == undefined) {
+    if (!network || !networkId) {
         throw new Error('Both network and networkId should be passed')
     }
-    const customNetork = {
+
+    if (network === 'local' || network === 'localhost') {
+        network = getNetwork('local').url;
+    }
+
+    if (!network.startsWith('http')) {
+        network = 'http://' + network;
+    }
+
+    const customNetwork = {
         url: network,
         networkId: networkId
     }
 
-    return customNetork;
+    return customNetwork;
 }
 
 const handleApiError = async (fn) => {

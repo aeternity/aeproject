@@ -140,7 +140,10 @@ const addTxInspector = (program) => {
     program
         .command('inspect')
         .description('A simple way to decode and verify encoded transactions for the æternity network.')
+        // .arguments('<--tx>', 'Raw tx to inspect')
         .option('--tx [tx]', 'Raw tx to inspect')
+        .option('-n --network [network]', 'Select network', "local")
+        .option('--networkId [networkId]', 'Configure your network id')
         .action(async (options) => {
             await txInspector.run(options);
         })
