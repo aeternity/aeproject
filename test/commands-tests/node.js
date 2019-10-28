@@ -503,14 +503,14 @@ describe("AEproject Node and Compiler Tests", async () => {
             return container;
         }
 
-        // afterEach(async () => {
-        //     await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        // })
+        afterEach(async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        })
 
-        // after(async () => {
-        //     fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
-        //     fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
-        // })
+        after(async () => {
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
+        })
     })
 
     if (isWindowsPlatform) {
