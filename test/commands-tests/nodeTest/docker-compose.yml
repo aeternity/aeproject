@@ -1,0 +1,62 @@
+# Small local network of three nodes using the fastest mean16
+version: '3'
+services:
+  node1:
+    image: aeternity/aeternity:v5.0.0-rc.5
+    hostname: node1
+    environment:
+      EPOCH_CONFIG: /home/epoch/epoch.yaml
+    command: >
+       bin/aeternity console -noinput -aehttp enable_debug_endpoints true
+    volumes:
+      - ./docker/aeternity_node1_mean15.yaml:/home/epoch/epoch.yaml
+      - ./docker/keys/node1:/home/epoch/node/keys
+      - node1_db:/home/epoch/node/data/mnesia
+
+  node2:
+    image: aeternity/aeternity:v5.0.0-rc.5
+    hostname: node2
+    environment:
+      EPOCH_CONFIG: /home/epoch/epoch.yaml
+    command: >
+       bin/aeternity console -noinput -aehttp enable_debug_endpoints true
+    volumes:
+      - ./docker/aeternity_node2_mean15.yaml:/home/epoch/epoch.yaml
+      - ./docker/keys/node2:/home/epoch/node/keys
+      - node2_db:/home/epoch/node/data/mnesia
+
+  node3:
+    image: aeternity/aeternity:v5.0.0-rc.5
+    hostname: node3
+    environment:
+      EPOCH_CONFIG: /home/epoch/epoch.yaml
+    command: >
+       bin/aeternity console -noinput -aehttp enable_debug_endpoints true
+    volumes:
+      - ./docker/aeternity_node3_mean15.yaml:/home/epoch/epoch.yaml
+      - ./docker/keys/node3:/home/epoch/node/keys
+      - node3_db:/home/epoch/node/data/mnesia
+
+  proxy:
+    image: nginx:1.13.8
+    hostname: proxy
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+      - "3003:3003"
+
+    volumes:
+      - ./docker/nginx-default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx-cors.conf:/etc/nginx/cors.conf
+      - ./docker/nginx-ws.conf:/etc/nginx/ws.conf
+
+  
+
+volumes:
+  node1_db:
+  node1_keys:
+  node2_db:
+  node2_keys:
+  node3_db:
+  node3_keys:
+    

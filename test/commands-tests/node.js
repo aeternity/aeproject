@@ -392,7 +392,7 @@ describe("AEproject Node and Compiler Tests", async () => {
     })
 
     describe("AEproject node - handle if nodes of other project are running", () => {
-        const nodeStorePath = path.resolve(process.cwd() + '/.aeproject-node-store/.node-store.json');
+        const nodeStorePath = path.resolve(process.cwd() + (constants.nodeStoreFolder + '/.node-store.json'));
         let dockerConfig = '/docker-compose.yml';
         let compilerConfig = '/docker-compose.compiler.yml';
         let nodeStore;
@@ -503,14 +503,14 @@ describe("AEproject Node and Compiler Tests", async () => {
             return container;
         }
 
-        afterEach(async () => {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-        })
+        // afterEach(async () => {
+        //     await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        // })
 
-        after(async () => {
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
-            fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
-        })
+        // after(async () => {
+        //     fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        //     fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
+        // })
     })
 
     if (isWindowsPlatform) {
