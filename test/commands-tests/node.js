@@ -257,6 +257,7 @@ describe.only("AEproject Node and Compiler Tests", async () => {
         })
 
         after(async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             process.chdir(mainDir)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
