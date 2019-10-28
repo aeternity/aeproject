@@ -42,7 +42,7 @@ async function run (option) {
 
     let result = await validator.unpackAndVerify(option.tx, network.networkId);
 
-    await processNonceInfo(network, result.tx.ownerId, result.tx.nonce)
+    await processNonceInfo(network, result.tx.ownerId ? result.tx.ownerId : result.tx.senderId, result.tx.nonce)
     // await processNonceInfo(network, 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU', result.tx.nonce);
 
     printValidationResult(result);
@@ -52,6 +52,12 @@ async function run (option) {
 }
 
 async function processNonceInfo (network, publicKey, nonce) {
+
+    if (!publicKey) {
+        print('error', 'Nonce', 'Missing public key. Please provide raw tx to aeproject team to investigate the case.');
+        return;
+    }
+
     const url = `${ network.url }/v2/accounts/${ publicKey }`;
     
     try {
