@@ -1,23 +1,12 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 jobs:
   build:
-    branches:
-      only:
-        - update/migrate-to-circleci
     docker:
-      # specify the version you desire here
       - image: circleci/node:9.5.0
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
     working_directory: ~/repo
+    environment: 
+      - DOCKER_COMPOSE_VERSION=1.20.0
 
     steps:
       - checkout
@@ -28,12 +17,35 @@ jobs:
             - v1-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-      - run : npm install
+
+      - run: 
+          command:
+            - sudo rm /usr/local/bin/docker-compose
+            - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+            - chmod +x docker-compose
+            - sudo mv docker-compose /usr/local/bin
+            - npm install -g lerna
+            - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
+            - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            - sudo apt-get update -qq
+            - sudo apt-get install -y -qq yarn
+
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+          yarn: true
+
+      - run:
+        - npm install
+        - lerna bootstrap
+        - cd packages/aeproject-cli
+        - yarn link
+        - cd ..
+        - cd aeproject-lib
+        - npm run tsc
+        - cd ../..
 
       # run tests!
-      - run: yarn test
+      - run: npm test
