@@ -354,13 +354,6 @@ describe("Deployed contract instance additional functionality", async () => {
 
             assert.equal(addListResult.decodedResult.length, humanIds.length, "Error when calling and setting functions with list arguments")
         })
-
-        it("Spend tx should be successful", async () => {
-            let spendTx = await fromInstance.spend(1, randomAEAddress);
-            
-            assert.isOk(spendTx.hash, "Result is not expected one.");
-            assert.isOk(spendTx.tx, "Result is not expected one.");
-        });
     });
 
     describe("Test 'spend' functionality", async () => {
