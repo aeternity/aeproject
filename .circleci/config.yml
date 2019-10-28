@@ -5,6 +5,9 @@
 version: 2
 jobs:
   build:
+    branches:
+      only:
+        - update/migrate-to-circleci
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
