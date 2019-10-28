@@ -59,12 +59,11 @@ async function stop () {
 }
 
 async function info (options) {
-    let result;
     let nodePath = nodeService.getNodePath()
     let compilerPath = nodeService.getCompilerPath()
-    
-    if (nodePath && compilerPath) {        
-        result = await spawn('docker-compose', [
+
+    if (nodePath && compilerPath) {
+        return spawn('docker-compose', [
             '-f',
             `${ nodePath }`,
             '-f',
@@ -72,21 +71,19 @@ async function info (options) {
             'ps'
         ], options);
     } else if (nodePath) {
-        result = await spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
+        return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
     } else if (compilerPath) {
-        result = await spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
-    } else {
-        
-        result = await spawn('docker-compose', [
-            '-f',
-            `${ 'docker-compose.yml' }`,
-            '-f',
-            `${ 'docker-compose.compiler.yml' }`,
-            'ps'
-        ], options);
+        return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
     }
 
-    return result
+    return spawn('docker-compose', [
+        '-f',
+        `${ 'docker-compose.yml' }`,
+        '-f',
+        `${ 'docker-compose.compiler.yml' }`,
+        'ps'
+    ], options);
+
 }
 
 module.exports = {

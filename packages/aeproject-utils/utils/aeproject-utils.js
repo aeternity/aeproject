@@ -174,7 +174,7 @@ function readErrorSpawnOutput (spawnResult) {
 
 function readSpawnOutput (spawnResult) {
 
-    if (!spawnResult || !spawnResult.stdout || spawnResult.stdout === '') {
+    if (!spawnResult.stdout || spawnResult.stdout === '' || !spawnResult) {
         return '';
     }
 
