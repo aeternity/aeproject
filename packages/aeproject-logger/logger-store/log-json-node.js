@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs-extra')
 
-const storageDir = '../../../.aeproject-node-store/.node-store.json'
+const storageDir = '../.aeproject-node-store/.node-store.json'
 const dockerConfig = '/docker-compose.yml'
 const compilerConfig = '/docker-compose.compiler.yml'
 
