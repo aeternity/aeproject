@@ -23,9 +23,6 @@ let balanceOptions = {
     format: false
 }
 
-const util = require('util');
-const cliExec = util.promisify(require('child_process').exec);
-
 let mainDir = process.cwd();
 let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
 
@@ -42,16 +39,6 @@ const waitForContainerOpts = {
 
 describe.only("AEproject Node and Compiler Tests", async () => {
 
-    // TO DO this to be removed if not neccessary
-    async function linkLocalUtilsToProject () {
-        process.chdir(path.resolve(nodeTestDir));
-
-        await cliExec('yarn link aeproject-utils')
-        await cliExec('yarn link aeproject-logger')
-
-        process.chdir(mainDir)
-    }
-
     describe('AEproject Node', () => {
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -61,9 +48,6 @@ describe.only("AEproject Node and Compiler Tests", async () => {
 
         it('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
-            
-            // TO DO this to be removed if not neccessary
-            // await linkLocalUtilsToProject()
             process.chdir(path.resolve(nodeTestDir))
             
             let running = await waitForContainer(waitForContainerOpts.dockerImage);
