@@ -10,9 +10,6 @@ let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
 let match;
 
-let { LogNodeService } = require('aeproject-logger')
-let nodeService = new LogNodeService(process.cwd())
-
 const {
     info
 } = require('./node-utils');
@@ -267,7 +264,6 @@ function normalizeCompilerUrl (url) {
 }
 
 async function waitForContainer (dockerImage, options) {
-    nodeService = new LogNodeService(process.cwd())
     
     try {
         let running = false;

@@ -294,8 +294,8 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe("AEproject node - handle if nodes of other project are running", () => {
-        const nodeStorePath = path.resolve(process.cwd() + '/.aeproject-node-store/.node-store.json');
+    describe.only("AEproject node - handle if nodes of other project are running", () => {
+        const nodeStorePath = path.resolve(process.cwd() + (constants.nodeStoreFolder + '/.node-store.json'));
         let dockerConfig = '/docker-compose.yml';
         let compilerConfig = '/docker-compose.compiler.yml';
         let nodeStore;
@@ -329,7 +329,8 @@ describe("AEproject Node and Compiler Tests", () => {
 
             nodeStore = await fs.readJson(nodeStorePath)
 
-            assert.isTrue(Object.keys(nodeStore).length === 0 && nodeStore.constructor === Object, "log file has not been cleared properly");
+            assert.isTrue(nodeStore.node === '', "log file has not been cleared properly");
+            assert.isTrue(nodeStore.compiler === '', "log file has not been cleared properly");
         })
 
         it('Should run AEproject node from one project directory and stop it from another', async () => {

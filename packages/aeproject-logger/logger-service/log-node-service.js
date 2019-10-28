@@ -1,8 +1,8 @@
 const LogJSONNode = require('../logger-store/log-json-node');
 
 class LogNodeService {
-    constructor (_path) {
-        this._nodeStore = LogJSONNode(_path)
+    constructor () {
+        this._nodeStore = LogJSONNode()
     }
 
     getNodePath () {

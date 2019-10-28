@@ -39,8 +39,6 @@ const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
 const localCompilerConfig = nodeConfig.compilerConfiguration;
 const nodeConfiguration = nodeConfig.nodeConfiguration;
-let { LogNodeService } = require('aeproject-logger')
-let nodeService;
 
 let balanceOptions = {
     format: false
@@ -156,7 +154,6 @@ async function displayInfoOnly (_info, running) {
 }
 
 async function run (option) {
-    nodeService = new LogNodeService(process.cwd());
 
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;

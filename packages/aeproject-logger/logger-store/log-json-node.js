@@ -1,47 +1,60 @@
 const path = require('path')
 const fs = require('fs-extra')
 
-const storageDir = '../../.aeproject-node-store/.node-store.json'
-const dockerConfig = 'docker-compose.yml'
-const compilerConfig = 'docker-compose.compiler.yml'
+const storageDir = '../.aeproject-node-store/.node-store.json'
+const dockerConfig = '/docker-compose.yml'
+const compilerConfig = '/docker-compose.compiler.yml'
 
 let instance
 
 class LogJSONNode {
-    constructor (_path) {
-        this.nodeStore = path.resolve(`${ path.dirname(require.main.filename) }/${ storageDir }`)
-        
-        this.dockerComposePath = _path + '/';
-        this.compilerPath = _path + '/'
+    constructor () {
+        this.nodeStorePath = path.resolve(__dirname, storageDir);
 
         if (this.ensureStoreExists()) {
-            
-            fs.outputJsonSync(this.nodeStore, {
-                node: this.dockerComposePath,
-                compiler: this.compilerPath
+            fs.outputJsonSync(this.nodeStorePath, {
+                node: '',
+                compiler: ''
             });
         }
 
-        this.store = require(this.nodeStore)
+        this.store = require(this.nodeStorePath)
     }
 
     ensureStoreExists () {
-        return !fs.existsSync(this.nodeStore)
+        return !fs.existsSync(this.nodeStorePath)
     }
 
     writeNodePathToStore () {
-        this.store.node = this.dockerComposePath + dockerConfig
+        this.store.node = path.resolve(process.cwd() + dockerConfig)
         this.save()
     }
 
     writeCompilerPathToStore () {
-        this.store.compiler = this.compilerPath + compilerConfig
+        this.store.compiler = path.resolve(process.cwd() + compilerConfig)
         this.save()
     }
 
     writeNodeAndCompilerToStore () {
         this.writeNodePathToStore()
         this.writeCompilerPathToStore()
+    }
+
+    deleteCompilerPathFromStore () {
+        this.store.compiler = "";
+        this.save()
+    }
+
+    deleteNodePathFromStore () {
+        this.store.node = "";
+        this.save()
+    }
+    clearPaths () {
+        this.store = {
+            node: '',
+            compiler: ''
+        }
+        this.save()
     }
 
     getNodePath () {
@@ -51,19 +64,15 @@ class LogJSONNode {
     getCompilerPath () {
         return this.store.compiler
     }
-    clearPaths () {
-        this.store = {}
-        this.save()
-    }
 
     save () {
-        fs.outputJsonSync(this.nodeStore, this.store);
+        fs.outputJsonSync(this.nodeStorePath, this.store);
     }
 
-    static getInstance (_path) {
+    static getInstance () {
 
         if (!instance) {
-            instance = new LogJSONNode(_path)
+            instance = new LogJSONNode()
         }
 
         return instance
@@ -71,6 +80,6 @@ class LogJSONNode {
 
 }
 
-module.exports = function (_path) {
-    return LogJSONNode.getInstance(_path)
+module.exports = function () {
+    return LogJSONNode.getInstance()
 }

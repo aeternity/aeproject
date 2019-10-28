@@ -1,5 +1,5 @@
 let { LogNodeService } = require('aeproject-logger')
-let nodeService = new LogNodeService(process.cwd())
+let nodeService = new LogNodeService()
 const {
     spawn
 } = require('promisify-child-process');
@@ -62,7 +62,7 @@ async function info (options) {
     let result;
     let nodePath = nodeService.getNodePath()
     let compilerPath = nodeService.getCompilerPath()
-
+    
     if (nodePath && compilerPath) {        
         result = await spawn('docker-compose', [
             '-f',

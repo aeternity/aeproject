@@ -16,6 +16,7 @@
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
 	"exportAEprojectConfigTestsFolderPath": "/test/commands-tests/exportAEprojectConfigTestFolder",
 	"nodeDockerFilesFolderPath": "./test/node-docker-compose-files",
+	"nodeStoreFolder": "/packages/aeproject-logger/.aeproject-node-store",
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
