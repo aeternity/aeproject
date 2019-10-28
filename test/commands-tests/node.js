@@ -294,7 +294,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    describe.only("AEproject node - handle if nodes of other project are running", () => {
+    describe("AEproject node - handle if nodes of other project are running", () => {
         const nodeStorePath = path.resolve(process.cwd() + (constants.nodeStoreFolder + '/.node-store.json'));
         let dockerConfig = '/docker-compose.yml';
         let compilerConfig = '/docker-compose.compiler.yml';
