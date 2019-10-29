@@ -115,7 +115,8 @@ class Deployer {
                 deployedContract = yield contractInstance.deploy(initState, options);
                 // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
                 yield generateInstancesWithWallets(this.network, deployedContract.address);
-                let contractInstanceWrapperFuncs = yield generateFunctionsFromSmartContract(contractInstance);
+                let additionalFuncs = addSpendFuncToContractInstance(contractInstance.methods, client);
+                let contractInstanceWrapperFuncs = yield generateFunctionsFromSmartContract(additionalFuncs);
                 deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
                 let regex = new RegExp(/[\w]+.aes$/);
                 contractFileName = regex.exec(contractPath);
@@ -165,9 +166,8 @@ function generateInstancesWithWallets(network, contractAddress) {
         }
     });
 }
-function generateFunctionsFromSmartContract(contractInstance) {
+function generateFunctionsFromSmartContract(contractFunctions) {
     return __awaiter(this, void 0, void 0, function* () {
-        let contractFunctions = contractInstance.methods;
         contractFunctions['from'] = function (userWallet) {
             return __awaiter(this, void 0, void 0, function* () {
                 let walletToPass = userWallet;
@@ -175,11 +175,27 @@ function generateFunctionsFromSmartContract(contractInstance) {
                     walletToPass = walletToPass.secretKey;
                 }
                 const keyPair = yield aeproject_utils_1.default.generateKeyPairFromSecretKey(walletToPass);
+                // iteration of origin deployed instance
+                // when we create new 'client', it does not have deployed tx info and additional functions like 'spend'
+                // if function or property is missing from new 'client' we assigned it
+                for (let funcName in contractFunctions) {
+                    if (!instancesMap[keyPair.publicKey].methods[funcName]) {
+                        instancesMap[keyPair.publicKey].methods[funcName] = contractFunctions[funcName];
+                    }
+                }
                 return instancesMap[keyPair.publicKey].methods;
             });
         };
         return contractFunctions;
     });
+}
+function addSpendFuncToContractInstance(contractFunctions, client) {
+    contractFunctions['spend'] = function (amount, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return client.spend(amount, to);
+        });
+    };
+    return contractFunctions;
 }
 function printTxNetworkInfo(info, network) {
     console.log('[INFO] raw Tx:');

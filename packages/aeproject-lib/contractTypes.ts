@@ -93,6 +93,18 @@ export type Client = {
     */
     getTxInfo(hash: number): Promise<object>;
 
+    /**
+    * Send tokens to another account
+    * @function spend
+    * @instance
+    * @abstract
+    * @category async
+    * @rtype (amount: number, to: string) => tx: Object
+    * @param {number} hash - Transaction hash
+    * @return {Object} Transaction
+    */
+    spend(amount: number, to: string): Promise<object>;
+
 
     /**
     * Generate contract ACI object with predefined js methods for contract usage
