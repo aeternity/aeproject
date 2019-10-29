@@ -20,7 +20,6 @@ async function start (option) {
 async function stop () {
 
     if (nodeService.getNodePath() && nodeService.getCompilerPath()) {
-
         spawn('docker-compose', [
             '-f',
             `${ nodeService.getNodePath() }`,
@@ -43,8 +42,7 @@ async function stop () {
         ]);
 
         print('===== Node was successfully stopped! =====');
-    } else if (nodeService.getCompilerPath()) {
-
+    } else {
         spawn('docker-compose', [
             '-f',
             `${ nodeService.getCompilerPath() }`,
@@ -52,6 +50,7 @@ async function stop () {
             '-v',
             '--remove-orphans'
         ]);
+
         print('===== Compiler was successfully stopped! =====');
     }
 
