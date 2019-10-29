@@ -4,9 +4,7 @@ import logStoreService from 'aeproject-logger';
 import config from 'aeproject-config';
 import nodeConfig from 'aeproject-config';
 import { KeyPair, ParsedContractFunction, AciFunctions, DeployedContract, Info, TxInfo, Client, ContractInstance, Network } from "./contractTypes";
-import { format } from 'path';
 
-const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
     ttl: ttl
@@ -93,6 +91,7 @@ export class Deployer {
     async deploy(contractPath: string, initState: Array<string | number> = [], options: object = opts): Promise<DeployedContract> {
 
         this.network.compilerUrl = this.compilerUrl;
+
         client = await utils.getClient(this.network, this.keypair);
         contract = await this.readFile(contractPath);
 
@@ -137,11 +136,19 @@ export class Deployer {
             }
 
         } catch (e) {
+
             isSuccess = false;
             error = e;
             info.error = e.message;
             info.initState = initState;
             info.options = JSON.stringify(options);
+            
+            if (e.rawTx) {
+                info.rawTx = e.rawTx;
+                info.verifiedTx = await e.verifyTx(e.rawTx);
+
+                printTxNetworkInfo(info, this.network);
+            }
         }
 
         logStoreService.logAction(info);
@@ -156,8 +163,6 @@ export class Deployer {
             let newInstanceWithAddedAdditionalFunctionality = Object.assign(contractInstanceWrapperFuncs, deployedContract);
             return newInstanceWithAddedAdditionalFunctionality;
         }
-
-
     }
 }
 
@@ -185,5 +190,15 @@ async function generateFunctionsFromSmartContract(contractInstance: ContractInst
 
     }
     return contractFunctions;
+}
+
+function printTxNetworkInfo (info: Info, network: Network){
+    console.log('[INFO] raw Tx:');
+    console.log(info.rawTx);
+    console.log('[INFO] verified Tx:');
+    console.log(info.verifiedTx);
+    console.log('[INFO] network');
+    console.log(network);
+    console.log();
 }
 

@@ -2,6 +2,8 @@ const colors = require('./colors-utils');
 const Table = require('cli-table');
 const moment = require('moment');
 
+const TABLE_RAW_LENGTH = 100;
+
 const printReportTable = (recordActions) => {
 
     const table = new Table();
@@ -14,11 +16,11 @@ const printReportTable = (recordActions) => {
             { 'Public Key': `${action.publicKey}` },
             { 'Executor': `${action.deployerType}` },
             { 'Name or Label': `${colors.colorName(action.nameOrLabel)}` },
-            { 'Tx Hash': `${action.transactionHash}` },
+            { 'Tx Hash': `${action.transactionHash ? action.transactionHash : ''}` },
             { 'Status': `${getReadableStatus(action.status)}` },
-            { 'Gas Price': `${action.gasPrice}` },
-            { 'Gas Used': `${action.gasUsed}` },
-            { 'Result': `${action.result}` },
+            { 'Gas Price': `${action.gasPrice ? action.gasPrice : ''}` },
+            { 'Gas Used': `${action.gasUsed ? action.gasUsed : ''}` },
+            { 'Result': `${action.result ? action.result : ''}` },
             { 'Network ID': `${action.networkId}` }
         );
 
@@ -26,7 +28,9 @@ const printReportTable = (recordActions) => {
             table.push(
                 { 'Error': `${action.error}` },
                 { 'Init State': `${action.initState}` },
-                { 'Options': `${action.options}` }
+                { 'Options': `${action.options}` },
+                { 'Raw Tx': `${action.rawTx ? sliceText(action.rawTx) : ''}` },
+                { 'Verified Tx': `${ action.verifiedTx ? sliceText(JSON.stringify(action.verifiedTx)) : '' }` }
             )
         }
 
@@ -45,6 +49,16 @@ const getReadableStatus = (status) => {
 
     return `${colors.colorFailure('Fail')}`
 };
+
+function sliceText(text) {
+    let textPieces = [];
+
+    for (let i = 0; i < text.length; i += TABLE_RAW_LENGTH) {
+        textPieces.push(text.substr(i, TABLE_RAW_LENGTH));
+    }
+
+    return textPieces.join('\n');
+}
 
 module.exports = {
     printReportTable,

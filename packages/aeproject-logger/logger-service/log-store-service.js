@@ -66,35 +66,10 @@ class LogStoreService {
         if (!this.isInitied) {
             return;
         }
-        let {
-            deployerType,
-            nameOrLabel,
-            transactionHash,
-            status,
-            gasPrice,
-            gasUsed,
-            result,
-            networkId,
-            error,
-            initState,
-            options,
-            publicKey
-        } = actionInfo;
 
         const record = {
             eventTimestamp: Date.now(),
-            deployerType,
-            nameOrLabel,
-            transactionHash,
-            status,
-            gasPrice,
-            gasUsed,
-            result,
-            networkId,
-            error,
-            initState,
-            options,
-            publicKey
+            ...actionInfo
         }
 
         const currentRecord = this.getCurrentWorkingRecord();
