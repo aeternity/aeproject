@@ -1,5 +1,7 @@
 language:
-- node_js:
+  - node_js
+node_js:
+  - 9.5.0
 before_install:
   # Install certain version of docker-compose
   - sudo rm /usr/local/bin/docker-compose
@@ -17,12 +19,7 @@ cache:
 install:
   - npm install
   - lerna bootstrap
-  - cd packages/aeproject-cli
-  - yarn link
-  - cd ..
-  - cd aeproject-lib
-  - npm run tsc
-  - cd ../..
+  - npm run develop
 services:
   - docker
 script:

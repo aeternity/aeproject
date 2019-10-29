@@ -23,7 +23,6 @@ const fs = __importStar(require("fs"));
 const aeproject_logger_1 = __importDefault(require("aeproject-logger"));
 const aeproject_config_1 = __importDefault(require("aeproject-config"));
 const aeproject_config_2 = __importDefault(require("aeproject-config"));
-const decodedHexAddressToPublicAddress = aeproject_utils_1.default.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
     ttl: ttl
@@ -137,6 +136,11 @@ class Deployer {
                 info.error = e.message;
                 info.initState = initState;
                 info.options = JSON.stringify(options);
+                if (e.rawTx) {
+                    info.rawTx = e.rawTx;
+                    info.verifiedTx = yield e.verifyTx(e.rawTx);
+                    printTxNetworkInfo(info, this.network);
+                }
             }
             aeproject_logger_1.default.logAction(info);
             if (!isSuccess) {
@@ -185,12 +189,13 @@ function generateFunctionsFromSmartContract(contractFunctions) {
         return contractFunctions;
     });
 }
-function addSpendFuncToContractInstance(contractFunctions, client) {
-    contractFunctions['spend'] = function (amount, to) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return client.spend(amount, to);
-        });
-    };
-    return contractFunctions;
+function printTxNetworkInfo(info, network) {
+    console.log('[INFO] raw Tx:');
+    console.log(info.rawTx);
+    console.log('[INFO] verified Tx:');
+    console.log(info.verifiedTx);
+    console.log('[INFO] network');
+    console.log(network);
+    console.log();
 }
 //# sourceMappingURL=aeproject-deployer.js.map

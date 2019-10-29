@@ -61,7 +61,9 @@ export type Info = {
     networkId: string;
     error?: string;
     initState?: Array<string | number>;
-    options?: Object
+    options?: Object;
+    rawTx?: string; 
+    verifiedTx?: Object;
 }
 
 export type TxInfo = {
