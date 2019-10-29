@@ -16,7 +16,7 @@
  */
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 const {
-  print
+    print
 } = require('aeproject-utils');
 const contractUtils = require('aeproject-utils');
 const Mocha = require("mocha");

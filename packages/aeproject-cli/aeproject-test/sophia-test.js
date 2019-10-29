@@ -27,7 +27,7 @@ const run = async function (paths = [], testFolder = process.cwd()) {
         console.log(paths);
         return;
     }
-
+    
     const contractsFolder = `${ testFolder }/contracts/`;
 
     if (!fs.existsSync(contractsFolder)) {

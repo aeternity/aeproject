@@ -61,7 +61,9 @@ export type Info = {
     networkId: string;
     error?: string;
     initState?: Array<string | number>;
-    options?: Object
+    options?: Object;
+    rawTx?: string; 
+    verifiedTx?: Object;
 }
 
 export type TxInfo = {
@@ -90,6 +92,18 @@ export type Client = {
     * @return {Object} Transaction
     */
     getTxInfo(hash: number): Promise<object>;
+
+    /**
+    * Send tokens to another account
+    * @function spend
+    * @instance
+    * @abstract
+    * @category async
+    * @rtype (amount: number, to: string) => tx: Object
+    * @param {number} hash - Transaction hash
+    * @return {Object} Transaction
+    */
+    spend(amount: number, to: string): Promise<object>;
 
 
     /**

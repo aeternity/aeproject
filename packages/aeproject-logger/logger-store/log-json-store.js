@@ -13,7 +13,9 @@ class LogJSONStore {
     constructor (path) {
         this.path = `${ process.cwd() }/${ path }`;
         if (!fs.existsSync(path)) {
-            fs.outputJsonSync(path, { data: {} });
+            fs.outputJsonSync(path, {
+                data: {}
+            });
         }
         this.store = require(this.path);
     }
