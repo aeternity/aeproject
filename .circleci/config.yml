@@ -2,43 +2,37 @@ version: 2
 jobs:
   build:
     docker:
-        branches:		
-          only:		
-            - update/migrate-to-circleci
-      - image: circleci/node:9.5.0
-
-    working_directory: ~/repo
-
+    - image: circleci/node:9.5.0
+    branches:
+      only:
+        - update/migrate-to-circleci
+          
     steps:
       - checkout
 
-      - run: 
-        - sudo rm /usr/local/bin/docker-compose
-        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - chmod +x docker-compose
-        - sudo mv docker-compose /usr/local/bin
-        - npm install -g lerna
-        - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
-        - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-        - sudo apt-get update -qq
-        - sudo apt-get install -y -qq yarn
+      - run:
+          command: |
+            #sudo rm /usr/local/bin/docker-compose
+            sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+            sudo chmod +x docker-compose
+            sudo mv docker-compose /usr/local/bin
+            sudo npm install -g lerna
+            sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
+            echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq yarn
 
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-          yarn: true
 
       - run:
-        - npm install
-        - lerna bootstrap
-        - cd packages/aeproject-cli
-        - yarn link
-        - cd ..
-        - cd aeproject-lib
-        - npm run tsc
-        - cd ../..
+          command: |
+            sudo npm install
+            lerna bootstrap
+            cd packages/aeproject-cli
+            yarn link
+            cd ..
+            cd aeproject-lib
+            npm run tsc
+            cd ../..
 
       # run tests!
       - run: npm test
