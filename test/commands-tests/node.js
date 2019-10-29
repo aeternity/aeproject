@@ -36,7 +36,7 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", () => {
+describe.only("AEproject Node and Compiler Tests", () => {
 
     describe('AEproject Node', () => {
         before(async () => {
@@ -189,7 +189,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
     })
 
-    xdescribe("AEproject Node -- allocated port's tests", () => {
+    describe("AEproject Node -- allocated port's tests", () => {
 
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)

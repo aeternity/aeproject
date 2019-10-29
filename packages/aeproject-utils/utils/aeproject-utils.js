@@ -174,7 +174,7 @@ function readErrorSpawnOutput (spawnResult) {
 
 function readSpawnOutput (spawnResult) {
 
-    if (!spawnResult.stdout || spawnResult.stdout === '' || !spawnResult) {
+    if (!spawnResult || !spawnResult.stdout || spawnResult.stdout === '') {
         return '';
     }
 
@@ -302,7 +302,7 @@ async function waitForContainer (dockerImage, options) {
 }
 
 function checkForMissingDirectory (e) {
-    return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'))
+    return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory') > 0)
 }
 
 module.exports = {
