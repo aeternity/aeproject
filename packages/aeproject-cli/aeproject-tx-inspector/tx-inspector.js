@@ -32,9 +32,9 @@ async function run (option) {
     if (option.tx.trim().split('_')[0] !== 'tx' || !base64regex.test(option.tx.trim().slice(3))) {
         throw new Error('Invalid Transaction Hash');
     }
-    
+
     const network = utils.getNetwork(option.network ? option.network : 'local', option.networkId);
-    
+
     const validator = await TxValidator({
         url: network.url,
         internalUrl: network.url + '/internal',
@@ -44,7 +44,7 @@ async function run (option) {
     let result = await validator.unpackAndVerify(option.tx, network.networkId);
 
     let publicKey = getPublicKeyFromTx(result.txType, result.tx);
-    
+
     await processNonceInfo(network, publicKey, result.tx.nonce);
 
     printValidationResult(result);
@@ -55,67 +55,81 @@ async function run (option) {
 
 function getPublicKeyFromTx (txType, tx) {
     switch (txType) {
-        case 'contractCallTx': return tx.callerId;
+        case 'contractCallTx':
+            return tx.callerId;
 
         case 'gaAttach':
-        case 'contractCreateTx': return tx.ownerId;
+        case 'contractCreateTx':
+            return tx.ownerId;
 
         case 'oracleQuery':
-        case 'spendTx': return tx.senderId;
+        case 'spendTx':
+            return tx.senderId;
 
         case 'namePreClaimTx':
         case 'nameClaimTx':
         case 'nameUpdateTx':
         case 'nameTransfer':
         case 'nameRevokeTx':
-        case 'oracleRegister': return tx.accountId;
+        case 'oracleRegister':
+            return tx.accountId;
 
         case 'contract':
-        case 'channelOffChainCreateContract': return tx.owner
+        case 'channelOffChainCreateContract':
+            return tx.owner
 
-        case 'gaMeta': return tx.gaId;
+        case 'gaMeta':
+            return tx.gaId;
 
-        case 'oracleExtend': return tx.oracleId;
+        case 'oracleExtend':
+            return tx.oracleId;
 
         case 'channelCreate':
-        case 'channel': return tx.initiator;
+        case 'channel':
+            return tx.initiator;
 
         case 'channelDeposit':
         case 'channelCloseMutual':
         case 'channelCloseSolo':
         case 'channelSlash':
         case 'channelSettle':
-        case 'channelSnapshotSolo': return tx.fromId;
+        case 'channelSnapshotSolo':
+            return tx.fromId;
 
-        case 'channelWithdraw': return tx.toId;
+        case 'channelWithdraw':
+            return tx.toId;
 
         case 'channelOffChainUpdateTransfer':
         case 'channelOffChainUpdateDeposit':
-        case 'channelOffChainUpdateWithdrawal': return tx.from;
+        case 'channelOffChainUpdateWithdrawal':
+            return tx.from;
 
-        case 'channelOffChainCallContract': return tx.caller;
+        case 'channelOffChainCallContract':
+            return tx.caller;
+        default:
+            print('error', 'Nonce', 'Public key cannot be extracted, please send raw tx to aeproject team.');
+            return '';
     }
 }
 
 async function processNonceInfo (network, publicKey, nonce) {
 
     if (!publicKey) {
-        print('error', 'Nonce', 'Missing public key. Please provide raw tx to aeproject team to investigate the case.');
         return;
     }
 
     const url = `${ network.url }/v2/accounts/${ publicKey }`;
-    
+
     try {
         let result = await axios.get(url);
-        
+
         if (result.data) {
             const msg = `Current account nonce is '${ parseInt(result.data.nonce) }', nonce used in tx is '${ parseInt(nonce) }'.`;
             print(parseInt(nonce) > parseInt(result.data.nonce) ? 'error' : 'info', 'Nonce', msg);
         }
 
     } catch (error) {
-        
+
         if (error.response.status === 404 && error.response.data && error.response.data.reason) {
             print('warning', 'Nonce', `${ error.response.data.reason }`);
         } else {
@@ -126,7 +140,7 @@ async function processNonceInfo (network, publicKey, nonce) {
 
 function print (type, txKey, msg) {
     switch (type.toLowerCase()) {
-        case 'error': 
+        case 'error':
             console.log("\x1b[31m", `[${ type.toUpperCase() }] \x1b[0m '${ txKey }' - ${ msg }`);
             break;
         case 'warning':
