@@ -24,7 +24,7 @@ const contractCallTx = 'tx_+QFpCwH4QrhADdLEBzB9yxB+owNtaD4IsrNbV2FhLRSc3PDwfYlnZ
 
 */
 
-describe.only('Transaction inspector tests', async function () {
+describe('Transaction inspector tests', async function () {
     before(async function () {
         fs.ensureDirSync(`.${ testFolder }`)
 
