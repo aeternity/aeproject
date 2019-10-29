@@ -34,6 +34,7 @@ async function run (option) {
     }
     
     const network = utils.getNetwork(option.network ? option.network : 'local', option.networkId);
+    
     const validator = await TxValidator({
         url: network.url,
         internalUrl: network.url + '/internal',
@@ -42,13 +43,87 @@ async function run (option) {
 
     let result = await validator.unpackAndVerify(option.tx, network.networkId);
 
-    await processNonceInfo(network, result.tx.ownerId ? result.tx.ownerId : result.tx.senderId, result.tx.nonce)
+    let publicKey = getPublicKeyFromTx(result.txType, result.tx);
+    
+    await processNonceInfo(network, publicKey, result.tx.nonce)
     // await processNonceInfo(network, 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU', result.tx.nonce);
 
     printValidationResult(result);
 
     delete result.validation;
     console.log(result);
+}
+
+function getPublicKeyFromTx (txType, tx) {
+    switch (txType) {
+        case 'contractCallTx': return tx.callerId;
+
+        // GA_ATTACH_TX - ownerId - gaAttach
+        case 'gaAttach':
+        case 'contractCreateTx': return tx.ownerId;
+
+        // ORACLE_QUERY_TX - senderId
+        case 'oracleQuery':
+        case 'spendTx': return tx.senderId;
+
+        // NAME_PRE_CLAIM_TX - accountId - namePreClaimTx
+        // NAME_CLAIM_TX - accountId - nameClaimTx
+        // NAME_CLAIM_TX_2 - accountId - nameClaimTx
+        // NAME_UPDATE_TX - accountId - nameUpdateTx
+        // NAME_TRANSFER_TX - accountId - nameTransfer
+        // NAME_REVOKE_TX - accountId - nameRevokeTx
+        // ORACLE_REGISTER_TX - accountId - oracleRegister
+        case 'namePreClaimTx':
+        case 'nameClaimTx':
+        case 'nameUpdateTx':
+        case 'nameTransfer':
+        case 'nameRevokeTx':
+        case 'oracleRegister': return tx.accountId;
+
+        // CONTRACT_TX - contract -  owner 
+        // CHANNEL_OFFCHAIN_CREATE_CONTRACT_TX - channelOffChainCreateContract - owner
+        case 'contract':
+        case 'channelOffChainCreateContract': return tx.owner
+
+
+        // GA_META_TX - gaId - gaMeta
+        case 'gaMeta': return tx.gaId;
+
+        // ORACLE_EXTEND_TX - oracleId - oracleExtend
+        case 'oracleExtend': return tx.oracleId;
+
+        // CHANNEL_CREATE_TX - channelCreate - initiator 
+        // CHANNEL_TX_2 -channel - initiator
+        // CHANNEL_TX - channel = initiator
+        case 'channelCreate':
+        case 'channel': return tx.initiator;
+
+        // CHANNEL_DEPOSIT_TX - channelDeposit - fromId
+        // CHANNEL_CLOSE_MUTUAL_TX - channelCloseMutual - fromId
+        // CHANNEL_CLOSE_SOLO_TX - - channelCloseSolo fromId
+        // CHANNEL_SLASH_TX - channelSlash - fromId
+        // CHANNEL_SETTLE_TX - channelSettle - fromId
+        //  CHANNEL_SNAPSHOT_SOLO_TX - channelSnapshotSolo-  fromId
+        case 'channelDeposit':
+        case 'channelCloseMutual':
+        case 'channelCloseSolo':
+        case 'channelSlash':
+        case 'channelSettle':
+        case 'channelSnapshotSolo': return tx.fromId;
+
+        // CHANNEL_WITHDRAW_TX - toId
+        case 'channelWithdraw': return tx.toId;
+
+        // CHANNEL_OFFCHAIN_UPDATE_TRANSFER_TX - channelOffChainUpdateTransfer - from
+        // CHANNEL_OFFCHAIN_UPDATE_DEPOSIT_TX - channelOffChainUpdateDeposit - from
+        // CHANNEL_OFFCHAIN_UPDATE_WITHDRAWAL_TX - - channelOffChainUpdateWithdrawal from
+        case 'channelOffChainUpdateTransfer':
+        case 'channelOffChainUpdateDeposit':
+        case 'channelOffChainUpdateWithdrawal': return tx.from;
+
+        // CHANNEL_OFFCHAIN_CALL_CONTRACT_TX - caller
+        case 'channelOffChainCallContract': return tx.caller;
+    }
 }
 
 async function processNonceInfo (network, publicKey, nonce) {
