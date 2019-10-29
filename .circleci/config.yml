@@ -27,12 +27,11 @@ jobs:
           command: |
             sudo npm install
             lerna bootstrap
-            cd packages/aeproject-cli
-            yarn link
-            cd ..
-            cd aeproject-lib
+            cd packages/aeproject-lib
             npm run tsc
             cd ../..
+            sudo npm run develop
 
       # run tests!
+      - run: aeproject --version
       - run: npm test
