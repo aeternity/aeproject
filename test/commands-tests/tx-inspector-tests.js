@@ -8,6 +8,8 @@ const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js
 
 const constants = require('../constants.json');
 const testFolder = constants.txInspectorTestFolder;
+const cliCmdOptions = constants.cliCommandsOptions;
+const INSPECT = constants.cliCommands.INSPECT;
 
 let executeOptions = {
     cwd: process.cwd() + testFolder
@@ -34,15 +36,15 @@ describe('Transaction inspector tests', async function () {
 
     describe('Local network', async function () {
         it('Should successfully execute aeproject on local network', async function () {
-            assert.isFulfilled(execute('inspect', [
-                '--tx',
+            assert.isFulfilled(execute(INSPECT, [
+                cliCmdOptions.TX,
                 spendTx
             ]), 'Unable to execute inspect on local network.');
         })
 
         it('Should inspect spend tx correct in local network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 spendTx
             ]);
 
@@ -65,15 +67,14 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
         })
 
         it('Should inspect valid contract create tx in local network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 validContractCreateTx
             ]);
 
@@ -108,8 +109,8 @@ describe('Transaction inspector tests', async function () {
         })
 
         it('Should inspect invalid contract create tx in local network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 invalidContractCreateTx
             ]);
 
@@ -147,8 +148,8 @@ describe('Transaction inspector tests', async function () {
         })
 
         it('Should inspect contract call tx in local network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 contractCallTx
             ]);
 
@@ -188,23 +189,21 @@ describe('Transaction inspector tests', async function () {
         let network = 'testnet';
 
         it('Should successfully execute aeproject on testnet network', async function () {
-            assert.isFulfilled(execute('inspect', [
-                '--tx',
+            assert.isFulfilled(execute(INSPECT, [
+                cliCmdOptions.TX,
                 spendTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]), 'Unable to execute inspect on testnet network.');
         })
 
         it('Should inspect spend tx correct in testnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 spendTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
-
-            // console.log(result);
 
             let expectedResultAsText = `nonce used in tx is '1'.
             'fee' - The fee for the transaction is too low, the minimum fee for this transaction is 16660000000000
@@ -223,21 +222,18 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
         })
 
         it('Should inspect valid contract create tx in testnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 validContractCreateTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
-
-            // console.log(result);
 
             let expectedResultAsText = `nonce used in tx is '11'.
             'ttl' - The TTL is already expired,
@@ -268,21 +264,18 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
         })
 
         it('Should inspect invalid contract create tx in testnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 invalidContractCreateTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
-
-            // console.log(result);
 
             let expectedResultAsText = `'Nonce' - Account not found
             'ttl' - The TTL is already expired
@@ -314,21 +307,18 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
         })
 
         it('Should inspect contract call tx in testnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 contractCallTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
-
-            // console.log(result);
 
             let expectedResultAsText = `nonce used in tx is '24'.
             'nonce' - The nonce is invalid(already used).
@@ -357,7 +347,6 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
@@ -370,23 +359,21 @@ describe('Transaction inspector tests', async function () {
         let network = 'mainnet';
 
         it('Should successfully execute aeproject on mainnet network', async function () {
-            assert.isFulfilled(execute('inspect', [
-                '--tx',
+            assert.isFulfilled(execute(INSPECT, [
+                cliCmdOptions.TX,
                 spendTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]), 'Unable to execute inspect on mainnet network.');
         })
 
         it('Should inspect spend tx correct in mainnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 spendTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
-
-            // console.log(result);
 
             let expectedResultAsText = `nonce used in tx is '1'.
             'fee' - The fee for the transaction is too low, the minimum fee for this transaction is 16660000000000
@@ -405,17 +392,16 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
         })
 
         it('Should inspect valid contract create tx in mainnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 validContractCreateTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
 
@@ -450,21 +436,18 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
         })
 
         it('Should inspect invalid contract create tx in testnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 invalidContractCreateTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
-
-            // console.log(result);
 
             let expectedResultAsText = `'Nonce' - Account not found
             'ttl' - The TTL is already expired,
@@ -496,17 +479,16 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
         })
 
         it('Should inspect contract call tx in testnet network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 contractCallTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 network
             ]);
 
@@ -541,7 +523,6 @@ describe('Transaction inspector tests', async function () {
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
-                    // console.log(x);
                     assert.isOk(false, 'Non expected data')
                 }
             });
@@ -550,12 +531,12 @@ describe('Transaction inspector tests', async function () {
 
     describe('Invalid network', async function () {
         it('Should NOT be able to inspect tx in invalid network', async function () {
-            let result = await execute('inspect', [
-                '--tx',
+            let result = await execute(INSPECT, [
+                cliCmdOptions.TX,
                 contractCallTx,
-                '--network',
+                cliCmdOptions.NETWORK,
                 'localhost:4003',
-                '--networkId',
+                cliCmdOptions.NETWORK_ID,
                 'ae_invalid'
             ]);
 

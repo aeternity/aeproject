@@ -25,7 +25,8 @@
 		"HISTORY": "history",
 		"CONTRACTS": "contracts",
 		"SHAPE": "shape",
-		"CURL": "curl"
+		"CURL": "curl",
+		"INSPECT": "inspect"
 	},
 	"cliSubCommands": {
 		"VUE": "vue",
@@ -45,7 +46,8 @@
 		"SECRET_KEY": "--secretKey",
 		"NETWORK": "--network",
 		"NETWORK_ID": "--networkId",
-		"LIMIT": "--limit"
+		"LIMIT": "--limit",
+		"TX": "--tx"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",
