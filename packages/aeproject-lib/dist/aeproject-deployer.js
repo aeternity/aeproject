@@ -189,6 +189,14 @@ function generateFunctionsFromSmartContract(contractFunctions) {
         return contractFunctions;
     });
 }
+function addSpendFuncToContractInstance(contractFunctions, client) {
+    contractFunctions['spend'] = function (amount, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return client.spend(amount, to);
+        });
+    };
+    return contractFunctions;
+}
 function printTxNetworkInfo(info, network) {
     console.log('[INFO] raw Tx:');
     console.log(info.rawTx);
