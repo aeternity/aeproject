@@ -1,3 +1,4 @@
+const path = require('path');
 const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
@@ -22,6 +23,9 @@ let balanceOptions = {
     format: false
 }
 
+let mainDir = process.cwd();
+let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
+
 let network = utils.config.localhostParams;
 network.compilerUrl = utils.config.compilerUrl
 
@@ -35,7 +39,6 @@ const waitForContainerOpts = {
 describe("AEproject Node and Compiler Tests", () => {
 
     describe('AEproject Node', () => {
-
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
 
@@ -44,8 +47,15 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         it('Should start the node successfully', async () => {
+            
+            // We need to change directory where docker-compose config is located, so we can gather proper information for the node
+            process.chdir(nodeTestDir)
+
             let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
+            
             assert.isTrue(running, "node wasn't started properly");
+
+            process.chdir(mainDir)
         })
 
         it('Should check if the wallets are funded', async () => {
@@ -90,11 +100,7 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         after(async () => {
-
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            if (running) {
-                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            }
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -116,11 +122,8 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         after(async () => {
-
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            if (running) {
-                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            }
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -153,11 +156,35 @@ describe("AEproject Node and Compiler Tests", () => {
         })
 
         afterEach(async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        })
+    })
 
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            if (running) {
-                await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            }
+    describe('Aeproject Node --info', () => {
+        before(async () => {
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+            await execute(constants.cliCommands.INIT, [], executeOptions)
+        })
+
+        it('Should display info that node is not running', async () => {
+            let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
+            assert.isOk(result.indexOf('Node is not running') >= 0, "Nodes are running");
+        })
+
+        it('Should display info for running instances', async () => {
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+            
+            let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
+
+            assert.isOk(result.indexOf('node1') >= 0, "Nodes are running");
+            assert.isOk(result.indexOf('node2') >= 0, "Nodes are running");
+            assert.isOk(result.indexOf('compiler') >= 0, "Nodes are running");
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        })
+        after(async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
@@ -267,6 +294,128 @@ describe("AEproject Node and Compiler Tests", () => {
                 await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             }
             fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+        })
+    })
+
+    describe("AEproject node - handle if nodes of other project are running", () => {
+        const nodeStorePath = path.resolve(process.cwd() + (constants.nodeStoreFolder + '/.node-store.json'));
+        let dockerConfig = '/docker-compose.yml';
+        let compilerConfig = '/docker-compose.compiler.yml';
+        let nodeStore;
+
+        let secondNodeTestDir = process.cwd() + constants.nodeTestsFolderPathSecondProject;
+        before(async () => {
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`) 
+            await execute(constants.cliCommands.INIT, [], executeOptions);
+            fs.ensureDirSync(`.${ constants.nodeTestsFolderPathSecondProject }`) 
+            await execute(constants.cliCommands.INIT, [], { cwd: secondNodeTestDir })
+        })
+        it('Should correctly record where the node and compiler has been run from', async () => {
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+            nodeStore = await fs.readJson(nodeStorePath)
+            
+            assert.isTrue((`${ path.resolve(executeOptions.cwd + dockerConfig) }` === path.resolve(nodeStore.node)), "node path has not been saved correcty");
+            assert.isTrue((`${ path.resolve(executeOptions.cwd + compilerConfig) }` === path.resolve(nodeStore.compiler)), "compiler path has not been saved correcty");
+        })
+
+        it('Should correctly record absolute path where the node has been run from', async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
+            nodeStore = await fs.readJson(nodeStorePath)
+
+            assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(executeOptions.cwd + dockerConfig) }`), "node path has not been saved correcty");
+            assert.isTrue((!nodeStore.compiler), "compiler should be empty");
+        })
+        
+        it('Should clear log file after node has been stopped', async () => {
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
+
+            nodeStore = await fs.readJson(nodeStorePath)
+
+            assert.isTrue(nodeStore.node === '', "log file has not been cleared properly");
+            assert.isTrue(nodeStore.compiler === '', "log file has not been cleared properly");
+        })
+
+        it('Should run AEproject node from one project directory and stop it from another', async () => {
+            // init project from nodeTest directory
+            await execute(constants.cliCommands.NODE, [], executeOptions)
+
+            // try to stop the node from secondNodeTestDir
+            let stopResult = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], { cwd: secondNodeTestDir })
+            let hasNodeStopped = stopResult.indexOf(`Node was successfully stopped`) >= 0;
+
+            assert.isOk(hasNodeStopped)
+        })
+        it('Should run Aeproject node from current folder, if the folder it has previously been run, do not exist anymore', async () => {
+            fs.ensureDirSync(path.resolve(secondNodeTestDir))
+
+            process.chdir(secondNodeTestDir)
+            await execute(constants.cliCommands.NODE, [], { cwd: secondNodeTestDir })
+
+            fs.removeSync(process.cwd())
+
+            await killRunningNodes()
+
+            let startResult = await execute(constants.cliCommands.NODE, [], executeOptions)
+            let hasNodeStarted = startResult.indexOf(`Node was successfully started`) >= 0;
+            let nodeStore = await fs.readJSONSync(nodeStorePath)
+
+            process.chdir(mainDir)
+
+            assert.isOk(hasNodeStarted);
+            assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(nodeTestDir + dockerConfig) }`), "node path has not been updated correcty");
+        })
+
+        async function killRunningNodes () {
+            let dirNameRgx = /[^/]+$/g;
+
+            let pathDir = (process.cwd())
+            let dirName = dirNameRgx.exec(pathDir)[0].toLowerCase()
+
+            try {
+                let res = await exec('docker', ['ps'])
+                let container = getImageNames(res, dirName)
+
+                await shutDownContainers(container)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function shutDownContainers (container) {
+            for (const image in container) {
+                try {
+                    await exec('docker', 'kill', [`${ container[image] }`])
+                } catch (error) {
+                    console.log(Buffer.from(error).toString('utf8'));
+                }
+            }
+        }
+
+        function getImageNames (res, imageStartsWith) {
+            let imageRgxString = `\\b(\\w*${ imageStartsWith }\\w*)\\b`;
+            let imageRgx = new RegExp(imageRgxString, "gim");
+
+            let m
+            let container = []
+
+            do {
+                m = imageRgx.exec(res);
+                if (m) {
+                    container.push(m[0])
+                }
+            } while (m);
+
+            return container;
+        }
+
+        afterEach(async () => {
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+        })
+
+        after(async () => {
+            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+            fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
         })
     })
 

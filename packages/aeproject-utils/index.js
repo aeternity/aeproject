@@ -30,6 +30,7 @@ const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
 const waitForContainer = aeprojectUtils.waitForContainer;
+const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -38,6 +39,11 @@ const generatePublicKeyFromSecretKey = contractUtils.generatePublicKeyFromSecret
 const generateKeyPairFromSecretKey = contractUtils.generateKeyPairFromSecretKey;
 const decodedHexAddressToPublicAddress = contractUtils.decodedHexAddressToPublicAddress;
 const trimAdresseses = contractUtils.trimAdresseses;
+
+const nodeUtils = require('./utils/node-utils');
+const start = nodeUtils.start;
+const stop = nodeUtils.stop;
+const info = nodeUtils.info; 
 
 const SophiaUtil = require('./utils/sophia-util');
 
@@ -75,5 +81,9 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer
+    waitForContainer,
+    readSpawnOutput,
+    start,
+    stop,
+    info
 }

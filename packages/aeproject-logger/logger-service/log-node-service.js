@@ -1,0 +1,37 @@
+const LogJSONNode = require('../logger-store/log-json-node');
+
+class LogNodeService {
+    constructor () {
+        this._nodeStore = LogJSONNode()
+    }
+
+    getNodePath () {
+        return this._nodeStore.getNodePath()
+    }
+
+    getCompilerPath () {
+        return this._nodeStore.getCompilerPath()
+    }
+
+    deletePaths () {
+        return this._nodeStore.clearPaths()
+    }
+
+    save (unit) {
+        
+        if (unit === 'compiler') {
+            return this._nodeStore.writeCompilerPathToStore()
+            
+        }
+        if (unit === 'node') {
+            return this._nodeStore.writeNodePathToStore()
+            
+        }
+
+        return this._nodeStore.writeNodeAndCompilerToStore()
+    }
+}
+
+module.exports = {
+    LogNodeService
+}

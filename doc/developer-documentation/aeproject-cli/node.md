@@ -37,8 +37,16 @@ To stop the local node, simply run
 aeproject node --stop
 ```
 
+To see whether you have running instances of the nodes along with a compiler you could run the following command
+```text
+aeproject node --info
+```
+
 Additional **--compiler-port** parameter is available, which can specify on which port would local compiler start (default is 3080).
 Example:
 ```
 aeproject node --compiler-port 4080
 ```
+
+### Disclaimer
+Please note that in rare occurrences you may experience some delay, or even timeout exception while trying to run the node. This usually happens due to new version of the docker images which the docker is trying to pull, or possibly could happen after updating the aeproject verson with new node/compiler version. The files may be large or connection inconsistency may occur. Please try to run ``` docker pull ``` or simply retry to run ```aeproject node``` again. 

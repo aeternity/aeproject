@@ -1,6 +1,7 @@
 {
 	"compileTestsFolderPath": "/test/commands-tests/compileTests",
 	"nodeTestsFolderPath": "/test/commands-tests/nodeTest",
+	"nodeTestsFolderPathSecondProject": "/test/commands-tests/nodeTestSecondProject",
 	"deployTestsFolderPath": "/test/commands-tests/deployTest",
 	"initTestsFolderPath": "/test/commands-tests/initTests",
 	"testTestsFolderPath": "/test/commands-tests/contractsTests",
@@ -15,6 +16,7 @@
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
 	"exportAEprojectConfigTestsFolderPath": "/test/commands-tests/exportAEprojectConfigTestFolder",
 	"nodeDockerFilesFolderPath": "./test/node-docker-compose-files",
+	"nodeStoreFolder": "/packages/aeproject-logger/.aeproject-node-store",
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
@@ -40,6 +42,7 @@
 		"NODE_URL": "--nodeUrl",
 		"IGNORE_OPENING": "--ignoreOpenInBrowser",
 		"ONLY": "--only",
+		"INFO": "--info",
 		"COMPILER_PORT": "--compiler-port",
 		"SECRET_KEY": "--secretKey",
 		"NETWORK": "--network",

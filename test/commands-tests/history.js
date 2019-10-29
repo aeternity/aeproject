@@ -3,6 +3,8 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 const cliUtils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
 const execute = cliUtils.aeprojectExecute;
 const fs = require('fs');
@@ -20,6 +22,10 @@ const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
 
+async function linkLocalPackages () {
+    await exec('npm link aeproject-lib')
+    await exec('npm link aeproject-utils')
+}
 function insertAdditionalFiles (oldCWD) {
 
     // copy needed files into test folder to run the specific tests
@@ -283,12 +289,14 @@ describe('AEproject History', async () => {
 
             await execute(constants.cliCommands.INIT, []);
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START]);
+
+            await linkLocalPackages()
         });
 
         it('log should have additional info like error, init state and options', async () => {
 
             insertAdditionalFiles(currentCwd);
-
+            
             await execute(constants.cliCommands.DEPLOY, [
                 "--path",
                 `${ invalidParamDeploymentScriptPath }`

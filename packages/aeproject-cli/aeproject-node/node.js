@@ -19,8 +19,13 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     printError,
     print,
-    waitForContainer
+    readSpawnOutput,
+    waitForContainer,
+    start,
+    stop,
+    info
 } = require('aeproject-utils');
+
 const utils = require('aeproject-utils');
 const {
     spawn
@@ -122,9 +127,9 @@ function hasNodeConfigFiles () {
 async function checkForAllocatedPort (port) {
     try {
         let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
-        
+
         if (scanForAllocatedPort.stdout) {
-            return scanForAllocatedPort.stdout.toString('utf8').length >= 0
+            return scanForAllocatedPort.stdout.toString('utf8').length > 0
         }
     } catch (e) {
         // Throws an error when there is no running port. Exceptions are handled elsewhere.
@@ -134,12 +139,33 @@ async function checkForAllocatedPort (port) {
     return false;
 }
 
+async function displayInfoOnly (_info, running) {
+    if (!_info) return
+
+    if (!running) {
+        print('===== Node is not running! =====');
+        return
+    }
+    
+    let buff = await info();
+    let res = readSpawnOutput(buff)
+    
+    print(res);
+}
+
 async function run (option) {
+
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
 
     try {
         let running = await waitForContainer(dockerImage);
+
+        if (option.info) {
+            await displayInfoOnly(option.info, running)
+            return
+        }
+
         if (option.stop) {
 
             // if not running, current env may be windows
@@ -156,8 +182,6 @@ async function run (option) {
             print('===== Stopping node and compiler  =====');
 
             await stopNodeAndCompiler();
-            print('===== Node was successfully stopped! =====');
-            print('===== Compiler was successfully stopped! =====');
 
             return;
         }
@@ -236,31 +260,16 @@ async function run (option) {
     }
 }
 
-async function startLocalCompiler () {
-    return spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
-}
-
 async function startNodeAndCompiler (startOnlyNode) {
-
-    if (startOnlyNode) {
-        return spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
-    }
-
-    return spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+    return start(startOnlyNode)
 }
 
 async function stopNodeAndCompiler () {
-    return spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'down', '-v', '--remove-orphans']);
-}
-
-function readErrorSpawnOutput (spawnError) {
-    const buffMessage = Buffer.from(spawnError.stderr);
-    return buffMessage.toString('utf8');
-}
-
-function readSpawnOutput (spawnError) {
-    const buffMessage = Buffer.from(spawnError.stdout);
-    return buffMessage.toString('utf8');
+    try {
+        stop();
+    } catch (error) {
+        console.log(Buffer.from(error.stderr).toString('utf-8'))
+    }
 }
 
 function removePrefixFromIp (ip) {
