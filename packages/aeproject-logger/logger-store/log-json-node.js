@@ -13,7 +13,7 @@ class LogJSONNode {
 
         if (this.ensureStoreExists()) {
             fs.outputJsonSync(this.nodeStorePath, {
-                node: '', 
+                node: '',
                 compiler: ''
             });
         }
@@ -47,10 +47,6 @@ class LogJSONNode {
 
     deleteNodePathFromStore () {
         this.store.node = "";
-        this.save()
-    }
-    clearPaths () {
-        this.store = {}
         this.save()
     }
 

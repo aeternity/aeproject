@@ -44,7 +44,11 @@
 		"ONLY": "--only",
 		"ONLYCOMPILER": "--only-compiler",
 		"INFO": "--info",
-		"COMPILER_PORT": "--compiler-port"
+		"COMPILER_PORT": "--compiler-port",
+		"SECRET_KEY": "--secretKey",
+		"NETWORK": "--network",
+		"NETWORK_ID": "--networkId",
+		"LIMIT": "--limit"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",
