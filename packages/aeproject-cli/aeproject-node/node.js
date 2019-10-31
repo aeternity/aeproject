@@ -22,8 +22,12 @@ const {
     readSpawnOutput,
     waitForContainer,
     start,
-    stop,
-    info
+    stopAll,
+    stopSeparately,
+    info,
+    printSuccessMsg,
+    printStarMsg,
+    printInitialStopMsg
 } = require('aeproject-utils');
 
 const utils = require('aeproject-utils');
@@ -49,6 +53,8 @@ network.compilerUrl = utils.config.compilerUrl
 const MAX_SECONDS_TO_RUN_NODE = 90;
 const DEFAULT_NODE_PORT = 3001;
 const DEFAULT_COMPILER_PORT = 3080;
+let { LogNodeService } = require('aeproject-logger')
+let nodeService = new LogNodeService(process.cwd())
 
 async function fundWallets (nodeIp) {
     await waitToMineCoins(nodeIp);
@@ -139,11 +145,61 @@ async function checkForAllocatedPort (port) {
     return false;
 }
 
-async function displayInfoOnly (_info, running) {
-    if (!_info) return
+async function toggleLoader (startingNodeSpawn, image) {
+ 
+    if (startingNodeSpawn.stdout) {
+        startingNodeSpawn.stdout.on('data', (data) => {
+            print(data.toString());
+        });
+    }
+
+    let errorMessage = '';
+    if (startingNodeSpawn.stderr) {
+        startingNodeSpawn.stderr.on('data', (data) => {
+            errorMessage += data.toString();
+            print(data.toString())
+        });
+    }
+
+    let counter = 0;
+    while (!(await waitForContainer(`${ image }`))) {
+        if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
+            await stopNodeAndCompiler();
+            throw new Error(`Cannot start AE node, port is already allocated!`)
+        }
+
+        process.stdout.write(".");
+        utils.sleep(1000);
+
+        // prevent infinity loop
+        counter++;
+        if (counter >= MAX_SECONDS_TO_RUN_NODE) {
+            // if node is started and error message is another,
+            // we should stop docker
+
+            await stopNodeAndCompiler();
+            throw new Error("Cannot start AE Node!")
+        }
+    }
+} 
+
+async function fundWalletsIfNeccessary (option) {
+    if (option.onlyCompiler) return
+
+    if (option.windows) {
+        let dockerIp = removePrefixFromIp(option.dockerIp);
+        await fundWallets(dockerIp);
+    } else {
+        await fundWallets();
+    }
+
+    print('\r\n===== Default wallets was successfully funded! =====');
+}
+
+async function printDockerInfo (option, running) {
 
     if (!running) {
-        print('===== Node is not running! =====');
+        option.onlyCompiler ? print('===== Compiler is not running! =====') : print('===== Node is not running! =====');
         return
     }
     
@@ -158,11 +214,14 @@ async function run (option) {
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
     dockerImage = nodeConfiguration.dockerServiceNodeName;
 
+    // TODO check what is the proper configuration for windows
+    let compilerImage = option.onlyCompiler ? nodeConfiguration.dockerServiceCompilerName : nodeConfiguration.dockerImage;
+    
     try {
-        let running = await waitForContainer(dockerImage);
-
+        let running = await waitForContainer(option.onlyCompiler ? compilerImage : dockerImage);
+        
         if (option.info) {
-            await displayInfoOnly(option.info, running)
+            await printDockerInfo(option, running)
             return
         }
 
@@ -171,7 +230,7 @@ async function run (option) {
             // if not running, current env may be windows
             // to reduce optional params we check is it running on windows env
             if (!running) {
-                running = await waitForContainer(dockerImage);
+                running = await waitForContainer(option.onlyCompiler ? compilerImage : dockerImage);
             }
 
             if (!running) {
@@ -179,9 +238,9 @@ async function run (option) {
                 return
             }
 
-            print('===== Stopping node and compiler  =====');
+            printInitialStopMsg(option)
 
-            await stopNodeAndCompiler();
+            await stopNodeAndCompiler(option);
 
             return;
         }
@@ -192,11 +251,11 @@ async function run (option) {
         }
 
         if (running) {
-            print('\r\n===== Node already started and healthy! =====');
+            option.onlyCompiler ? print('\r\n===== Compiler already started and healthy! =====') : print('\r\n===== Node already started and healthy! =====');
             return;
         }
 
-        if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
+        if (!option.onlyCompiler && await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
             throw new Error(`Cannot start AE node, port is already allocated!`);
         }
@@ -206,67 +265,32 @@ async function run (option) {
             throw new Error(`Cannot start AE compiler, port is already allocated!`);
         }
 
-        print('===== Starting node =====');
-        let startingNodeSpawn = startNodeAndCompiler(option.only);
+        printStarMsg(option)
+        
+        let startingNodeSpawn = startNodeAndCompiler(option);
 
-        if (startingNodeSpawn.stdout) {
-            startingNodeSpawn.stdout.on('data', (data) => {
-                print(data.toString());
-            });
-        }
+        await toggleLoader(startingNodeSpawn, option.onlyCompiler ? compilerImage : dockerImage)
 
-        let errorMessage = '';
-        if (startingNodeSpawn.stderr) {
-            startingNodeSpawn.stderr.on('data', (data) => {
-                errorMessage += data.toString();
-                print(data.toString())
-            });
-        }
+        printSuccessMsg(option)
 
-        let counter = 0;
-        while (!(await waitForContainer(dockerImage))) {
-            if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
-                await stopNodeAndCompiler();
-                throw new Error(`Cannot start AE node, port is already allocated!`)
-            }
-
-            process.stdout.write(".");
-            utils.sleep(1000);
-
-            // prevent infinity loop
-            counter++;
-            if (counter >= MAX_SECONDS_TO_RUN_NODE) {
-                // if node is started and error message is another,
-                // we should stop docker
-
-                await stopNodeAndCompiler();
-                throw new Error("Cannot start AE Node!")
-            }
-        }
-
-        print('\n\r===== Node was successfully started! =====');
-        print('===== Funding default wallets! =====');
-
-        if (option.windows) {
-            let dockerIp = removePrefixFromIp(option.dockerIp);
-            await fundWallets(dockerIp);
-        } else {
-            await fundWallets();
-        }
-
-        print('\r\n===== Default wallets was successfully funded! =====');
+        await fundWalletsIfNeccessary(option)
     } catch (e) {
         printError(e.message || e);
     }
 }
 
-async function startNodeAndCompiler (startOnlyNode) {
-    return start(startOnlyNode)
+async function startNodeAndCompiler (option) {
+    return start(option)
 }
 
-async function stopNodeAndCompiler () {
+async function stopNodeAndCompiler (option) {
     try {
-        stop();
+        if (option.stop && (option.only || option.onlyCompiler)) {
+            stopSeparately(option)
+            return
+        }
+        
+        stopAll();
     } catch (error) {
         console.log(Buffer.from(error.stderr).toString('utf-8'))
     }

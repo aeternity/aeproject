@@ -49,13 +49,6 @@ class LogJSONNode {
         this.store.node = "";
         this.save()
     }
-    clearPaths () {
-        this.store = {
-            node: '',
-            compiler: ''
-        }
-        this.save()
-    }
 
     getNodePath () {
         return this.store.node
