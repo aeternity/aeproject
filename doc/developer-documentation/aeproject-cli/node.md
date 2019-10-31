@@ -56,15 +56,9 @@ To see whether you have running instances of the nodes along with a compiler you
 aeproject node --info
 ```
 
-If you dont have running instances of the node started from `aeproject` you could check inforation about the compiler with 
+If you don't have running instances of the node started from `aeproject` you could check information about the compiler with 
 ```text
 aeproject node --info --only-compiler
-```
-
-Additional **--compiler-port** parameter is available, which can specify on which port would local compiler start (default is 3080).
-Example:
-```
-aeproject node --compiler-port 4080
 ```
 
 ### Disclaimer
