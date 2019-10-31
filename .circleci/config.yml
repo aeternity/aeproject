@@ -2,7 +2,9 @@ version: 2
 jobs:
   build:
     docker:
+    - image: 18.06.0-ce
     - image: circleci/node:9.5.0
+
     branches:
       only:
         - update/migrate-to-circleci
