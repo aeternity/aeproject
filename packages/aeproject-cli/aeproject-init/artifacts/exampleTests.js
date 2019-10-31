@@ -56,7 +56,7 @@ describe('Example Contract', () => {
         assert.isOk(!exists)
     })
 
-    it('Should return true if name does not exist', async () => {
+    it('Should return true if the name exists', async () => {
         hamsterName = 'DoesHamsterExists';
 
         await instance.createHamster(hamsterName)

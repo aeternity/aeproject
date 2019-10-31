@@ -17,8 +17,8 @@ contract CryptoHamster =
       state.hamsters[hamsterName]
 
    stateful function createHamsterByNameDNA(name: string, dna: hash) =
-      Chain.event(NewHamster(state.next_id, name, dna))
       put(state{hamsters[name] = dna, next_id = (state.next_id + 1)})
+      Chain.event(NewHamster(state.next_id, name, dna))
  
    function generateDNA(name : string) : hash =
       String.sha3(name)
