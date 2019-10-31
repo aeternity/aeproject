@@ -43,7 +43,7 @@ jobs:
       - run: aeproject --version
       - run:
           command: |
-            sudo docker info
+            docker info
             #sudo docker rm $(docker ps -a -q)
             #sudo docker info
             ls -la
