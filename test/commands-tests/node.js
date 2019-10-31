@@ -230,14 +230,22 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLY])
             
             let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+
             assert.isNotTrue(dockerRunning, 'node was not stopped successfully')
+            assert.isTrue(compilerRunning, 'compiler was stopped incorrectly')
+
+            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
         })
         it('Process should stop only the compiler', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER])
 
+            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
             let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            
             assert.isNotTrue(compilerRunning, 'compiler was not stopped successfully')
+            assert.isTrue(dockerRunning, 'node was stopped incorrectly')
         })
 
         after(async () => {
