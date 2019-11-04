@@ -1,6 +1,12 @@
 # Migratе Forgae to AEproject
 
 There are no breaking changes introduced in this change, however please take a look at what you should be aware of while migrating your project.
+
+- First uninstall your deprecated already **forgae**
+```text
+npm uninstall -g forgae
+```
+
 - You need to install **aeporject**
 
 ```text
