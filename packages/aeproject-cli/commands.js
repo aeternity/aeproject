@@ -22,7 +22,7 @@ const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('aeproject-config');
 const localCompiler = config.localCompiler;
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
-const history = require('aeproject-logger');
+const { history } = require('aeproject-logger');
 const printReportTable = require('aeproject-utils').printReportTable;
 const contracts = require('./aeproject-contracts/aeproject-contracts.js');
 const shape = require('./aeproject-shapes/shape-commander');
@@ -68,6 +68,8 @@ const addNodeOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--only', 'Start only the node without local compiler')
+        .option('--only-compiler', 'Start only the compiler, without local nodes')
+        .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
         .action(async (options) => {

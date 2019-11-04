@@ -6,6 +6,7 @@ const fs = require('fs-extra')
 const constants = require('../constants.json')
 const utilsPackageJson = require('../../packages/aeproject-utils/package.json')
 const aeprojectLibVersion = require('../../packages/aeproject-lib/package.json').version;
+const path = require('path')
 
 let executeOptions = {
     cwd: process.cwd() + constants.initTestsFolderPath
@@ -71,6 +72,7 @@ describe('AEproject Init', () => {
     });
 
     it('Should init project successfully', async () => {
+   
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
@@ -161,11 +163,11 @@ describe('AEproject Init', () => {
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
 
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
-        
+
         for (let line of expectedResult) {
             assert.isOk(result.trim().includes(line.trim()), `There is missing initialization action.`);
         }
-        
+
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeNodeYml }`), "docker-compose.yml doesn't exist");
@@ -188,6 +190,6 @@ describe('AEproject Init', () => {
     });
 
     afterEach(async () => {
-        fs.removeSync(`.${ constants.initTestsFolderPath }`);
+        fs.removeSync(`.${constants.initTestsFolderPath}`);
     })
 })
