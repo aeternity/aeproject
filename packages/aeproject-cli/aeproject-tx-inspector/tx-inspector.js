@@ -17,9 +17,10 @@
 
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 
-const axios = require('axios');
 const utils = require('aeproject-utils');
-const TxValidator = require('aeproject-utils').txValidator;
+
+const TxValidator = utils.txValidator;
+const httpGet = utils.httpGet;
 
 const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 
@@ -121,7 +122,7 @@ async function processNonceInfo (network, publicKey, nonce) {
     const url = `${ network.url }/v2/accounts/${ publicKey }`;
 
     try {
-        let result = await axios.get(url);
+        let result = await httpGet(url);
 
         if (result.data) {
             const msg = `Current account nonce is '${ parseInt(result.data.nonce) }', nonce used in tx is '${ parseInt(nonce) }'.`;

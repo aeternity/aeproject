@@ -41,6 +41,7 @@ const decodedHexAddressToPublicAddress = contractUtils.decodedHexAddressToPublic
 const trimAdresseses = contractUtils.trimAdresseses;
 
 const SophiaUtil = require('./utils/sophia-util');
+const httpGet = require('./utils/http-utils').httpGet;
 
 module.exports = {
     printReportTable,
@@ -77,5 +78,6 @@ module.exports = {
     writeFileSync,
     winExec,
     waitForContainer,
-    txValidator
+    txValidator,
+    httpGet
 }

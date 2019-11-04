@@ -26,7 +26,7 @@ const contractCallTx = 'tx_+QFpCwH4QrhADdLEBzB9yxB+owNtaD4IsrNbV2FhLRSc3PDwfYlnZ
 
 */
 
-describe('Transaction inspector tests', async function () {
+describe.only('Transaction inspector tests', async function () {
     before(async function () {
         fs.ensureDirSync(`.${ testFolder }`)
 
@@ -64,7 +64,8 @@ describe('Transaction inspector tests', async function () {
                 payload: 'ba_Xfbg4g==' },
              txType: 'spendTx' }`
 
-            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
+            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim());
+
             expectedResArr.map(x => {
                 if (!result.includes(x)) {
                     assert.isOk(false, 'Non expected data')
@@ -491,8 +492,6 @@ describe('Transaction inspector tests', async function () {
                 cliCmdOptions.NETWORK,
                 network
             ]);
-
-            // console.log(result);
 
             let expectedResultAsText = `'Nonce' - Account not found
             'fee' - The account balance 0 is not enough to execute the transaction
