@@ -11,14 +11,17 @@ const {
     readErrorSpawnOutput
 } = require('./aeproject-utils');
 
-async function start (option) {
+const MAX_SECONDS_TO_RUN_NODE = 90;
+const { sleep } = require('./aeproject-utils');
 
-    if (option.only) {
+async function start (unit) {
+
+    if (unit === 'node') {
         spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
-        return nodeService.save('node');
-    } else if (option.onlyCompiler) {
+        return nodeService.save(unit);
+    } else if (unit === 'compiler') {
         spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
-        return nodeService.save('compiler');
+        return nodeService.save(unit);
     } 
 
     spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
@@ -84,11 +87,11 @@ function stopSeparately (options) {
     return options.only ? stopNode() : stopCompiler()
 }
 
-async function info (options) {
+async function getInfo (unit, options) {
     let nodePath = nodeService.getNodePath()
     let compilerPath = nodeService.getCompilerPath()
-
-    if (nodePath && compilerPath) {        
+    
+    if (!unit && nodePath && compilerPath) {        
         return spawn('docker-compose', [
             '-f',
             `${ nodePath }`,
@@ -96,9 +99,9 @@ async function info (options) {
             `${ compilerPath }`,
             'ps'
         ], options);
-    } else if (nodePath) {
+    } else if (unit.indexOf('node') >= 0 && nodePath) {
         return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
-    } else if (compilerPath) {
+    } else if (unit.indexOf('compiler') >= 0 && compilerPath) {
         return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
     } else {
         return spawn('docker-compose', [
@@ -111,12 +114,25 @@ async function info (options) {
     }
 }
 
+async function printInfo (running, unit) {
+    
+    if (!running) {
+        print(`===== ${ unit } is not running! =====`) 
+        return
+    }
+
+    let buff = await getInfo(unit.toLowerCase());
+    let res = readSpawnOutput(buff)
+
+    print(res);
+}
+
 async function waitForContainer (image, options) {
     
     try {
         let running = false;
 
-        let result = await info(options);
+        let result = await getInfo(image, options);
         let res = readSpawnOutput(result);
 
         if (res) {
@@ -148,29 +164,82 @@ async function waitForContainer (image, options) {
     }
 }
 
+async function toggleLoader (startingNodeSpawn, image) {
+
+    if (startingNodeSpawn.stdout) {
+        startingNodeSpawn.stdout.on('data', (data) => {
+            print(data.toString());
+        });
+    }
+
+    let errorMessage = '';
+    if (startingNodeSpawn.stderr) {
+        startingNodeSpawn.stderr.on('data', (data) => {
+            errorMessage += data.toString();
+            print(data.toString())
+        });
+    }
+
+    let counter = 0;
+    while (!(await waitForContainer(`${ image }`))) {
+        if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
+            await stopAll();
+            throw new Error(`Cannot start AE node, port is already allocated!`)
+        }
+
+        process.stdout.write(".");
+        sleep(1000);
+
+        // prevent infinity loop
+        counter++;
+        if (counter >= MAX_SECONDS_TO_RUN_NODE) {
+            // if node is started and error message is another,
+            // we should stop docker
+
+            await stopAll();
+            throw new Error("Cannot start AE Node!")
+        }
+    }
+} 
+
 function checkForMissingDirectory (e) {
     return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'))
 }
 
-function printSuccessMsg (option) {
-    if (option.only) return print('\n\r===== Node was successfully started! =====');
-    if (option.onlyCompiler) return print('\n\r===== Compiler was successfully started! =====');
+async function checkForAllocatedPort (port) {
+    try {
+        let scanForAllocatedPort = await spawn('lsof', ['-i', `:${ port }`]);
+
+        if (scanForAllocatedPort.stdout) {
+            return scanForAllocatedPort.stdout.toString('utf8').length > 0
+        }
+    } catch (e) {
+        // Throws an error when there is no running port. Exceptions are handled elsewhere.
+        // console.log(e)
+    }
+
+    return false;
+}
+
+function printSuccessMsg (unit) {
+    if (unit == 'node') return print('\n\r===== Node was successfully started! =====');
+    if (unit == 'compiler') return print('\n\r===== Compiler was successfully started! =====');
    
     print('\n\r===== Node was successfully started! =====');
     print('===== Compiler was successfully started! =====');
     print('===== Funding default wallets! =====');
 }
 
-function printStarMsg (option) {
-    if (option.only) return print('===== Starting node =====');
-    if (option.onlyCompiler) return print('===== Starting compiler =====')
+function printStarMsg (unit) {
+    if (unit == 'node') return print('===== Starting node =====');
+    if (unit == 'compiler') return print('===== Starting compiler =====')
 
     print('===== Starting node and compiler =====');
 }
 
-async function printInitialStopMsg (option) {
-    if (option.only) return print('===== Stopping node  =====')
-    if (option.onlyCompiler) return print('===== Stopping compiler  =====')
+async function printInitialStopMsg (unit) {
+    if (unit == 'node') return print('===== Stopping node  =====')
+    if (unit == 'compiler') return print('===== Stopping compiler  =====')
 
     print('===== Stopping node and compiler  =====')
 }
@@ -178,9 +247,14 @@ async function printInitialStopMsg (option) {
 module.exports = {
     start,
     stopAll,
+    stopNode,
+    stopCompiler,
     stopSeparately,
-    info,
+    getInfo,
+    printInfo,
     waitForContainer,
+    toggleLoader,
+    checkForAllocatedPort,
     printSuccessMsg,
     printStarMsg,
     printInitialStopMsg

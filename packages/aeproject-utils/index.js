@@ -31,6 +31,7 @@ const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
 const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
+const capitalize = aeprojectUtils.capitalize;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -43,9 +44,14 @@ const trimAdresseses = contractUtils.trimAdresseses;
 const nodeUtils = require('./utils/node-utils');
 const start = nodeUtils.start;
 const stopAll = nodeUtils.stopAll;
+const stopNode = nodeUtils.stopNode
+const stopCompiler = nodeUtils.stopCompiler;
 const stopSeparately = nodeUtils.stopSeparately;
-const info = nodeUtils.info;
+const getInfo = nodeUtils.getInfo;
+const printInfo = nodeUtils.printInfo;
 const waitForContainer = nodeUtils.waitForContainer;
+const toggleLoader = nodeUtils.toggleLoader;
+const checkForAllocatedPort = nodeUtils.checkForAllocatedPort;
 const printSuccessMsg = nodeUtils.printSuccessMsg;
 const printStarMsg = nodeUtils.printStarMsg;
 const printInitialStopMsg = nodeUtils.printInitialStopMsg;
@@ -86,13 +92,19 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer,
     readSpawnOutput,
     readErrorSpawnOutput,
+    capitalize,
     start,
     stopAll,
+    stopNode,
+    stopCompiler,
     stopSeparately,
-    info,
+    getInfo,
+    printInfo,
+    waitForContainer,
+    toggleLoader,
+    checkForAllocatedPort,
     printSuccessMsg,
     printStarMsg,
     printInitialStopMsg
