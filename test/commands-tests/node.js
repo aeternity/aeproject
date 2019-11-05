@@ -37,12 +37,16 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", async () => {
+describe.only("AEproject Node and Compiler Tests", async () => {
+
+    before(async () => {
+        fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+    })
+
 
     describe('AEproject Node', () => {
         before(async () => {
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-            await execute(constants.cliCommands.INIT, [], executeOptions);
             await execute(constants.cliCommands.NODE, [], executeOptions);
         })
 
@@ -100,16 +104,12 @@ describe("AEproject Node and Compiler Tests", async () => {
 
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 
     describe('AEproject Node - check if compiler is running too', () => {
 
         before(async () => {
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-
-            await execute(constants.cliCommands.INIT, [], executeOptions)
             await execute(constants.cliCommands.NODE, [], executeOptions)
         })
 
@@ -122,8 +122,6 @@ describe("AEproject Node and Compiler Tests", async () => {
 
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 
@@ -142,9 +140,6 @@ describe("AEproject Node and Compiler Tests", async () => {
     describe('AEproject Node --only && --only-compiler', () => {
 
         before(async () => {
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-
-            await execute(constants.cliCommands.INIT, [], executeOptions)
             process.chdir(nodeTestDir)
         })
 
@@ -251,15 +246,10 @@ describe("AEproject Node and Compiler Tests", async () => {
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             process.chdir(mainDir)
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 
     describe('Aeproject Node --info', () => {
-        before(async () => {
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-            await execute(constants.cliCommands.INIT, [], executeOptions)
-        })
 
         it('Should display info that node is not running', async () => {
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
@@ -276,6 +266,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
+
         it('Should display info for compiler only', async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
 
@@ -285,19 +276,13 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
         })
+
         after(async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 
     describe("AEproject Node -- allocated port's tests", () => {
-
-        before(async () => {
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-
-            await execute(constants.cliCommands.INIT, [], executeOptions);
-        })
 
         // try to run AE node on already allocated port , process should stop
         it('Process should NOT start AE node', async () => {
@@ -395,7 +380,6 @@ describe("AEproject Node and Compiler Tests", async () => {
             if (running) {
                 await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
             }
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
         })
     })
 
@@ -406,12 +390,12 @@ describe("AEproject Node and Compiler Tests", async () => {
         let nodeStore;
 
         let secondNodeTestDir = process.cwd() + constants.nodeTestsFolderPathSecondProject;
+
         before(async () => {
-            fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-            await execute(constants.cliCommands.INIT, [], executeOptions);
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
             await execute(constants.cliCommands.INIT, [], { cwd: secondNodeTestDir })
         })
+
         it('Should correctly record where the node and compiler has been run from', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             nodeStore = await fs.readJson(nodeStorePath)
@@ -448,6 +432,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             assert.isOk(hasNodeStopped)
         })
+
         it('Should run Aeproject node from current folder, if the folder it has previously been run, do not exist anymore', async () => {
             fs.ensureDirSync(path.resolve(secondNodeTestDir))
 
@@ -516,7 +501,6 @@ describe("AEproject Node and Compiler Tests", async () => {
         })
 
         after(async () => {
-            fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
             fs.removeSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
         })
     })
@@ -532,7 +516,6 @@ describe("AEproject Node and Compiler Tests", async () => {
             before(async () => {
                 fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`);
 
-                await winExec(cliCommand, constants.cliCommands.INIT, [], executeOptions);
                 await winExec(cliCommand, constants.cliCommands.NODE, ['--windows'], executeOptions);
             })
 
@@ -593,9 +576,11 @@ describe("AEproject Node and Compiler Tests", async () => {
                 if (running) {
                     await winExec(cliCommand, constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
                 }
-
-                fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
             })
         })
     }
+
+    after(async () => {
+        fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+    })
 })
