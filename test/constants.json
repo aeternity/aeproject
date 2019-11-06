@@ -50,8 +50,7 @@
 		"SECRET_KEY": "--secretKey",
 		"NETWORK": "--network",
 		"NETWORK_ID": "--networkId",
-		"LIMIT": "--limit",
-		"TX": "--tx"
+		"LIMIT": "--limit"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",

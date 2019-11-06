@@ -61,6 +61,7 @@ const getNetwork = (network, networkId) => {
         const customNetwork = createCustomNetwork(network, networkId)
         return customNetwork;
     }
+
     const networks = {
         local: {
             url: config.localhostParams.url,
@@ -83,11 +84,13 @@ const getNetwork = (network, networkId) => {
 
 const createCustomNetwork = (network, networkId) => {
     if (!network || !networkId) {
-        throw new Error('Both network and networkId should be passed')
+        throw new Error('Both [--network] and [--networkId] should be passed.')
     }
 
-    if (network === 'local' || network === 'localhost') {
-        network = getNetwork('local').url;
+    network = network.toLowerCase();
+
+    if (network === 'local') {
+        network = getNetwork(network).url;
     }
 
     if (!network.startsWith('http')) {

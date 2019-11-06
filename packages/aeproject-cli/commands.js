@@ -22,7 +22,9 @@ const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('aeproject-config');
 const localCompiler = config.localCompiler;
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
-const { history } = require('aeproject-logger');
+const {
+    history
+} = require('aeproject-logger');
 const printReportTable = require('aeproject-utils').printReportTable;
 const contracts = require('./aeproject-contracts/aeproject-contracts.js');
 const shape = require('./aeproject-shapes/shape-commander');
@@ -140,13 +142,12 @@ const addExportConfigOption = (program) => {
 
 const addTxInspector = (program) => {
     program
-        .command('inspect')
+        .command('inspect <tx>')
         .description('Unpack and verify transaction (verify nonce, ttl, fee, account balance)')
-        // .arguments('<--tx>', 'Raw tx to inspect')
-        .option('--tx [tx]', 'Raw tx to inspect')
-        .option('-n --network [network]', 'Select network', "local")
+        .option('--network [network]', 'Select network', "local")
         .option('--networkId [networkId]', 'Configure your network id')
-        .action(async (options) => {
+        .action(async (tx, options) => {
+            options.tx = tx;
             await txInspector.run(options);
         })
 };

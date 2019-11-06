@@ -113,6 +113,19 @@ describe('AEproject Deploy', () => {
             assert.equal(deployer.network.networkId, expectedNetworkId)
         })
 
+        it('Should init Deployer with custom network without "http" prefix', async () => {
+            // Arrange
+            const network = "192.168.99.100:3001"
+            const expectedNetworkId = "ae_custom"
+            // Act
+            const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
+
+            // Assert
+
+            assert.equal(deployer.network.url, "http://" + network)
+            assert.equal(deployer.network.networkId, expectedNetworkId)
+        })
+
         it('should revert if only custom network is passed', async () => {
             const expectedError = "Both network and networkId should be passed";
             let result;

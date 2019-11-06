@@ -20,12 +20,6 @@ const validContractCreateTx = 'tx_+PoLAfhCuEAB3cmbG8P/MG3lxFYRcSAqneX66tGWLpbP1U
 const invalidContractCreateTx = 'tx_+PoLAfhCuECRdwTeaI2onxi0YH/64dl8qdlLzxddWJTdmgLmejN/kqsuv0YDRz5MwOCLQSHbqDI2pyqNtLIzQjO7XvZG5NoLuLL4sCoBoQEqoOAY8jBHCYKJ+xLgPYzkjc9RvfL56vnz/NLMSAC/BgG4aPhmRgOgC9n+d1XXo09rOw+lF4cYysPjtu1w2JxHzo11ummbU9TAuDme/kTWRB8ANwA3ABoOgj8BAz/+uBd+7AA3AQcHAQEAli8CEUTWRB8RaW5pdBG4F37sEW1haW6CLwCFNC4wLjAAgwUAA4ZHcyzkwACCKLEAAIMYF/iEO5rKAIcrEUTWRB8/0P+Jmw==';
 const contractCallTx = 'tx_+QFpCwH4QrhADdLEBzB9yxB+owNtaD4IsrNbV2FhLRSc3PDwfYlnZEafkbhUDHSMC17v7pNqPAHxmY6td3XzR3M+JRMN9/eBBbkBIPkBHSsBoQHpu/YE5hG1Rgo7OZnpdxtvYEF9c858VRnhL34SehIlyhihBZ1Jcpl4ENMAGowV2kXcHPlcrJFui6aAG2icGOwjAyV3AYcBnoLk5yAAAACDGBf4hDuaygC4wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgzCMc7daFfOIBnzwtkVVGQYINX6CnB9GXpGeGBrsUdgoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZUYXNrIEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ28j38=';
 
-/*
-
---- should we create tx and test it ?!
-
-*/
-
 describe('Transaction inspector tests', async function () {
     before(async function () {
         fs.ensureDirSync(`.${ testFolder }`)
@@ -37,14 +31,12 @@ describe('Transaction inspector tests', async function () {
     describe('Local network', async function () {
         it('Should successfully execute aeproject on local network', async function () {
             assert.isFulfilled(execute(INSPECT, [
-                cliCmdOptions.TX,
                 spendTx
             ]), 'Unable to execute inspect on local network.');
         })
 
         it('Should inspect spend tx correct in local network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 spendTx
             ]);
 
@@ -75,7 +67,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect valid contract create tx in local network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 validContractCreateTx
             ]);
 
@@ -111,7 +102,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect invalid contract create tx in local network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 invalidContractCreateTx
             ]);
 
@@ -150,7 +140,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect contract call tx in local network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 contractCallTx
             ]);
 
@@ -191,7 +180,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should successfully execute aeproject on testnet network', async function () {
             assert.isFulfilled(execute(INSPECT, [
-                cliCmdOptions.TX,
                 spendTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -200,7 +188,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect spend tx correct in testnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 spendTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -230,7 +217,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect valid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 validContractCreateTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -272,7 +258,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect invalid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 invalidContractCreateTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -315,7 +300,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect contract call tx in testnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 contractCallTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -361,7 +345,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should successfully execute aeproject on mainnet network', async function () {
             assert.isFulfilled(execute(INSPECT, [
-                cliCmdOptions.TX,
                 spendTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -370,7 +353,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect spend tx correct in mainnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 spendTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -400,7 +382,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect valid contract create tx in mainnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 validContractCreateTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -444,7 +425,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect invalid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 invalidContractCreateTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -487,7 +467,6 @@ describe('Transaction inspector tests', async function () {
 
         it('Should inspect contract call tx in testnet network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 contractCallTx,
                 cliCmdOptions.NETWORK,
                 network
@@ -529,9 +508,8 @@ describe('Transaction inspector tests', async function () {
     })
 
     describe('Invalid network', async function () {
-        it('Should NOT be able to inspect tx in invalid network', async function () {
+        it('Should NOT be able to inspect tx in not existent network', async function () {
             let result = await execute(INSPECT, [
-                cliCmdOptions.TX,
                 contractCallTx,
                 cliCmdOptions.NETWORK,
                 'localhost:4003',
@@ -539,7 +517,7 @@ describe('Transaction inspector tests', async function () {
                 'ae_invalid'
             ]);
 
-            assert.isOk(result.includes('Error: connect'), 'There is connection to invalid ae node')
+            assert.isOk(result.includes('Error: connect'), 'There is connection to not existent ae node')
         })
     })
 

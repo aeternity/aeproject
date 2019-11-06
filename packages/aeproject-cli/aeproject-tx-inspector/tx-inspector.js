@@ -27,11 +27,11 @@ const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}
 async function run (option) {
 
     if (!option.tx) {
-        throw Error('[--tx] Raw tx is required');
+        throw Error('<tx> Raw transaction is required');
     }
 
     if (option.tx.trim().split('_')[0] !== 'tx' || !base64regex.test(option.tx.trim().slice(3))) {
-        throw new Error('Invalid Transaction Hash');
+        throw new Error('Invalid raw transaction');
     }
 
     const network = utils.getNetwork(option.network ? option.network : 'local', option.networkId);
@@ -51,6 +51,7 @@ async function run (option) {
     printValidationResult(result);
 
     delete result.validation;
+
     console.log(result);
 }
 
