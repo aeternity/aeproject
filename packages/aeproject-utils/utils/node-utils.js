@@ -1,15 +1,22 @@
-let { LogNodeService } = require('aeproject-logger')
-let nodeService = new LogNodeService()
+const path = require('path');
+const fs = require('fs');
+const { LogNodeService } = require('aeproject-logger');
+let nodeService = new LogNodeService();
 const {
     spawn
 } = require('promisify-child-process');
 const {
     print
-} = require('./fs-utils')
+} = require('./fs-utils');
 const {
     readSpawnOutput, 
-    readErrorSpawnOutput
+    readErrorSpawnOutput,
+    capitalize
 } = require('./aeproject-utils');
+
+const nodeConfig = require('aeproject-config');
+const compilerConfigs = nodeConfig.compilerConfiguration;
+const nodeConfigs = nodeConfig.nodeConfiguration;
 
 const MAX_SECONDS_TO_RUN_NODE = 90;
 const { sleep } = require('./aeproject-utils');
@@ -31,12 +38,12 @@ async function start (unit) {
 async function stopAll () {
     
     if (nodeService.getNodePath() && nodeService.getCompilerPath()) {
-        await stopNode()
-        await stopCompiler()
+        await stopNode();
+        await stopCompiler();
     } else if (nodeService.getNodePath()) {
-        await stopNode()
+        await stopNode();
     } else if (nodeService.getCompilerPath()) {
-        await stopCompiler()
+        await stopCompiler();
     }
 }
 
@@ -50,14 +57,14 @@ async function stopNode () {
 
         print('===== Node was successfully stopped! ====='); 
 
-        return nodeService.delete('node')
+        return nodeService.delete('node');
     } catch (error) {
         if (readErrorSpawnOutput(error).indexOf('active endpoints')) {
-            nodeService.delete('node')
+            nodeService.delete('node');
             return print('===== Node was successfully stopped! =====');
         } 
         
-        throw new Error(error)
+        throw new Error(error);
     }
 }
 
@@ -71,26 +78,26 @@ async function stopCompiler () {
 
         print('===== Compiler was successfully stopped! =====');
         
-        return nodeService.delete('compiler')
+        return nodeService.delete('compiler');
     } catch (error) {
         if (readErrorSpawnOutput(error).indexOf('active endpoints')) {
-            nodeService.delete('compiler')
+            nodeService.delete('compiler');
             return print('===== Compiler was successfully stopped! =====');
         }
 
-        throw new Error(error)
+        throw new Error(error);
     }
     
 }
 
 function stopSeparately (options) {
-    return options.only ? stopNode() : stopCompiler()
+    return options.only ? stopNode() : stopCompiler();
 }
 
 async function getInfo (unit, options) {
-    let nodePath = nodeService.getNodePath()
-    let compilerPath = nodeService.getCompilerPath()
-    
+    let nodePath = nodeService.getNodePath();
+    let compilerPath = nodeService.getCompilerPath();
+
     if (!unit && nodePath && compilerPath) {        
         return spawn('docker-compose', [
             '-f',
@@ -100,9 +107,9 @@ async function getInfo (unit, options) {
             'ps'
         ], options);
     } else if (unit.indexOf('node') >= 0 && nodePath) {
-        return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options)
+        return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options);
     } else if (unit.indexOf('compiler') >= 0 && compilerPath) {
-        return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options)
+        return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options);
     } else {
         return spawn('docker-compose', [
             '-f',
@@ -110,19 +117,19 @@ async function getInfo (unit, options) {
             '-f',
             `${ 'docker-compose.compiler.yml' }`,
             'ps'
-        ], options)
+        ], options);
     }
 }
 
 async function printInfo (running, unit) {
     
     if (!running) {
-        print(`===== ${ unit } is not running! =====`) 
+        print(`===== ${ capitalize(unit) } is not running! =====`);
         return
     }
 
-    let buff = await getInfo(unit.toLowerCase());
-    let res = readSpawnOutput(buff)
+    let buff = await getInfo(unit);
+    let res = readSpawnOutput(buff);
 
     print(res);
 }
@@ -142,7 +149,7 @@ async function waitForContainer (image, options) {
         if (Array.isArray(res)) {
             res.map(line => {
                 if (line.indexOf(image) >= 0 && line.includes('healthy')) {
-                    running = true
+                    running = true;
                 }
             })
         }
@@ -151,13 +158,13 @@ async function waitForContainer (image, options) {
     } catch (error) {
 
         if (checkForMissingDirectory(error)) {
-            return false
+            return false;
         }
 
         if (error.stderr) {
-            console.log(error.stderr.toString('utf8'))
+            console.log(error.stderr.toString('utf8'));
         } else {
-            console.log(error.message || error)
+            console.log(error.message || error);
         }
 
         throw Error(error);
@@ -176,7 +183,7 @@ async function toggleLoader (startingNodeSpawn, image) {
     if (startingNodeSpawn.stderr) {
         startingNodeSpawn.stderr.on('data', (data) => {
             errorMessage += data.toString();
-            print(data.toString())
+            print(data.toString());
         });
     }
 
@@ -184,7 +191,7 @@ async function toggleLoader (startingNodeSpawn, image) {
     while (!(await waitForContainer(`${ image }`))) {
         if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
             await stopAll();
-            throw new Error(`Cannot start AE node, port is already allocated!`)
+            throw new Error(`Cannot start AE node, port is already allocated!`);
         }
 
         process.stdout.write(".");
@@ -197,13 +204,13 @@ async function toggleLoader (startingNodeSpawn, image) {
             // we should stop docker
 
             await stopAll();
-            throw new Error("Cannot start AE Node!")
+            throw new Error("Cannot start AE Node!");
         }
     }
 } 
 
 function checkForMissingDirectory (e) {
-    return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'))
+    return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'));
 }
 
 async function checkForAllocatedPort (port) {
@@ -232,16 +239,16 @@ function printSuccessMsg (unit) {
 
 function printStarMsg (unit) {
     if (unit == 'node') return print('===== Starting node =====');
-    if (unit == 'compiler') return print('===== Starting compiler =====')
+    if (unit == 'compiler') return print('===== Starting compiler =====');
 
     print('===== Starting node and compiler =====');
 }
 
 async function printInitialStopMsg (unit) {
-    if (unit == 'node') return print('===== Stopping node  =====')
-    if (unit == 'compiler') return print('===== Stopping compiler  =====')
+    if (unit == 'node') return print('===== Stopping node  =====');
+    if (unit == 'compiler') return print('===== Stopping compiler  =====');
 
-    print('===== Stopping node and compiler  =====')
+    print('===== Stopping node and compiler  =====');
 }
 
 module.exports = {

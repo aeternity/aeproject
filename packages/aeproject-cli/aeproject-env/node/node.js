@@ -16,6 +16,9 @@
  */
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 
+const path = require('path');
+const fs = require('fs');
+
 const {
     printError,
     print,
@@ -27,13 +30,10 @@ const {
     printSuccessMsg,
     printStarMsg,
     printInitialStopMsg,
-    toggleLoader,
-    capitalize
+    toggleLoader
 } = require('aeproject-utils');
 
 const utils = require('aeproject-utils');
-const fs = require('fs');
-const path = require('path');
 
 const nodeConfig = require('aeproject-config')
 const config = nodeConfig.config;
@@ -48,6 +48,27 @@ network.compilerUrl = utils.config.compilerUrl
 
 const DEFAULT_NODE_PORT = 3001;
 const unit = 'node'
+
+function hasNodeConfigFiles () {
+    const neededNodeConfigFile = nodeConfiguration.configFileName;
+    const nodeConfigFilePath = path.resolve(process.cwd(), neededNodeConfigFile);
+
+    let doesNodeConfigFileExists = fs.existsSync(nodeConfigFilePath);
+
+    if (!doesNodeConfigFileExists) {
+        print(`Missing ${ neededNodeConfigFile } file!`);
+        return false;
+    }
+
+    let nodeFileContent = fs.readFileSync(nodeConfigFilePath, 'utf-8');
+
+    if (nodeFileContent.indexOf(nodeConfiguration.textToSearch) < 0) {
+        print(`Invalid ${ neededNodeConfigFile } file!`);
+        return false;
+    }
+
+    return true;
+}
 
 async function fundWallets (nodeIp) {
     await waitToMineCoins(nodeIp);
@@ -97,27 +118,6 @@ async function fundWallet (client, recipient) {
     await client.spend(config.amountToFund, recipient)
 }
 
-function hasNodeConfigFiles () {
-    const neededNodeConfigFile = nodeConfiguration.configFileName;
-    const nodeConfigFilePath = path.resolve(process.cwd(), neededNodeConfigFile);
-
-    let doesNodeConfigFileExists = fs.existsSync(nodeConfigFilePath);
-
-    if (!doesNodeConfigFileExists) {
-        print(`Missing ${ neededNodeConfigFile } file!`);
-        return false;
-    }
-
-    let nodeFileContent = fs.readFileSync(nodeConfigFilePath, 'utf-8');
-
-    if (nodeFileContent.indexOf(nodeConfiguration.textToSearch) < 0) {
-        print(`Invalid ${ neededNodeConfigFile } file!`);
-        return false;
-    }
-
-    return true;
-}
-
 async function run (option) {
 
     let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
@@ -127,7 +127,7 @@ async function run (option) {
         let running = await waitForContainer(dockerImage);
         
         if (option.info) {
-            await printInfo(running, capitalize(unit))
+            await printInfo(running, unit)
             return
         }
 

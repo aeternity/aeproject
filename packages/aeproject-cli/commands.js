@@ -17,11 +17,11 @@
 const compile = require('./aeproject-compile/compile.js');
 const init = require('./aeproject-init/init.js');
 const testConfig = require('./aeproject-test/test.js');
-const node = require('./aeproject-node/node.js');
-const compiler = require('./aeproject-env/aeproject-compiler/compiler.js')
+const env = require('./aeproject-env/env.js');
+const node = require('./aeproject-env/node/node.js');
+const compiler = require('./aeproject-env/compiler/compiler.js')
 const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('aeproject-config');
-const localCompiler = config.localCompiler;
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
 const { history } = require('aeproject-logger');
 const printReportTable = require('aeproject-utils').printReportTable;
@@ -61,14 +61,26 @@ const addTestOption = (program) => {
         })
 }
 
+const addEnvOption = (program) => {
+    program
+        .command('env')
+        .description('Running a local node. Without any argument node will be run with --start argument')
+        .option('--stop', 'Stop the node')
+        .option('--start', 'Start the node')
+        .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
+        .option('--windows', 'Start the node in windows env')
+        .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${dockerIp}"`, dockerIp)
+        .action(async (options) => {
+            await env.run(options);
+        })
+}
+
 const addNodeOption = (program) => {
     program
         .command('node')
         .description('Running a local node. Without any argument node will be run with --start argument')
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
-        .option('--only', 'Start only the node without local compiler')
-        .option('--only-compiler', 'Start only the compiler, without local nodes')
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
@@ -156,6 +168,7 @@ const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
     addTestOption(program);
+    addEnvOption(program);
     addNodeOption(program);
     addCompilerOption(program);
     addDeployOption(program);

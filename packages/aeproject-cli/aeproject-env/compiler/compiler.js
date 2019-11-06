@@ -27,8 +27,7 @@ const {
     printSuccessMsg,
     printStarMsg,
     printInitialStopMsg,
-    toggleLoader,
-    capitalize
+    toggleLoader
 } = require('aeproject-utils');
 
 const utils = require('aeproject-utils');
@@ -36,18 +35,17 @@ const utils = require('aeproject-utils');
 const fs = require('fs');
 const path = require('path');
 
-const nodeConfig = require('aeproject-config')
-const localCompilerConfig = nodeConfig.compilerConfiguration;
-const nodeConfiguration = nodeConfig.nodeConfiguration;
-
 let network = utils.config.localhostParams
 network.compilerUrl = utils.config.compilerUrl
 
 const DEFAULT_COMPILER_PORT = 3080;
 const unit = 'compiler'
 
+const nodeConfig = require('aeproject-config');
+const compilerConfigs = nodeConfig.compilerConfiguration;
+
 function hasCompilerConfigFiles () {
-    const neededCompilerConfigFile = localCompilerConfig.configFileName;
+    const neededCompilerConfigFile = compilerConfigs.configFileName;
     const compilerConfigFilePath = path.resolve(process.cwd(), neededCompilerConfigFile);
 
     let doesCompilerConfigFileExists = fs.existsSync(compilerConfigFilePath);
@@ -59,7 +57,7 @@ function hasCompilerConfigFiles () {
 
     let compilerFileContent = fs.readFileSync(compilerConfigFilePath, 'utf-8');
 
-    if (compilerFileContent.indexOf(localCompilerConfig.textToSearch) < 0) {
+    if (compilerFileContent.indexOf(compilerConfigs.textToSearch) < 0) {
         print(`Invalid  ${ neededCompilerConfigFile } file!`);
         return false;
     }
@@ -69,13 +67,13 @@ function hasCompilerConfigFiles () {
 
 async function run (option) {
     
-    let compilerImage = option.windows ? nodeConfiguration.dockerImage : nodeConfiguration.dockerServiceCompilerName;
+    let compilerImage = option.windows ? compilerConfigs.dockerImage : compilerConfigs.dockerServiceCompilerName;
 
     try {
         let running = await waitForContainer(compilerImage);
 
         if (option.info) {
-            await printInfo(running, capitalize(unit))
+            await printInfo(running, unit)
             return
         }
 
