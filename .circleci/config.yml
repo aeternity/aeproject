@@ -43,7 +43,7 @@ jobs:
       - run: aeproject --version
       - run:
           command: |
-            sudo docker info
+            docker info
             #sudo docker rm $(docker ps -a -q)
             #sudo docker info
             ls -la
@@ -52,12 +52,12 @@ jobs:
             aeproject init
             ls -la
             set -x
-            sudo docker-compose ps
-            sudo docker-compose -f docker-compose.yml -f docker-compose.compiler.yml down -v --remove-orphans
+            docker-compose ps
+            docker-compose -f docker-compose.yml -f docker-compose.compiler.yml down -v --remove-orphans
             #sudo docker-compose -f docker-compose.yml up -d
-            sudo docker-compose ps
-            sudo docker-compose logs
-            sudo aeproject node
-            sudo docker-compose ps
+            docker-compose ps
+            docker-compose logs
+            aeproject node
+            docker-compose ps
             aeproject compile
           no_output_timeout: 30m
