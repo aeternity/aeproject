@@ -46,7 +46,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.contractWrapperTestsFolderPath
 };
 
-describe("Deployed contract instance additional functionality", async () => {
+describe.only("Deployed contract instance additional functionality", async () => {
 
     let deployedContract;
 
@@ -55,7 +55,7 @@ describe("Deployed contract instance additional functionality", async () => {
         // start node 
         fs.ensureDirSync(`.${ constants.contractWrapperTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
-        await execute(constants.cliCommands.NODE, [], executeOptions);
+        await execute(constants.cliCommands.ENV, [], executeOptions);
 
         let deployer = new Deployer('local', ownerKeyPair.privateKey);
         deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
@@ -377,7 +377,7 @@ describe("Deployed contract instance additional functionality", async () => {
         // stop node
         let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions);
         }
 
         fs.removeSync(`.${ constants.contractWrapperTestsFolderPath }`)

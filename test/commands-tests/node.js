@@ -459,7 +459,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             await killRunningNodes()
 
-            let startResult = await execute(constants.cliCommands.NODE, [], executeOptions)
+            let startResult = await execute(constants.cliCommands.ENV, [], executeOptions)
             let hasNodeStarted = startResult.indexOf(`Node was successfully started`) >= 0;
             let nodeStore = await fs.readJSONSync(nodeStorePath)
 

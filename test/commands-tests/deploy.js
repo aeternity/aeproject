@@ -5,7 +5,7 @@ chai.use(chaiAsPromised);
 const assert = chai.assert;
 const utils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
 const execute = utils.aeprojectExecute;
-const waitForContainer = utils.waitForContainer;
+const waitForContainer = require('../utils').waitForContainer;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
 const nodeConfig = require('../../packages/aeproject-config/config/node-config.json');
@@ -59,7 +59,7 @@ describe('AEproject Deploy', () => {
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await linkLocalPackages()
-        await execute(constants.cliCommands.NODE, [], executeOptions)
+        await execute(constants.cliCommands.ENV, [], executeOptions)
 
     })
 
@@ -255,7 +255,7 @@ describe('AEproject Deploy', () => {
         let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
 
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 
         fs.removeSync(`.${ constants.deployTestsFolderPath }`)
