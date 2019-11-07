@@ -39,10 +39,10 @@ const waitForContainerOpts = {
 
 describe("AEproject Node and Compiler Tests", async () => {
 
-    // before(async () => {
-    //     fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
-    //     await execute(constants.cliCommands.INIT, [], executeOptions);
-    // })
+    before(async () => {
+        fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+    })
 
     describe('AEproject Env', () => {
         before(async () => {
@@ -598,7 +598,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         })
     }
 
-    // after(async () => {
-    //     fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
-    // })
+    after(async () => {
+        fs.removeSync(`.${ constants.nodeTestsFolderPath }`)
+    })
 })
