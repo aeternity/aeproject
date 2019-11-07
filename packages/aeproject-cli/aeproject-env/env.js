@@ -19,57 +19,107 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     print,
     printError,
-    getInfo,
-    waitForContainer,
     readSpawnOutput
 } = require('aeproject-utils')
-
-const node = require('./node/node')
-const compiler = require('./compiler/compiler')
 
 const nodeConfig = require('aeproject-config')
 const nodeConfiguration = nodeConfig.nodeConfiguration;
 const compilerConfiguration = nodeConfig.compilerConfiguration;
 
-async function printInfo (running, unit) {
+const EnvService = require('./EnvService')
 
-    if (!running) {
-        printError(`===== Compiler or Node is not running! ===== \n===== Please run the relevant command for your image! =====`)
-        return
+class Env extends EnvService {
+    constructor () {
+        super('')
+    }
+    async printInfo (running) {
+        
+        if (!running) {
+            printError(`===== Compiler or Node is not running! ===== \n===== Please run the relevant command for your image! =====`)
+            return
+        }
+
+        let buff = await this.getInfo();
+        let res = readSpawnOutput(buff)
+
+        print(res);
     }
 
-    let buff = await getInfo(unit);
-    let res = readSpawnOutput(buff)
+    async areNodeAndCompilerRunning (...images) {
+        let running = true
 
-    print(res);
-}
+        for (const currImage in images) {
+            running = await super.waitForContainer(images[currImage]) && running
+        }
 
-async function areNodeAndCompilerRunning (...images) {
-    let running = true
-    
-    for (const currImage in images) {
-        running = await waitForContainer(images[currImage]) && running
+        return running
     }
 
-    return running    
-}
-
-async function run (option) {
-
-    if (option.info) {
+    async run (option) {
+        let running;
         let dockerImage = option.windows ? nodeConfiguration.dockerImage : nodeConfiguration.dockerServiceNodeName;
         let compilerImage = option.windows ? compilerConfiguration.dockerImage : compilerConfiguration.dockerServiceCompilerName;
-        let running = await areNodeAndCompilerRunning(dockerImage, compilerImage)
+        running = await this.areNodeAndCompilerRunning(dockerImage, compilerImage)
 
-        await printInfo(running)
+        if (option.info) {
+            await this.printInfo(running)
+            return
+        }
+
+        if (option.stop) {
+
+            // if not running, current env may be windows
+            // to reduce optional params we check is it running on windows env
+            if (!running) {
+                running = await this.areNodeAndCompilerRunning(dockerImage, compilerImage)
+                printError(`===== Compiler or Node is not running! ===== \n===== Please run the relevant command for your image! =====`)
+                return
+            }
+
+            if (!running) {
+                return
+            }
+
+            super.printInitialStopMsg()
+
+            try {
+                await super.stopAll();
+            } catch (error) {
+                printError(Buffer.from(error.stderr).toString('utf-8'))
+            }
+
+            return;
+        }
         
-        return
-    }
+        if (!await super.shouldProcessStart(running)) return
 
-    await compiler.run(option)
-    await node.run(option)
+        try {
+            this.printStarMsg()
+            
+            let startingNodeSpawn = super.start();
+
+            await super.toggleLoader(startingNodeSpawn, dockerImage)
+
+            super.printSuccessMsg()
+
+            if (option.windows) {
+                let dockerIp = super.removePrefixFromIp(option.dockerIp);
+                await super.fundWallets(dockerIp);
+            } else {
+                await super.fundWallets();
+            }
+
+            print('\r\n===== Default wallets were successfully funded! =====');
+        } catch (e) {
+            printError(e.message || e);
+        }
+    }
 }
 
+const env = new Env()
+
 module.exports = {
-    run
+    run: async (options) => {
+        await env.run(options)
+    }
 }

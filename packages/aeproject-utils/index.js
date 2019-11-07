@@ -41,21 +41,6 @@ const generateKeyPairFromSecretKey = contractUtils.generateKeyPairFromSecretKey;
 const decodedHexAddressToPublicAddress = contractUtils.decodedHexAddressToPublicAddress;
 const trimAdresseses = contractUtils.trimAdresseses;
 
-const nodeUtils = require('./utils/node-utils');
-const start = nodeUtils.start;
-const stopAll = nodeUtils.stopAll;
-const stopNode = nodeUtils.stopNode
-const stopCompiler = nodeUtils.stopCompiler;
-const stopSeparately = nodeUtils.stopSeparately;
-const getInfo = nodeUtils.getInfo;
-const printInfo = nodeUtils.printInfo;
-const waitForContainer = nodeUtils.waitForContainer;
-const toggleLoader = nodeUtils.toggleLoader;
-const checkForAllocatedPort = nodeUtils.checkForAllocatedPort;
-const printSuccessMsg = nodeUtils.printSuccessMsg;
-const printStarMsg = nodeUtils.printStarMsg;
-const printInitialStopMsg = nodeUtils.printInitialStopMsg;
-
 const SophiaUtil = require('./utils/sophia-util');
 
 module.exports = {
@@ -94,18 +79,5 @@ module.exports = {
     winExec,
     readSpawnOutput,
     readErrorSpawnOutput,
-    capitalize,
-    start,
-    stopAll,
-    stopNode,
-    stopCompiler,
-    stopSeparately,
-    getInfo,
-    printInfo,
-    waitForContainer,
-    toggleLoader,
-    checkForAllocatedPort,
-    printSuccessMsg,
-    printStarMsg,
-    printInitialStopMsg
+    capitalize
 }

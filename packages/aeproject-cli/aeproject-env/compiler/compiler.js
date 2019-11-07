@@ -18,123 +18,100 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 
 const {
     printError,
-    print,
-    waitForContainer,
-    start,
-    stopCompiler,
-    checkForAllocatedPort,
-    printInfo,
-    printSuccessMsg,
-    printStarMsg,
-    printInitialStopMsg,
-    toggleLoader
+    print
 } = require('aeproject-utils');
-
-const utils = require('aeproject-utils');
-
-const fs = require('fs');
-const path = require('path');
-
-let network = utils.config.localhostParams
-network.compilerUrl = utils.config.compilerUrl
-
-const DEFAULT_COMPILER_PORT = 3080;
-const unit = 'compiler'
 
 const nodeConfig = require('aeproject-config');
 const compilerConfigs = nodeConfig.compilerConfiguration;
 
-function hasCompilerConfigFiles () {
-    const neededCompilerConfigFile = compilerConfigs.configFileName;
-    const compilerConfigFilePath = path.resolve(process.cwd(), neededCompilerConfigFile);
+const DEFAULT_COMPILER_PORT = 3080;
 
-    let doesCompilerConfigFileExists = fs.existsSync(compilerConfigFilePath);
+const EnvService = require('../EnvService')
 
-    if (!doesCompilerConfigFileExists) {
-        print(`Missing ${ neededCompilerConfigFile } file!`);
-        return false;
+class Compiler extends EnvService {
+
+    constructor () {
+        super('compiler')
     }
 
-    let compilerFileContent = fs.readFileSync(compilerConfigFilePath, 'utf-8');
+    async run (option) {
 
-    if (compilerFileContent.indexOf(compilerConfigs.textToSearch) < 0) {
-        print(`Invalid  ${ neededCompilerConfigFile } file!`);
-        return false;
-    }
+        let compilerImage = option.windows ? compilerConfigs.dockerImage : compilerConfigs.dockerServiceCompilerName;
 
-    return true;
-}
-
-async function run (option) {
-    
-    let compilerImage = option.windows ? compilerConfigs.dockerImage : compilerConfigs.dockerServiceCompilerName;
-
-    try {
-        let running = await waitForContainer(compilerImage);
-
-        if (option.info) {
-            await printInfo(running, unit)
-            return
-        }
-
-        if (option.stop) {
-
-            // if not running, current env may be windows
-            // to reduce optional params we check is it running on windows env
-            if (!running) {
-                running = await waitForContainer(compilerImage);
-            }
-
-            if (!running) {
-                printError('===== Compiler is not running! =====');
+        try {
+            
+            let running = await super.waitForContainer(compilerImage);
+             
+            if (option.info) {
+                await super.printInfo(running)
                 return
             }
-            
-            printInitialStopMsg(unit)
 
-            try {
-                await stopCompiler();
-            } catch (error) {
-                printError(Buffer.from(error.stderr).toString('utf-8'))
+            if (option.stop) {
+
+                // if not running, current env may be windows
+                // to reduce optional params we check is it running on windows env
+                if (!running) {
+                    running = await this.waitForContainer(compilerImage);
+                }
+
+                if (!running) {
+                    printError('===== Compiler is not running! =====');
+                    return
+                }
+
+                super.printInitialStopMsg()
+
+                try {
+                    await super.stopCompiler();
+                } catch (error) {
+                    printError(Buffer.from(error.stderr).toString('utf-8'))
+                }
+
+                return;
             }
+           
+            if (!await this.shouldProcessStart(running)) return
 
-            return;
+            this.printStarMsg()
+
+            let startingCompilerSpawn = super.start();
+
+            await super.toggleLoader(startingCompilerSpawn, compilerImage)
+
+            super.printSuccessMsg()
+
+        } catch (e) {
+            printError(e.message || e);
         }
+    }
 
-        if (!hasCompilerConfigFiles()) {
+    async shouldProcessStart (running) {
+        
+        if (!super.hasCompilerConfigFiles()) {
             print('Process will be terminated!');
-            return;
+            return false
         }
 
         if (running) {
             print('\r\n===== Compiler already started and healthy! =====')
-            return;
+            return false
         }
 
-        // if (!option.onlyCompiler && await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
-        //     print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
-        //     throw new Error(`Cannot start AE node, port is already allocated!`);
-        // }
-
-        if (await checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
+        if (await super.checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
             print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
-            throw new Error(`Cannot start AE compiler, port is already allocated!`);
+            print(`Cannot start AE compiler, port is already allocated!`);
+            return false
         }
-
-        printStarMsg(unit)
         
-        let startingCompilerSpawn = start(unit);
-
-        await toggleLoader(startingCompilerSpawn, compilerImage)
-
-        printSuccessMsg(unit)
-
-    } catch (e) {
-        printError(e.message || e);
+        return true
     }
-    
 }
 
+const compiler = new Compiler()
+
 module.exports = {
-    run
+    run: async (options) => {
+        await compiler.run(options)
+    }
 }

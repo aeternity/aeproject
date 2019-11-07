@@ -69,7 +69,7 @@ const addEnvOption = (program) => {
         .option('--start', 'Start the node')
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
-        .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${dockerIp}"`, dockerIp)
+        .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
         .action(async (options) => {
             await env.run(options);
         })
@@ -96,8 +96,6 @@ const addCompilerOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
-        .option('--windows', 'Start the node in windows env')
-        .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${dockerIp}"`, dockerIp)
         .action(async (options) => {
             await compiler.run(options);
         })

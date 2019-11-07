@@ -16,189 +16,109 @@
  */
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 
-const path = require('path');
-const fs = require('fs');
-
 const {
     printError,
-    print,
-    waitForContainer,
-    start,
-    stopNode,
-    printInfo,
-    checkForAllocatedPort,
-    printSuccessMsg,
-    printStarMsg,
-    printInitialStopMsg,
-    toggleLoader
+    print
 } = require('aeproject-utils');
 
-const utils = require('aeproject-utils');
-
 const nodeConfig = require('aeproject-config')
-const config = nodeConfig.config;
-const defaultWallets = nodeConfig.defaultWallets;
 const nodeConfiguration = nodeConfig.nodeConfiguration;
 
-let balanceOptions = {
-    format: false
-}
-let network = utils.config.localhostParams
-network.compilerUrl = utils.config.compilerUrl
-
 const DEFAULT_NODE_PORT = 3001;
-const unit = 'node'
 
-function hasNodeConfigFiles () {
-    const neededNodeConfigFile = nodeConfiguration.configFileName;
-    const nodeConfigFilePath = path.resolve(process.cwd(), neededNodeConfigFile);
+const EnvService = require('../EnvService')
 
-    let doesNodeConfigFileExists = fs.existsSync(nodeConfigFilePath);
-
-    if (!doesNodeConfigFileExists) {
-        print(`Missing ${ neededNodeConfigFile } file!`);
-        return false;
+class Node extends EnvService {
+    constructor () {
+        super('node')
     }
 
-    let nodeFileContent = fs.readFileSync(nodeConfigFilePath, 'utf-8');
+    async run (option) {
 
-    if (nodeFileContent.indexOf(nodeConfiguration.textToSearch) < 0) {
-        print(`Invalid ${ neededNodeConfigFile } file!`);
-        return false;
-    }
+        let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
+        dockerImage = nodeConfiguration.dockerServiceNodeName;
 
-    return true;
-}
+        try {
+            let running = await this.waitForContainer(dockerImage);
 
-async function fundWallets (nodeIp) {
-    await waitToMineCoins(nodeIp);
-
-    let walletIndex = 0;
-
-    let client = await utils.getClient(network);
-    await printBeneficiaryKey(client);
-    for (let wallet in defaultWallets) {
-        await fundWallet(client, defaultWallets[wallet].publicKey)
-        await printWallet(client, defaultWallets[wallet], `#${ walletIndex++ }`)
-    }
-}
-
-async function printBeneficiaryKey (client) {
-    await printWallet(client, config.keyPair, "Miner")
-}
-
-async function printWallet (client, keyPair, label) {
-    let keyPairBalance = await client.balance(keyPair.publicKey, balanceOptions)
-
-    print(`${ label } ------------------------------------------------------------`)
-    print(`public key: ${ keyPair.publicKey }`)
-    print(`private key: ${ keyPair.secretKey }`)
-    print(`Wallet's balance is ${ keyPairBalance }`);
-}
-
-async function waitToMineCoins (nodeIp) {
-
-    try {
-        if (nodeIp) {
-            network = JSON.parse(JSON.stringify(network).replace(/localhost/g, nodeIp));
-        }
-
-        let client = await utils.getClient(network);
-        let heightOptions = {
-            interval: 8000,
-            attempts: 300
-        }
-        return await client.awaitHeight(10, heightOptions)
-    } catch (error) {
-        throw Error(error);
-    }
-}
-
-async function fundWallet (client, recipient) {
-    await client.spend(config.amountToFund, recipient)
-}
-
-async function run (option) {
-
-    let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
-    dockerImage = nodeConfiguration.dockerServiceNodeName;
-    
-    try {
-        let running = await waitForContainer(dockerImage);
-        
-        if (option.info) {
-            await printInfo(running, unit)
-            return
-        }
-
-        if (option.stop) {
-
-            // if not running, current env may be windows
-            // to reduce optional params we check is it running on windows env
-            if (!running) {
-                running = await waitForContainer(dockerImage);
-            }
-
-            if (!running) {
-                print('===== Node is not running! =====');
+            if (option.info) {
+                await this.printInfo(running)
                 return
             }
 
-            printInitialStopMsg(unit)
+            if (option.stop) {
 
-            try {
-                await stopNode();
-            } catch (error) {
-                printError(Buffer.from(error.stderr).toString('utf-8'))
+                // if not running, current env may be windows
+                // to reduce optional params we check is it running on windows env
+                if (!running) {
+                    running = await this.waitForContainer(dockerImage);
+                }
+
+                if (!running) {
+                    print('===== Node is not running! =====');
+                    return
+                }
+
+                this.printInitialStopMsg()
+
+                try {
+                    await this.stopNode();
+                } catch (error) {
+                    printError(Buffer.from(error.stderr).toString('utf-8'))
+                }
+
+                return;
             }
 
-            return;
-        }
+            if (!await this.shouldProcessStart(running)) return
 
-        if (!hasNodeConfigFiles()) {
+            this.printStarMsg()
+
+            let startingNodeSpawn = this.start();
+
+            await this.toggleLoader(startingNodeSpawn, dockerImage)
+
+            this.printSuccessMsg()
+
+            if (option.windows) {
+                let dockerIp = this.removePrefixFromIp(option.dockerIp);
+                await this.fundWallets(dockerIp);
+            } else {
+                await this.fundWallets();
+            }
+
+            print('\r\n===== Default wallets were successfully funded! =====');
+        } catch (e) {
+            printError(e.message || e);
+        }
+    }
+
+    async shouldProcessStart (running) {
+        if (!this.hasNodeConfigFiles()) {
             print('Process will be terminated!');
-            return;
+            return false
         }
 
         if (running) {
             print('\r\n===== Node already started and healthy! =====');
-            return;
+            return false
         }
 
-        if (await checkForAllocatedPort(DEFAULT_NODE_PORT)) {
+        if (await this.checkForAllocatedPort(DEFAULT_NODE_PORT)) {
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
-            throw new Error(`Cannot start AE node, port is already allocated!`);
+            printError(`Cannot start AE node, port is already allocated!`);
+            return false
         }
 
-        printStarMsg(unit)
-        
-        let startingNodeSpawn = start(unit);
-
-        await toggleLoader(startingNodeSpawn, dockerImage)
-
-        printSuccessMsg(unit)
-
-        if (option.windows) {
-            let dockerIp = removePrefixFromIp(option.dockerIp);
-            await fundWallets(dockerIp);
-        } else {
-            await fundWallets();
-        }
-
-        print('\r\n===== Default wallets were successfully funded! =====');
-    } catch (e) {
-        printError(e.message || e);
-    }
-}
-
-function removePrefixFromIp (ip) {
-    if (!ip) {
-        return '';
+        return true
     }
 
-    return ip.replace('http://', '').replace('https://', '');
 }
+
+const node = new Node()
 
 module.exports = {
-    run
+    run: async (options) => {
+        await node.run(options)
+    }
 }
