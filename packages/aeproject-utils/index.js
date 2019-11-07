@@ -29,6 +29,7 @@ const timeout = aeprojectUtils.timeout;
 const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
+const txValidator = aeprojectUtils.TransactionValidator;
 const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
 
@@ -51,6 +52,7 @@ const printStarMsg = nodeUtils.printStarMsg;
 const printInitialStopMsg = nodeUtils.printInitialStopMsg;
 
 const SophiaUtil = require('./utils/sophia-util');
+const httpGet = require('./utils/http-utils').httpGet;
 
 module.exports = {
     printReportTable,
@@ -87,6 +89,8 @@ module.exports = {
     writeFileSync,
     winExec,
     waitForContainer,
+    txValidator,
+    httpGet,
     readSpawnOutput,
     readErrorSpawnOutput,
     start,
