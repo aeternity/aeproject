@@ -114,7 +114,7 @@ class EnvService {
                 break;
             default:
                 spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
-                return nodeService.save();
+                nodeService.save();
         }
     }
 
@@ -132,6 +132,7 @@ class EnvService {
 
     async stopNode () {
         try {
+            
             await spawn('docker-compose', [
                 '-f',
                 `${ nodeService.getNodePath() }`,
@@ -139,8 +140,8 @@ class EnvService {
             ]);
 
             print('===== Node was successfully stopped! =====');
-
             return nodeService.delete('node');
+
         } catch (error) {
             if (readErrorSpawnOutput(error).indexOf('active endpoints')) {
                 nodeService.delete('node');
@@ -171,10 +172,6 @@ class EnvService {
             throw new Error(error);
         }
 
-    }
-
-    stopSeparately (options) {
-        return options.only ? this.stopNode() : this.stopCompiler();
     }
 
     async getInfo (options) {

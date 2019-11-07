@@ -39,10 +39,10 @@ class Node extends EnvService {
         dockerImage = nodeConfiguration.dockerServiceNodeName;
 
         try {
-            let running = await this.waitForContainer(dockerImage);
+            let running = await super.waitForContainer(dockerImage);
 
             if (option.info) {
-                await this.printInfo(running)
+                await super.printInfo(running)
                 return
             }
 
@@ -51,7 +51,7 @@ class Node extends EnvService {
                 // if not running, current env may be windows
                 // to reduce optional params we check is it running on windows env
                 if (!running) {
-                    running = await this.waitForContainer(dockerImage);
+                    running = await super.waitForContainer(dockerImage);
                 }
 
                 if (!running) {
@@ -59,10 +59,10 @@ class Node extends EnvService {
                     return
                 }
 
-                this.printInitialStopMsg()
+                super.printInitialStopMsg()
 
                 try {
-                    await this.stopNode();
+                    await super.stopNode();
                 } catch (error) {
                     printError(Buffer.from(error.stderr).toString('utf-8'))
                 }
@@ -72,19 +72,19 @@ class Node extends EnvService {
 
             if (!await this.shouldProcessStart(running)) return
 
-            this.printStarMsg()
+            super.printStarMsg()
 
-            let startingNodeSpawn = this.start();
+            let startingNodeSpawn = super.start();
 
-            await this.toggleLoader(startingNodeSpawn, dockerImage)
+            await super.toggleLoader(startingNodeSpawn, dockerImage)
 
-            this.printSuccessMsg()
+            super.printSuccessMsg()
 
             if (option.windows) {
-                let dockerIp = this.removePrefixFromIp(option.dockerIp);
-                await this.fundWallets(dockerIp);
+                let dockerIp = super.removePrefixFromIp(option.dockerIp);
+                await super.fundWallets(dockerIp);
             } else {
-                await this.fundWallets();
+                await super.fundWallets();
             }
 
             print('\r\n===== Default wallets were successfully funded! =====');
@@ -94,7 +94,7 @@ class Node extends EnvService {
     }
 
     async shouldProcessStart (running) {
-        if (!this.hasNodeConfigFiles()) {
+        if (!super.hasNodeConfigFiles()) {
             print('Process will be terminated!');
             return false
         }
@@ -104,7 +104,7 @@ class Node extends EnvService {
             return false
         }
 
-        if (await this.checkForAllocatedPort(DEFAULT_NODE_PORT)) {
+        if (await super.checkForAllocatedPort(DEFAULT_NODE_PORT)) {
             print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
             printError(`Cannot start AE node, port is already allocated!`);
             return false

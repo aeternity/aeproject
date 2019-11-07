@@ -52,7 +52,7 @@ class Compiler extends EnvService {
                 // if not running, current env may be windows
                 // to reduce optional params we check is it running on windows env
                 if (!running) {
-                    running = await this.waitForContainer(compilerImage);
+                    running = await super.waitForContainer(compilerImage);
                 }
 
                 if (!running) {
@@ -73,7 +73,7 @@ class Compiler extends EnvService {
            
             if (!await this.shouldProcessStart(running)) return
 
-            this.printStarMsg()
+            super.printStarMsg()
 
             let startingCompilerSpawn = super.start();
 

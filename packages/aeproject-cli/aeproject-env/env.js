@@ -59,6 +59,7 @@ class Env extends EnvService {
         let running;
         let dockerImage = option.windows ? nodeConfiguration.dockerImage : nodeConfiguration.dockerServiceNodeName;
         let compilerImage = option.windows ? compilerConfiguration.dockerImage : compilerConfiguration.dockerServiceCompilerName;
+        
         running = await this.areNodeAndCompilerRunning(dockerImage, compilerImage)
 
         if (option.info) {
@@ -94,7 +95,7 @@ class Env extends EnvService {
         if (!await super.shouldProcessStart(running)) return
 
         try {
-            this.printStarMsg()
+            super.printStarMsg()
             
             let startingNodeSpawn = super.start();
 
