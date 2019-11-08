@@ -23,7 +23,7 @@ This will install all your obligatory dependencies in order to run your **aeproj
 The command will **overwrite** the following files for you, so you will be up to date with the latest configurations of the node and compiler:
     - docker-compose.yml
     - docker-compose.compiler.yml
-    - docker dorectory
+    - docker directory
 
 
 - The last thing you should be aware of is the `deploy.js` file. (Initially located in /deployment directory)
