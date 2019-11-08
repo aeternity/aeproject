@@ -21,27 +21,26 @@ const {
     print
 } = require('aeproject-utils');
 
-const nodeConfig = require('aeproject-config');
-const compilerConfigs = nodeConfig.compilerConfiguration;
+const nodeConfig = require('aeproject-config')
+const nodeConfiguration = nodeConfig.nodeConfiguration;
 
-const DEFAULT_COMPILER_PORT = 3080;
+const DEFAULT_NODE_PORT = 3001;
 
-const EnvService = require('../EnvService')
+const EnvService = require('../../EnvService')
 
-class Compiler extends EnvService {
-
+class Node extends EnvService {
     constructor () {
-        super('compiler')
+        super('node')
     }
 
     async run (option) {
 
-        let compilerImage = option.windows ? compilerConfigs.dockerImage : compilerConfigs.dockerServiceCompilerName;
+        let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
+        dockerImage = nodeConfiguration.dockerServiceNodeName;
 
         try {
-            
-            let running = await super.waitForContainer(compilerImage);
-             
+            let running = await super.waitForContainer(dockerImage);
+
             if (option.info) {
                 await super.printInfo(running)
                 return
@@ -52,66 +51,74 @@ class Compiler extends EnvService {
                 // if not running, current env may be windows
                 // to reduce optional params we check is it running on windows env
                 if (!running) {
-                    running = await super.waitForContainer(compilerImage);
+                    running = await super.waitForContainer(dockerImage);
                 }
 
                 if (!running) {
-                    printError('===== Compiler is not running! =====');
+                    print('===== Node is not running! =====');
                     return
                 }
 
                 super.printInitialStopMsg()
 
                 try {
-                    await super.stopCompiler();
+                    await super.stopNode();
                 } catch (error) {
                     printError(Buffer.from(error.stderr).toString('utf-8'))
                 }
 
                 return;
             }
-           
+
             if (!await this.shouldProcessStart(running)) return
 
             super.printStarMsg()
 
-            let startingCompilerSpawn = super.start();
+            let startingNodeSpawn = super.start();
 
-            await super.toggleLoader(startingCompilerSpawn, compilerImage)
+            await super.toggleLoader(startingNodeSpawn, dockerImage)
 
             super.printSuccessMsg()
 
+            if (option.windows) {
+                let dockerIp = super.removePrefixFromIp(option.dockerIp);
+                await super.fundWallets(dockerIp);
+            } else {
+                await super.fundWallets();
+            }
+
+            print('\r\n===== Default wallets were successfully funded! =====');
         } catch (e) {
             printError(e.message || e);
         }
     }
 
     async shouldProcessStart (running) {
-        
-        if (!super.hasCompilerConfigFiles()) {
+        if (!super.hasNodeConfigFiles()) {
             print('Process will be terminated!');
             return false
         }
 
         if (running) {
-            print('\r\n===== Compiler already started and healthy! =====')
+            print('\r\n===== Node already started and healthy! =====');
             return false
         }
 
-        if (await super.checkForAllocatedPort(DEFAULT_COMPILER_PORT)) {
-            print(`\r\n===== Port [${ DEFAULT_COMPILER_PORT }] is already allocated! Process will be terminated! =====`);
-            print(`Cannot start AE compiler, port is already allocated!`);
+        if (await super.checkForAllocatedPort(DEFAULT_NODE_PORT)) {
+            print(`\r\n===== Port [${ DEFAULT_NODE_PORT }] is already allocated! Process will be terminated! =====`);
+            printError(`Cannot start AE node, port is already allocated!`);
             return false
         }
-        
+
         return true
     }
+
 }
 
-const compiler = new Compiler()
+const node = new Node()
 
 module.exports = {
     run: async (options) => {
-        await compiler.run(options)
+        await node.run(options)
     }
 }

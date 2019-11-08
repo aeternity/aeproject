@@ -78,17 +78,21 @@ describe("AEproject Node and Compiler Tests", async () => {
             }
         })
 
-        it('Process should start local compiler', async () => {
+        it('Process should have started local compiler', async () => {
             let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL);
             let isContainCurrentVersion = result.indexOf(`{"version"`) >= 0;
 
             assert.isOk(isContainCurrentVersion);
         })
 
-        it('Should stop the node successfully', async () => {
+        it('Should stop the node && compiler successfully', async () => {
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            assert.isNotTrue(running, "node wasn't stopped properly");
+            
+            let runningNode = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
+            let runningCompiler = await waitForContainer(waitForContainerOpts.compilerImage, executeOptions);
+            
+            assert.isNotTrue(runningNode, "node wasn't stopped properly");
+            assert.isNotTrue(runningCompiler, "node wasn't stopped properly");
         })
 
         it('Process should stop when command is started in wrong folder.', async () => {

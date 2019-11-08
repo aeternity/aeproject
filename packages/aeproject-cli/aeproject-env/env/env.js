@@ -26,7 +26,7 @@ const nodeConfig = require('aeproject-config')
 const nodeConfiguration = nodeConfig.nodeConfiguration;
 const compilerConfiguration = nodeConfig.compilerConfiguration;
 
-const EnvService = require('./EnvService')
+const EnvService = require('../EnvService')
 
 class Env extends EnvService {
     constructor () {
