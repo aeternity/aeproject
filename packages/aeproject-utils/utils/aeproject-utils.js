@@ -5,6 +5,8 @@ const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const Node = AeSDK.Node;
+const TransactionValidator = AeSDK.TransactionValidator;
+
 let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
 let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
@@ -59,6 +61,7 @@ const getNetwork = (network, networkId) => {
         const customNetwork = createCustomNetwork(network, networkId)
         return customNetwork;
     }
+
     const networks = {
         local: {
             url: config.localhostParams.url,
@@ -80,15 +83,26 @@ const getNetwork = (network, networkId) => {
 };
 
 const createCustomNetwork = (network, networkId) => {
-    if (network.includes('local') || networkId == undefined) {
-        throw new Error('Both network and networkId should be passed')
+    if (!network || !networkId) {
+        throw new Error('Both [--network] and [--networkId] should be passed.')
     }
-    const customNetork = {
+
+    network = network.toLowerCase();
+
+    if (network === 'local') {
+        network = getNetwork(network).url;
+    }
+
+    if (!network.startsWith('http')) {
+        network = 'http://' + network;
+    }
+
+    const customNetwork = {
         url: network,
         networkId: networkId
     }
 
-    return customNetork;
+    return customNetwork;
 }
 
 const handleApiError = async (fn) => {
@@ -277,6 +291,7 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
+    TransactionValidator,
     readSpawnOutput, 
     readErrorSpawnOutput,
     capitalize

@@ -16,6 +16,7 @@
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
 	"exportAEprojectConfigTestsFolderPath": "/test/commands-tests/exportAEprojectConfigTestFolder",
 	"nodeDockerFilesFolderPath": "./test/node-docker-compose-files",
+	"txInspectorTestFolder": "/test/tx-inspector-test-folder",
 	"nodeStoreFolder": "/packages/aeproject-logger/.aeproject-node-store",
 	"cliCommands": {
 		"INIT": "init",
@@ -28,7 +29,8 @@
 		"HISTORY": "history",
 		"CONTRACTS": "contracts",
 		"SHAPE": "shape",
-		"CURL": "curl"
+		"CURL": "curl",
+		"INSPECT": "inspect"
 	},
 	"cliSubCommands": {
 		"VUE": "vue",

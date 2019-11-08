@@ -23,12 +23,15 @@ const compiler = require('./aeproject-env/compiler/compiler.js')
 const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('aeproject-config');
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
-const { history } = require('aeproject-logger');
+const {
+    history
+} = require('aeproject-logger');
 const printReportTable = require('aeproject-utils').printReportTable;
 const contracts = require('./aeproject-contracts/aeproject-contracts.js');
 const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
+const txInspector = require('./aeproject-tx-inspector/tx-inspector');
 
 const addInitOption = (program) => {
     program
@@ -162,6 +165,18 @@ const addExportConfigOption = (program) => {
         })
 };
 
+const addTxInspector = (program) => {
+    program
+        .command('inspect <tx>')
+        .description('Unpack and verify transaction (verify nonce, ttl, fee, account balance)')
+        .option('--network [network]', 'Select network', "local")
+        .option('--networkId [networkId]', 'Configure your network id')
+        .action(async (tx, options) => {
+            options.tx = tx;
+            await txInspector.run(options);
+        })
+};
+
 const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
@@ -174,6 +189,7 @@ const initCommands = (program) => {
     addContractsAeppIntegrationOption(program)
     addShapeOption(program);
     addExportConfigOption(program);
+    addTxInspector(program)
 }
 
 module.exports = {
