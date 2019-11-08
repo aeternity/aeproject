@@ -15,8 +15,8 @@ if you want to stop the compiler you should type
 aeproject node --stop
 ```
 
-If you have running instances of the node started from `aeproject` you could check information about the compiler with 
+If you have running instances of the compiler started from `aeproject` you could check information about the compiler with 
 
 ```text
-aeproject node --info
+aeproject compiler --info
 ```

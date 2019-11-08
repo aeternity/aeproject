@@ -29,6 +29,7 @@ const DEFAULT_NODE_PORT = 3001;
 const EnvService = require('../../EnvService')
 
 class Node extends EnvService {
+    
     constructor () {
         super('node')
     }

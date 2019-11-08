@@ -37,8 +37,15 @@ To see whether you have running instances of the nodes along with a compiler you
 aeproject env --info
 ```
 
-**Attention**: there will be an error if you are trying to run the command while only one of the compoler or nodes are running. Then you should type the appropriate **info** command.
+**Attention**: there will be an error if you are trying to run the command while only one of the compiler or nodes are running. Then you should type the appropriate **info** command respectively.
 
+```text
+aeproject node --info
+```
+
+```text
+aeproject compiler --info
+```
 
 ### Disclaimer
 Please note that in rare occurrences you may experience some delay, or even timeout exception while trying to run the node. This usually happens due to new version of the docker images which the docker is trying to pull, or possibly could happen after updating the aeproject verson with new node/compiler version. The files may be large or connection inconsistency may occur. Please try to run ``` docker pull ``` or simply retry to run ```aeproject node``` again. 
