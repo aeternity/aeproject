@@ -44,7 +44,7 @@ function exportNodeConfiguration (config) {
         networkId: localHostParams.networkId,
         host: localHostParams.url,
         internalHost: `${ localHostParams.url }/internal`,
-        compilerUrl: localHostParams.compilerUrl
+        compilerUrl: config.compilerUrl
     }
 
     return localhostConfig;
