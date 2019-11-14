@@ -247,16 +247,13 @@ function getDependencies (contractContent, contractPath) {
         mainContractsPathRgx.lastIndex = 0;
         dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
 
-        // if user's contract/library/namespace not found, we check is this a default sophia library. if it is, we get it from artifacts.
         try {
             dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8');
         } catch (error) {
-            if (error.message.includes('no such file or directory') && defaultAeLibs.includes(dependencyFromContract[1].toLowerCase())) {
-                dependencyContractPath = path.resolve(`${ __dirname }/${ SOPHIA_LIBS_PATH + dependencyFromContract[1].toLowerCase() }`);
-                dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8');
-            } else {
+            console.log(`File to include '${ dependencyFromContract[1] }' not found. Check your path or it is from sophia default library`);
+            if (!error.message.includes('no such file or directory')) {
                 throw Error(error);
-            }
+            } 
         }
 
         actualContract = getActualContract(dependencyContractContent);
@@ -273,6 +270,10 @@ function getDependencies (contractContent, contractPath) {
 }
 
 function getActualContract (contractContent) {
+    if (!contractContent) {
+        return '';
+    }
+
     let contentStartIndex = contractContent.indexOf('namespace ');
     if (contentStartIndex < 0) {
         contentStartIndex = 0;
