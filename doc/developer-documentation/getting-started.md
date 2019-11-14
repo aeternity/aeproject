@@ -29,7 +29,7 @@ In a project folder:
 aeproject node
 ```
 
-To spwan a temporary local chain, use `aeproject node --stop` to stop it.
+To spawn a temporary local chain, use `aeproject node --stop` to stop it.
 
 ## Access deployed smart contract functions
 
