@@ -42,14 +42,9 @@ function insertAdditionalFiles () {
 }
 
 async function linkLocalPackages () {
-    const aeprojectLibDir = `${ process.cwd() }/packages/aeproject-lib/`
-    const aeprojectUtilsDir = `${ process.cwd() }/packages/aeproject-utils/`
-    const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
-
     process.chdir(executeOptions.cwd);
     await exec('npm install aeproject-lib')
     await exec('npm install aeproject-utils')
-
 }
 
 describe('AEproject Deploy', () => {
@@ -260,6 +255,17 @@ describe('AEproject Deploy', () => {
             let error = `${ `Error: Function "init" require 1 arguments` }`;
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
             assert.include(result, error);
+        })
+
+        it('Should compile contracts with included sophia libs', async () => {
+            // delete and copy new example contract with included default sophia's libraries
+            let sourceContractPath = path.resolve(executeOptions.cwd, './../artifacts/includeSophiaLibs.aes');
+            let destinationContractPath = path.resolve(executeOptions.cwd, './contracts/ExampleContract.aes');
+            fs.unlinkSync(destinationContractPath);
+            fs.copyFileSync(sourceContractPath, destinationContractPath);
+
+            let result = await execute(constants.cliCommands.DEPLOY, [], executeOptions);
+            assert.include(result, expectedDeployResult)
         })
     })
 

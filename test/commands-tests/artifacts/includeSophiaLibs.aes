@@ -1,0 +1,22 @@
+include "List.aes"
+include "Option.aes"
+include "Func.aes"
+include "Pair.aes"
+include "Triple.aes"
+
+contract TestExample =
+  entrypoint main(x : int) = x
+
+  entrypoint is_empty() =
+    List.is_empty([])
+
+  entrypoint is_none() =
+    Option.is_none(None)
+
+  entrypoint fst() =
+    let pair_tuple = (4, 5)
+    Pair.fst(pair_tuple) 
+
+  entrypoint snd() =
+    let triple_tuple = (4, 5, "7")
+    Triple.snd(triple_tuple)
