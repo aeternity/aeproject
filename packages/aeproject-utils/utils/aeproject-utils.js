@@ -24,12 +24,6 @@ const {
 
 const COMPILER_URL_POSTFIX = '/compile';
 const SOPHIA_LIBS_PATH = '../artifacts/sophia-libs/';
-const defaultAeLibs = getDefaultAELibsAsNames();
-
-function getDefaultAELibsAsNames () {
-    let files = fs.readdirSync(path.resolve(__dirname, SOPHIA_LIBS_PATH));
-    return files.map(file => file.toLowerCase());
-}
 
 const getClient = async function (network, keypair = config.keypair) {
     let client;
