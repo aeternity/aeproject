@@ -1,4 +1,4 @@
-require = require('esm')(module /*, options */) // use to handle es6 import/export 
+require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
@@ -23,6 +23,13 @@ const {
 } = require('promisify-child-process');
 
 const COMPILER_URL_POSTFIX = '/compile';
+const SOPHIA_LIBS_PATH = '../artifacts/sophia-libs/';
+const defaultAeLibs = getDefaultAELibsAsNames();
+
+function getDefaultAELibsAsNames () {
+    let files = fs.readdirSync(path.resolve(__dirname, SOPHIA_LIBS_PATH));
+    return files.map(file => file.toLowerCase());
+}
 
 const getClient = async function (network, keypair = config.keypair) {
     let client;
@@ -239,11 +246,27 @@ function getDependencies (contractContent, contractPath) {
         contractPath = mainContractsPathRgx.exec(contractPath)
         mainContractsPathRgx.lastIndex = 0;
         dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
-        dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
-        actualContract = getActualContract(dependencyContractContent)
-        dependencies[dependencyFromContract[1]] = actualContract;
 
-        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath))
+        // if user's contract/library/namespace not found, we check is this a default sophia library. if it is, we get it from artifacts.
+        try {
+            dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8');
+        } catch (error) {
+            if (error.message.includes('no such file or directory') && defaultAeLibs.includes(dependencyFromContract[1].toLowerCase())) {
+                dependencyContractPath = path.resolve(`${ __dirname }/${ SOPHIA_LIBS_PATH + dependencyFromContract[1].toLowerCase() }`);
+                dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8');
+            } else {
+                throw Error(error);
+            }
+        }
+
+        actualContract = getActualContract(dependencyContractContent);
+        if (!dependencyFromContract[1].startsWith('./')) {
+            dependencies['./' + dependencyFromContract[1]] = actualContract;
+        } else {
+            dependencies[dependencyFromContract[1]] = actualContract;
+        }
+
+        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath));
     }
 
     return dependencies;
@@ -251,6 +274,10 @@ function getDependencies (contractContent, contractPath) {
 
 function getActualContract (contractContent) {
     let contentStartIndex = contractContent.indexOf('namespace ');
+    if (contentStartIndex < 0) {
+        contentStartIndex = 0;
+    }
+
     let content = contractContent.substr(contentStartIndex);
 
     return content;
@@ -287,6 +314,6 @@ module.exports = {
     checkNestedProperty,
     winExec,
     TransactionValidator,
-    readSpawnOutput, 
+    readSpawnOutput,
     readErrorSpawnOutput
 }

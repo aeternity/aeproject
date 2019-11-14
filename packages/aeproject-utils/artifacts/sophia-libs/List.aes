@@ -1,0 +1,58 @@
+contract List =
+  function size(l : list('a)) : int = size'(l, 0)
+  private function size'(l : list('a), x : int) : int =
+    switch(l)
+      [] => x
+      _ :: l' => size'(l', x + 1)
+
+  function map(f : 'a => 'b, l : list('a)) : list('b) =
+    switch(l)
+     [] => []
+     e :: l' => f(e) :: map(f, l')
+
+  function foldr(f : (('a, 'b) => 'b), z: 'b, l : list('a)) : 'b =
+    switch(l)
+      [] => z
+      e :: l' => f(e, foldr(f, z, l'))
+
+  function foldl(f : (('b, 'a) => 'b), s: 'b, l : list('a)) : 'b =
+    switch(l)
+      [] => s
+      e :: l' => foldl(f, f(s, e), l')
+
+  function filter(f : ('a) => bool, l : list('a)) = filter'(f, l, [])
+  private function filter'(f : ('a) => bool, l : list('a), acc : list('a)) =
+    switch(l)
+      [] => acc
+      e :: l' =>
+        if(f(e))
+          filter'(f, l', e :: acc)
+        else
+          filter'(f, l', acc)
+
+  function find(f: 'a => bool, l : list('a)) : option('a) =
+    switch(l)
+     [] => None
+     e :: l' =>
+      if(f(e))
+        Some(e)
+      else
+        find(f, l')
+
+  function sum(f : 'a => int, l : list('a)) : int =
+    foldr((x, y) => x + y, 0, map(f, l))
+
+  function reverse(l) = reverse'(l, [])
+  private function reverse'(l, a) =
+    switch(l)
+      [] => a
+      (e :: l') => reverse'(l', e :: a)
+
+  function insert_by(f: (('a, 'a) => bool), x : 'a, l : list('a)) : list('a) =
+    switch(l)
+      [] => [x]
+      (e :: l') =>
+        if(f(x, e))
+          e :: insert_by(f, x, l')
+        else
+          x :: l
