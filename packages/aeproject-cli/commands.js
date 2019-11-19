@@ -22,12 +22,15 @@ const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('aeproject-config');
 const localCompiler = config.localCompiler;
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
-const history = require('aeproject-logger');
+const {
+    history
+} = require('aeproject-logger');
 const printReportTable = require('aeproject-utils').printReportTable;
 const contracts = require('./aeproject-contracts/aeproject-contracts.js');
 const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
+const txInspector = require('./aeproject-tx-inspector/tx-inspector');
 
 const addInitOption = (program) => {
     program
@@ -67,6 +70,8 @@ const addNodeOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--only', 'Start only the node without local compiler')
+        .option('--only-compiler', 'Start only the compiler, without local nodes')
+        .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
         .action(async (options) => {
@@ -135,6 +140,18 @@ const addExportConfigOption = (program) => {
         })
 };
 
+const addTxInspector = (program) => {
+    program
+        .command('inspect <tx>')
+        .description('Unpack and verify transaction (verify nonce, ttl, fee, account balance)')
+        .option('--network [network]', 'Select network', "local")
+        .option('--networkId [networkId]', 'Configure your network id')
+        .action(async (tx, options) => {
+            options.tx = tx;
+            await txInspector.run(options);
+        })
+};
+
 const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
@@ -145,6 +162,7 @@ const initCommands = (program) => {
     addContractsAeppIntegrationOption(program)
     addShapeOption(program);
     addExportConfigOption(program);
+    addTxInspector(program)
 }
 
 module.exports = {

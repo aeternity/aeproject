@@ -1,10 +1,12 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const Node = AeSDK.Node;
+const TransactionValidator = AeSDK.TransactionValidator;
+
 let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
 let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
@@ -59,6 +61,7 @@ const getNetwork = (network, networkId) => {
         const customNetwork = createCustomNetwork(network, networkId)
         return customNetwork;
     }
+
     const networks = {
         local: {
             url: config.localhostParams.url,
@@ -80,15 +83,26 @@ const getNetwork = (network, networkId) => {
 };
 
 const createCustomNetwork = (network, networkId) => {
-    if (network.includes('local') || networkId == undefined) {
-        throw new Error('Both network and networkId should be passed')
+    if (!network || !networkId) {
+        throw new Error('Both [--network] and [--networkId] should be passed.')
     }
-    const customNetork = {
+
+    network = network.toLowerCase();
+
+    if (network === 'local') {
+        network = getNetwork(network).url;
+    }
+
+    if (!network.startsWith('http')) {
+        network = 'http://' + network;
+    }
+
+    const customNetwork = {
         url: network,
         networkId: networkId
     }
 
-    return customNetork;
+    return customNetwork;
 }
 
 const handleApiError = async (fn) => {
@@ -103,7 +117,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -159,7 +173,7 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-function readErrorSpawnOutput(spawnResult) {
+function readErrorSpawnOutput (spawnResult) {
     if (!spawnResult.stderr || spawnResult.stderr === '') {
         return '';
     }
@@ -168,8 +182,9 @@ function readErrorSpawnOutput(spawnResult) {
     return '\n' + buffMessage.toString('utf8');
 }
 
-function readSpawnOutput(spawnResult) {
-    if (!spawnResult.stdout || spawnResult.stdout === '') {
+function readSpawnOutput (spawnResult) {
+
+    if (!spawnResult || !spawnResult.stdout || spawnResult.stdout === '') {
         return '';
     }
 
@@ -177,7 +192,7 @@ function readSpawnOutput(spawnResult) {
     return buffMessage.toString('utf8');
 }
 
-async function contractCompile(source, contractPath, compileOptions) {
+async function contractCompile (source, contractPath, compileOptions) {
     let result;
     let options = {
         "file_system": null
@@ -196,7 +211,7 @@ async function contractCompile(source, contractPath, compileOptions) {
     return result;
 }
 
-function checkNestedProperty(obj, property) {
+function checkNestedProperty (obj, property) {
     if (!obj || !obj.hasOwnProperty(property)) {
         return false;
     }
@@ -204,7 +219,7 @@ function checkNestedProperty(obj, property) {
     return true;
 }
 
-function getDependencies(contractContent, contractPath) {
+function getDependencies (contractContent, contractPath) {
     let allDependencies = [];
     let dependencyFromContract;
     let dependencyContractContent;
@@ -234,14 +249,14 @@ function getDependencies(contractContent, contractPath) {
     return dependencies;
 }
 
-function getActualContract(contractContent) {
+function getActualContract (contractContent) {
     let contentStartIndex = contractContent.indexOf('namespace ');
     let content = contractContent.substr(contentStartIndex);
 
     return content;
 }
 
-function normalizeCompilerUrl(url) {
+function normalizeCompilerUrl (url) {
 
     if (!url.startsWith('http')) {
         url = 'http://' + url;
@@ -258,43 +273,6 @@ function normalizeCompilerUrl(url) {
     return url;
 }
 
-async function waitForContainer(dockerImage, options) {
-    try {
-        let running = false;
-        let result = await spawn('docker-compose', [
-            '-f',
-            'docker-compose.yml',
-            '-f',
-            'docker-compose.compiler.yml',
-            'ps'
-        ], options);
-
-        let res = readSpawnOutput(result);
-
-        if (res) {
-            res = res.split('\n');
-        }
-
-        if (Array.isArray(res)) {
-            res.map(line => {
-                if (line.indexOf(dockerImage) >= 0 && line.includes('healthy')) {
-                    running = true
-                }
-            })
-        }
-
-        return running;
-    } catch (error) {
-        if (error.stderr) {
-            console.log(error.stderr.toString('utf8'))
-        } else {
-            console.log(error.message || error)
-        }
-
-        throw Error(error);
-    }
-}
-
 module.exports = {
     config,
     getClient,
@@ -308,5 +286,7 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
-    waitForContainer
+    TransactionValidator,
+    readSpawnOutput, 
+    readErrorSpawnOutput
 }

@@ -31,14 +31,35 @@ Together with AE node `node` command run a local compiler that response at `http
 aeproject node --only
 ```
 
-To stop the local node, simply run
+You have the availability to start your compiler separately by running `aeproject node --only-compiler` respectively.
 
+
+You can stop both the node and the compiler by running `aeproject node --stop`
 ```text
 aeproject node --stop
 ```
 
-Additional **--compiler-port** parameter is available, which can specify on which port would local compiler start (default is 3080).
-Example:
+You can stop the node only 
+```text
+aeproject node --stop --only
 ```
-aeproject node --compiler-port 4080
+
+Or if you want to stop only the compiler then you should type
+```text
+aeproject node --stop --only-compiler
 ```
+
+Similarly as the start commands you have few option to choose what you want to stop while doing your project. 
+
+To see whether you have running instances of the nodes along with a compiler you could run the following command
+```text
+aeproject node --info
+```
+
+If you don't have running instances of the node started from `aeproject` you could check information about the compiler with 
+```text
+aeproject node --info --only-compiler
+```
+
+### Disclaimer
+Please note that in rare occurrences you may experience some delay, or even timeout exception while trying to run the node. This usually happens due to new version of the docker images which the docker is trying to pull, or possibly could happen after updating the aeproject verson with new node/compiler version. The files may be large or connection inconsistency may occur. Please try to run ``` docker pull ``` or simply retry to run ```aeproject node``` again. 

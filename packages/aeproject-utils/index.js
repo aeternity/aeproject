@@ -29,7 +29,9 @@ const timeout = aeprojectUtils.timeout;
 const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
-const waitForContainer = aeprojectUtils.waitForContainer;
+const txValidator = aeprojectUtils.TransactionValidator;
+const readSpawnOutput = aeprojectUtils.readSpawnOutput;
+const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -39,7 +41,18 @@ const generateKeyPairFromSecretKey = contractUtils.generateKeyPairFromSecretKey;
 const decodedHexAddressToPublicAddress = contractUtils.decodedHexAddressToPublicAddress;
 const trimAdresseses = contractUtils.trimAdresseses;
 
+const nodeUtils = require('./utils/node-utils');
+const start = nodeUtils.start;
+const stopAll = nodeUtils.stopAll;
+const stopSeparately = nodeUtils.stopSeparately;
+const info = nodeUtils.info;
+const waitForContainer = nodeUtils.waitForContainer;
+const printSuccessMsg = nodeUtils.printSuccessMsg;
+const printStarMsg = nodeUtils.printStarMsg;
+const printInitialStopMsg = nodeUtils.printInitialStopMsg;
+
 const SophiaUtil = require('./utils/sophia-util');
+const httpGet = require('./utils/http-utils').httpGet;
 
 module.exports = {
     printReportTable,
@@ -75,5 +88,16 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer
+    waitForContainer,
+    txValidator,
+    httpGet,
+    readSpawnOutput,
+    readErrorSpawnOutput,
+    start,
+    stopAll,
+    stopSeparately,
+    info,
+    printSuccessMsg,
+    printStarMsg,
+    printInitialStopMsg
 }

@@ -1,11 +1,11 @@
 import utils from 'aeproject-utils';
 import * as fs from 'fs';
-import logStoreService from 'aeproject-logger';
+import * as loggerServices from 'aeproject-logger';
 import config from 'aeproject-config';
 import nodeConfig from 'aeproject-config';
 import { KeyPair, ParsedContractFunction, AciFunctions, DeployedContract, Info, TxInfo, Client, ContractInstance, Network } from "./contractTypes";
-import { format } from 'path';
 
+const logStoreService = loggerServices.history;
 const decodedHexAddressToPublicAddress = utils.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -91,8 +91,9 @@ export class Deployer {
      * @param {object} options - Initial options that will be passed to init function.
      */
     async deploy(contractPath: string, initState: Array<string | number> = [], options: object = opts): Promise<DeployedContract> {
-
+        
         this.network.compilerUrl = this.compilerUrl;
+
         client = await utils.getClient(this.network, this.keypair);
         contract = await this.readFile(contractPath);
 
@@ -118,7 +119,9 @@ export class Deployer {
           
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             await generateInstancesWithWallets(this.network, deployedContract.address);
-            let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(contractInstance);
+            let additionalFuncs = addSpendFuncToContractInstance(contractInstance.methods, client);
+            let contractInstanceWrapperFuncs = await generateFunctionsFromSmartContract(additionalFuncs);
+
             deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
 
             let regex = new RegExp(/[\w]+.aes$/);
@@ -126,7 +129,7 @@ export class Deployer {
             txInfo = await getTxInfo(deployedContract.transaction);
 
             if (deployedContract && deployedContract.transaction) {
-
+                
                 info.transactionHash = deployedContract.transaction;
                 info.gasPrice = txInfo.gasPrice;
                 info.gasUsed = txInfo.gasUsed;
@@ -137,11 +140,19 @@ export class Deployer {
             }
 
         } catch (e) {
+
             isSuccess = false;
             error = e;
             info.error = e.message;
             info.initState = initState;
             info.options = JSON.stringify(options);
+            
+            if (e.rawTx) {
+                info.rawTx = e.rawTx;
+                info.verifiedTx = await e.verifyTx(e.rawTx);
+
+                printTxNetworkInfo(info, this.network);
+            }
         }
 
         logStoreService.logAction(info);
@@ -156,8 +167,6 @@ export class Deployer {
             let newInstanceWithAddedAdditionalFunctionality = Object.assign(contractInstanceWrapperFuncs, deployedContract);
             return newInstanceWithAddedAdditionalFunctionality;
         }
-
-
     }
 }
 
@@ -171,8 +180,7 @@ async function generateInstancesWithWallets(network: Network, contractAddress) {
     }
 }
 
-async function generateFunctionsFromSmartContract(contractInstance: ContractInstance): Promise<Object> {
-    let contractFunctions = contractInstance.methods;
+async function generateFunctionsFromSmartContract(contractFunctions: Object): Promise<Object> {
 
     contractFunctions['from'] = async function (userWallet: any) {
         let walletToPass = userWallet
@@ -181,9 +189,39 @@ async function generateFunctionsFromSmartContract(contractInstance: ContractInst
             walletToPass = walletToPass.secretKey
         }
         const keyPair: KeyPair = await utils.generateKeyPairFromSecretKey(walletToPass);
-        return instancesMap[keyPair.publicKey].methods
 
+        // iteration of origin deployed instance
+        // when we create new 'client', it does not have deployed tx info and additional functions like 'spend'
+        // if function or property is missing from new 'client' we assigned it
+        for (let funcName in contractFunctions) {
+
+            if (!instancesMap[keyPair.publicKey].methods[funcName]) {
+                instancesMap[keyPair.publicKey].methods[funcName] = contractFunctions[funcName];
+            }
+        }
+
+        return instancesMap[keyPair.publicKey].methods
     }
+
     return contractFunctions;
+}
+
+function addSpendFuncToContractInstance(contractFunctions: Object, client: Client) {
+
+    contractFunctions['spend'] = async function(amount: number, to: string){
+        return client.spend(amount, to);
+    }
+
+    return contractFunctions;
+}
+
+function printTxNetworkInfo (info: Info, network: Network){
+    console.log('[INFO] raw Tx:');
+    console.log(info.rawTx);
+    console.log('[INFO] verified Tx:');
+    console.log(info.verifiedTx);
+    console.log('[INFO] network');
+    console.log(network);
+    console.log();
 }
 
