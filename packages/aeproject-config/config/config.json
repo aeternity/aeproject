@@ -16,5 +16,6 @@
         "publicKey": "ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU"
     },
     "compilerUrl": "http://localhost:3080",
-    "compilerVersion": "v3.1.0"
+    "compilerVersion": "v3.1.0",
+    "hostedCompiler": "https://compiler.aepps.com"
 }

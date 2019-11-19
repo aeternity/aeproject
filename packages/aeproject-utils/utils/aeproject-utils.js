@@ -105,6 +105,23 @@ const createCustomNetwork = (network, networkId) => {
     return customNetwork;
 }
 
+const getCompiler = (network, compilerUrl) => {
+    if (compilerUrl != "") {
+        return compilerUrl
+    }
+
+    const compilers = {
+        local: config.compilerUrl,
+        testnet: config.hostedCompiler,
+        mainnet: config.hostedCompiler
+    };
+    if (compilers[network] == undefined) {
+        throw new Error("Compiler is not defined. You must provide compiler url or usr predefined networks")
+    }
+    return compilers[network]
+
+}
+
 const handleApiError = async (fn) => {
     try {
 
@@ -277,6 +294,7 @@ module.exports = {
     config,
     getClient,
     getNetwork,
+    getCompiler,
     handleApiError,
     logApiError,
     sleep,
@@ -287,6 +305,6 @@ module.exports = {
     checkNestedProperty,
     winExec,
     TransactionValidator,
-    readSpawnOutput, 
+    readSpawnOutput,
     readErrorSpawnOutput
 }
