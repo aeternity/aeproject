@@ -19,7 +19,7 @@ You can specify compiler using the **--compiler** parameter.
   ```
 
 The compiler allows you to include other **.aes** files to your contract by using the reserved word **include** and specifying the path to the file. You can add contracts, as well as namespaces.
-PS: Also compiler support some default sophia's libraries. More info how to use these libraries 'List.aes', 'Option.aes', 'Func.aes', 'Pair.aes' and 'Triple.aes' can find here: https://github.com/aeternity/protocol/blob/master/contracts/sophia_stdlib.md
+PS: Also compiler support some default sophia's libraries. More info how to use these libraries 'List.aes', 'Option.aes', 'Func.aes', 'Pair.aes' and 'Triple.aes' can be found here: https://github.com/aeternity/protocol/blob/master/contracts/sophia_stdlib.md
 
 Example:
 

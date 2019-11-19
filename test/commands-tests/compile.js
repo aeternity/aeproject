@@ -68,6 +68,11 @@ describe('AEproject Compile', () => {
             assert.include(result, "File to include 'Triple.aes' not found.");
             assert.include(result, expectedCompileResultExampleContract);
         })
+
+        it('Should NOT compile contracts with --compiler argument - invalid one ', async () => { 
+            let result = await execute(constants.cliCommands.COMPILE, ["--compiler", INVALID_COMPILER_URL], executeOptions)
+            assert.include(result, expectedResult5);
+        })
     })
 
     after(async () => {
