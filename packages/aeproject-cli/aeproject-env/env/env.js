@@ -40,17 +40,17 @@ class Env extends EnvService {
             return
         }
 
-        let buff = await this.getInfo();
-        let res = readSpawnOutput(buff)
+        let dockerInfoBuffer = await this.getInfo();
+        let result = readSpawnOutput(dockerInfoBuffer)
 
-        print(res);
+        print(result);
     }
 
     async areNodeAndCompilerRunning (...images) {
         let running = true
 
         for (const currImage in images) {
-            running = await super.waitForContainer(images[currImage]) && running
+            running = await super.isImageRunning(images[currImage]) && running
         }
 
         return running
@@ -73,7 +73,8 @@ class Env extends EnvService {
             // if not running, current env may be windows
             // to reduce optional params we check is it running on windows env
             if (!running) {
-                running = await this.areNodeAndCompilerRunning(dockerImage, compilerImage)
+                // TODO line below to be deleted if tests for windows pass! Needs to be verified.
+                // running = await this.areNodeAndCompilerRunning(dockerImage, compilerImage)
                 printError(`===== Compiler or Node is not running! ===== \n===== Please run the relevant command for your image! =====`)
                 return
             }

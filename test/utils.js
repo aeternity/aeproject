@@ -13,7 +13,7 @@ async function waitUntilFundedBlocks (client, options) {
         options.blocks = 8;
     }
     
-    await waitForContainer(options.dockerImage, options.options);
+    await isImageRunning(options.dockerImage, options.options);
     await client.awaitHeight(options.blocks);
 }
 
@@ -56,7 +56,7 @@ function countPhraseRepeats (text, phrase) {
     return count;
 }
 
-async function waitForContainer (image, options) {
+async function isImageRunning (image, options) {
 
     try {
         let running = false;
@@ -116,7 +116,7 @@ async function getInfo (image, options) {
 }
 
 module.exports = {
-    waitForContainer,
+    isImageRunning,
     waitUntilFundedBlocks,
     convertToPerson,
     countPhraseRepeats

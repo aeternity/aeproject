@@ -6,7 +6,7 @@
 aeproject env
 ```
 
-The command is responsible for setting up a healthy local node. The **env** command help developers run their local network, as well as local compiler on docker. The local network contains 3 nodes. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
+The command is responsible for setting up a healthy local network. The **env** command help developers run their local nodes, as well as local compiler on docker. The local network contains 3 nodes. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
 
 
 ### If you are running on Windows environment and it is before `Windows 10` 

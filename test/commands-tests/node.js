@@ -4,7 +4,7 @@ let chaiAsPromised = require("chai-as-promised");
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const exec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').execute;
 const winExec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').winExec;
-const waitForContainer = require('../utils').waitForContainer;
+const isImageRunning = require('../utils').isImageRunning;
 const waitUntilFundedBlocks = require('../utils').waitUntilFundedBlocks;
 const constants = require('../constants.json')
 const fs = require('fs-extra');
@@ -31,7 +31,7 @@ network.compilerUrl = utils.config.compilerUrl
 
 const isWindowsPlatform = process.platform === 'win32';
 
-const waitForContainerOpts = {
+const isImageRunningOpts = {
     dockerImage: nodeConfig.nodeConfiguration.dockerServiceNodeName,
     compilerImage: nodeConfig.compilerConfiguration.dockerServiceCompilerName,
     options: executeOptions
@@ -53,7 +53,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(path.resolve(nodeTestDir))
             
-            let running = await waitForContainer(waitForContainerOpts.dockerImage);
+            let running = await isImageRunning(isImageRunningOpts.dockerImage);
             
             assert.isTrue(running, "node wasn't started properly");
 
@@ -63,7 +63,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Should check if the wallets are funded', async () => {
 
             let client = await utils.getClient(network);
-            await waitUntilFundedBlocks(client, waitForContainerOpts)
+            await waitUntilFundedBlocks(client, isImageRunningOpts)
             for (let wallet in defaultWallets) {
                 let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
                 assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
@@ -88,8 +88,8 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Should stop the node && compiler successfully', async () => {
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
             
-            let runningNode = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
-            let runningCompiler = await waitForContainer(waitForContainerOpts.compilerImage, executeOptions);
+            let runningNode = await isImageRunning(isImageRunningOpts.dockerImage, executeOptions);
+            let runningCompiler = await isImageRunning(isImageRunningOpts.compilerImage, executeOptions);
             
             assert.isNotTrue(runningNode, "node wasn't stopped properly");
             assert.isNotTrue(runningCompiler, "node wasn't stopped properly");
@@ -141,8 +141,8 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Process should start local nodes only', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             
-            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
-            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
+            let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
             assert.isTrue(dockerRunning, 'node were not started successfully')
             assert.isNotTrue(compilerRunning, "compiler should not be running");
@@ -153,15 +153,15 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Process should start local node while the compiler image is already running', async () => {
             await execute(constants.cliCommands.COMPILER, [], executeOptions)
 
-            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
-            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
+            let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
             assert.isTrue(compilerRunning, 'compiler was not started successfully')
             assert.isFalse(dockerRunning, 'docker is running')
 
             await execute(constants.cliCommands.NODE, [], executeOptions)
 
-            dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
             
             assert.isTrue(dockerRunning, 'node was not started successfully')
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
@@ -171,8 +171,8 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.ENV, [], executeOptions)
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
             
-            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
-            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
+            let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
             assert.isNotTrue(dockerRunning, 'node was not stopped successfully')
             assert.isTrue(compilerRunning, 'compiler was stopped incorrectly')
@@ -194,8 +194,8 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Process should start local compiler only', async () => {
             await execute(constants.cliCommands.COMPILER, [], executeOptions)
 
-            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
-            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
+            let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
+            let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
 
             assert.isTrue(compilerRunning, 'compiler was not started')
             assert.isNotTrue(dockerRunning, "node should not be running");
@@ -215,14 +215,14 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Process should start local compiler while the node images are already running', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
 
-            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
-            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
+            let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
             assert.isTrue(dockerRunning, 'node was not started successfully')
             assert.isFalse(compilerRunning, 'compiler is running')
 
             await execute(constants.cliCommands.COMPILER, [], executeOptions)
-            compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
             assert.isTrue(compilerRunning, 'compiler was not started successfully')
 
@@ -233,8 +233,8 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.ENV, [], executeOptions)
             await execute(constants.cliCommands.COMPILER, [constants.cliCommandsOptions.STOP])
 
-            let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
-            let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
+            let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
+            let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
             assert.isNotTrue(compilerRunning, 'compiler was not stopped successfully')
             assert.isTrue(dockerRunning, 'node was stopped incorrectly')
@@ -390,7 +390,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
         after(async () => {
 
-            let running = await waitForContainer(waitForContainerOpts.dockerImage, executeOptions);
+            let running = await isImageRunning(isImageRunningOpts.dockerImage, executeOptions);
             if (running) {
                 await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
             }
@@ -542,7 +542,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             })
 
             it('Should start the node successfully', async () => {
-                let running = await waitForContainer(dockerServiceNodeName, executeOptions);
+                let running = await isImageRunning(dockerServiceNodeName, executeOptions);
                 assert.isTrue(running, "node wasn't started properly");
             })
 
@@ -578,7 +578,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             it('Should stop the node successfully', async () => {
                 await winExec(cliCommand, constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-                let running = await waitForContainer(dockerServiceNodeName, executeOptions);
+                let running = await isImageRunning(dockerServiceNodeName, executeOptions);
                 assert.isNotTrue(running, "node wasn't stopped properly");
             })
 
@@ -594,7 +594,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             after(async () => {
 
-                let running = await waitForContainer(dockerServiceNodeName, executeOptions);
+                let running = await isImageRunning(dockerServiceNodeName, executeOptions);
                 if (running) {
                     await winExec(cliCommand, constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
                 }

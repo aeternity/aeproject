@@ -40,7 +40,7 @@ class Node extends EnvService {
         dockerImage = nodeConfiguration.dockerServiceNodeName;
 
         try {
-            let running = await super.waitForContainer(dockerImage);
+            let running = await super.isImageRunning(dockerImage);
 
             if (option.info) {
                 await super.printInfo(running)
@@ -51,9 +51,11 @@ class Node extends EnvService {
 
                 // if not running, current env may be windows
                 // to reduce optional params we check is it running on windows env
-                if (!running) {
-                    running = await super.waitForContainer(dockerImage);
-                }
+                
+                // TODO block below to be deleted if tests for windows pass! Needs to be verified.
+                // if (!running) {
+                //     running = await super.isImageRunning(dockerImage);
+                // }
 
                 if (!running) {
                     print('===== Node is not running! =====');

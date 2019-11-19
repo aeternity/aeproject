@@ -23,7 +23,7 @@ describe('AEproject Compile', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        await execute(constants.cliCommands.ENV, [], executeOptions)
+        await execute(constants.cliCommands.COMPILER, [], executeOptions)
     })
 
     describe('Compile', () => {
@@ -59,7 +59,7 @@ describe('AEproject Compile', () => {
     })
 
     after(async () => {
-        await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
+        await execute(constants.cliCommands.COMPILER, [constants.cliCommandsOptions.STOP], executeOptions)
         fs.removeSync(`.${ constants.compileTestsFolderPath }`);
     })
 })

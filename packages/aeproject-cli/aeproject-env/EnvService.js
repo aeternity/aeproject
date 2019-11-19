@@ -232,7 +232,7 @@ class EnvService {
         print(res);
     }
 
-    async waitForContainer (image, options) {
+    async isImageRunning (image, options) {
        
         try {
             let running = false;
@@ -286,7 +286,7 @@ class EnvService {
         }
 
         let counter = 0;
-        while (!(await this.waitForContainer(`${ image }`))) {
+        while (!(await this.isImageRunning(`${ image }`))) {
             if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
                 await this.stopAll();
                 throw new Error(`Cannot start AE node, port is already allocated!`);

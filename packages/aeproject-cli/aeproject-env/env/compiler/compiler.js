@@ -41,7 +41,7 @@ class Compiler extends EnvService {
 
         try {
             
-            let running = await super.waitForContainer(compilerImage);
+            let running = await super.isImageRunning(compilerImage);
              
             if (option.info) {
                 await super.printInfo(running)
@@ -53,7 +53,7 @@ class Compiler extends EnvService {
                 // if not running, current env may be windows
                 // to reduce optional params we check is it running on windows env
                 if (!running) {
-                    running = await super.waitForContainer(compilerImage);
+                    running = await super.isImageRunning(compilerImage);
                 }
 
                 if (!running) {
