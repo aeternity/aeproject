@@ -79,10 +79,6 @@ class Env extends EnvService {
                 return
             }
 
-            if (!running) {
-                return
-            }
-
             super.printInitialStopMsg()
 
             try {
