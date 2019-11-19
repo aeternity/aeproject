@@ -244,7 +244,7 @@ function getDependencies (contractContent, contractPath) {
         try {
             dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8');
         } catch (error) {
-            console.log(`File to include '${ dependencyFromContract[1] }' not found. Check your path or it is from sophia default library`);
+            console.log(`File to include '${ dependencyFromContract[1] }' not found. Check your path or it is from Sophia default library`);
             if (!error.message.includes('no such file or directory')) {
                 throw Error(error);
             } 
