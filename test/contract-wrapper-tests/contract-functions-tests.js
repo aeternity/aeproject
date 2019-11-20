@@ -10,7 +10,7 @@ const constants = require('./../constants.json');
 
 const Deployer = require('./../../packages/aeproject-lib/dist/aeproject-deployer').Deployer;
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
-const waitForContainer = require('../utils').waitForContainer;
+const isImageRunning = require('../utils').isImageRunning;
 const nodeConfig = require('./../../packages/aeproject-config/config/node-config.json');
 
 const contractPath = './contracts/example-contract.aes';
@@ -55,7 +55,7 @@ describe("Deployed contract instance additional functionality", async () => {
         // start node 
         fs.ensureDirSync(`.${ constants.contractWrapperTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
-        await execute(constants.cliCommands.NODE, [], executeOptions);
+        await execute(constants.cliCommands.ENV, [], executeOptions);
 
         let deployer = new Deployer('local', ownerKeyPair.privateKey);
         deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
@@ -375,9 +375,9 @@ describe("Deployed contract instance additional functionality", async () => {
 
     after(async () => {
         // stop node
-        let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
+        let running = await isImageRunning(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions);
         }
 
         fs.removeSync(`.${ constants.contractWrapperTestsFolderPath }`)

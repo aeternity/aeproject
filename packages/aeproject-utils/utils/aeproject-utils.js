@@ -273,6 +273,11 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
+function capitalize (_string) {
+    if (typeof _string !== 'string') return ''
+    return _string.charAt(0).toUpperCase() + _string.slice(1)
+}
+
 module.exports = {
     config,
     getClient,
@@ -288,5 +293,6 @@ module.exports = {
     winExec,
     TransactionValidator,
     readSpawnOutput, 
-    readErrorSpawnOutput
+    readErrorSpawnOutput,
+    capitalize
 }
