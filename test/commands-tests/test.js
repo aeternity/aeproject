@@ -34,7 +34,7 @@ describe('AEproject Test', () => {
         fs.copySync(dockerPath, `${ nodeCWD }/docker`);
 
         executeOptions.cwd = nodeCWD
-        await execute(constants.cliCommands.NODE, [], executeOptions);
+        await execute(constants.cliCommands.ENV, [], executeOptions);
         executeOptions.cwd = prevCWD;
     })
 
@@ -188,7 +188,7 @@ describe('AEproject Test', () => {
 
     after(async function () {
         executeOptions.cwd = nodeCWD;
-        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
+        await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions);
         fs.removeSync(nodeCWD);
         executeOptions.cwd = prevCWD;
     })
