@@ -1,4 +1,4 @@
-require = require('esm')(module /*, options */) // use to handle es6 import/export 
+require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
@@ -23,6 +23,7 @@ const {
 } = require('promisify-child-process');
 
 const COMPILER_URL_POSTFIX = '/compile';
+const SOPHIA_LIBS_PATH = '../artifacts/sophia-libs/';
 
 const getClient = async function (network, keypair = config.keypair) {
     let client;
@@ -239,18 +240,39 @@ function getDependencies (contractContent, contractPath) {
         contractPath = mainContractsPathRgx.exec(contractPath)
         mainContractsPathRgx.lastIndex = 0;
         dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
-        dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
-        actualContract = getActualContract(dependencyContractContent)
-        dependencies[dependencyFromContract[1]] = actualContract;
 
-        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath))
+        try {
+            dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8');
+        } catch (error) {
+            console.log(`File to include '${ dependencyFromContract[1] }' not found. Check your path or it is from Sophia default library`);
+            if (!error.message.includes('no such file or directory')) {
+                throw Error(error);
+            } 
+        }
+
+        actualContract = getActualContract(dependencyContractContent);
+        if (!dependencyFromContract[1].startsWith('./')) {
+            dependencies['./' + dependencyFromContract[1]] = actualContract;
+        } else {
+            dependencies[dependencyFromContract[1]] = actualContract;
+        }
+
+        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath));
     }
 
     return dependencies;
 }
 
 function getActualContract (contractContent) {
+    if (!contractContent) {
+        return '';
+    }
+
     let contentStartIndex = contractContent.indexOf('namespace ');
+    if (contentStartIndex < 0) {
+        contentStartIndex = 0;
+    }
+
     let content = contractContent.substr(contentStartIndex);
 
     return content;
@@ -273,6 +295,11 @@ function normalizeCompilerUrl (url) {
     return url;
 }
 
+function capitalize (_string) {
+    if (typeof _string !== 'string') return ''
+    return _string.charAt(0).toUpperCase() + _string.slice(1)
+}
+
 module.exports = {
     config,
     getClient,
@@ -288,5 +315,6 @@ module.exports = {
     winExec,
     TransactionValidator,
     readSpawnOutput, 
-    readErrorSpawnOutput
+    readErrorSpawnOutput,
+    capitalize
 }

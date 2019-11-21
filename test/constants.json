@@ -21,7 +21,9 @@
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
+		"ENV": "env",
 		"NODE": "node",
+		"COMPILER": "compiler",
 		"COMPILE": "compile",
 		"DEPLOY": "deploy",
 		"HISTORY": "history",
