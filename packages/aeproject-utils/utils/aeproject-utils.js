@@ -83,15 +83,11 @@ const getNetwork = (network, networkId) => {
 };
 
 const createCustomNetwork = (network, networkId) => {
-    if (!network || !networkId) {
+    if (!network || !networkId || network === 'local') {
         throw new Error('Both [--network] and [--networkId] should be passed.')
     }
 
     network = network.toLowerCase();
-
-    if (network === 'local') {
-        network = getNetwork(network).url;
-    }
 
     if (!network.startsWith('http')) {
         network = 'http://' + network;
@@ -109,14 +105,13 @@ const getCompiler = (network, compilerUrl) => {
     if (compilerUrl != "") {
         return compilerUrl
     }
-
     const compilers = {
         local: config.compilerUrl,
         testnet: config.hostedCompiler,
         mainnet: config.hostedCompiler
     };
     if (compilers[network] == undefined) {
-        throw new Error("Compiler is not defined. You must provide compiler url or usr predefined networks")
+        throw new Error("Compiler is not defined. You must provide compiler url or use predefined networks")
     }
     return compilers[network]
 

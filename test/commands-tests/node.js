@@ -37,7 +37,7 @@ const waitForContainerOpts = {
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", async () => {
+xdescribe("AEproject Node and Compiler Tests", async () => {
 
     describe('AEproject Node', () => {
         before(async () => {
@@ -49,9 +49,8 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(path.resolve(nodeTestDir))
-            
+
             let running = await waitForContainer(waitForContainerOpts.dockerImage);
-            
             assert.isTrue(running, "node wasn't started properly");
 
             process.chdir(mainDir)
@@ -174,7 +173,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
             let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
-            
+
             assert.isTrue(compilerRunning, 'compiler was not started')
             assert.isNotTrue(dockerRunning, "node should not be running");
 
@@ -202,9 +201,9 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLYCOMPILER], executeOptions)
             compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
-            
+
             assert.isTrue(compilerRunning, 'compiler was not started successfully')
-            
+
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
 
@@ -220,7 +219,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.ONLY], executeOptions)
 
             dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
-            
+
             assert.isTrue(dockerRunning, 'node was not started successfully')
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
         })
@@ -228,7 +227,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Process should stop only the nodes', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP, constants.cliCommandsOptions.ONLY])
-            
+
             let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
             let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
 
@@ -243,7 +242,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             let dockerRunning = await waitForContainer(waitForContainerOpts.dockerImage);
             let compilerRunning = await waitForContainer(waitForContainerOpts.compilerImage);
-            
+
             assert.isNotTrue(compilerRunning, 'compiler was not stopped successfully')
             assert.isTrue(dockerRunning, 'node was stopped incorrectly')
         })
@@ -410,7 +409,9 @@ describe("AEproject Node and Compiler Tests", async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
             await execute(constants.cliCommands.INIT, [], executeOptions);
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
-            await execute(constants.cliCommands.INIT, [], { cwd: secondNodeTestDir })
+            await execute(constants.cliCommands.INIT, [], {
+                cwd: secondNodeTestDir
+            })
         })
         it('Should correctly record where the node and compiler has been run from', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
@@ -443,7 +444,9 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
 
             // try to stop the node from secondNodeTestDir
-            let stopResult = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], { cwd: secondNodeTestDir })
+            let stopResult = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], {
+                cwd: secondNodeTestDir
+            })
             let hasNodeStopped = stopResult.indexOf(`Node was successfully stopped`) >= 0;
 
             assert.isOk(hasNodeStopped)
@@ -452,7 +455,9 @@ describe("AEproject Node and Compiler Tests", async () => {
             fs.ensureDirSync(path.resolve(secondNodeTestDir))
 
             process.chdir(secondNodeTestDir)
-            await execute(constants.cliCommands.NODE, [], { cwd: secondNodeTestDir })
+            await execute(constants.cliCommands.NODE, [], {
+                cwd: secondNodeTestDir
+            })
 
             fs.removeSync(process.cwd())
 
@@ -468,7 +473,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             assert.isTrue((path.resolve(nodeStore.node) === `${ path.resolve(nodeTestDir + dockerConfig) }`), "node path has not been updated correcty");
         })
 
-        async function killRunningNodes () {
+        async function killRunningNodes() {
             let dirNameRgx = /[^/]+$/g;
 
             let pathDir = (process.cwd())
@@ -484,7 +489,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             }
         }
 
-        async function shutDownContainers (container) {
+        async function shutDownContainers(container) {
             for (const image in container) {
                 try {
                     await exec('docker', 'kill', [`${ container[image] }`])
@@ -494,7 +499,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             }
         }
 
-        function getImageNames (res, imageStartsWith) {
+        function getImageNames(res, imageStartsWith) {
             let imageRgxString = `\\b(\\w*${ imageStartsWith }\\w*)\\b`;
             let imageRgx = new RegExp(imageRgxString, "gim");
 

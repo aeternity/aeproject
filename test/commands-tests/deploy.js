@@ -47,8 +47,8 @@ async function linkLocalPackages () {
     const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
 
     process.chdir(executeOptions.cwd);
-    await exec('npm install aeproject-lib')
-    await exec('npm install aeproject-utils')
+    await exec('yarn link aeproject-lib')
+    await exec('yarn link aeproject-utils')
 
 }
 
@@ -105,7 +105,7 @@ describe('AEproject Deploy', () => {
             const network = "http://192.168.99.100:3001"
             const expectedNetworkId = "ae_custom"
             // Act
-            const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
+            const deployer = new Deployer(network, config.keypair, config.LOCAL_COMPILER_URL, expectedNetworkId);
 
             // Assert
 
@@ -118,7 +118,7 @@ describe('AEproject Deploy', () => {
             const network = "192.168.99.100:3001"
             const expectedNetworkId = "ae_custom"
             // Act
-            const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
+            const deployer = new Deployer(network, config.keypair, config.LOCAL_COMPILER_URL, expectedNetworkId);
 
             // Assert
 
@@ -127,7 +127,7 @@ describe('AEproject Deploy', () => {
         })
 
         it('should revert if only custom network is passed', async () => {
-            const expectedError = "Both network and networkId should be passed";
+            const expectedError = "Both [--network] and [--networkId] should be passed";
             let result;
 
             await linkLocalPackages();
@@ -139,7 +139,7 @@ describe('AEproject Deploy', () => {
         })
 
         it('should revert if only custom networkId is passed', async () => {
-            const expectedError = "Both network and networkId should be passed";
+            const expectedError = "Both [--network] and [--networkId] should be passed";
             let result = await execute(constants.cliCommands.DEPLOY, ["--networkId", "testov"], executeOptions);
 
             assert.include(result, expectedError)
