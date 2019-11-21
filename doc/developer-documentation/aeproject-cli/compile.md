@@ -18,7 +18,8 @@ You can specify compiler using the **--compiler** parameter.
   aeproject compile --compiler http://localhost:3080
   ```
 
-The compiler allows you to include other **.aes** files to your contract by using the reserved word **include** and speciying the path to the file. You can add contracts, as well as namespaces.
+The compiler allows you to include other **.aes** files to your contract by using the reserved word **include** and specifying the path to the file. You can add contracts, as well as namespaces.
+PS: Also compiler support some default sophia's libraries. More info how to use these libraries 'List.aes', 'Option.aes', 'Func.aes', 'Pair.aes' and 'Triple.aes' can be found here: https://github.com/aeternity/protocol/blob/master/contracts/sophia_stdlib.md
 
 Example:
 
@@ -27,28 +28,32 @@ Let's say we want to include some helper functions from contracts *math-sum.aes*
 **math-sum.aes**
 ```
 contract MathSum =
-    function sum (x: int, y: int) : int =
-        x + y
+  entrypoint sum (x: int, y: int) : int =
+    x + y
 
 ```
 
 **math-sub.aes**
 ```
 contract MathSub =
-    function sub (x: int, y: int) : int =
-        x - y
+  entrypoint sub (x: int, y: int) : int =
+    x - y
 ```
 
 **math.aes**
 ```
 include "./math-sum.aes"
 include "./math-sub.aes"
+include "List.aes"
 
 contract Math =
-   public function sum(a : int, b: int) : int =
-      MathSum.sum(a, b)
+  entrypoint sum(a : int, b: int) : int =
+    MathSum.sum(a, b)
 
-   public function sub(x : int, y : int) : int =
-      MathSub.sub(x, y)
+  entrypoint sub(x : int, y : int) : int =
+    MathSub.sub(x, y)
+
+  entrypoint is_empty() =
+    List.is_empty([])
 ```
  

@@ -5,7 +5,7 @@ chai.use(chaiAsPromised);
 const assert = chai.assert;
 const utils = require('./../../packages/aeproject-utils/index.js');
 const execute = utils.aeprojectExecute;
-const waitForContainer = utils.waitForContainer;
+const isImageRunning = require('../utils').isImageRunning;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
 const nodeConfig = require('../../packages/aeproject-config/config/node-config.json');
@@ -42,10 +42,6 @@ function insertAdditionalFiles () {
 }
 
 async function linkLocalPackages () {
-    const aeprojectLibDir = `${ process.cwd() }/packages/aeproject-lib/`
-    const aeprojectUtilsDir = `${ process.cwd() }/packages/aeproject-utils/`
-    const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
-
     process.chdir(executeOptions.cwd);
     await exec('yarn link aeproject-lib')
     await exec('yarn link aeproject-utils')
@@ -261,14 +257,25 @@ describe('AEproject Deploy', () => {
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
             assert.include(result, error);
         })
+
+        it('Should compile contracts with included sophia libs', async () => {
+            // delete and copy new example contract with included default sophia's libraries
+            let sourceContractPath = path.resolve(executeOptions.cwd, './../artifacts/includeSophiaLibs.aes');
+            let destinationContractPath = path.resolve(executeOptions.cwd, './contracts/ExampleContract.aes');
+            fs.unlinkSync(destinationContractPath);
+            fs.copyFileSync(sourceContractPath, destinationContractPath);
+
+            let result = await execute(constants.cliCommands.DEPLOY, [], executeOptions);
+            assert.include(result, expectedDeployResult)
+        })
     })
 
     after(async () => {
 
-        let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
+        let running = await isImageRunning(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
 
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 
         fs.removeSync(`.${ constants.deployTestsFolderPath }`)

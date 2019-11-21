@@ -27,7 +27,7 @@ describe('AEproject contracts', () => {
     before(async function () {
         fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
-        await execute(constants.cliCommands.NODE, [], executeOptions);
+        await execute(constants.cliCommands.ENV, [], executeOptions);
 
         projectDir = process.cwd();
         testFolderDir = constants.testTestsFolderPath;
@@ -88,7 +88,7 @@ describe('AEproject contracts', () => {
     after(async function () {
         process.chdir(projectDir);
 
-        await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
+        await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions);
         fs.removeSync(`.${ constants.testTestsFolderPath }`);
         await exec('kill $(lsof -t -i:8080)');
     })

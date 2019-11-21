@@ -198,7 +198,7 @@ describe('AEproject History', async () => {
             process.chdir(tempTestPath);
 
             await execute(constants.cliCommands.INIT, []);
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START]);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.START]);
         });
 
         it('History should be empty', async () => {
@@ -252,7 +252,7 @@ describe('AEproject History', async () => {
 
         after(async () => {
 
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP]);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP]);
 
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
@@ -289,7 +289,7 @@ describe('AEproject History', async () => {
             process.chdir(tempTestPath);
 
             await execute(constants.cliCommands.INIT, []);
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.START]);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.START]);
 
             await linkLocalPackages()
         });
@@ -394,7 +394,7 @@ describe('AEproject History', async () => {
 
         afterEach(async () => {
 
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP]);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP]);
 
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
