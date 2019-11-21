@@ -3,9 +3,10 @@ const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra')
+const path = require('path');
 const constants = require('../constants.json')
-const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
 
+const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
 let expectedResult1 = "ExampleContract1.aes has been successfully compiled"
 let expectedResult2 = "ExampleContract2.aes has been successfully compiled"
 let expectedResult3 = "ExampleContract3.aes has been successfully compiled"
@@ -52,7 +53,23 @@ describe('AEproject Compile', () => {
             assert.include(result, expectedCompileResultExampleContract);
         })
 
-        it('Should NOT compile contracts with --compiler argument - invalid one ', async () => {
+        it('Should compile contracts with included sophia libs', async () => {
+            // delete and copy new example contract with included default sophia's libraries
+            let sourceContractPath = path.resolve(executeOptions.cwd, './../artifacts/includeSophiaLibs.aes');
+            let destinationContractPath = path.resolve(executeOptions.cwd, './contracts/ExampleContract.aes');
+            fs.unlinkSync(destinationContractPath);
+            fs.copyFileSync(sourceContractPath, destinationContractPath);
+
+            let result = await execute(constants.cliCommands.COMPILE, [], executeOptions);
+            assert.include(result, "File to include 'List.aes' not found. Check your path or it is from sophia default library");
+            assert.include(result, "File to include 'Option.aes' not found");
+            assert.include(result, "File to include 'Func.aes' not found.");
+            assert.include(result, "File to include 'Pair.aes' not found.");
+            assert.include(result, "File to include 'Triple.aes' not found.");
+            assert.include(result, expectedCompileResultExampleContract);
+        })
+
+        it('Should NOT compile contracts with --compiler argument - invalid one ', async () => { 
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", INVALID_COMPILER_URL], executeOptions)
             assert.include(result, expectedResult5);
         })
