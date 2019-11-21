@@ -67,7 +67,7 @@ const addTestOption = (program) => {
 const addEnvOption = (program) => {
     program
         .command('env')
-        .description('Running a local node. Without any argument node will be run with --start argument')
+        .description('Running a local network. Without any argument node will be run with --start argument')
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')

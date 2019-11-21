@@ -36,9 +36,8 @@ class Compiler extends EnvService {
 
     async run (option) {
 
-        // TODO check whether we would need `--windows` option in compiler. 
-        let compilerImage = option.windows ? compilerConfigs.dockerImage : compilerConfigs.dockerServiceCompilerName;
-
+        let compilerImage = compilerConfigs.dockerServiceCompilerName;
+        
         try {
             
             let running = await super.isImageRunning(compilerImage);

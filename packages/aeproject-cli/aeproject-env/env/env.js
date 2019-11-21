@@ -57,9 +57,10 @@ class Env extends EnvService {
     }
 
     async run (option) {
+        
         let running;
-        let dockerImage = option.windows ? nodeConfiguration.dockerImage : nodeConfiguration.dockerServiceNodeName;
-        let compilerImage = option.windows ? compilerConfiguration.dockerImage : compilerConfiguration.dockerServiceCompilerName;
+        let dockerImage = nodeConfiguration.dockerServiceNodeName
+        let compilerImage = compilerConfiguration.dockerServiceCompilerName;
         
         running = await this.areNodeAndCompilerRunning(dockerImage, compilerImage)
 
