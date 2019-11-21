@@ -54,7 +54,7 @@ describe('AEproject Deploy', () => {
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await linkLocalPackages()
-        await execute(constants.cliCommands.ENV, [], executeOptions)
+        await execute(constants.cliCommands.NODE, [], executeOptions)
 
     })
 

@@ -52,9 +52,9 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(path.resolve(nodeTestDir))
-            
+
             let running = await isImageRunning(isImageRunningOpts.dockerImage);
-            
+
             assert.isTrue(running, "node wasn't started properly");
 
             process.chdir(mainDir)
@@ -87,10 +87,10 @@ describe("AEproject Node and Compiler Tests", async () => {
 
         it('Should stop the node && compiler successfully', async () => {
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
-            
+
             let runningNode = await isImageRunning(isImageRunningOpts.dockerImage, executeOptions);
             let runningCompiler = await isImageRunning(isImageRunningOpts.compilerImage, executeOptions);
-            
+
             assert.isNotTrue(runningNode, "node wasn't stopped properly");
             assert.isNotTrue(runningCompiler, "node wasn't stopped properly");
         })
@@ -140,7 +140,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
         it('Process should start local nodes only', async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
-            
+
             let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
             let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
@@ -162,7 +162,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
 
             dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
-            
+
             assert.isTrue(dockerRunning, 'node was not started successfully')
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
         })
@@ -170,7 +170,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Process should stop only the nodes', async () => {
             await execute(constants.cliCommands.ENV, [], executeOptions)
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP])
-            
+
             let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
             let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
 
@@ -407,7 +407,9 @@ describe("AEproject Node and Compiler Tests", async () => {
 
         before(async () => {
             fs.ensureDirSync(`.${ constants.nodeTestsFolderPathSecondProject }`)
-            await execute(constants.cliCommands.INIT, [], { cwd: secondNodeTestDir })
+            await execute(constants.cliCommands.INIT, [], {
+                cwd: secondNodeTestDir
+            })
         })
 
         it('Should correctly record where the node and compiler has been run from', async () => {
@@ -445,7 +447,9 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.ENV, [], executeOptions)
 
             // try to stop the node from secondNodeTestDir
-            let stopResult = await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], { cwd: secondNodeTestDir })
+            let stopResult = await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], {
+                cwd: secondNodeTestDir
+            })
             let hasNodeStopped = stopResult.indexOf(`Node was successfully stopped`) >= 0;
 
             assert.isOk(hasNodeStopped)
@@ -457,7 +461,9 @@ describe("AEproject Node and Compiler Tests", async () => {
             fs.ensureDirSync(path.resolve(secondNodeTestDir))
 
             process.chdir(secondNodeTestDir)
-            await execute(constants.cliCommands.ENV, [], { cwd: secondNodeTestDir })
+            await execute(constants.cliCommands.ENV, [], {
+                cwd: secondNodeTestDir
+            })
 
             fs.removeSync(process.cwd())
 
