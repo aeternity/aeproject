@@ -37,7 +37,7 @@ const isImageRunningOpts = {
     options: executeOptions
 }
 
-xdescribe("AEproject Node and Compiler Tests", async () => {
+describe("AEproject Node and Compiler Tests", async () => {
 
     before(async () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -481,7 +481,7 @@ xdescribe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP])
         })
 
-        async function killRunningNodes() {
+        async function killRunningNodes () {
             let dirNameRgx = /[^/]+$/g;
 
             let pathDir = (process.cwd())
@@ -497,7 +497,7 @@ xdescribe("AEproject Node and Compiler Tests", async () => {
             }
         }
 
-        async function shutDownContainers(container) {
+        async function shutDownContainers (container) {
             for (const image in container) {
                 try {
                     await exec('docker', 'kill', [`${ container[image] }`])
@@ -507,7 +507,7 @@ xdescribe("AEproject Node and Compiler Tests", async () => {
             }
         }
 
-        function getImageNames(res, imageStartsWith) {
+        function getImageNames (res, imageStartsWith) {
             let imageRgxString = `\\b(\\w*${ imageStartsWith }\\w*)\\b`;
             let imageRgx = new RegExp(imageRgxString, "gim");
 

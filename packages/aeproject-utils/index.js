@@ -85,13 +85,5 @@ module.exports = {
     httpGet,
     readSpawnOutput,
     readErrorSpawnOutput,
-    start,
-    stopAll,
-    stopSeparately,
-    info,
-    printSuccessMsg,
-    printStarMsg,
-    printInitialStopMsg
-}
     capitalize
 }

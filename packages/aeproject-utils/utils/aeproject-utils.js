@@ -1,4 +1,4 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
@@ -259,7 +259,7 @@ function getDependencies (contractContent, contractPath) {
             console.log(`File to include '${ dependencyFromContract[1] }' not found. Check your path or it is from Sophia default library`);
             if (!error.message.includes('no such file or directory')) {
                 throw Error(error);
-            } 
+            }
         }
 
         actualContract = getActualContract(dependencyContractContent);
@@ -328,8 +328,6 @@ module.exports = {
     winExec,
     TransactionValidator,
     readSpawnOutput,
-    readErrorSpawnOutput
-    readSpawnOutput, 
     readErrorSpawnOutput,
     capitalize
 }

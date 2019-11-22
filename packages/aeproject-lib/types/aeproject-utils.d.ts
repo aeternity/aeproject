@@ -7,7 +7,6 @@ export class SophiaUtil {
 }
 export const config: {
     compilerUrl: string;
-    compilerVersion: string;
     config: {
         amountToFund: number;
         host: string;
