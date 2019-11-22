@@ -535,7 +535,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
     if (isWindowsPlatform) {
         describe("AEproject Node --windows", async () => {
-
+            
             const dockerServiceNodeName = nodeConfig.nodeConfiguration.dockerServiceNodeName;
             const cliCommand = 'aeproject';
 
@@ -543,8 +543,9 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             before(async () => {
                 fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`);
-
-                await winExec(cliCommand, constants.cliCommands.NODE, ['--windows'], executeOptions);
+                
+                await winExec(cliCommand, constants.cliCommands.INIT, [], executeOptions);
+                await winExec(cliCommand, constants.cliCommands.ENV, ['--windows'], executeOptions);
             })
 
             it('Should start the node successfully', async () => {
@@ -557,7 +558,7 @@ describe("AEproject Node and Compiler Tests", async () => {
                 let client = await utils.getClient(network);
                 await waitUntilFundedBlocks(client, {
                     blocks: 8,
-                    containerName: dockerServiceNodeName,
+                    dockerImage: dockerServiceNodeName,
                     options: executeOptions
                 })
                 for (let wallet in defaultWallets) {
@@ -574,8 +575,7 @@ describe("AEproject Node and Compiler Tests", async () => {
                 }
             })
 
-            // this test should be ok when we update init files with ones that contains 2 docker-compose files (compiler one too)
-            xit('Process should start local compiler', async () => {
+            it('Process should start local compiler', async () => {
                 let result = await exec(constants.cliCommands.CURL, constants.getCompilerVersionURL.replace('localhost', nodeConfig.nodeConfiguration.dockerMachineIP));
                 let isContainCurrentVersion = result.indexOf(`{"version"`) >= 0;
 
@@ -584,12 +584,29 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             it('Should stop the node successfully', async () => {
                 await winExec(cliCommand, constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
-                let running = await isImageRunning(dockerServiceNodeName, executeOptions);
+                let running = await isImageRunning(isImageRunningOpts.dockerImage, executeOptions);
                 assert.isNotTrue(running, "node wasn't stopped properly");
             })
 
+            it('Should stop the compiler successfully', async () => {
+                await winExec(cliCommand, constants.cliCommands.COMPILER, [constants.cliCommandsOptions.STOP], executeOptions)
+                let running = await isImageRunning(isImageRunningOpts.compilerImage, executeOptions);
+                assert.isNotTrue(running, "compiler wasn't stopped properly");
+            })
+
+            it('Should stop the node and compiler successfully', async () => {
+                await winExec(cliCommand, constants.cliCommands.ENV, ['--windows'], executeOptions);
+                await winExec(cliCommand, constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
+                
+                let dockerRunning = await isImageRunning(isImageRunningOpts.dockerImage);
+                let compilerRunning = await isImageRunning(isImageRunningOpts.compilerImage);
+                
+                assert.isNotTrue(dockerRunning, "node wasn't stopped properly");
+                assert.isNotTrue(compilerRunning, "compiler wasn't stopped properly");
+            })
+
             it('Process should stop when command is started in wrong folder.', async () => {
-                let result = await winExec(cliCommand, constants.cliCommands.NODE, ['--windows'], {
+                let result = await winExec(cliCommand, constants.cliCommands.ENV, ['--windows'], {
                     cwd: process.cwd()
                 });
 
@@ -602,7 +619,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
                 let running = await isImageRunning(dockerServiceNodeName, executeOptions);
                 if (running) {
-                    await winExec(cliCommand, constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+                    await winExec(cliCommand, constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
                 }
             })
         })
