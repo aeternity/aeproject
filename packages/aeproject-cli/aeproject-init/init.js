@@ -61,6 +61,7 @@ const createAEprojectProjectStructure = async (shape) => {
 
 const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     print(`===== Updating AEproject files =====`);
+
     await setupDocker();
     await installAEproject();
     await installAeppSDK(_sdkVersion);
