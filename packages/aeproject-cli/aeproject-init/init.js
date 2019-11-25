@@ -48,6 +48,7 @@ const createAEprojectProjectStructure = async (shape) => {
     await installLibraries();
 
     print(`===== Creating project file & dir structure =====`);
+
     await setupContracts(shape);
     await setupTests(shape);
     await setupIntegrations();
