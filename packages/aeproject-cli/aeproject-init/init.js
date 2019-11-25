@@ -60,7 +60,6 @@ const createAEprojectProjectStructure = async (shape) => {
 
 const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     print(`===== Updating AEproject files =====`);
-    await uninstallForgaeDependencies()
     await setupDocker();
     await installAEproject();
     await installAeppSDK(_sdkVersion);
