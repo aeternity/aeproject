@@ -54,9 +54,9 @@ export class Deployer {
      * @param {string} compilerUrl
      */
 
-    constructor(network: string = "local", keypairOrSecret: object = utils.config.keypair, compilerUrl: string = config.compilerUrl, networkId: string) {
+    constructor(network: string = "local", keypairOrSecret: object = utils.config.keypair, compilerUrl: string = "", networkId: string) {
         this.network = utils.getNetwork(network, networkId);
-        this.compilerUrl = compilerUrl;
+        this.compilerUrl = utils.getCompiler(network, compilerUrl);
 
         if (utils.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
@@ -91,7 +91,7 @@ export class Deployer {
      * @param {object} options - Initial options that will be passed to init function.
      */
     async deploy(contractPath: string, initState: Array<string | number> = [], options: object = opts): Promise<DeployedContract> {
-        
+
         this.network.compilerUrl = this.compilerUrl;
 
         client = await utils.getClient(this.network, this.keypair);
@@ -116,7 +116,7 @@ export class Deployer {
         try {
             contractInstance = await client.getContractInstance(contract);
             deployedContract = await contractInstance.deploy(initState, options);
-          
+
             // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
             await generateInstancesWithWallets(this.network, deployedContract.address);
             let additionalFuncs = addSpendFuncToContractInstance(contractInstance.methods, client);
@@ -129,14 +129,14 @@ export class Deployer {
             txInfo = await getTxInfo(deployedContract.transaction);
 
             if (deployedContract && deployedContract.transaction) {
-                
+
                 info.transactionHash = deployedContract.transaction;
                 info.gasPrice = txInfo.gasPrice;
                 info.gasUsed = txInfo.gasUsed;
                 info.result = deployedContract.address;
                 info.status = true;
-                
-                console.log(`===== Contract: ${ contractFileName } has been deployed at ${ deployedContract.address } =====`);
+
+                console.log(`===== Contract: ${contractFileName} has been deployed at ${deployedContract.address} =====`);
             }
 
         } catch (e) {
@@ -146,7 +146,7 @@ export class Deployer {
             info.error = e.message;
             info.initState = initState;
             info.options = JSON.stringify(options);
-            
+
             if (e.rawTx) {
                 info.rawTx = e.rawTx;
                 info.verifiedTx = await e.verifyTx(e.rawTx);
@@ -185,7 +185,7 @@ async function generateFunctionsFromSmartContract(contractFunctions: Object): Pr
     contractFunctions['from'] = async function (userWallet: any) {
         let walletToPass = userWallet
 
-        if(walletToPass.secretKey) {
+        if (walletToPass.secretKey) {
             walletToPass = walletToPass.secretKey
         }
         const keyPair: KeyPair = await utils.generateKeyPairFromSecretKey(walletToPass);
@@ -208,14 +208,14 @@ async function generateFunctionsFromSmartContract(contractFunctions: Object): Pr
 
 function addSpendFuncToContractInstance(contractFunctions: Object, client: Client) {
 
-    contractFunctions['spend'] = async function(amount: number, to: string){
+    contractFunctions['spend'] = async function (amount: number, to: string) {
         return client.spend(amount, to);
     }
 
     return contractFunctions;
 }
 
-function printTxNetworkInfo (info: Info, network: Network){
+function printTxNetworkInfo(info: Info, network: Network) {
     console.log('[INFO] raw Tx:');
     console.log(info.rawTx);
     console.log('[INFO] verified Tx:');

@@ -62,7 +62,7 @@ describe('AEproject Compile', () => {
             fs.copyFileSync(sourceContractPath, destinationContractPath);
 
             let result = await execute(constants.cliCommands.COMPILE, [], executeOptions);
-            assert.include(result, "File to include 'List.aes' not found. Check your path or it is from sophia default library");
+            assert.include(result, "File to include 'List.aes' not found. Check your path or it is from Sophia default library");
             assert.include(result, "File to include 'Option.aes' not found");
             assert.include(result, "File to include 'Func.aes' not found.");
             assert.include(result, "File to include 'Pair.aes' not found.");
@@ -70,7 +70,7 @@ describe('AEproject Compile', () => {
             assert.include(result, expectedCompileResultExampleContract);
         })
 
-        it('Should NOT compile contracts with --compiler argument - invalid one ', async () => { 
+        it('Should NOT compile contracts with --compiler argument - invalid one ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", INVALID_COMPILER_URL], executeOptions)
             assert.include(result, expectedResult5);
         })

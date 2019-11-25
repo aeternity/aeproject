@@ -1,5 +1,4 @@
 export const compilerUrl: string;
-export const compilerVersion: string;
 export const config: {
     amountToFund: number;
     host: string;

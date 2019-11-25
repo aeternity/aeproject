@@ -1,4 +1,4 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
@@ -84,15 +84,11 @@ const getNetwork = (network, networkId) => {
 };
 
 const createCustomNetwork = (network, networkId) => {
-    if (!network || !networkId) {
+    if (!network || !networkId || network === 'local') {
         throw new Error('Both [--network] and [--networkId] should be passed.')
     }
 
     network = network.toLowerCase();
-
-    if (network === 'local') {
-        network = getNetwork(network).url;
-    }
 
     if (!network.startsWith('http')) {
         network = 'http://' + network;
@@ -104,6 +100,22 @@ const createCustomNetwork = (network, networkId) => {
     }
 
     return customNetwork;
+}
+
+const getCompiler = (network, compilerUrl) => {
+    if (compilerUrl != "") {
+        return compilerUrl
+    }
+    const compilers = {
+        local: config.compilerUrl,
+        testnet: config.hostedCompiler,
+        mainnet: config.hostedCompiler
+    };
+    if (compilers[network] == undefined) {
+        throw new Error("Compiler is not defined. You must provide compiler url or use predefined networks")
+    }
+    return compilers[network]
+
 }
 
 const handleApiError = async (fn) => {
@@ -247,7 +259,7 @@ function getDependencies (contractContent, contractPath) {
             console.log(`File to include '${ dependencyFromContract[1] }' not found. Check your path or it is from Sophia default library`);
             if (!error.message.includes('no such file or directory')) {
                 throw Error(error);
-            } 
+            }
         }
 
         actualContract = getActualContract(dependencyContractContent);
@@ -304,6 +316,7 @@ module.exports = {
     config,
     getClient,
     getNetwork,
+    getCompiler,
     handleApiError,
     logApiError,
     sleep,
@@ -314,7 +327,7 @@ module.exports = {
     checkNestedProperty,
     winExec,
     TransactionValidator,
-    readSpawnOutput, 
+    readSpawnOutput,
     readErrorSpawnOutput,
     capitalize
 }

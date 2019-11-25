@@ -26,6 +26,7 @@ async function linkLocalPackages () {
     await exec('npm link aeproject-lib')
     await exec('npm link aeproject-utils')
 }
+
 function insertAdditionalFiles (oldCWD) {
 
     // copy needed files into test folder to run the specific tests
@@ -225,7 +226,7 @@ describe('AEproject History', async () => {
 
             let result = await execute(constants.cliCommands.HISTORY, []);
             let numberOfLogs = countHistoryLogs(result);
-            
+
             // !!! => 2 records from this test and 1 from previous
             assert.equal(numberOfLogs, 3, "Incorrect number of logs!");
         });
@@ -296,7 +297,7 @@ describe('AEproject History', async () => {
         it('log should have additional info like error, init state and options', async () => {
 
             insertAdditionalFiles(currentCwd);
-            
+
             await execute(constants.cliCommands.DEPLOY, [
                 "--path",
                 `${ invalidParamDeploymentScriptPath }`
@@ -378,11 +379,11 @@ describe('AEproject History', async () => {
                 constants.cliCommandsOptions.NETWORK,
                 "http://127.0.0.1:3001",
                 constants.cliCommandsOptions.NETWORK_ID,
-                `ae_some_cool_network`
+                `ae_some_cool_network`,
+                constants.cliCommandsOptions.COMPILER_URL,
+                "http://localhost:3080"
             ]);
-
             let result = await execute(constants.cliCommands.HISTORY, []);
-
             let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
             let hasError = result.indexOf('│ Error') > 0;
             let hasRawTx = result.indexOf('Raw Tx        │ tx_') > 0;

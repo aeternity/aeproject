@@ -36,8 +36,7 @@ class Node extends EnvService {
 
     async run (option) {
 
-        let dockerImage = option.windows ? nodeConfiguration.dockerServiceNodeName : nodeConfiguration.dockerImage;
-        dockerImage = nodeConfiguration.dockerServiceNodeName;
+        let dockerImage = nodeConfiguration.dockerServiceNodeName
 
         try {
             let running = await super.isImageRunning(dockerImage);
