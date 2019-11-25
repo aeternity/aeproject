@@ -10,7 +10,7 @@ const constants = require('./../constants.json');
 
 const Deployer = require('./../../packages/aeproject-lib/dist/aeproject-deployer').Deployer;
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
-const waitForContainer = require('../utils').waitForContainer;
+const isImageRunning = require('../utils').isImageRunning;
 const nodeConfig = require('./../../packages/aeproject-config/config/node-config.json');
 
 const contractPath = './contracts/example-contract.aes';
@@ -35,6 +35,13 @@ const unavailableSmartContratsFunctions = [
     '_get_person_by_id'
 ];
 
+const additionalInstanceFunctions = [
+    'from',
+    'spend'
+];
+
+const randomAEAddress = 'ak_zPoY7cSHy2wBKFsdWJGXM7LnSjVt6cn1TWBDdRBUMC7Tur2NQ';
+
 let executeOptions = {
     cwd: process.cwd() + constants.contractWrapperTestsFolderPath
 };
@@ -48,7 +55,7 @@ describe("Deployed contract instance additional functionality", async () => {
         // start node 
         fs.ensureDirSync(`.${ constants.contractWrapperTestsFolderPath }`);
         await execute(constants.cliCommands.INIT, [], executeOptions);
-        await execute(constants.cliCommands.NODE, [], executeOptions);
+        await execute(constants.cliCommands.ENV, [], executeOptions);
 
         let deployer = new Deployer('local', ownerKeyPair.privateKey);
         deployedContract = await deployer.deploy(path.resolve(__dirname, contractPath));
@@ -56,7 +63,7 @@ describe("Deployed contract instance additional functionality", async () => {
 
     describe("Test Extract smart contract's functions", async () => {
 
-        it("Are all public functions available in contract's instance", async () => {
+        it("Public functions should be available in contract's instance", async () => {
             for (let functionName of availableSmartContratsFunctions) {
                 if (!deployedContract[functionName]) {
                     assert.isOk(false, 'Function is not extracted from smart contract');
@@ -73,6 +80,13 @@ describe("Deployed contract instance additional functionality", async () => {
             }
         });
 
+        it("Additional functions should be available in contract's instance", async () => {
+            for (let functionName of additionalInstanceFunctions) {
+                if (!deployedContract[functionName]) {
+                    assert.isOk(false, 'Missing additional functionality');
+                }
+            }
+        });
     });
 
     describe("Test extracted functions", async () => {
@@ -342,11 +356,28 @@ describe("Deployed contract instance additional functionality", async () => {
         })
     });
 
+    describe("Test 'spend' functionality", async () => {
+        it("Spend tx should be successful", async () => {
+            let spendTx = await deployedContract.spend(1, randomAEAddress);
+            
+            assert.isOk(spendTx.hash, "Result is not expected one.");
+            assert.isOk(spendTx.tx, "Result is not expected one.");
+        });
+
+        it("'FROM' instance, spend tx should be successful", async () => {
+            const fromInstance = await deployedContract.from(notOwnerKeyPair.secretKey);
+            const spendTx = await fromInstance.spend(1, randomAEAddress);
+            
+            assert.isOk(spendTx.hash, "Result is not expected one.");
+            assert.isOk(spendTx.tx, "Result is not expected one.");
+        });
+    });
+
     after(async () => {
         // stop node
-        let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
+        let running = await isImageRunning(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions);
         }
 
         fs.removeSync(`.${ constants.contractWrapperTestsFolderPath }`)

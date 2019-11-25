@@ -19,6 +19,7 @@ const writeFileSync = fsUtils.writeFile;
 const aeprojectUtils = require('./utils/aeproject-utils');
 const getClient = aeprojectUtils.getClient;
 const getNetwork = aeprojectUtils.getNetwork;
+const getCompiler = aeprojectUtils.getCompiler;
 const sleep = aeprojectUtils.sleep;
 const execute = aeprojectUtils.execute;
 const aeprojectExecute = aeprojectUtils.aeprojectExecute;
@@ -29,7 +30,10 @@ const timeout = aeprojectUtils.timeout;
 const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
-const waitForContainer = aeprojectUtils.waitForContainer;
+const txValidator = aeprojectUtils.TransactionValidator;
+const readSpawnOutput = aeprojectUtils.readSpawnOutput;
+const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
+const capitalize = aeprojectUtils.capitalize;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -40,6 +44,7 @@ const decodedHexAddressToPublicAddress = contractUtils.decodedHexAddressToPublic
 const trimAdresseses = contractUtils.trimAdresseses;
 
 const SophiaUtil = require('./utils/sophia-util');
+const httpGet = require('./utils/http-utils').httpGet;
 
 module.exports = {
     printReportTable,
@@ -51,6 +56,7 @@ module.exports = {
     getFiles,
     getClient,
     getNetwork,
+    getCompiler,
     sleep,
     execute,
     readFile,
@@ -75,5 +81,9 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    waitForContainer
+    txValidator,
+    httpGet,
+    readSpawnOutput,
+    readErrorSpawnOutput,
+    capitalize
 }

@@ -45,12 +45,10 @@ describe('Sophia util tests', async () => {
         const contractName = 'Calculator';
 
         let contractInfoMap = SophiaUtil.getContractInfo(path.resolve(__dirname, sophiaContractPath));
-        // console.log(contractInfoMap);
 
         assert.isOk(contractInfoMap.has(contractName), "Should contain smart contract name as a key.")
 
         let calculatorInfo = contractInfoMap.get(contractName);
-        // console.log(calculatorInfo);
 
         assert.equal(calculatorInfo.contractName, contractName, "Contract name does not match!");
         assert.equal(calculatorInfo.testFunctions, 0, "Contract source should not have 'test' functions");

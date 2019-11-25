@@ -1,6 +1,6 @@
 {
   "name": "aeproject-logger",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai-as-promised": "^7.1.1",
     "fs-extra": "^7.0.1"
   }
 }

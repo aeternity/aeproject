@@ -60,7 +60,7 @@ const run = async (path) => {
 
     await aeprojectTest.run(files);
     await sophiaTest.run(aesFiles, testDirectory);
-
+    
     process.chdir(cwd);
 }
 

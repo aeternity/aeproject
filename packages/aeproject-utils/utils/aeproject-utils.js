@@ -1,10 +1,12 @@
-require = require('esm')(module /*, options */ ) // use to handle es6 import/export 
+require = require('esm')(module /*, options */) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
 const path = require('path')
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const Node = AeSDK.Node;
+const TransactionValidator = AeSDK.TransactionValidator;
+
 let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
 let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
@@ -21,6 +23,7 @@ const {
 } = require('promisify-child-process');
 
 const COMPILER_URL_POSTFIX = '/compile';
+const SOPHIA_LIBS_PATH = '../artifacts/sophia-libs/';
 
 const getClient = async function (network, keypair = config.keypair) {
     let client;
@@ -59,6 +62,7 @@ const getNetwork = (network, networkId) => {
         const customNetwork = createCustomNetwork(network, networkId)
         return customNetwork;
     }
+
     const networks = {
         local: {
             url: config.localhostParams.url,
@@ -80,15 +84,38 @@ const getNetwork = (network, networkId) => {
 };
 
 const createCustomNetwork = (network, networkId) => {
-    if (network.includes('local') || networkId == undefined) {
-        throw new Error('Both network and networkId should be passed')
+    if (!network || !networkId || network === 'local') {
+        throw new Error('Both [--network] and [--networkId] should be passed.')
     }
-    const customNetork = {
+
+    network = network.toLowerCase();
+
+    if (!network.startsWith('http')) {
+        network = 'http://' + network;
+    }
+
+    const customNetwork = {
         url: network,
         networkId: networkId
     }
 
-    return customNetork;
+    return customNetwork;
+}
+
+const getCompiler = (network, compilerUrl) => {
+    if (compilerUrl != "") {
+        return compilerUrl
+    }
+    const compilers = {
+        local: config.compilerUrl,
+        testnet: config.hostedCompiler,
+        mainnet: config.hostedCompiler
+    };
+    if (compilers[network] == undefined) {
+        throw new Error("Compiler is not defined. You must provide compiler url or use predefined networks")
+    }
+    return compilers[network]
+
 }
 
 const handleApiError = async (fn) => {
@@ -103,7 +130,7 @@ const handleApiError = async (fn) => {
     }
 };
 
-function logApiError(error) {
+function logApiError (error) {
     printError(`API ERROR: ${ error }`)
 }
 
@@ -159,7 +186,7 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-function readErrorSpawnOutput(spawnResult) {
+function readErrorSpawnOutput (spawnResult) {
     if (!spawnResult.stderr || spawnResult.stderr === '') {
         return '';
     }
@@ -168,8 +195,9 @@ function readErrorSpawnOutput(spawnResult) {
     return '\n' + buffMessage.toString('utf8');
 }
 
-function readSpawnOutput(spawnResult) {
-    if (!spawnResult.stdout || spawnResult.stdout === '') {
+function readSpawnOutput (spawnResult) {
+
+    if (!spawnResult || !spawnResult.stdout || spawnResult.stdout === '') {
         return '';
     }
 
@@ -177,7 +205,7 @@ function readSpawnOutput(spawnResult) {
     return buffMessage.toString('utf8');
 }
 
-async function contractCompile(source, contractPath, compileOptions) {
+async function contractCompile (source, contractPath, compileOptions) {
     let result;
     let options = {
         "file_system": null
@@ -196,7 +224,7 @@ async function contractCompile(source, contractPath, compileOptions) {
     return result;
 }
 
-function checkNestedProperty(obj, property) {
+function checkNestedProperty (obj, property) {
     if (!obj || !obj.hasOwnProperty(property)) {
         return false;
     }
@@ -204,7 +232,7 @@ function checkNestedProperty(obj, property) {
     return true;
 }
 
-function getDependencies(contractContent, contractPath) {
+function getDependencies (contractContent, contractPath) {
     let allDependencies = [];
     let dependencyFromContract;
     let dependencyContractContent;
@@ -224,24 +252,45 @@ function getDependencies(contractContent, contractPath) {
         contractPath = mainContractsPathRgx.exec(contractPath)
         mainContractsPathRgx.lastIndex = 0;
         dependencyContractPath = path.resolve(`${ contractPath[0] }/${ dependencyFromContract[1] }`)
-        dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8')
-        actualContract = getActualContract(dependencyContractContent)
-        dependencies[dependencyFromContract[1]] = actualContract;
 
-        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath))
+        try {
+            dependencyContractContent = fs.readFileSync(dependencyContractPath, 'utf-8');
+        } catch (error) {
+            console.log(`File to include '${ dependencyFromContract[1] }' not found. Check your path or it is from Sophia default library`);
+            if (!error.message.includes('no such file or directory')) {
+                throw Error(error);
+            }
+        }
+
+        actualContract = getActualContract(dependencyContractContent);
+        if (!dependencyFromContract[1].startsWith('./')) {
+            dependencies['./' + dependencyFromContract[1]] = actualContract;
+        } else {
+            dependencies[dependencyFromContract[1]] = actualContract;
+        }
+
+        Object.assign(dependencies, getDependencies(dependencyContractContent, dependencyContractPath));
     }
 
     return dependencies;
 }
 
-function getActualContract(contractContent) {
+function getActualContract (contractContent) {
+    if (!contractContent) {
+        return '';
+    }
+
     let contentStartIndex = contractContent.indexOf('namespace ');
+    if (contentStartIndex < 0) {
+        contentStartIndex = 0;
+    }
+
     let content = contractContent.substr(contentStartIndex);
 
     return content;
 }
 
-function normalizeCompilerUrl(url) {
+function normalizeCompilerUrl (url) {
 
     if (!url.startsWith('http')) {
         url = 'http://' + url;
@@ -258,47 +307,16 @@ function normalizeCompilerUrl(url) {
     return url;
 }
 
-async function waitForContainer(dockerImage, options) {
-    try {
-        let running = false;
-        let result = await spawn('docker-compose', [
-            '-f',
-            'docker-compose.yml',
-            '-f',
-            'docker-compose.compiler.yml',
-            'ps'
-        ], options);
-
-        let res = readSpawnOutput(result);
-
-        if (res) {
-            res = res.split('\n');
-        }
-
-        if (Array.isArray(res)) {
-            res.map(line => {
-                if (line.indexOf(dockerImage) >= 0 && line.includes('healthy')) {
-                    running = true
-                }
-            })
-        }
-
-        return running;
-    } catch (error) {
-        if (error.stderr) {
-            console.log(error.stderr.toString('utf8'))
-        } else {
-            console.log(error.message || error)
-        }
-
-        throw Error(error);
-    }
+function capitalize (_string) {
+    if (typeof _string !== 'string') return ''
+    return _string.charAt(0).toUpperCase() + _string.slice(1)
 }
 
 module.exports = {
     config,
     getClient,
     getNetwork,
+    getCompiler,
     handleApiError,
     logApiError,
     sleep,
@@ -308,5 +326,8 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
-    waitForContainer
+    TransactionValidator,
+    readSpawnOutput,
+    readErrorSpawnOutput,
+    capitalize
 }

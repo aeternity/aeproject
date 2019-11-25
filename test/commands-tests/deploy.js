@@ -3,9 +3,9 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const utils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
+const utils = require('./../../packages/aeproject-utils/index.js');
 const execute = utils.aeprojectExecute;
-const waitForContainer = utils.waitForContainer;
+const isImageRunning = require('../utils').isImageRunning;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
 const nodeConfig = require('../../packages/aeproject-config/config/node-config.json');
@@ -42,13 +42,9 @@ function insertAdditionalFiles () {
 }
 
 async function linkLocalPackages () {
-    const aeprojectLibDir = `${ process.cwd() }/packages/aeproject-lib/`
-    const aeprojectUtilsDir = `${ process.cwd() }/packages/aeproject-utils/`
-    const aeprojectConfigDir = `${ process.cwd() }/packages/aeproject-config/`
-
     process.chdir(executeOptions.cwd);
-    await exec('npm install aeproject-lib')
-    await exec('npm install aeproject-utils')
+    await exec('yarn link aeproject-lib')
+    await exec('yarn link aeproject-utils')
 
 }
 
@@ -59,7 +55,7 @@ describe('AEproject Deploy', () => {
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
         await linkLocalPackages()
-        await execute(constants.cliCommands.NODE, [], executeOptions)
+        await execute(constants.cliCommands.ENV, [], executeOptions)
 
     })
 
@@ -102,10 +98,10 @@ describe('AEproject Deploy', () => {
 
         it('Should init Deployer with custom network', async () => {
             // Arrange
-            const network = "192.168.99.100:3001"
+            const network = "http://192.168.99.100:3001"
             const expectedNetworkId = "ae_custom"
             // Act
-            const deployer = new Deployer(network, config.keypair, config.compilerUrl, expectedNetworkId);
+            const deployer = new Deployer(network, config.keypair, config.LOCAL_COMPILER_URL, expectedNetworkId);
 
             // Assert
 
@@ -113,8 +109,21 @@ describe('AEproject Deploy', () => {
             assert.equal(deployer.network.networkId, expectedNetworkId)
         })
 
+        it('Should init Deployer with custom network without "http" prefix', async () => {
+            // Arrange
+            const network = "192.168.99.100:3001"
+            const expectedNetworkId = "ae_custom"
+            // Act
+            const deployer = new Deployer(network, config.keypair, config.LOCAL_COMPILER_URL, expectedNetworkId);
+
+            // Assert
+
+            assert.equal(deployer.network.url, "http://" + network)
+            assert.equal(deployer.network.networkId, expectedNetworkId)
+        })
+
         it('should revert if only custom network is passed', async () => {
-            const expectedError = "Both network and networkId should be passed";
+            const expectedError = "Both [--network] and [--networkId] should be passed";
             let result;
 
             await linkLocalPackages();
@@ -126,7 +135,7 @@ describe('AEproject Deploy', () => {
         })
 
         it('should revert if only custom networkId is passed', async () => {
-            const expectedError = "Both network and networkId should be passed";
+            const expectedError = "Both [--network] and [--networkId] should be passed";
             let result = await execute(constants.cliCommands.DEPLOY, ["--networkId", "testov"], executeOptions);
 
             assert.include(result, expectedError)
@@ -248,14 +257,25 @@ describe('AEproject Deploy', () => {
             let result = await execute(constants.cliCommands.DEPLOY, ["--path", `./${ missingParamDeploymentScriptPath }`], executeOptions);
             assert.include(result, error);
         })
+
+        it('Should compile contracts with included sophia libs', async () => {
+            // delete and copy new example contract with included default sophia's libraries
+            let sourceContractPath = path.resolve(executeOptions.cwd, './../artifacts/includeSophiaLibs.aes');
+            let destinationContractPath = path.resolve(executeOptions.cwd, './contracts/ExampleContract.aes');
+            fs.unlinkSync(destinationContractPath);
+            fs.copyFileSync(sourceContractPath, destinationContractPath);
+
+            let result = await execute(constants.cliCommands.DEPLOY, [], executeOptions);
+            assert.include(result, expectedDeployResult)
+        })
     })
 
     after(async () => {
 
-        let running = await waitForContainer(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
+        let running = await isImageRunning(nodeConfig.nodeConfiguration.dockerServiceNodeName, executeOptions);
         if (running) {
 
-            await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
         }
 
         fs.removeSync(`.${ constants.deployTestsFolderPath }`)

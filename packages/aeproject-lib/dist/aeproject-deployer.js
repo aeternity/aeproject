@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -21,9 +20,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const aeproject_utils_1 = __importDefault(require("aeproject-utils"));
 const fs = __importStar(require("fs"));
-const aeproject_logger_1 = __importDefault(require("aeproject-logger"));
+const loggerServices = __importStar(require("aeproject-logger"));
 const aeproject_config_1 = __importDefault(require("aeproject-config"));
-const aeproject_config_2 = __importDefault(require("aeproject-config"));
+const logStoreService = loggerServices.history;
 const decodedHexAddressToPublicAddress = aeproject_utils_1.default.decodedHexAddressToPublicAddress;
 let ttl = 100;
 const opts = {
@@ -33,7 +32,7 @@ let client;
 let contract;
 let instances;
 let instancesMap = {};
-aeproject_logger_1.default.initHistoryRecord();
+logStoreService.initHistoryRecord();
 function getContractName(contract) {
     let rgx = /contract\s([a-zA-Z0-9]+)\s=/g;
     var match = rgx.exec(contract);
@@ -62,9 +61,9 @@ class Deployer {
      * @param {any} keypairOrSecret
      * @param {string} compilerUrl
      */
-    constructor(network = "local", keypairOrSecret = aeproject_utils_1.default.config.keypair, compilerUrl = aeproject_config_1.default.compilerUrl, networkId) {
+    constructor(network = "local", keypairOrSecret = aeproject_utils_1.default.config.keypair, compilerUrl = "", networkId) {
         this.network = aeproject_utils_1.default.getNetwork(network, networkId);
-        this.compilerUrl = compilerUrl;
+        this.compilerUrl = aeproject_utils_1.default.getCompiler(network, compilerUrl);
         if (aeproject_utils_1.default.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
             return;
@@ -117,7 +116,8 @@ class Deployer {
                 deployedContract = yield contractInstance.deploy(initState, options);
                 // extract smart contract's functions info, process it and generate function that would be assigned to deployed contract's instance
                 yield generateInstancesWithWallets(this.network, deployedContract.address);
-                let contractInstanceWrapperFuncs = yield generateFunctionsFromSmartContract(contractInstance);
+                let additionalFuncs = addSpendFuncToContractInstance(contractInstance.methods, client);
+                let contractInstanceWrapperFuncs = yield generateFunctionsFromSmartContract(additionalFuncs);
                 deployedContract = addSmartContractFunctions(deployedContract, contractInstanceWrapperFuncs);
                 let regex = new RegExp(/[\w]+.aes$/);
                 contractFileName = regex.exec(contractPath);
@@ -137,8 +137,13 @@ class Deployer {
                 info.error = e.message;
                 info.initState = initState;
                 info.options = JSON.stringify(options);
+                if (e.rawTx) {
+                    info.rawTx = e.rawTx;
+                    info.verifiedTx = yield e.verifyTx(e.rawTx);
+                    printTxNetworkInfo(info, this.network);
+                }
             }
-            aeproject_logger_1.default.logAction(info);
+            logStoreService.logAction(info);
             if (!isSuccess) {
                 throw new Error(error);
             }
@@ -154,17 +159,16 @@ exports.Deployer = Deployer;
 function generateInstancesWithWallets(network, contractAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         instances = [];
-        for (let wallet in aeproject_config_2.default.defaultWallets) {
-            let currentClient = yield aeproject_utils_1.default.getClient(network, aeproject_config_2.default.defaultWallets[wallet]);
+        for (let wallet in aeproject_config_1.default.defaultWallets) {
+            let currentClient = yield aeproject_utils_1.default.getClient(network, aeproject_config_1.default.defaultWallets[wallet]);
             let contractInstance = yield currentClient.getContractInstance(contract, { contractAddress });
             instances.push(contractInstance);
-            instancesMap[aeproject_config_2.default.defaultWallets[wallet].publicKey] = contractInstance;
+            instancesMap[aeproject_config_1.default.defaultWallets[wallet].publicKey] = contractInstance;
         }
     });
 }
-function generateFunctionsFromSmartContract(contractInstance) {
+function generateFunctionsFromSmartContract(contractFunctions) {
     return __awaiter(this, void 0, void 0, function* () {
-        let contractFunctions = contractInstance.methods;
         contractFunctions['from'] = function (userWallet) {
             return __awaiter(this, void 0, void 0, function* () {
                 let walletToPass = userWallet;
@@ -172,10 +176,35 @@ function generateFunctionsFromSmartContract(contractInstance) {
                     walletToPass = walletToPass.secretKey;
                 }
                 const keyPair = yield aeproject_utils_1.default.generateKeyPairFromSecretKey(walletToPass);
+                // iteration of origin deployed instance
+                // when we create new 'client', it does not have deployed tx info and additional functions like 'spend'
+                // if function or property is missing from new 'client' we assigned it
+                for (let funcName in contractFunctions) {
+                    if (!instancesMap[keyPair.publicKey].methods[funcName]) {
+                        instancesMap[keyPair.publicKey].methods[funcName] = contractFunctions[funcName];
+                    }
+                }
                 return instancesMap[keyPair.publicKey].methods;
             });
         };
         return contractFunctions;
     });
+}
+function addSpendFuncToContractInstance(contractFunctions, client) {
+    contractFunctions['spend'] = function (amount, to) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return client.spend(amount, to);
+        });
+    };
+    return contractFunctions;
+}
+function printTxNetworkInfo(info, network) {
+    console.log('[INFO] raw Tx:');
+    console.log(info.rawTx);
+    console.log('[INFO] verified Tx:');
+    console.log(info.verifiedTx);
+    console.log('[INFO] network');
+    console.log(network);
+    console.log();
 }
 //# sourceMappingURL=aeproject-deployer.js.map

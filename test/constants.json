@@ -1,6 +1,7 @@
 {
 	"compileTestsFolderPath": "/test/commands-tests/compileTests",
 	"nodeTestsFolderPath": "/test/commands-tests/nodeTest",
+	"nodeTestsFolderPathSecondProject": "/test/commands-tests/nodeTestSecondProject",
 	"deployTestsFolderPath": "/test/commands-tests/deployTest",
 	"initTestsFolderPath": "/test/commands-tests/initTests",
 	"testTestsFolderPath": "/test/commands-tests/contractsTests",
@@ -15,16 +16,21 @@
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
 	"exportAEprojectConfigTestsFolderPath": "/test/commands-tests/exportAEprojectConfigTestFolder",
 	"nodeDockerFilesFolderPath": "./test/node-docker-compose-files",
+	"txInspectorTestFolder": "/test/commands-tests/tx-inspector-test-folder",
+	"nodeStoreFolder": "/packages/aeproject-logger/.aeproject-node-store",
 	"cliCommands": {
 		"INIT": "init",
 		"TEST": "test",
+		"ENV": "env",
 		"NODE": "node",
+		"COMPILER": "compiler",
 		"COMPILE": "compile",
 		"DEPLOY": "deploy",
 		"HISTORY": "history",
 		"CONTRACTS": "contracts",
 		"SHAPE": "shape",
-		"CURL": "curl"
+		"CURL": "curl",
+		"INSPECT": "inspect"
 	},
 	"cliSubCommands": {
 		"VUE": "vue",
@@ -40,7 +46,14 @@
 		"NODE_URL": "--nodeUrl",
 		"IGNORE_OPENING": "--ignoreOpenInBrowser",
 		"ONLY": "--only",
-		"COMPILER_PORT": "--compiler-port"
+		"ONLYCOMPILER": "--only-compiler",
+		"INFO": "--info",
+		"COMPILER_PORT": "--compiler-port",
+		"SECRET_KEY": "--secretKey",
+		"NETWORK": "--network",
+		"NETWORK_ID": "--networkId",
+		"LIMIT": "--limit",
+		"COMPILER_URL": "--compiler"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",
@@ -73,6 +86,7 @@
 	},
 	"privateKeyTestnetDeploy": "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319",
 	"getCompilerVersionURL": "http://localhost:3080/version",
+	"getNodeVersionURL": "http://localhost:3001/v2/status",
 	"LOCAL_COMPILER_URL": "http://localhost:3080/compile",
 	"folderPaths": {
 		"dockerInitResourcesPath": "/packages/aeproject-cli/aeproject-init/artifacts"

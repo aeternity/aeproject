@@ -50,7 +50,7 @@ const serveContractsAepp = async (options) => {
     updateSettingsFile(options, currentDir);
     configureSettings(currentDir);
 
-    await exec(`yarn install`);
+    await exec(`yarn install --force`);
 
     const startingAeppProcess = spawn('yarn', ['run', 'start:dev']);
 

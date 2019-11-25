@@ -3,12 +3,14 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 const cliUtils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
 const execute = cliUtils.aeprojectExecute;
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const _store = require('../../packages/aeproject-logger/logger-service/log-store-service')
+const _store = require('../../packages/aeproject-logger/logger-service/log-store-service');
 
 const constants = require('../constants.json');
 const TEMP_TEST_PATH = constants.historyTestsFolderPath;
@@ -19,6 +21,11 @@ const deployerPublicKey = 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
+
+async function linkLocalPackages () {
+    await exec('npm link aeproject-lib')
+    await exec('npm link aeproject-utils')
+}
 
 function insertAdditionalFiles (oldCWD) {
 
@@ -60,6 +67,24 @@ function countHistoryLogs (result) {
     }
 
     return counter;
+}
+
+async function linkPackages () {
+    await cliUtils.execute('yarn', 'link', [
+        'aeproject-config'
+    ])
+
+    await cliUtils.execute('yarn', 'link', [
+        'aeproject-logger'
+    ])
+
+    await cliUtils.execute('yarn', 'link', [
+        'aeproject-utils'
+    ])
+
+    await cliUtils.execute('yarn', 'link', [
+        'aeproject-lib'
+    ])
 }
 
 describe('AEproject History', async () => {
@@ -173,7 +198,7 @@ describe('AEproject History', async () => {
             process.chdir(tempTestPath);
 
             await execute(constants.cliCommands.INIT, []);
-            await execute(constants.cliCommands.NODE, ['--start']);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.START]);
         });
 
         it('History should be empty', async () => {
@@ -219,7 +244,7 @@ describe('AEproject History', async () => {
 
         it('History should return 10 records, test --limit parameter', async () => {
             let numberOfExpectedLogs = 10;
-            let result = await execute(constants.cliCommands.HISTORY, ['--limit', numberOfExpectedLogs]);
+            let result = await execute(constants.cliCommands.HISTORY, [constants.cliCommandsOptions.LIMIT, numberOfExpectedLogs]);
             let numberOfLogs = countHistoryLogs(result);
 
             assert.equal(numberOfLogs, numberOfExpectedLogs, "Incorrect number of logs!");
@@ -227,7 +252,7 @@ describe('AEproject History', async () => {
 
         after(async () => {
 
-            await execute(constants.cliCommands.NODE, ['--stop']);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP]);
 
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
@@ -238,6 +263,23 @@ describe('AEproject History', async () => {
         let currentCwd;
         let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
+        let network = {
+            url: 'http://localhost:3001',
+            internalUrl: 'http://localhost:3001/internal',
+            networkId: "ae_devnet",
+            compilerUrl: 'http://localhost:3080'
+        }
+
+        const moneyKeyPair = {
+            publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU',
+            secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca'
+        }
+
+        const keyPair = {
+            publicKey: 'ak_KmtNhieyxm1zDARjSsGzvv3n8qGGjsRNUcmsZv8CfTozrsjBY',
+            secretKey: 'fd1932a9bb48bd978038de6c67620a68839353e48318c556ec739ce50071d34a2aa0e018f23047098289fb12e03d8ce48dcf51bdf2f9eaf9f3fcd2cc4800bf06'
+        }
+
         beforeEach('', async () => {
             if (!fs.existsSync(tempTestPath)) {
                 fs.mkdirSync(tempTestPath);
@@ -247,7 +289,9 @@ describe('AEproject History', async () => {
             process.chdir(tempTestPath);
 
             await execute(constants.cliCommands.INIT, []);
-            await execute(constants.cliCommands.NODE, ['--start']);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.START]);
+
+            await linkLocalPackages()
         });
 
         it('log should have additional info like error, init state and options', async () => {
@@ -274,7 +318,7 @@ describe('AEproject History', async () => {
             insertAdditionalFiles(currentCwd);
 
             await execute(constants.cliCommands.DEPLOY, [
-                "--path",
+                constants.cliCommandsOptions.PATH,
                 `${ invalidParamDeploymentScriptPath }`
             ]);
 
@@ -291,7 +335,7 @@ describe('AEproject History', async () => {
             insertAdditionalFiles(currentCwd);
 
             await execute(constants.cliCommands.DEPLOY, [
-                "--path",
+                constants.cliCommandsOptions.PATH,
                 `${ missingParamDeploymentScriptPath }`
             ]);
 
@@ -303,9 +347,54 @@ describe('AEproject History', async () => {
             assert.isOk(hasFail && hasError, 'History log is not correct!');
         });
 
+        it('With account that has no aettos, deployment should be unsuccessful and should has an error', async () => {
+
+            let client = await cliUtils.getClient(network, moneyKeyPair);
+
+            // account should have minimum of 1 aettos 
+            // or will throw exception of "account not found"
+            await client.spend(1, keyPair.publicKey);
+
+            await linkPackages();
+
+            await execute(constants.cliCommands.DEPLOY, [
+                constants.cliCommandsOptions.SECRET_KEY,
+                `fd1932a9bb48bd978038de6c67620a68839353e48318c556ec739ce50071d34a2aa0e018f23047098289fb12e03d8ce48dcf51bdf2f9eaf9f3fcd2cc4800bf06`
+            ]);
+
+            let result = await execute(constants.cliCommands.HISTORY, []);
+
+            let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
+            let hasError = result.indexOf('│ Error') > 0;
+            let hasRawTx = result.indexOf('Raw Tx        │ tx_') > 0;
+            let hasVerifiedTx = result.indexOf('Verified Tx   │ {"validation"') > 0;
+
+            assert.isOk(hasFail && hasError && hasRawTx && hasVerifiedTx, 'History log is not correct!');
+        });
+
+        it('With invalid networkId, deployment should be unsuccessful and should has an error', async () => {
+            await linkPackages();
+
+            await execute(constants.cliCommands.DEPLOY, [
+                constants.cliCommandsOptions.NETWORK,
+                "http://127.0.0.1:3001",
+                constants.cliCommandsOptions.NETWORK_ID,
+                `ae_some_cool_network`,
+                constants.cliCommandsOptions.COMPILER_URL,
+                "http://localhost:3080"
+            ]);
+            let result = await execute(constants.cliCommands.HISTORY, []);
+            let hasFail = result.indexOf('│ Status        │ Fail   ') > 0;
+            let hasError = result.indexOf('│ Error') > 0;
+            let hasRawTx = result.indexOf('Raw Tx        │ tx_') > 0;
+            let hasVerifiedTx = result.indexOf('Verified Tx   │ {"validation"') > 0;
+
+            assert.isOk(hasFail && hasError && hasRawTx && hasVerifiedTx, 'History log is not correct!');
+        });
+
         afterEach(async () => {
 
-            await execute(constants.cliCommands.NODE, ['--stop']);
+            await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP]);
 
             fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
