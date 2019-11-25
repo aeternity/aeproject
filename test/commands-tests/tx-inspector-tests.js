@@ -69,7 +69,6 @@ describe('Transaction inspector tests', async function () {
             let result = await execute(INSPECT, [
                 validContractCreateTx
             ]);
-
             let expectedResultAsText = `{ tx:
                 { tag: '42',
                   VSN: '1',
@@ -86,14 +85,14 @@ describe('Transaction inspector tests', async function () {
                   gasPrice: '1000000000',
                   callData: 'cb_KxFE1kQfP4oEp9E=' },
                signatures:
-                [ { raw:
-                     <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... 14 more bytes>,
+                [ { raw: <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... >,
                     hash:
                      'sg_FAQ2PoJsqHpv9ZDPiT4yozTNkuQ3YMAiK2e4c1yMuBi3DDsnKFLeBmrAzndeY6iGHesKwLHWaZ3AL54859mYg58RLorZ' } ],
                txType: 'contractCreateTx' }`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
+
                 if (!result.includes(x)) {
                     assert.isOk(false, 'Non expected data')
                 }
@@ -125,7 +124,7 @@ describe('Transaction inspector tests', async function () {
                 callData: 'cb_KxFE1kQfP4oEp9E=' },
              signatures:
               [ { raw:
-                   <Buffer 91 77 04 de 68 8d a8 9f 18 b4 60 7f fa e1 d9 7c a9 d9 4b cf 17 5d 58 94 dd 9a 02 e6 7a 33 7f 92 ab 2e bf 46 03 47 3e 4c c0 e0 8b 41 21 db a8 32 36 a7 ... 14 more bytes>,
+                   <Buffer 91 77 04 de 68 8d a8 9f 18 b4 60 7f fa e1 d9 7c a9 d9 4b cf 17 5d 58 94 dd 9a 02 e6 7a 33 7f 92 ab 2e bf 46 03 47 3e 4c c0 e0 8b 41 21 db a8 32 36 a7 ... >,
                   hash:
                    'sg_L2o8HWfghDvanAe6wbyvMj7ttCe361fEyDTpqJXPw198z2twfM2Y97bRxFCBvhn75f2qPrnFBVr7pNxYbMYNtrCDwiQVu' } ],
              txType: 'contractCreateTx' }`
@@ -160,7 +159,7 @@ describe('Transaction inspector tests', async function () {
                  'cb_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACDMIxzt1oV84gGfPC2RVUZBgg1foKcH0ZekZ4YGuxR2CgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlRhc2sgQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAt7T8cw==' },
              signatures:
               [ { raw:
-                   <Buffer 0d d2 c4 07 30 7d cb 10 7e a3 03 6d 68 3e 08 b2 b3 5b 57 61 61 2d 14 9c dc f0 f0 7d 89 67 64 46 9f 91 b8 54 0c 74 8c 0b 5e ef ee 93 6a 3c 01 f1 99 8e ... 14 more bytes>,
+                   <Buffer 0d d2 c4 07 30 7d cb 10 7e a3 03 6d 68 3e 08 b2 b3 5b 57 61 61 2d 14 9c dc f0 f0 7d 89 67 64 46 9f 91 b8 54 0c 74 8c 0b 5e ef ee 93 6a 3c 01 f1 99 8e ... >,
                   hash:
                    'sg_2otjUpLPHo2h4F52SCafiWmry7h9VeHsTSFYMPA7bfJ5Y9CFrPtGeMhASBHKcvM6fXM2yL95KjNyc7pL5iqwetsnMAm5J' } ],
              txType: 'contractCallTx' }`
@@ -243,7 +242,7 @@ describe('Transaction inspector tests', async function () {
                 callData: 'cb_KxFE1kQfP4oEp9E=' },
              signatures:
               [ { raw:
-                   <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... 14 more bytes>,
+                   <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... >,
                   hash:
                    'sg_FAQ2PoJsqHpv9ZDPiT4yozTNkuQ3YMAiK2e4c1yMuBi3DDsnKFLeBmrAzndeY6iGHesKwLHWaZ3AL54859mYg58RLorZ' } ],
              txType: 'contractCreateTx' }`
@@ -285,7 +284,7 @@ describe('Transaction inspector tests', async function () {
                 callData: 'cb_KxFE1kQfP4oEp9E=' },
              signatures:
               [ { raw:
-                   <Buffer 91 77 04 de 68 8d a8 9f 18 b4 60 7f fa e1 d9 7c a9 d9 4b cf 17 5d 58 94 dd 9a 02 e6 7a 33 7f 92 ab 2e bf 46 03 47 3e 4c c0 e0 8b 41 21 db a8 32 36 a7 ... 14 more bytes>,
+                   <Buffer 91 77 04 de 68 8d a8 9f 18 b4 60 7f fa e1 d9 7c a9 d9 4b cf 17 5d 58 94 dd 9a 02 e6 7a 33 7f 92 ab 2e bf 46 03 47 3e 4c c0 e0 8b 41 21 db a8 32 36 a7 ... >,
                   hash:
                    'sg_L2o8HWfghDvanAe6wbyvMj7ttCe361fEyDTpqJXPw198z2twfM2Y97bRxFCBvhn75f2qPrnFBVr7pNxYbMYNtrCDwiQVu' } ],
              txType: 'contractCreateTx' }`
@@ -324,7 +323,7 @@ describe('Transaction inspector tests', async function () {
                  'cb_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACDMIxzt1oV84gGfPC2RVUZBgg1foKcH0ZekZ4YGuxR2CgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlRhc2sgQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAt7T8cw==' },
              signatures:
               [ { raw:
-                   <Buffer 0d d2 c4 07 30 7d cb 10 7e a3 03 6d 68 3e 08 b2 b3 5b 57 61 61 2d 14 9c dc f0 f0 7d 89 67 64 46 9f 91 b8 54 0c 74 8c 0b 5e ef ee 93 6a 3c 01 f1 99 8e ... 14 more bytes>,
+                   <Buffer 0d d2 c4 07 30 7d cb 10 7e a3 03 6d 68 3e 08 b2 b3 5b 57 61 61 2d 14 9c dc f0 f0 7d 89 67 64 46 9f 91 b8 54 0c 74 8c 0b 5e ef ee 93 6a 3c 01 f1 99 8e ... >,
                   hash:
                    'sg_2otjUpLPHo2h4F52SCafiWmry7h9VeHsTSFYMPA7bfJ5Y9CFrPtGeMhASBHKcvM6fXM2yL95KjNyc7pL5iqwetsnMAm5J' } ],
              txType: 'contractCallTx' }`
@@ -410,7 +409,7 @@ describe('Transaction inspector tests', async function () {
                 callData: 'cb_KxFE1kQfP4oEp9E=' },
              signatures:
               [ { raw:
-                   <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... 14 more bytes>,
+                   <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... >,
                   hash:
                    'sg_FAQ2PoJsqHpv9ZDPiT4yozTNkuQ3YMAiK2e4c1yMuBi3DDsnKFLeBmrAzndeY6iGHesKwLHWaZ3AL54859mYg58RLorZ' } ],
              txType: 'contractCreateTx' }`
@@ -452,7 +451,7 @@ describe('Transaction inspector tests', async function () {
                 callData: 'cb_KxFE1kQfP4oEp9E=' },
              signatures:
               [ { raw:
-                   <Buffer 91 77 04 de 68 8d a8 9f 18 b4 60 7f fa e1 d9 7c a9 d9 4b cf 17 5d 58 94 dd 9a 02 e6 7a 33 7f 92 ab 2e bf 46 03 47 3e 4c c0 e0 8b 41 21 db a8 32 36 a7 ... 14 more bytes>,
+                   <Buffer 91 77 04 de 68 8d a8 9f 18 b4 60 7f fa e1 d9 7c a9 d9 4b cf 17 5d 58 94 dd 9a 02 e6 7a 33 7f 92 ab 2e bf 46 03 47 3e 4c c0 e0 8b 41 21 db a8 32 36 a7 ... >,
                   hash:
                    'sg_L2o8HWfghDvanAe6wbyvMj7ttCe361fEyDTpqJXPw198z2twfM2Y97bRxFCBvhn75f2qPrnFBVr7pNxYbMYNtrCDwiQVu' } ],
              txType: 'contractCreateTx' }`
@@ -493,7 +492,7 @@ describe('Transaction inspector tests', async function () {
                  'cb_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACDMIxzt1oV84gGfPC2RVUZBgg1foKcH0ZekZ4YGuxR2CgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlRhc2sgQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAt7T8cw==' },
              signatures:
               [ { raw:
-                   <Buffer 0d d2 c4 07 30 7d cb 10 7e a3 03 6d 68 3e 08 b2 b3 5b 57 61 61 2d 14 9c dc f0 f0 7d 89 67 64 46 9f 91 b8 54 0c 74 8c 0b 5e ef ee 93 6a 3c 01 f1 99 8e ... 14 more bytes>,
+                   <Buffer 0d d2 c4 07 30 7d cb 10 7e a3 03 6d 68 3e 08 b2 b3 5b 57 61 61 2d 14 9c dc f0 f0 7d 89 67 64 46 9f 91 b8 54 0c 74 8c 0b 5e ef ee 93 6a 3c 01 f1 99 8e ... >,
                   hash:
                    'sg_2otjUpLPHo2h4F52SCafiWmry7h9VeHsTSFYMPA7bfJ5Y9CFrPtGeMhASBHKcvM6fXM2yL95KjNyc7pL5iqwetsnMAm5J' } ],
              txType: 'contractCallTx' }`

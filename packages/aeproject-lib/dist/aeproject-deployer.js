@@ -22,7 +22,6 @@ const aeproject_utils_1 = __importDefault(require("aeproject-utils"));
 const fs = __importStar(require("fs"));
 const loggerServices = __importStar(require("aeproject-logger"));
 const aeproject_config_1 = __importDefault(require("aeproject-config"));
-const aeproject_config_2 = __importDefault(require("aeproject-config"));
 const logStoreService = loggerServices.history;
 const decodedHexAddressToPublicAddress = aeproject_utils_1.default.decodedHexAddressToPublicAddress;
 let ttl = 100;
@@ -62,9 +61,9 @@ class Deployer {
      * @param {any} keypairOrSecret
      * @param {string} compilerUrl
      */
-    constructor(network = "local", keypairOrSecret = aeproject_utils_1.default.config.keypair, compilerUrl = aeproject_config_1.default.compilerUrl, networkId) {
+    constructor(network = "local", keypairOrSecret = aeproject_utils_1.default.config.keypair, compilerUrl = "", networkId) {
         this.network = aeproject_utils_1.default.getNetwork(network, networkId);
-        this.compilerUrl = compilerUrl;
+        this.compilerUrl = aeproject_utils_1.default.getCompiler(network, compilerUrl);
         if (aeproject_utils_1.default.isKeyPair(keypairOrSecret)) {
             this.keypair = keypairOrSecret;
             return;
@@ -160,11 +159,11 @@ exports.Deployer = Deployer;
 function generateInstancesWithWallets(network, contractAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         instances = [];
-        for (let wallet in aeproject_config_2.default.defaultWallets) {
-            let currentClient = yield aeproject_utils_1.default.getClient(network, aeproject_config_2.default.defaultWallets[wallet]);
+        for (let wallet in aeproject_config_1.default.defaultWallets) {
+            let currentClient = yield aeproject_utils_1.default.getClient(network, aeproject_config_1.default.defaultWallets[wallet]);
             let contractInstance = yield currentClient.getContractInstance(contract, { contractAddress });
             instances.push(contractInstance);
-            instancesMap[aeproject_config_2.default.defaultWallets[wallet].publicKey] = contractInstance;
+            instancesMap[aeproject_config_1.default.defaultWallets[wallet].publicKey] = contractInstance;
         }
     });
 }

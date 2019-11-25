@@ -19,6 +19,7 @@ const writeFileSync = fsUtils.writeFile;
 const aeprojectUtils = require('./utils/aeproject-utils');
 const getClient = aeprojectUtils.getClient;
 const getNetwork = aeprojectUtils.getNetwork;
+const getCompiler = aeprojectUtils.getCompiler;
 const sleep = aeprojectUtils.sleep;
 const execute = aeprojectUtils.execute;
 const aeprojectExecute = aeprojectUtils.aeprojectExecute;
@@ -55,6 +56,7 @@ module.exports = {
     getFiles,
     getClient,
     getNetwork,
+    getCompiler,
     sleep,
     execute,
     readFile,
