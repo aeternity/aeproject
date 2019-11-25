@@ -28,7 +28,7 @@ const readFileRelative = utils.readFileRelative;
 
 const prompts = require('prompts');
 
-async function run(update) {
+async function run (update) {
     if (update) {
         await updateAEprojectProjectLibraries(sdkVersion);
         return;
@@ -66,6 +66,7 @@ const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     await installAEproject();
     await installAeppSDK(_sdkVersion);
     await installYarn();
+    await uninstallForgaeDependencies();
 
     print('===== AEproject was successfully updated! =====');
 }
@@ -100,6 +101,30 @@ const installAEproject = async () => {
 const installYarn = async () => {
     print(`===== Installing yarn locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
+}
+
+const uninstallForgaeDependencies = async () => {
+    const localPackageJson = require(process.cwd() + `/package.json`);
+    let forgaeRgx = /\s*"(forgae[^"]*)"\s*/gm;
+    let forgaeDependencies = JSON.stringify(localPackageJson);
+    let match;
+
+    match = forgaeRgx.exec(forgaeDependencies);
+
+    if (match[1] == 'forgae-project') {
+        match = forgaeRgx.exec(forgaeDependencies)
+    }
+
+    if (!match) {
+        return
+    }
+
+    print(`===== Removing ForgAE deprecated dependencies =====`);
+
+    while (match) {
+        await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'uninstall', [`${ match[1] }`]);
+        match = forgaeRgx.exec(forgaeDependencies)
+    }
 }
 
 const setupContracts = async (shape) => {
@@ -216,7 +241,7 @@ const addIgnoreFile = () => {
     writeFileRelative(constants.gitIgnoreFile, ignoreFileContent)
 }
 
-async function prompt(error) {
+async function prompt (error) {
     const args = [...arguments];
     // [0] - error
     // [1] - function to execute
