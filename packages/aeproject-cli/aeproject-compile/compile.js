@@ -39,7 +39,6 @@ async function compileAndPrint (file, compileOptions) {
         if (typeof (errorMessage) == 'string') {
             printError(`Contract '${ file } has not been compiled'`)
             printError(errorMessage)
-            print('\r')
             
             return
         }
