@@ -77,7 +77,7 @@ describe('AEproject Compile', () => {
             assert.include(result, expectedResult5);
         })
 
-        it('Should disply error message to user if contract has not been compiled', async () => {
+        it('Should display error message to user if contract has not been compiled', async () => {
             let expectedError = 'type_error: Unbound variable a at line 3, column 9';
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ path.resolve(executeOptions.cwd, '../multipleContractsFolder') }/FalseContract.aes`])
 
