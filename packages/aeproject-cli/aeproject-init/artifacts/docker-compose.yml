@@ -5,37 +5,37 @@ services:
     image: aeternity/aeternity:v5.0.2
     hostname: node1
     environment:
-      EPOCH_CONFIG: /home/epoch/epoch.yaml
+      AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
     command: >
        bin/aeternity console -noinput -aehttp enable_debug_endpoints true
     volumes:
-      - ./docker/aeternity_node1_mean15.yaml:/home/epoch/epoch.yaml
-      - ./docker/keys/node1:/home/epoch/node/keys
-      - node1_db:/home/epoch/node/data/mnesia
+      - ./docker/aeternity_node1_mean15.yaml:/home/aeternity/aeternity.yaml
+      - ./docker/keys/node1:/home/aeternity/node/keys
+      - node1_db:/home/aeternity/node/data/mnesia
 
   node2:
     image: aeternity/aeternity:v5.0.2
     hostname: node2
     environment:
-      EPOCH_CONFIG: /home/epoch/epoch.yaml
+      AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
     command: >
        bin/aeternity console -noinput -aehttp enable_debug_endpoints true
     volumes:
-      - ./docker/aeternity_node2_mean15.yaml:/home/epoch/epoch.yaml
-      - ./docker/keys/node2:/home/epoch/node/keys
-      - node2_db:/home/epoch/node/data/mnesia
+      - ./docker/aeternity_node2_mean15.yaml:/home/aeternity/aeternity.yaml
+      - ./docker/keys/node2:/home/aeternity/node/keys
+      - node2_db:/home/aeternity/node/data/mnesia
 
   node3:
     image: aeternity/aeternity:v5.0.2
     hostname: node3
     environment:
-      EPOCH_CONFIG: /home/epoch/epoch.yaml
+      AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
     command: >
        bin/aeternity console -noinput -aehttp enable_debug_endpoints true
     volumes:
-      - ./docker/aeternity_node3_mean15.yaml:/home/epoch/epoch.yaml
-      - ./docker/keys/node3:/home/epoch/node/keys
-      - node3_db:/home/epoch/node/data/mnesia
+      - ./docker/aeternity_node3_mean15.yaml:/home/aeternity/aeternity.yaml
+      - ./docker/keys/node3:/home/aeternity/node/keys
+      - node3_db:/home/aeternity/node/data/mnesia
 
   proxy:
     image: nginx:1.13.8
