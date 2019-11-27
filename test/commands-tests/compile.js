@@ -69,10 +69,26 @@ describe('AEproject Compile', () => {
             assert.include(result, "File to include 'Triple.aes' not found.");
             assert.include(result, expectedCompileResultExampleContract);
         })
+    })
 
+    describe('NOT Compile', () => {
         it('Should NOT compile contracts with --compiler argument - invalid one ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", INVALID_COMPILER_URL], executeOptions)
             assert.include(result, expectedResult5);
+        })
+
+        it('Should display error message to user if contract has not been compiled', async () => {
+            let expectedError = 'type_error: Unbound variable a at line 3, column 9';
+            let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ path.resolve(executeOptions.cwd, '../multipleContractsFolder') }/FalseContract.aes`])
+
+            assert.include(result, expectedError)
+        })
+
+        it('Should display file not found if path to unexisting file is specified', async () => {
+            let expectedError = 'File not found';
+            let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder/NotExistingContract.aes"])
+
+            assert.include(result, expectedError)
         })
     })
 
