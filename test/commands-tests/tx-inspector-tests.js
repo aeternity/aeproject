@@ -69,26 +69,29 @@ describe('Transaction inspector tests', async function () {
             let result = await execute(INSPECT, [
                 validContractCreateTx
             ]);
-            let expectedResultAsText = `{ tx:
+
+            let expectedResultAsText = `\x1b[31m [ERROR] \x1b[0m 'Nonce' - Current account nonce is '10', nonce used in tx is '11'.
+                { tx:
                 { tag: '42',
-                  VSN: '1',
-                  ownerId: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU',
-                  nonce: '11',
-                  code:
-                   'cb_+GZGA6AL2f53VdejT2s7D6UXhxjKw+O27XDYnEfOjXW6aZtT1MC4OZ7+RNZEHwA3ADcAGg6CPwEDP/64F37sADcBBwcBAQCWLwIRRNZEHxFpbml0EbgXfuwRbWFpboIvAIU0LjAuMACM5DZ8',
-                  ctVersion: { vmVersion: '5', abiVersion: '3' },
-                  fee: '78560000000000',
-                  ttl: '6902',
-                  deposit: '0',
-                  amount: '0',
-                  gas: '1579000',
-                  gasPrice: '1000000000',
-                  callData: 'cb_KxFE1kQfP4oEp9E=' },
-               signatures:
-                [ { raw: <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... >,
+                    VSN: '1',
+                    ownerId: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU',
+                    nonce: '11',
+                    code:
+                    'cb_+GZGA6AL2f53VdejT2s7D6UXhxjKw+O27XDYnEfOjXW6aZtT1MC4OZ7+RNZEHwA3ADcAGg6CPwEDP/64F37sADcBBwcBAQCWLwIRRNZEHxFpbml0EbgXfuwRbWFpboIvAIU0LjAuMACM5DZ8',
+                    ctVersion: { vmVersion: '5', abiVersion: '3' },
+                    fee: '78560000000000',
+                    ttl: '6902',
+                    deposit: '0',
+                    amount: '0',
+                    gas: '1579000',
+                    gasPrice: '1000000000',
+                    callData: 'cb_KxFE1kQfP4oEp9E=' },
+                signatures:
+                [ { raw:
+                        <Buffer 01 dd c9 9b 1b c3 ff 30 6d e5 c4 56 11 71 20 2a 9d e5 fa ea d1 96 2e 96 cf d5 4f bb 57 84 3a f9 9b 06 19 c2 51 8a 45 bf 9c 17 e4 dc 79 5b 89 0e 26 54 ... >,
                     hash:
-                     'sg_FAQ2PoJsqHpv9ZDPiT4yozTNkuQ3YMAiK2e4c1yMuBi3DDsnKFLeBmrAzndeY6iGHesKwLHWaZ3AL54859mYg58RLorZ' } ],
-               txType: 'contractCreateTx' }`
+                        'sg_FAQ2PoJsqHpv9ZDPiT4yozTNkuQ3YMAiK2e4c1yMuBi3DDsnKFLeBmrAzndeY6iGHesKwLHWaZ3AL54859mYg58RLorZ' } ],
+                txType: 'contractCreateTx' }`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
             expectedResArr.map(x => {
