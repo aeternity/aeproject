@@ -84,7 +84,7 @@ describe('AEproject Compile', () => {
             assert.include(result, expectedError)
         })
 
-        it('Should disply file not found if path to unexisting file is specified', async () => {
+        it('Should display file not found if path to unexisting file is specified', async () => {
             let expectedError = 'File not found';
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder/NotExistingContract.aes"])
 
