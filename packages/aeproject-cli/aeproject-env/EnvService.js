@@ -19,6 +19,7 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const { LogNodeService } = require('aeproject-logger');
 let nodeService = new LogNodeService();
 const {
+    exec,
     spawn
 } = require('promisify-child-process');
 const {
@@ -193,6 +194,9 @@ class EnvService {
     }
 
     async getInfo (options) {
+
+        await exec('export COLUMNS=1000');
+
         let nodePath = nodeService.getNodePath();
         let compilerPath = nodeService.getCompilerPath();
         
@@ -233,7 +237,7 @@ class EnvService {
     }
 
     async isImageRunning (image, options) {
-       
+
         try {
             let running = false;
 
