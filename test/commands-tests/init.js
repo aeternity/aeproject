@@ -48,7 +48,9 @@ const executeAndPassInput = async (cli, command, args = [], options = {}) => {
 
         child.stdout.on('data', function (data) {
             // console.log('stdout: ' + data);
+            
         });
+
         child.stdin.end();
 
         let awaitedProcess = await child;
@@ -66,7 +68,7 @@ const executeAndPassInput = async (cli, command, args = [], options = {}) => {
     }
 };
 
-describe('AEproject Init', () => {
+describe.only('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -96,6 +98,40 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
+    it("Should update aeproject minor version successfully", async () => {
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+        projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
+
+        await fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
+
+        delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
+        let updatedProjectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+
+        const aeprojectLibInProject = updatedProjectPackageJson.dependencies['aeproject-lib'];
+
+        assert.isTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
+    })
+
+    it("Should NOT update aeproject to next major version", async () => {
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+        projectPackageJson['dependencies']['aeproject-lib'] = "^1.0.3";
+
+        await fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
+
+        delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
+        let updatedProjectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+
+        const aeprojectLibInProject = updatedProjectPackageJson.dependencies['aeproject-lib'];
+
+        assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
+    })
+
     it('Should update project successfully', async () => {
 
         // Arrange
@@ -105,9 +141,8 @@ describe('AEproject Init', () => {
         // Act
         fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedContent)
 
-        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, ["--update"], executeOptions)
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
         console.log(result);
-        // await execute(constants.cliCommands.INIT, ["--update"], executeOptions)
 
         // //assert
         let editedDockerComposeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
@@ -116,11 +151,12 @@ describe('AEproject Init', () => {
         const projectPackageJson = require("./initTests/package.json");
 
         const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk'];
-        const aeprojectLibInProject = projectPackageJson.dependencies['aeproject-lib'];
 
         assert.notEqual(editedDockerComposeYml, editedContent);
         assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
-        assert.equal(aeprojectLibVersion, aeprojectLibInProject, "aeproject-lib is not updated properly");
+
+        //TODO 
+        //INSERT THE TEST WHERE WE CHECK IF AEPROJECT-LIB MINOR VERSION IS UPDATED HERE!!!!
 
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
