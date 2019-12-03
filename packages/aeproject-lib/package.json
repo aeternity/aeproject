@@ -1,6 +1,6 @@
 {
   "name": "aeproject-lib",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,9 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aeproject-config": "^2.0.0",
-    "aeproject-logger": "^2.0.0",
-    "aeproject-utils": "^2.0.0",
+    "aeproject-config": "^2.0.1",
+    "aeproject-logger": "^2.0.1",
+    "aeproject-utils": "^2.0.1",
     "typescript": "^3.5.2"
   }
 }

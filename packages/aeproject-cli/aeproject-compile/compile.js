@@ -34,11 +34,18 @@ async function compileAndPrint (file, compileOptions) {
         print(`Contract '${ file } has been successfully compiled'`)
         print(`Contract bytecode: ${ JSON.stringify(result.data.bytecode) }`)
     } catch (error) {
-        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? error.response.data.reason : error.message
+        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? error.response.data[0] : error.message
 
+        if (typeof (errorMessage) == 'string') {
+            printError(`Contract '${ file } has not been compiled'`)
+            printError(errorMessage)
+            
+            return
+        }
+        
         printError(`Contract '${ file } has not been compiled'`)
-        printError(`reason:`)
-        printError(errorMessage)
+        printError(`${ errorMessage.type }: ${ errorMessage.message }`)
+        printError(`At: Line ${ errorMessage.pos.line }, Column ${ errorMessage.pos.col }`)
     }
 
     print('\r')
