@@ -49,6 +49,7 @@ const nodeConfiguration = nodeConfig.nodeConfiguration;
 const DEFAULT_COMPILER_PORT = 3080;
 const DEFAULT_NODE_PORT = 3001;
 const MAX_SECONDS_TO_RUN_NODE = 90;
+const DefaultColumnVariable = 'export COLUMNS=1000';
 
 class EnvService {
     
@@ -194,32 +195,17 @@ class EnvService {
     }
 
     async getInfo (options) {
-
-        await exec('export COLUMNS=1000');
-
         let nodePath = nodeService.getNodePath();
         let compilerPath = nodeService.getCompilerPath();
         
         if (!this._unit && nodePath && compilerPath) {
-            return spawn('docker-compose', [
-                '-f',
-                `${ nodePath }`,
-                '-f',
-                `${ compilerPath }`,
-                'ps'
-            ], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } -f ${ compilerPath } ps`, options);
         } else if (this._unit.indexOf('node') >= 0 && nodePath) {
-            return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } ps`, options);
         } else if (this._unit.indexOf('compiler') >= 0 && compilerPath) {
-            return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ compilerPath } ps`, options);
         } else {
-            return spawn('docker-compose', [
-                '-f',
-                `${ 'docker-compose.yml' }`,
-                '-f',
-                `${ 'docker-compose.compiler.yml' }`,
-                'ps'
-            ], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml ps`, options);
         }
     }
 
