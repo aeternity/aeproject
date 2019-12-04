@@ -257,8 +257,8 @@ class EnvService {
 
             if (this.checkForMissingDirectory(error)) {
                 return false;
-            }
-
+            } 
+            
             if (error.stderr) {
                 console.log(error.stderr.toString('utf8'));
             } else {
@@ -308,7 +308,7 @@ class EnvService {
     }
 
     checkForMissingDirectory (e) {
-        return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'));
+        return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory') >= 0);
     }
 
     async checkForAllocatedPort (...portArgs) {
