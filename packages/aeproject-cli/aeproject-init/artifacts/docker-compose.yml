@@ -11,7 +11,7 @@ services:
     volumes:
       - ./docker/aeternity_node1_mean15.yaml:/home/aeternity/aeternity.yaml
       - ./docker/keys/node1:/home/aeternity/node/keys
-      - node1_db:/home/aeternity/node/data/mnesia
+      # - node1_db:/home/aeternity/node/data/mnesia
 
   node2:
     image: aeternity/aeternity:v5.0.2
@@ -23,7 +23,7 @@ services:
     volumes:
       - ./docker/aeternity_node2_mean15.yaml:/home/aeternity/aeternity.yaml
       - ./docker/keys/node2:/home/aeternity/node/keys
-      - node2_db:/home/aeternity/node/data/mnesia
+      # - node2_db:/home/aeternity/node/data/mnesia
 
   node3:
     image: aeternity/aeternity:v5.0.2
@@ -35,7 +35,7 @@ services:
     volumes:
       - ./docker/aeternity_node3_mean15.yaml:/home/aeternity/aeternity.yaml
       - ./docker/keys/node3:/home/aeternity/node/keys
-      - node3_db:/home/aeternity/node/data/mnesia
+      # - node3_db:/home/aeternity/node/data/mnesia
 
   proxy:
     image: nginx:1.13.8

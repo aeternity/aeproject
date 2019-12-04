@@ -65,8 +65,8 @@ describe("AEproject Node and Compiler Tests", async () => {
             let client = await utils.getClient(network);
             await waitUntilFundedBlocks(client, isImageRunningOpts)
             for (let wallet in defaultWallets) {
-                let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
-                assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
+                let recipientBalance = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                assert.isAbove(Number(recipientBalance), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
             }
         })
 
