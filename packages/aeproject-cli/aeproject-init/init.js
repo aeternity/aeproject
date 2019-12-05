@@ -111,6 +111,10 @@ const uninstallForgaeDependencies = async () => {
 
     match = forgaeRgx.exec(forgaeDependencies);
 
+    if (!match) {
+        return
+    }
+
     if (match[1] == 'forgae-project') {
         match = forgaeRgx.exec(forgaeDependencies)
     }
