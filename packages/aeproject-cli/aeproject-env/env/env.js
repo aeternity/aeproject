@@ -99,9 +99,9 @@ class Env extends EnvService {
             let startingNodeSpawn = super.start();
 
             await super.toggleLoader(startingNodeSpawn, dockerImage)
-
+            
             super.printSuccessMsg()
-
+            
             if (option.windows) {
                 let dockerIp = super.removePrefixFromIp(option.dockerIp);
                 await super.fundWallets(dockerIp);
