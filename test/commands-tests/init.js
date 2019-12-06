@@ -40,6 +40,38 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
     }
 };
 
+// async function executeAndPassInput (cli, command, args = [], options = {}) {
+//     let timeout = 0
+//     let result = '';
+//     var child = spawn(cli, [command, ...args], options);
+
+//     child.stdout.on('data', (data) => {
+
+//         result += data;
+
+//         if (data.includes('Do you want to overwrite')) {
+//             timeout += 100
+
+//             setTimeout(() => {
+//                 child.stdin.write('y\n')
+
+//             }, timeout);
+//         }
+//     });
+
+//     child.on('close', function (err, data) {
+//         if (err) {
+//             console.log("Error executing cmd: ", err);
+//             return err
+//         } else {
+//             child.stdin.end();
+//         }
+//     });
+
+//     await child;
+//     return result;
+// }
+
 async function executeAndPassInput (cli, command, args = [], options = {}) {
     let timeout = 0
     let result = '';
@@ -47,7 +79,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 
     child.stdout.on('data', (data) => {
 
-        result += data;
+        result += data.toString('utf-8');
 
         if (data.includes('Do you want to overwrite')) {
             timeout += 100
@@ -225,7 +257,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it.only('Should update project successfully', async () => {
+    it.only('Should update project successfully', async (done) => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
@@ -288,6 +320,8 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
+    
+        done();
     });
 
     xit('Should terminate init process and re-inited project successfully', async () => {
