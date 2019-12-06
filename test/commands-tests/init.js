@@ -226,7 +226,7 @@ describe.only('AEproject Init', () => {
     })
 
     it.only('Should update project successfully', async () => {
-        // await execute(constants.cliCommands.INIT, [], executeOptions)
+        await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
         const editedNodeContent = "edited node content"
