@@ -111,12 +111,12 @@ const uninstallForgaeDependencies = async () => {
 
     match = forgaeRgx.exec(forgaeDependencies);
 
-    if (match && match[1] == 'forgae-project') {
-        match = forgaeRgx.exec(forgaeDependencies)
-    }
-
     if (!match) {
         return
+    }
+
+    if (match[1] == 'forgae-project') {
+        match = forgaeRgx.exec(forgaeDependencies)
     }
 
     print(`===== Removing ForgAE deprecated dependencies =====`);
