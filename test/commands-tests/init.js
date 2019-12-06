@@ -75,7 +75,9 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 async function executeAndPassInput (cli, command, args = [], options = {}) {
     let localtimeout = 0
     let result = '';
-    var child = spawn(cli, [command, ...args], options);
+    var child = spawn(cli, [command, ...args], {
+        cwd: options.cwd
+    });
     // var child = exec('aeproject init --update', {
     //     stdio: 'inherit'
     // });
@@ -175,8 +177,8 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it('Should update project successfully', async () => {
-        // await execute(constants.cliCommands.INIT, [], executeOptions)
+    it.only('Should update project successfully', async () => {
+        await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
         const editedNodeContent = "edited node content"
