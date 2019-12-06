@@ -40,7 +40,7 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 };
 
 async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let localtimeout = 0
+    let timeout = 0
     let result = '';
     var child = spawn(cli, [command, ...args], options);
 
@@ -49,12 +49,12 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         result += data;
 
         if (data.includes('Do you want to overwrite')) {
-            localtimeout += 100
+            timeout += 100
 
             setTimeout(() => {
                 child.stdin.write('y\n')
 
-            }, localtimeout);
+            }, timeout);
         }
     });
 
