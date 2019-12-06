@@ -72,40 +72,88 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 //     return result;
 // }
 
+function spawnProcess (cmd) {
+    return spawnLinuxProcess(cmd);
+}
+
+function spawnLinuxProcess (cmd) {
+    let cmdParts = cmd.split(/\s+(?=(?:[^\'"]*[\'"][^\'"]*[\'"])*[^\'"]*$)/g);
+    console.log('1 -> ', cmdParts);
+    
+    let cmdCommands = [];
+    for (let command of cmdParts) {
+        if (command.startsWith('"') && command.endsWith('"')) {
+            command = command.substring(1, command.length - 1);
+        }
+        cmdCommands.push(command);
+    }
+    console.log('2 -> cmdCommands -> ', cmdCommands);
+    console.log('3 -> cmdCommands.slice(1) -> ', cmdCommands.slice(1));
+    
+    return spawn('aeproject', ['init', '--update']);
+}
+
 async function executeAndPassInput (cli, command, args = [], options = {}) {
+    let cliCommand = 'aeproject init --update'
     let localtimeout = 0
     let result = '';
-    var child = spawn(cli, [command, ...args], {
-        cwd: options.cwd
-    });
-    // var child = exec('aeproject init --update', {
-    //     stdio: 'inherit'
+    // var child = spawn(cli, [command, ...args], {
+    //     cwd: options.cwd
     // });
 
     return new Promise((resolve, reject) => {
-        child.stdout.on('data', (data) => {
+        let process = null;
 
-            result += data;
+        try {
+            process = spawnProcess(cliCommand);
+            console.log('4 -> process ', process);
+            
+        } catch (e) {
+            console.error(`Error trying to execute command ${ cliCommand } in directory ${ cliCommand }`);
+            console.error(e);
+            console.log('error', e.message);
+            console.log('Finished');
+            reject(new Error(e));
+        }
 
+        process.stdout.on('data', (data) => {
+
+            result += data.toString('utf-8');
+            console.log('5 -> result ', result);
+            
             if (data.includes('Do you want to overwrite')) {
+                console.log('6. -> data ', data.toString('utf-8'));
+                
                 localtimeout += 100
 
                 setTimeout(() => {
-                    child.stdin.write('y\n')
-
+                    process.stdin.write('y\n')
                 }, localtimeout);
             }
         });
 
-        child.on('close', async function (err, data) {
+        process.stderr.on('data', function (data) {
+            console.log('7 -> data', data);
+            
+            const err = data.toString('utf-8');
+            return resolve(err);
+        })
+
+        process.on('close', async function (err, data) {
             if (err) {
                 console.log("Error executing cmd: ", err);
                 reject(err);
             } else {
-                // console.log("data:")
+                const processRespond = {
+                    process: process,
+                    output: data,
+                    result: true
+                };
+
+                console.log("8 - > data: ", result)
                 // console.log(result)
                 // resolve(data);
-                resolve(data);
+                resolve(processRespond);
                 // result
                 // resolve(result);
             }
@@ -178,7 +226,7 @@ describe.only('AEproject Init', () => {
     })
 
     it.only('Should update project successfully', async () => {
-        await execute(constants.cliCommands.INIT, [], executeOptions)
+        // await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
         const editedNodeContent = "edited node content"
@@ -186,9 +234,6 @@ describe.only('AEproject Init', () => {
         const editedDockerConfigContent = "edited content in docker config"
         // const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
         
-        console.log('executeOpts --> ', executeOptions.cwd);
-        console.log('require --> executeOptions.cwd + constants.testsFiles.packageJson', executeOptions.cwd);
-
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
 
@@ -199,7 +244,10 @@ describe.only('AEproject Init', () => {
         
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
+        
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
+        console.log('9 -> result ', result);
+        
         // assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
         // assert
@@ -289,7 +337,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    after(async () => {
-        fs.removeSync(`.${ constants.initTestsFolderPath }`);
-    })
+    // after(async () => {
+    //     fs.removeSync(`.${ constants.initTestsFolderPath }`);
+    // })
 })
