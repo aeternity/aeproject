@@ -10,6 +10,8 @@
     "unlink": "cd packages/aeproject-cli && yarn unlink && cd .. && cd aeproject-lib && yarn unlink && yarn unlink aeproject-config && yarn unlink aeproject-utils && yarn unlink aeproject-logger && cd .. && cd aeproject-config && yarn unlink && cd .. && cd aeproject-utils && yarn unlink && yarn unlink aeproject-logger && cd .. && cd aeproject-logger && yarn unlink"
   },
   "dependencies": {
+    "@aeternity/aepp-sdk": "6.0.0",
+    "aeproject-lib": "^2.0.1",
     "esm": "^3.0.77",
     "fs-extra": "^7.0.1",
     "prompts": "^2.2.1"
@@ -32,6 +34,6 @@
     "shelljs": "^0.8.2",
     "sinon": "^7.1.1",
     "typescript": "^3.5.2",
-    "yarn": "^1.13.0"
+    "yarn": "1.21.0"
   }
 }
