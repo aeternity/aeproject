@@ -40,37 +40,37 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
     }
 };
 
-// async function executeAndPassInput (cli, command, args = [], options = {}) {
-//     let timeout = 0
-//     let result = '';
-//     var child = spawn(cli, [command, ...args], options);
+async function executeAndPassInput (cli, command, args = [], options = {}) {
+    let timeout = 0
+    let result = '';
+    var child = spawn(cli, [command, ...args], options);
 
-//     child.stdout.on('data', (data) => {
+    child.stdout.on('data', (data) => {
 
-//         result += data;
+        result += data;
 
-//         if (data.includes('Do you want to overwrite')) {
-//             timeout += 100
+        if (data.includes('Do you want to overwrite')) {
+            timeout += 100
 
-//             setTimeout(() => {
-//                 child.stdin.write('y\n')
+            setTimeout(() => {
+                child.stdin.write('y\n')
 
-//             }, timeout);
-//         }
-//     });
+            }, timeout);
+        }
+    });
 
-//     child.on('close', function (err, data) {
-//         if (err) {
-//             console.log("Error executing cmd: ", err);
-//             return err
-//         } else {
-//             child.stdin.end();
-//         }
-//     });
+    child.on('close', function (err, data) {
+        if (err) {
+            console.log("Error executing cmd: ", err);
+            return err
+        } else {
+            child.stdin.end();
+        }
+    });
 
-//     await child;
-//     return result;
-// }
+    await child;
+    return result;
+}
 
 function spawnProcess (cmd) {
     return spawnLinuxProcess(cmd);
@@ -93,73 +93,73 @@ function spawnLinuxProcess (cmd) {
     return spawn('aeproject', ['init', '--update']);
 }
 
-async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let cliCommand = 'aeproject init --update'
-    let localtimeout = 0
-    let result = '';
-    // var child = spawn(cli, [command, ...args], {
-    //     cwd: options.cwd
-    // });
+// async function executeAndPassInput (cli, command, args = [], options = {}) {
+//     let cliCommand = 'aeproject init --update'
+//     let localtimeout = 0
+//     let result = '';
+//     // var child = spawn(cli, [command, ...args], {
+//     //     cwd: options.cwd
+//     // });
 
-    return new Promise((resolve, reject) => {
-        let process = null;
+//     return new Promise((resolve, reject) => {
+//         let process = null;
 
-        try {
-            process = spawnProcess(cliCommand);
-            console.log('4 -> process ', process);
+//         try {
+//             process = spawnProcess(cliCommand);
+//             console.log('4 -> process ', process);
             
-        } catch (e) {
-            console.error(`Error trying to execute command ${ cliCommand } in directory ${ cliCommand }`);
-            console.error(e);
-            console.log('error', e.message);
-            console.log('Finished');
-            reject(new Error(e));
-        }
+//         } catch (e) {
+//             console.error(`Error trying to execute command ${ cliCommand } in directory ${ cliCommand }`);
+//             console.error(e);
+//             console.log('error', e.message);
+//             console.log('Finished');
+//             reject(new Error(e));
+//         }
 
-        process.stdout.on('data', (data) => {
+//         process.stdout.on('data', (data) => {
 
-            result += data.toString('utf-8');
-            console.log('5 -> result ', result);
+//             result += data.toString('utf-8');
+//             console.log('5 -> result ', result);
             
-            if (data.includes('Do you want to overwrite')) {
-                console.log('6. -> data ', data.toString('utf-8'));
+//             if (data.includes('Do you want to overwrite')) {
+//                 console.log('6. -> data ', data.toString('utf-8'));
                 
-                localtimeout += 100
+//                 localtimeout += 100
 
-                setTimeout(() => {
-                    process.stdin.write('y\n')
-                }, localtimeout);
-            }
-        });
+//                 setTimeout(() => {
+//                     process.stdin.write('y\n')
+//                 }, localtimeout);
+//             }
+//         });
 
-        process.stderr.on('data', function (data) {
-            console.log('7 -> data', data);
+//         process.stderr.on('data', function (data) {
+//             console.log('7 -> data', data);
             
-            const err = data.toString('utf-8');
-            return resolve(err);
-        })
+//             const err = data.toString('utf-8');
+//             return resolve(err);
+//         })
 
-        process.on('close', async function (err, data) {
-            if (err) {
-                console.log("Error executing cmd: ", err);
-                reject(err);
-            } else {
-                const processRespond = {
-                    process: process,
-                    output: data,
-                    result: true
-                };
+//         process.on('close', async function (err, data) {
+//             if (err) {
+//                 console.log("Error executing cmd: ", err);
+//                 reject(err);
+//             } else {
+//                 const processRespond = {
+//                     process: process,
+//                     output: data,
+//                     result: true
+//                 };
 
-                console.log("8 - > data: ", result)
-                // console.log(result)
-                // resolve(data);
-                resolve(processRespond);
-                // result
-                // resolve(result);
-            }
-        });
-    });
-}
+//                 console.log("8 - > data: ", result)
+//                 // console.log(result)
+//                 // resolve(data);
+//                 resolve(processRespond);
+//                 // result
+//                 // resolve(result);
+//             }
+//         });
+//     });
+// }
 
 describe.only('AEproject Init', () => {
     before(async () => {
@@ -232,7 +232,7 @@ describe.only('AEproject Init', () => {
         const editedNodeContent = "edited node content"
         const editedCompilerContent = "edited compiler content"
         const editedDockerConfigContent = "edited content in docker config"
-        // const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
+        const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
         
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
@@ -248,7 +248,7 @@ describe.only('AEproject Init', () => {
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
         console.log('9 -> result ', result);
         
-        // assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
+        assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
         // assert
         let editedDockerComposeNodeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
