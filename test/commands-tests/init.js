@@ -108,7 +108,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 }
 
 describe.only('AEproject Init', () => {
-    beforeEach(async () => {
+    before(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
 
