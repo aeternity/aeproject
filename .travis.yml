@@ -23,7 +23,7 @@ install:
 services:
   - docker
 script:
-  - npm run aetest
+  - npm run test
 
 env:
   - DOCKER_COMPOSE_VERSION=1.20.0
