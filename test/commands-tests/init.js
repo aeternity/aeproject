@@ -71,7 +71,7 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 //     return result;
 // }
 
-async function executeAndPassInput(cli, command, args = [], options = {}) {
+async function executeAndPassInput (cli, command, args = [], options = {}) {
     let localtimeout = 0
     let result = '';
     var child = spawn(cli, [command, ...args], options);
@@ -155,7 +155,7 @@ describe.only('AEproject Init', () => {
     })
 
     it("Should NOT update aeproject to next major version", async () => {
-        await execute(constants.cliCommands.INIT, [], executeOptions);
+        // await execute(constants.cliCommands.INIT, [], executeOptions);
 
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^1.0.3";
@@ -171,8 +171,8 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it.only('Should update project successfully', async () => {
-        await execute(constants.cliCommands.INIT, [], executeOptions)
+    it('Should update project successfully', async () => {
+        // await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
         const editedNodeContent = "edited node content"
@@ -182,7 +182,6 @@ describe.only('AEproject Init', () => {
         
         console.log('executeOpts --> ', executeOptions.cwd);
         console.log('require --> executeOptions.cwd + constants.testsFiles.packageJson', executeOptions.cwd);
-        
 
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
@@ -237,7 +236,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    it('Should terminate init process and re-inited project successfully', async () => {
+    xit('Should terminate init process and re-inited project successfully', async () => {
 
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
@@ -284,7 +283,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    afterEach(async () => {
-        fs.removeSync(`.${constants.initTestsFolderPath}`);
+    after(async () => {
+        fs.removeSync(`.${ constants.initTestsFolderPath }`);
     })
 })
