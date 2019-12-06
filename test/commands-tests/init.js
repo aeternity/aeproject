@@ -15,7 +15,8 @@ let executeOptions = {
 chai.use(chaiFiles);
 
 const {
-    spawn
+    spawn,
+    exec
 } = require('promisify-child-process');
 
 const executeAndKill = async (cli, command, args = [], options = {}) => {
@@ -74,7 +75,8 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 async function executeAndPassInput (cli, command, args = [], options = {}) {
     let localtimeout = 0
     let result = '';
-    var child = spawn(cli, [command, ...args], options);
+    // var child = spawn(cli, [command, ...args], options);
+    var child = exec('aeproject init --update', options);
 
     return new Promise((resolve, reject) => {
         child.stdout.on('data', (data) => {
