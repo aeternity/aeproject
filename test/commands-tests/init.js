@@ -180,6 +180,10 @@ describe.only('AEproject Init', () => {
         const editedDockerConfigContent = "edited content in docker config"
         const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
         
+        console.log('executeOpts --> ', executeOptions.cwd);
+        console.log('require --> executeOptions.cwd + constants.testsFiles.packageJson', executeOptions.cwd);
+        
+
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
 
