@@ -62,7 +62,7 @@ const createAEprojectProjectStructure = async (shape) => {
 const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     print(`===== Updating AEproject files =====`);
 
-    // await setupDocker();
+    await setupDocker();
     await installAEproject();
     await installAeppSDK(_sdkVersion);
     await installYarn();
@@ -94,8 +94,6 @@ const installAeppSDK = async (_sdkVersion = '') => {
 }
 
 const installAEproject = async () => {
-    print(`===== Installing AEproject locally =====`);
-    print(`===== Installing AEproject 3o4ye2i9u =====`);
     print(`===== Installing AEproject locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-lib`, '--ignore-scripts', '--no-bin-links']);
 }

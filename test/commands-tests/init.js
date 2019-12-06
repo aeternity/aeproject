@@ -39,34 +39,37 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
     }
 };
 
-const executeAndPassInput = async (cli, command, args = [], options = {}) => {
-    try {
-        const child = spawn(cli, [command, ...args], options);
+async function executeAndPassInput (cli, command, args = [], options = {}) {
+    let localtimeout = 0
+    let result = '';
+    var child = spawn(cli, [command, ...args], options);
 
-        // pass needed input to 'terminal'
-        child.stdin.write('y\n');
+    child.stdout.on('data', (data) => {
 
-        child.stdout.on('data', function (data) {
-            // console.log('stdout: ' + data);
-            
-        });
+        result += data;
 
-        child.stdin.end();
+        if (data.includes('Do you want to overwrite')) {
+            localtimeout += 100
 
-        let awaitedProcess = await child;
-        let result = awaitedProcess.stdout.toString('utf8');
-        result += awaitedProcess.stderr.toString('utf8');
+            setTimeout(() => {
+                child.stdin.write('y\n')
 
-        return result;
-    } catch (e) {
-        console.log(e)
+            }, localtimeout);
+        }
+    });
 
-        let result = e.stdout ? e.stdout.toString('utf8') : e.message;
-        result += e.stderr ? e.stderr.toString('utf8') : e.message;
+    child.on('close', function (err, data) {
+        if (err) {
+            console.log("Error executing cmd: ", err);
+            return err
+        } else {
+            child.stdin.end();
+        }
+    });
 
-        return result;
-    }
-};
+    await child;
+    return result;
+}
 
 describe.only('AEproject Init', () => {
     beforeEach(async () => {
@@ -98,7 +101,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    it("Should update aeproject minor version successfully", async () => {
+    xit("Should update aeproject minor version successfully", async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions);
 
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
@@ -133,30 +136,46 @@ describe.only('AEproject Init', () => {
     })
 
     it('Should update project successfully', async () => {
-
-        // Arrange
-        const editedContent = "edited content"
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
+        // Arrange
+        const editedNodeContent = "edited node content"
+        const editedCompilerContent = "edited compiler content"
+        const editedDockerConfigContent = "edited content in docker config"
+        const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
+        
+        let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+        projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
+
         // Act
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedContent)
-
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
+        
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
+        
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
-        console.log(result);
+        assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
-        // //assert
-        let editedDockerComposeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
+        // assert
+        let editedDockerComposeNodeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
+        let editedDockerComposeCompilerYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, 'utf8')
+        let editedDockerAeNodeYaml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, 'utf8')
+
+        // clear cache of the old require, as once it caches, it will be referred to the old one in memory
+        delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
+        let updatedProjectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+        const aeprojectLibVersionInProject = updatedProjectPackageJson.dependencies['aeproject-lib'];
 
         const sdkVersion = utilsPackageJson.dependencies['@aeternity/aepp-sdk'];
-        const projectPackageJson = require("./initTests/package.json");
-
         const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk'];
 
-        assert.notEqual(editedDockerComposeYml, editedContent);
-        assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
+        assert.notEqual(editedDockerComposeNodeYml, editedNodeContent);
+        assert.notEqual(editedDockerComposeCompilerYml, editedCompilerContent);
+        assert.notEqual(editedDockerAeNodeYaml, editedDockerConfigContent);
 
-        //TODO 
-        //INSERT THE TEST WHERE WE CHECK IF AEPROJECT-LIB MINOR VERSION IS UPDATED HERE!!!!
+        assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
+        assert.isTrue(aeprojectLibVersionInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
 
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");

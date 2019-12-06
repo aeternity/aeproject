@@ -60,6 +60,7 @@
 		"packageLockJson": "/package-lock.json",
 		"dockerComposeNodeYml": "/docker-compose.yml",
 		"dockerComposeCompilerYml": "/docker-compose.compiler.yml",
+		"aeNodeOneConfig": "/docker/aeternity_node1_mean15.yaml",
 		"testContractPath": "/test/exampleTest.js",
 		"deployScriptsPath": "/deployment/deploy.js",
 		"contractsPath": "/contracts/ExampleContract.aes",
