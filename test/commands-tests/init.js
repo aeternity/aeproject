@@ -39,36 +39,72 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
     }
 };
 
-async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let timeout = 0
+// async function executeAndPassInput (cli, command, args = [], options = {}) {
+//     let timeout = 0
+//     let result = '';
+//     var child = spawn(cli, [command, ...args], options);
+
+//     child.stdout.on('data', (data) => {
+
+//         result += data;
+
+//         if (data.includes('Do you want to overwrite')) {
+//             timeout += 100
+
+//             setTimeout(() => {
+//                 child.stdin.write('y\n')
+
+//             }, timeout);
+//         }
+//     });
+
+//     child.on('close', function (err, data) {
+//         if (err) {
+//             console.log("Error executing cmd: ", err);
+//             return err
+//         } else {
+//             child.stdin.end();
+//         }
+//     });
+
+//     await child;
+//     return result;
+// }
+
+async function executeAndPassInput(cli, command, args = [], options = {}) {
+    let localtimeout = 0
     let result = '';
     var child = spawn(cli, [command, ...args], options);
 
-    child.stdout.on('data', (data) => {
+    return new Promise((resolve, reject) => {
+        child.stdout.on('data', (data) => {
 
-        result += data;
+            result += data;
 
-        if (data.includes('Do you want to overwrite')) {
-            timeout += 100
+            if (data.includes('Do you want to overwrite')) {
+                localtimeout += 100
 
-            setTimeout(() => {
-                child.stdin.write('y\n')
+                setTimeout(() => {
+                    child.stdin.write('y\n')
 
-            }, timeout);
-        }
+                }, localtimeout);
+            }
+        });
+
+        child.on('close', async function (err, data) {
+            if (err) {
+                console.log("Error executing cmd: ", err);
+                reject(err);
+            } else {
+                // console.log("data:")
+                // console.log(result)
+                // resolve(data);
+                await data;
+                // result
+                resolve(result);
+            }
+        });
     });
-
-    child.on('close', function (err, data) {
-        if (err) {
-            console.log("Error executing cmd: ", err);
-            return err
-        } else {
-            child.stdin.end();
-        }
-    });
-
-    await child;
-    return result;
 }
 
 describe.only('AEproject Init', () => {
