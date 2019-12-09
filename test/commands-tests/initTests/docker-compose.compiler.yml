@@ -1,0 +1,7 @@
+version: '3'
+services:
+  compiler:
+    hostname: compiler
+    image: aeternity/aesophia_http:v4.0.0
+    ports:
+       - "3080:3080"

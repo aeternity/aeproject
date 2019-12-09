@@ -106,6 +106,10 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
     // });
 
     await child;
+
+    child.kill('SIGINT');
+
+
     return child
 }
 
