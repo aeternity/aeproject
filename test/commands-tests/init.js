@@ -96,17 +96,17 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             result += data;
             console.log(data.toString('utf8'));
             
-            if (data.includes('Do you want to overwrite')) {
-                setTimeout(() => {
-                    console.log('timeout');
-                    console.log(timeout);
-                    console.log('-------');
+            // if (data.includes('Do you want to overwrite')) {
+            //     setTimeout(() => {
+            //         console.log('timeout');
+            //         console.log(timeout);
+            //         console.log('-------');
 
-                    child.stdin.write('y\n');
-                    timeout += 200;
+            //         child.stdin.write('y\n');
+            //         timeout += 100;
 
-                }, timeout);
-            }
+            //     }, timeout);
+            // }
 
             if (data.includes('AEproject was successfully updated')) {
                 resolve(result)
@@ -114,20 +114,22 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         });
 
         if (true) {
-            
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, 1100);
         }
 
-        // if (true) {
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, 1200);
-        // }
+        if (true) {
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, 1200);
+        }
 
-        // if (true) {
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, 1300);
-        // }
+        if (true) {
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, 1300);
+        }
 
     });
 }
@@ -308,7 +310,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    after(async () => {
-        fs.removeSync(`.${ constants.initTestsFolderPath }`);
-    })
+    // after(async () => {
+    //     fs.removeSync(`.${ constants.initTestsFolderPath }`);
+    // })
 })
