@@ -40,39 +40,6 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
     }
 };
 // WORKING
-async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let timeout = 0
-    let result = '';
-    var child = spawn(cli, [command, ...args], options);
-
-    child.stdout.on('data', (data) => {
-
-        result += data;
-
-        if (data.includes('Do you want to overwrite')) {
-            timeout += 100
-
-            setTimeout(() => {
-                child.stdin.write('y\n')
-
-            }, timeout);
-        }
-    });
-
-    child.on('close', function (err, data) {
-        if (err) {
-            console.log("Error executing cmd: ", err);
-            return err
-        } else {
-            child.stdin.end();
-        }
-    });
-
-    await child;
-    return result;
-}
-
-// WORKING
 // async function executeAndPassInput (cli, command, args = [], options = {}) {
 //     let timeout = 0
 //     let result = '';
@@ -80,7 +47,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 
 //     child.stdout.on('data', (data) => {
 
-//         result += data.toString('utf-8');
+//         result += data;
 
 //         if (data.includes('Do you want to overwrite')) {
 //             timeout += 100
@@ -92,19 +59,55 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 //         }
 //     });
 
-//     child.on('close', function (err, data) {
-//         if (err) {
-//             console.log("Error executing cmd: ", err);
-//             return err
-//         } else {
-//             console.log('in the close event')
-//             child.stdin.end();
-//         }
-//     });
+//     // child.on('close', function (err, data) {
+//     //     if (err) {
+//     //         console.log("Error executing cmd: ", err);
+//     //         return err
+//     //     } else {
+//     //         child.stdin.end();
+//     //     }
+//     // });
 
 //     await child;
-//     return child
+//     return result;
+
+//     //     await child;
+//     //     return child
 // }
+
+// WORKING
+async function executeAndPassInput (cli, command, args = [], options = {}) {
+    let timeout = 0
+    let result = '';
+    var child = spawn(cli, [command, ...args], options);
+
+    child.stdout.on('data', (data) => {
+
+        result += data.toString('utf-8');
+
+        if (data.includes('Do you want to overwrite')) {
+            timeout += 100
+
+            setTimeout(() => {
+                child.stdin.write('y\n')
+
+            }, timeout);
+        }
+    });
+
+    // child.on('close', function (err, data) {
+    //     if (err) {
+    //         console.log("Error executing cmd: ", err);
+    //         return err
+    //     } else {
+    //         console.log('in the close event')
+    //         child.stdin.end();
+    //     }
+    // });
+
+    await child;
+    return child
+}
 
 function spawnProcess (cmd) {
     return spawnLinuxProcess(cmd);
