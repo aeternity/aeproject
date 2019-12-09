@@ -77,46 +77,76 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 
 // WORKING
 async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let timeout = 0
+    let localtimeout = 0
     let result = '';
-    var child = spawn(cli, [command, ...args], options);
+    // var child = spawn(cli, [command, ...args], options);
 
-    child.stdout.on('data', (data) => {
+    return new Promise((resolve, reject) => {
 
-        result += data.toString('utf-8');
-
-        if (data.includes('Do you want to overwrite')) {
-            timeout += 100
-
-            setTimeout(() => {
-                child.stdin.write('y\n')
-
-            }, timeout);
+        try {
+            var child = spawn(cli, [command, ...args], options);
+        } catch (e) {
+            console.error(`Error trying to execute command ${cmd} in directory ${dir}`);
+            console.error(e);
+            console.log('error', e.message);
+            console.log('Finished');
+            reject(new Error(e));
         }
+        child.stdout.on('data', (data) => {
+
+            result += data;
+            console.log('data');
+            console.log(data.toString('utf8'));
+            
+            // if (data.includes('Do you want to overwrite')) {
+            //     localtimeout += 100
+
+            //     setTimeout(() => {
+            //         child.stdin.write('y\n')
+
+            //     }, localtimeout);
+            // }
+
+            if (data.includes('AEproject was successfully updated')) {
+                const processRespond = {
+                    process: child,
+                    output: 'AEproject was successfully updated',
+                    result: true
+                };
+
+                resolve(processRespond);
+            }
+        });
+
+        if (true) {
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, 1100);
+        }
+
+        if (true) {
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, 1200);
+        }
+
+        if (true) {
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, 1300);
+        }
+
+        // child.on('close', function (err, data) {
+        //     if (err) {
+        //         console.log("Error executing cmd: ", err);
+        //         reject(err);
+        //     } else {
+        //         console.log("data:")
+        //         console.log(result)
+        //         resolve(data);
+        //     }
+        // });
     });
-
-    child.stderr.on('data', function(data) {
-        console.log('in the error');
-        
-        console.log(data.toString('utf8'))
-    })
-
-    // child.on('close', function (err, data) {
-    //     if (err) {
-    //         console.log("Error executing cmd: ", err);
-    //         return err
-    //     } else {
-    //         console.log('in the close event')
-    //         child.stdin.end();
-    //     }
-    // });
-
-    await child;
-
-    // child.kill();
-
-
-    return child
 }
 
 function spawnProcess (cmd) {
@@ -291,7 +321,6 @@ describe.only('AEproject Init', () => {
         
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
-        
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
         console.log('result -> ', result);
         
@@ -335,7 +364,6 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
-    
         
     });
 
