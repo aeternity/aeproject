@@ -77,14 +77,14 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 
 // WORKING
 async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let localtimeout = 0
+    // let localtimeout = 0
     let result = '';
     // var child = spawn(cli, [command, ...args], options);
 
     return new Promise((resolve, reject) => {
-
+        let timeout = 0;
         try {
-            var child = spawn(cli, [command, ...args], options);
+            var child = spawn(cli, [command, args[0]], options);
         } catch (e) {
             console.error(`Error trying to execute command ${ cmd } in directory ${ dir }`);
             console.error(e);
@@ -109,23 +109,32 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             }
         });
 
-        if (true) {
+        for (let index = 1; index < args.length; index++) {
+            console.log(args[index]);
             setTimeout(() => {
                 child.stdin.write('y\n');
-            }, 1000);
+            }, timeout);
+
+            timeout += 2000;
         }
 
-        if (true) {
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, 2000);
-        }
+        // if (true) {
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, 1000);
+        // }
 
-        if (true) {
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, 3000);
-        }
+        // if (true) {
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, 2000);
+        // }
+
+        // if (true) {
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, 3000);
+        // }
 
     });
 }
@@ -213,7 +222,7 @@ describe.only('AEproject Init', () => {
         
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
-        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
         console.log('result -> ', result);
         
         // assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
@@ -306,7 +315,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    // after(async () => {
-    //     fs.removeSync(`.${ constants.initTestsFolderPath }`);
-    // })
+    after(async () => {
+        fs.removeSync(`.${ constants.initTestsFolderPath }`);
+    })
 })
