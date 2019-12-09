@@ -180,7 +180,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it.only('Should update project successfully', async () => {
+    it('Should update project successfully', async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
@@ -263,8 +263,6 @@ describe.only('AEproject Init', () => {
         await executeAndKill('aeproject', constants.cliCommands.INIT, [], executeOptions)
 
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
-        console.log('result')
-        console.log(result)
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
 
         for (let line of expectedResult) {
