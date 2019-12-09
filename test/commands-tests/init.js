@@ -95,6 +95,12 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         }
     });
 
+    child.stderr.on('data', function(data) {
+        console.log('in the error');
+        
+        console.log(data.toString('utf8'))
+    })
+
     // child.on('close', function (err, data) {
     //     if (err) {
     //         console.log("Error executing cmd: ", err);
