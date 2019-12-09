@@ -95,26 +95,17 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         child.stdout.on('data', (data) => {
 
             result += data;
-            console.log('data');
             console.log(data.toString('utf8'));
             
-            // if (data.includes('Do you want to overwrite')) {
-            //     localtimeout += 100
-
-            //     setTimeout(() => {
-            //         child.stdin.write('y\n')
-
-            //     }, localtimeout);
-            // }
-
             if (data.includes('AEproject was successfully updated')) {
-                const processRespond = {
-                    process: child,
-                    output: 'AEproject was successfully updated',
-                    result: true
-                };
+                // const processRespond = {
+                //     process: child,
+                //     output: result,
+                //     result: true
+                // };
 
-                resolve(processRespond);
+                // resolve(processRespond);
+                resolve(result)
             }
         });
 
@@ -136,107 +127,8 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             }, 1300);
         }
 
-        // child.on('close', function (err, data) {
-        //     if (err) {
-        //         console.log("Error executing cmd: ", err);
-        //         reject(err);
-        //     } else {
-        //         console.log("data:")
-        //         console.log(result)
-        //         resolve(data);
-        //     }
-        // });
     });
 }
-
-function spawnProcess (cmd) {
-    return spawnLinuxProcess(cmd);
-}
-
-function spawnLinuxProcess (cmd) {
-    let cmdParts = cmd.split(/\s+(?=(?:[^\'"]*[\'"][^\'"]*[\'"])*[^\'"]*$)/g);
-    console.log('1 -> ', cmdParts);
-    
-    let cmdCommands = [];
-    for (let command of cmdParts) {
-        if (command.startsWith('"') && command.endsWith('"')) {
-            command = command.substring(1, command.length - 1);
-        }
-        cmdCommands.push(command);
-    }
-    console.log('2 -> cmdCommands -> ', cmdCommands);
-    console.log('3 -> cmdCommands.slice(1) -> ', cmdCommands.slice(1));
-    
-    return spawn('aeproject', ['init', '--update']);
-}
-
-// async function executeAndPassInput (cli, command, args = [], options = {}) {
-//     let cliCommand = 'aeproject init --update'
-//     let localtimeout = 0
-//     let result = '';
-//     // var child = spawn(cli, [command, ...args], {
-//     //     cwd: options.cwd
-//     // });
-
-//     return new Promise((resolve, reject) => {
-//         let process = null;
-
-//         try {
-//             process = spawnProcess(cliCommand);
-//             console.log('4 -> process ', process);
-            
-//         } catch (e) {
-//             console.error(`Error trying to execute command ${ cliCommand } in directory ${ cliCommand }`);
-//             console.error(e);
-//             console.log('error', e.message);
-//             console.log('Finished');
-//             reject(new Error(e));
-//         }
-
-//         process.stdout.on('data', (data) => {
-
-//             result += data.toString('utf-8');
-//             console.log('5 -> result ', result);
-            
-//             if (data.includes('Do you want to overwrite')) {
-//                 console.log('6. -> data ', data.toString('utf-8'));
-                
-//                 localtimeout += 100
-
-//                 setTimeout(() => {
-//                     process.stdin.write('y\n')
-//                 }, localtimeout);
-//             }
-//         });
-
-//         process.stderr.on('data', function (data) {
-//             console.log('7 -> data', data);
-            
-//             const err = data.toString('utf-8');
-//             return resolve(err);
-//         })
-
-//         process.on('close', async function (err, data) {
-//             if (err) {
-//                 console.log("Error executing cmd: ", err);
-//                 reject(err);
-//             } else {
-//                 const processRespond = {
-//                     process: process,
-//                     output: data,
-//                     result: true
-//                 };
-
-//                 console.log("8 - > data: ", result)
-//                 // console.log(result)
-//                 // resolve(data);
-//                 resolve(processRespond);
-//                 // result
-//                 // resolve(result);
-//             }
-//         });
-//     });
-// }
 
 describe.only('AEproject Init', () => {
     before(async () => {
