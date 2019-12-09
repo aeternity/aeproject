@@ -22,9 +22,11 @@ install:
   - npm run develop
 services:
   - docker
+
+before_script:
+  - sleep 15
 script:
   - npm run test
-  - sleep 10
 
 env:
   - DOCKER_COMPOSE_VERSION=1.20.0
