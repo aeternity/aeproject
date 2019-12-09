@@ -107,7 +107,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 
     await child;
 
-    child.kill('SIGINT');
+    child.kill();
 
 
     return child
@@ -380,7 +380,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    // after(async () => {
-    //     fs.removeSync(`.${ constants.initTestsFolderPath }`);
-    // })
+    after(async () => {
+        fs.removeSync(`.${ constants.initTestsFolderPath }`);
+    })
 })
