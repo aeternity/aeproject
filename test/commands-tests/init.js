@@ -77,16 +77,14 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 
 // WORKING
 async function executeAndPassInput (cli, command, args = [], options = {}) {
-    // let localtimeout = 0
     let result = '';
-    // var child = spawn(cli, [command, ...args], options);
 
     return new Promise((resolve, reject) => {
         let timeout = 0;
         try {
             var child = spawn(cli, [command, args[0]], options);
         } catch (e) {
-            console.error(`Error trying to execute command ${ cmd } in directory ${ dir }`);
+            console.error(`Error trying to execute command ${ command }`);
             console.error(e);
             console.log('error', e.message);
             console.log('Finished');
@@ -95,58 +93,21 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         child.stdout.on('data', (data) => {
 
             result += data;
-            console.log(data.toString('utf8'));
 
             if (data.includes('AEproject was successfully updated')) {
-                // const processRespond = {
-                //     process: child,
-                //     output: result,
-                //     result: true
-                // };
-
-                // resolve(processRespond);
                 resolve(result)
             }
 
-            if (data.includes('Do you want to overwrite')) {
-
-                console.log('here');
-                
-                setTimeout(() => {
-                    child.stdin.write('y\n');
-                }, timeout);
-
-                timeout += 2000;
-            }
         });
 
-        // for (let index = 1; index < args.length; index++) {
-        //     console.log(args[index]);
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, timeout);
+        for (let index = 1; index < args.length; index++) {
+            console.log(args[index]);
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, timeout);
 
-        //     timeout += 2000;
-        // }
-
-        // if (true) {
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, 1000);
-        // }
-
-        // if (true) {
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, 2000);
-        // }
-
-        // if (true) {
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, 3000);
-        // }
-
+            timeout += 2000;
+        }
     });
 }
 
@@ -187,7 +148,7 @@ describe.only('AEproject Init', () => {
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
 
         await fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
-        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
 
         delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
         let updatedProjectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
@@ -204,7 +165,7 @@ describe.only('AEproject Init', () => {
         projectPackageJson['dependencies']['aeproject-lib'] = "^1.0.3";
 
         await fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
-        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE], executeOptions)
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
 
         delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
         let updatedProjectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
@@ -236,7 +197,7 @@ describe.only('AEproject Init', () => {
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
         console.log('result -> ', result);
         
-        // assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
+        assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
         // assert
         let editedDockerComposeNodeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
