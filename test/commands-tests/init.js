@@ -77,8 +77,9 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 
 // WORKING
 async function executeAndPassInput (cli, command, args = [], options = {}) {
+    let localtimeout = 0
     let result = '';
-    let timeout = 1000;
+    // var child = spawn(cli, [command, ...args], options);
 
     return new Promise((resolve, reject) => {
 
@@ -95,20 +96,15 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 
             result += data;
             console.log(data.toString('utf8'));
-            
-            // if (data.includes('Do you want to overwrite')) {
-            //     setTimeout(() => {
-            //         console.log('timeout');
-            //         console.log(timeout);
-            //         console.log('-------');
-
-            //         child.stdin.write('y\n');
-            //         timeout += 100;
-
-            //     }, timeout);
-            // }
 
             if (data.includes('AEproject was successfully updated')) {
+                // const processRespond = {
+                //     process: child,
+                //     output: result,
+                //     result: true
+                // };
+
+                // resolve(processRespond);
                 resolve(result)
             }
         });
@@ -116,19 +112,19 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         if (true) {
             setTimeout(() => {
                 child.stdin.write('y\n');
-            }, 1100);
+            }, 1000);
         }
 
         if (true) {
             setTimeout(() => {
                 child.stdin.write('y\n');
-            }, 1200);
+            }, 2000);
         }
 
         if (true) {
             setTimeout(() => {
                 child.stdin.write('y\n');
-            }, 1300);
+            }, 3000);
         }
 
     });
@@ -182,7 +178,7 @@ describe.only('AEproject Init', () => {
     })
 
     it("Should NOT update aeproject to next major version", async () => {
-        // await execute(constants.cliCommands.INIT, [], executeOptions);
+        await execute(constants.cliCommands.INIT, [], executeOptions);
 
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^1.0.3";
