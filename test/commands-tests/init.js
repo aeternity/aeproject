@@ -90,7 +90,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             console.log('Finished');
             reject(new Error(e));
         }
-        child.stdout.on('data', (data) => {
+        child.stdout.on('data', async (data) => {
 
             result += data;
 
@@ -98,10 +98,15 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
                 resolve(result)
             }
 
+            if (data.includes(`Do you want to overwrite './package.json`)) {
+                child.stdin.write('y\n');
+                await child
+                resolve(result)
+            }
+
         });
 
         for (let index = 1; index < args.length; index++) {
-            console.log(args[index]);
             setTimeout(() => {
                 child.stdin.write('y\n');
             }, timeout);
@@ -112,7 +117,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 }
 
 describe.only('AEproject Init', () => {
-    before(async () => {
+    beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
 
@@ -195,7 +200,6 @@ describe.only('AEproject Init', () => {
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
-        console.log('result -> ', result);
         
         assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
@@ -240,7 +244,7 @@ describe.only('AEproject Init', () => {
         
     });
 
-    xit('Should terminate init process and re-inited project successfully', async () => {
+    it.only('Should terminate init process and re-inited project successfully', async () => {
 
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
@@ -259,7 +263,8 @@ describe.only('AEproject Init', () => {
         await executeAndKill('aeproject', constants.cliCommands.INIT, [], executeOptions)
 
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
-
+        console.log('result')
+        console.log(result)
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
 
         for (let line of expectedResult) {
@@ -287,7 +292,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    after(async () => {
+    afterEach(async () => {
         fs.removeSync(`.${ constants.initTestsFolderPath }`);
     })
 })
