@@ -107,16 +107,27 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
                 // resolve(processRespond);
                 resolve(result)
             }
+
+            if (data.includes('Do you want to overwrite')) {
+
+                console.log('here');
+                
+                setTimeout(() => {
+                    child.stdin.write('y\n');
+                }, timeout);
+
+                timeout += 2000;
+            }
         });
 
-        for (let index = 1; index < args.length; index++) {
-            console.log(args[index]);
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, timeout);
+        // for (let index = 1; index < args.length; index++) {
+        //     console.log(args[index]);
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, timeout);
 
-            timeout += 2000;
-        }
+        //     timeout += 2000;
+        // }
 
         // if (true) {
         //     setTimeout(() => {
