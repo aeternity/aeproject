@@ -77,16 +77,15 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 
 // WORKING
 async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let localtimeout = 0
     let result = '';
-    // var child = spawn(cli, [command, ...args], options);
+    let timeout = 1000;
 
     return new Promise((resolve, reject) => {
 
         try {
             var child = spawn(cli, [command, ...args], options);
         } catch (e) {
-            console.error(`Error trying to execute command ${cmd} in directory ${dir}`);
+            console.error(`Error trying to execute command ${ cmd } in directory ${ dir }`);
             console.error(e);
             console.log('error', e.message);
             console.log('Finished');
@@ -97,35 +96,38 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             result += data;
             console.log(data.toString('utf8'));
             
-            if (data.includes('AEproject was successfully updated')) {
-                // const processRespond = {
-                //     process: child,
-                //     output: result,
-                //     result: true
-                // };
+            if (data.includes('Do you want to overwrite')) {
+                setTimeout(() => {
+                    console.log('timeout');
+                    console.log(timeout);
+                    console.log('-------');
 
-                // resolve(processRespond);
+                    child.stdin.write('y\n');
+                    timeout += 200;
+
+                }, timeout);
+            }
+
+            if (data.includes('AEproject was successfully updated')) {
                 resolve(result)
             }
         });
 
         if (true) {
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, 1100);
+            
         }
 
-        if (true) {
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, 1200);
-        }
+        // if (true) {
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, 1200);
+        // }
 
-        if (true) {
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, 1300);
-        }
+        // if (true) {
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, 1300);
+        // }
 
     });
 }
