@@ -75,9 +75,7 @@ class Compiler extends EnvService {
 
             super.printStarMsg()
 
-            let startingCompilerSpawn = super.start();
-
-            await super.toggleLoader(startingCompilerSpawn, compilerImage)
+            await super.start(compilerImage);
 
             super.printSuccessMsg()
 

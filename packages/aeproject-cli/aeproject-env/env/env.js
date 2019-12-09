@@ -95,11 +95,9 @@ class Env extends EnvService {
 
         try {
             super.printStarMsg()
-            
-            let startingNodeSpawn = super.start();
 
-            await super.toggleLoader(startingNodeSpawn, dockerImage)
-            
+            await super.start(dockerImage);
+
             super.printSuccessMsg()
             
             if (option.windows) {
