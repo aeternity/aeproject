@@ -113,6 +113,13 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
 
         });
 
+        child.on('error', e => {
+            console.log('here in the error');
+            console.log(e);
+            console.log('-----');
+            
+        })
+
         for (let index = 1; index < args.length; index++) {
             setTimeout(() => {
                 child.stdin.write('y\n');
@@ -251,7 +258,7 @@ describe.only('AEproject Init', () => {
         
     });
 
-    it('Should terminate init process and re-inited project successfully', async () => {
+    it.only('Should terminate init process and re-inited project successfully', async () => {
 
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
