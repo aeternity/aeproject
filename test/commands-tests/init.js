@@ -101,7 +101,8 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
     return new Promise((resolve, reject) => {
         let timeout = 0;
         try {
-            var child = spawn(cli, [command, args[0]], options);
+            // var child = spawn(cli, [command, args[0]], options);
+            var child = spawn(cli, [], options);
         } catch (e) {
             console.error(`Error trying to execute command ${ command }`);
             console.error(e);
@@ -116,7 +117,6 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             console.log(data.toString('utf8'));
 
             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
-                // if (data.includes(`AEproject was successfully ${updated}`)) {
                 console.log('here');
 
                 resolve(result)
@@ -125,7 +125,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             if (data.includes(`Do you want to overwrite './package.json`)) {
                 setTimeout(() => {
                     child.stdin.write('y\n');
-                    child.stdin.end()
+                    // child.stdin()
                 }, 2000);
 
               
