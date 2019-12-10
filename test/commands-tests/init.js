@@ -300,6 +300,12 @@ describe.only('AEproject Init', () => {
     });
 
     afterEach(async () => {
-        fs.removeSync(`.${ constants.initTestsFolderPath }`);
+        try {
+            await fs.remove(`.${constants.initTestsFolderPath}`);
+            console.log('success');
+            
+        } catch (error) {
+            console.error(error)
+        }
     })
 })
