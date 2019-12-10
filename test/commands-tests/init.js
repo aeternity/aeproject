@@ -93,74 +93,115 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 //         }
 //     });
 // }
+//
 
-async function executeAndPassInput (cli, command, args = [], options = {}) {
-    let result = '';
 
-    return new Promise((resolve, reject) => {
-        let timeout = 0;
-        try {
-            // var child = spawn(cli, [command, args[0]], options);
-            var child = spawn(cli, [command], options);
-        } catch (e) {
-            console.error(`Error trying to execute command ${ command }`);
-            console.error(e);
-            console.log('error', e.message);
-            console.log('Finished');
-            reject(new Error(e));
-        }
-        child.stdout.on('data', async (data) => {
+//Latest
+// async function executeAndPassInput (cli, command, args = [], options = {}) {
+//     let result = '';
 
-            result += data;
-            console.log('data -->>');
-            console.log(data.toString('utf8'));
+//     return new Promise((resolve, reject) => {
+//         let timeout = 0;
+//         try {
+//             // var child = spawn(cli, [command, args[0]], options);
+//             var child = spawn(cli, [command], options);
+//         } catch (e) {
+//             console.error(`Error trying to execute command ${ command }`);
+//             console.error(e);
+//             console.log('error', e.message);
+//             console.log('Finished');
+//             reject(new Error(e));
+//         }
+//         child.stdout.on('data', async (data) => {
 
-            if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
-                console.log('here');
+//             result += data;
+//             console.log('data -->>');
+//             console.log(data.toString('utf8'));
 
-                // resolve(result)
-            }
+//             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
+//                 console.log('here');
 
-            if (data.includes(`Do you want to overwrite './package.json`)) {
-                setTimeout(() => {
-                    child.stdin.write('y\n');
-                    // child.stdin()
-                }, 2000);
+//                 // resolve(result)
+//             }
 
-                // resolve(result)
-            }
+//             if (data.includes(`Do you want to overwrite './package.json`)) {
+//                 setTimeout(() => {
+//                     child.stdin.write('y\n');
+//                     // child.stdin()
+//                 }, 2000);
 
-        });
+//                 // resolve(result)
+//             }
 
-        child.on('error', e => {
-            console.log('here in the error');
-            console.log(e);
-            console.log('-----');
+//         });
 
-        })
+//         child.on('error', e => {
+//             console.log('here in the error');
+//             console.log(e);
+//             console.log('-----');
 
-        child.once('exit', (code, signal) => {
-            if (code === 0) {
-                console.log('success1111');
-                resolve(result)
+//         })
 
-            } else {
-                reject(new Error('Exit with error code: ' + code));
-            }
-        });
-        child.once('error', (err) => {
-            reject(err);
-        });
+//         child.once('exit', (code, signal) => {
+//             if (code === 0) {
+//                 console.log('success1111');
+//                 resolve(result)
 
-        for (let index = 1; index < args.length; index++) {
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, timeout);
+//             } else {
+//                 reject(new Error('Exit with error code: ' + code));
+//             }
+//         });
+//         child.once('error', (err) => {
+//             reject(err);
+//         });
 
-            timeout += 2000;
-        }
+//         for (let index = 1; index < args.length; index++) {
+//             setTimeout(() => {
+//                 child.stdin.write('y\n');
+//             }, timeout);
+
+//             timeout += 2000;
+//         }
+//     });
+// }
+
+
+const executeAndPassInput = async (cli, command, args = [], options = {}) => {
+    // try {
+    //     const child = spawn(cli, [command, ...args], options);
+    //     // pass needed input to 'terminal'
+    //     child.stdin.write('y\n');
+    //     child.stdout.on('data', function (data) {
+    //         // console.log('stdout: ' + data);
+    //     });
+    //     child.stdin.end();
+    //     let awaitedProcess = await child;
+    //     let result = awaitedProcess.stdout.toString('utf8');
+    //     result += awaitedProcess.stderr.toString('utf8');
+    //     return result;
+    // } catch (e) {
+    //     console.log(e)
+    //     let result = e.stdout ? e.stdout.toString('utf8') : e.message;
+    //     result += e.stderr ? e.stderr.toString('utf8') : e.message;
+    //     return result;
+    // }
+    const child = spawn(cli, [command, ...args], options);
+    // pass needed input to 'terminal'
+    child.stdin.write('y\n');
+    child.stdout.on('data', function (data) {
+        // console.log('stdout: ' + data);
     });
-}
+    let error = '';
+    child.stderr.on('data', function (data) {
+        console.log('stdout: ', data);
+        error += data
+    });
+    child.stdin.end();
+    // let awaitedProcess = await child;
+    // let result = awaitedProcess.stdout.toString('utf8');
+    // result += awaitedProcess.stderr.toString('utf8');
+    return child;
+};
 
 describe.only('AEproject Init', () => {
     beforeEach(async () => {
@@ -290,8 +331,55 @@ describe.only('AEproject Init', () => {
         
     });
 
-    it.only('Should terminate init process and re-inited project successfully', async () => {
+    // it.only('Should terminate init process and re-inited project successfully', async () => {
 
+    //     let expectedResult = [
+    //         `===== Installing aepp-sdk =====`,
+    //         `===== Installing AEproject locally =====`,
+    //         `===== Installing yarn locally =====`,
+    //         `===== Creating project file & dir structure =====`,
+    //         `===== Creating contracts directory =====`,
+    //         `===== Creating tests directory =====`,
+    //         `===== Creating integrations directory =====`,
+    //         `===== Creating deploy directory =====`,
+    //         `===== Creating docker directory =====`,
+    //         `==== Adding additional files ====`,
+    //         `===== AEproject was successfully initialized! =====`
+    //     ];
+
+    //     await executeAndKill('aeproject', constants.cliCommands.INIT, [], executeOptions)
+        
+    //     let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
+    //     assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
+    //     console.log('test');
+    //     console.log(result)
+    //     console.log('this was result')
+    //     for (let line of expectedResult) {
+    //         assert.isOk(result.trim().includes(line.trim()), `There is missing initialization action.`);
+    //     }
+
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeNodeYml }`), "docker-compose.yml doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeCompilerYml }`), "docker-compose.compiler.yml doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.testContractPath }`), "test contract doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.deployScriptsPath }`), "deploy scripts doesn't exists");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsPath }`), "example contract doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsAeppSettings }`), "contracts aepp settings file doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode1 }`), "docker node node1 doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode2 }`), "docker node node2 doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode3 }`), "docker node node3 doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+    //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
+    // });
+
+    it.only('Should terminate init process and re-inited project successfully', async () => {
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
             `===== Installing AEproject locally =====`,
@@ -305,37 +393,39 @@ describe.only('AEproject Init', () => {
             `==== Adding additional files ====`,
             `===== AEproject was successfully initialized! =====`
         ];
-
-        await executeAndKill('aeproject', constants.cliCommands.INIT, [], executeOptions)
-        
+        let res = await executeAndKill('aeproject', constants.cliCommands.INIT, [], executeOptions)
+        console.log('init result');
+        console.log(res);
+        console.log();
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
+        result = result.stdout ? result.stdout.toString('utf8') : "";
+        result += result.stderr ? result.stderr.toString('utf8') : "";
+        console.log('executeAndPassInput');
+        console.log(result);
+        console.log();
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
-        console.log('test');
-        console.log(result)
-        console.log('this was result')
         for (let line of expectedResult) {
             assert.isOk(result.trim().includes(line.trim()), `There is missing initialization action.`);
         }
-
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeNodeYml }`), "docker-compose.yml doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeCompilerYml }`), "docker-compose.compiler.yml doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.testContractPath }`), "test contract doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.deployScriptsPath }`), "deploy scripts doesn't exists");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsPath }`), "example contract doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsAeppSettings }`), "contracts aepp settings file doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode1 }`), "docker node node1 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode2 }`), "docker node node2 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode3 }`), "docker node node3 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageJson}`), "package.json doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.packageLockJson}`), "package-lock.json doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerComposeNodeYml}`), "docker-compose.yml doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerComposeCompilerYml}`), "docker-compose.compiler.yml doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.testContractPath}`), "test contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.deployScriptsPath}`), "deploy scripts doesn't exists");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.contractsPath}`), "example contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.contractsAeppSettings}`), "contracts aepp settings file doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.nodeModules}`), "node modules folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerEntryPoint}`), "docker entrypoint.sh doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockernodeNode1}`), "docker node node1 doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockernodeNode2}`), "docker node node2 doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockernodeNode3}`), "docker node node3 doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerHealthCheck}`), "docker healtcheck.sh doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxCors}`), "docker nginx-cors.conf doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxDefault}`), "docker nginx-default doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerNginxWs}`), "docker nginx-ws doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.dockerKeys}`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${executeOptions.cwd}${constants.testsFiles.gitIgnoreFile}`), "git ignore file doesn't exist");
     });
 
     afterEach(async () => {
