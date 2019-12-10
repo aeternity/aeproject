@@ -93,15 +93,21 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         child.stdout.on('data', async (data) => {
 
             result += data;
+            console.log('data -->>');
+            console.log(data.toString('utf8'));
+            
 
-            if (data.includes('AEproject was successfully updated')) {
+            if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
+            // if (data.includes(`AEproject was successfully ${updated}`)) {
+                console.log('here');
+                
                 resolve(result)
             }
 
             if (data.includes(`Do you want to overwrite './package.json`)) {
                 child.stdin.write('y\n');
-                await child
-                resolve(result)
+                
+                // resolve(result)
             }
 
         });
