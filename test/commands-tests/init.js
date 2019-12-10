@@ -106,7 +106,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             if (data.includes(`Do you want to overwrite './package.json`)) {
                 setTimeout(() => {
                     child.stdin.write('y\n');
-                }, timeout);
+                }, 1000);
                 
                 // resolve(result)
             }
@@ -187,7 +187,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it.only('Should update project successfully', async () => {
+    it('Should update project successfully', async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
