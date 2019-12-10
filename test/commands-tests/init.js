@@ -134,16 +134,16 @@ function executeAndPassInputWorking (cli, command, args = [], options = {}) {
             //     // resolve(result)
             // }
 
-            if (data.includes(`Do you want to overwrite`)) {
-                console.log('do yoy ');
+            // if (data.includes(`Do you want to overwrite`)) {
+            //     console.log('do yoy ');
                 
-                setTimeout(() => {
-                    child.stdin.write('y\n');
-                    timeout += 1800
-                }, timeout);
+            //     setTimeout(() => {
+            //         child.stdin.write('y\n');
+            //         timeout += 1800
+            //     }, timeout);
 
-                // resolve(result)
-            }
+            //     // resolve(result)
+            // }
 
         });
 
@@ -168,13 +168,13 @@ function executeAndPassInputWorking (cli, command, args = [], options = {}) {
         //     reject(err);
         // });
 
-        // for (let index = 1; index < args.length; index++) {
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, timeout);
+        for (let index = 1; index < args.length; index++) {
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, timeout);
 
-        //     timeout += 2000;
-        // }
+            timeout += 2000;
+        }
     });
 }
 
