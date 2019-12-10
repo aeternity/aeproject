@@ -96,23 +96,17 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 //
 
 // Latest
-function executeAndPassInputWorking (cli, command, subcommand, args = [], options = {}) {
+function executeAndPassInputWorking (cli, command, subcommand, inputParams = [], options = {}) {
     let result = '';
 
     return new Promise((resolve, reject) => {
         let timeout = 1000;
-        // try {
         if (!subcommand) {
             subcommand = '';
         }
+
         var child = spawn(cli, [command, subcommand], options);
-        // } catch (e) {
-        //     console.error(`Error trying to execute command ${ command }`);
-        //     console.error(e);
-        //     console.log('error', e.message);
-        //     console.log('Finished');
-        //     reject(new Error(e));
-        // }
+        
         child.stdout.on('data', (data) => {
             result += data;
 
@@ -121,13 +115,23 @@ function executeAndPassInputWorking (cli, command, subcommand, args = [], option
             }
         });
 
-        for (let index = 0; index < args.length; index++) {
+        for (let param in inputParams) {
             setTimeout(() => {
-                child.stdin.write('y\n');
+                console.log('here ->', inputParams[param]);
+                
+                child.stdin.write(inputParams[param]);
             }, timeout);
 
             timeout += 2000;
         }
+
+        // for (let index = 0; index < args.length; index++) {
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, timeout);
+
+        //     timeout += 2000;
+        // }
     });
 }
 
@@ -195,7 +199,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it.only('Should update project successfully', async () => {
+    it('Should update project successfully', async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
