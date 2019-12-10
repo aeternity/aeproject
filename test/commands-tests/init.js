@@ -100,8 +100,8 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
     return new Promise((resolve, reject) => {
         let timeout = 0;
         try {
-            var child = spawn(cli, [command, args[0]], options);
-            // var child = spawn(cli, [command], options);
+            // var child = spawn(cli, [command, args[0]], options);
+            var child = spawn(cli, [command], options);
         } catch (e) {
             console.error(`Error trying to execute command ${ command }`);
             console.error(e);
@@ -224,7 +224,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it.only('Should update project successfully', async () => {
+    it('Should update project successfully', async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
@@ -288,7 +288,7 @@ describe.only('AEproject Init', () => {
         
     });
 
-    it('Should terminate init process and re-inited project successfully', async () => {
+    it.only('Should terminate init process and re-inited project successfully', async () => {
 
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
