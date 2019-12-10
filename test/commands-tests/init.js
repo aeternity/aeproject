@@ -39,43 +39,62 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
         return result;
     }
 };
+
 // WORKING
 // async function executeAndPassInput (cli, command, args = [], options = {}) {
-//     let timeout = 0
 //     let result = '';
-//     var child = spawn(cli, [command, ...args], options);
 
-//     child.stdout.on('data', (data) => {
+//     return new Promise((resolve, reject) => {
+//         let timeout = 0;
+//         try {
+//             var child = spawn(cli, [command, args[0]], options);
+//         } catch (e) {
+//             console.error(`Error trying to execute command ${ command }`);
+//             console.error(e);
+//             console.log('error', e.message);
+//             console.log('Finished');
+//             reject(new Error(e));
+//         }
+//         child.stdout.on('data', async (data) => {
 
-//         result += data;
+//             result += data;
+//             console.log('data -->>');
+//             console.log(data.toString('utf8'));
 
-//         if (data.includes('Do you want to overwrite')) {
-//             timeout += 100
+//             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
+//             // if (data.includes(`AEproject was successfully ${updated}`)) {
+//                 console.log('here');
+                
+//                 resolve(result)
+//             }
 
+//             if (data.includes(`Do you want to overwrite './package.json`)) {
+//                 setTimeout(() => {
+//                     child.stdin.write('y\n');
+//                 }, 1000);
+                
+//                 // resolve(result)
+//             }
+
+//         });
+
+//         child.on('error', e => {
+//             console.log('here in the error');
+//             console.log(e);
+//             console.log('-----');
+            
+//         })
+
+//         for (let index = 1; index < args.length; index++) {
 //             setTimeout(() => {
-//                 child.stdin.write('y\n')
-
+//                 child.stdin.write('y\n');
 //             }, timeout);
+
+//             timeout += 2000;
 //         }
 //     });
-
-//     // child.on('close', function (err, data) {
-//     //     if (err) {
-//     //         console.log("Error executing cmd: ", err);
-//     //         return err
-//     //     } else {
-//     //         child.stdin.end();
-//     //     }
-//     // });
-
-//     await child;
-//     return result;
-
-//     //     await child;
-//     //     return child
 // }
 
-// WORKING
 async function executeAndPassInput (cli, command, args = [], options = {}) {
     let result = '';
 
@@ -97,17 +116,17 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             console.log(data.toString('utf8'));
 
             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
-            // if (data.includes(`AEproject was successfully ${updated}`)) {
+                // if (data.includes(`AEproject was successfully ${updated}`)) {
                 console.log('here');
-                
-                resolve(result)
+
+                // resolve(result)
             }
 
             if (data.includes(`Do you want to overwrite './package.json`)) {
                 setTimeout(() => {
                     child.stdin.write('y\n');
                 }, 1000);
-                
+
                 // resolve(result)
             }
 
@@ -117,8 +136,25 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             console.log('here in the error');
             console.log(e);
             console.log('-----');
-            
+
         })
+
+        child.once('exit', (code, signal) => {
+            if (code === 0) {
+                resolve(result);
+            } else {
+                reject(new Error('Exit with error code: ' + code));
+            }
+        });
+        child.once('error', (err) => {
+            reject(err);
+        });
+
+
+
+
+
+
 
         for (let index = 1; index < args.length; index++) {
             setTimeout(() => {
@@ -308,7 +344,7 @@ describe.only('AEproject Init', () => {
 
     afterEach(async () => {
         try {
-            await fs.remove(`.${constants.initTestsFolderPath}`);
+            await fs.remove(`.${ constants.initTestsFolderPath }`);
             console.log('success');
             
         } catch (error) {
