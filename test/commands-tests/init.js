@@ -139,7 +139,7 @@ function executeAndPassInputWorking (cli, command, args = [], options = {}) {
                 
                 setTimeout(() => {
                     child.stdin.write('y\n');
-                    timeout += 800
+                    timeout += 1800
                 }, timeout);
 
                 // resolve(result)
