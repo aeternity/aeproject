@@ -95,7 +95,6 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             result += data;
             console.log('data -->>');
             console.log(data.toString('utf8'));
-            
 
             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
             // if (data.includes(`AEproject was successfully ${updated}`)) {
@@ -105,7 +104,9 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             }
 
             if (data.includes(`Do you want to overwrite './package.json`)) {
-                child.stdin.write('y\n');
+                setTimeout(() => {
+                    child.stdin.write('y\n');
+                }, timeout);
                 
                 // resolve(result)
             }
@@ -267,7 +268,6 @@ describe.only('AEproject Init', () => {
         ];
 
         await executeAndKill('aeproject', constants.cliCommands.INIT, [], executeOptions)
-
         
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
