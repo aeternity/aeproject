@@ -29,8 +29,5 @@ before_script:
 script:
   - npm run test
 
-after_script:
-  - sleep 15
-
 env:
   - DOCKER_COMPOSE_VERSION=1.20.0

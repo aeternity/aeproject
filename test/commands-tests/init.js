@@ -127,6 +127,15 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
                     child.stdin.write('y\n');
                 }, 2000);
 
+                child.stdout.on('error', function (err) { 
+                    console.log('1. eerror');
+                    console.log(err); 
+                });
+                child.stderr.on('error', function (err) { 
+                    console.log('2. errorr');
+                    console.log(err); 
+                });
+
                 // resolve(result)
             }
 
