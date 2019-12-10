@@ -96,16 +96,16 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 //
 
 // Latest
-function executeAndPassInputWorking (cli, command, args = [], options = {}) {
+function executeAndPassInputWorking(cli, command, subcommand, args = [], options = {}) {
     let result = '';
 
     return new Promise((resolve, reject) => {
         let timeout = 1000;
         try {
-            if (args.length === 0) {
-                args = [''];
+            if (!subcommand) {
+                subcommand = '';
             }
-            var child = spawn(cli, [command, args[0]], options);
+            var child = spawn(cli, [command, subcommand], options);
         } catch (e) {
             console.error(`Error trying to execute command ${ command }`);
             console.error(e);
@@ -168,7 +168,7 @@ function executeAndPassInputWorking (cli, command, args = [], options = {}) {
         //     reject(err);
         // });
 
-        for (let index = 1; index < args.length; index++) {
+        for (let index = 0; index < args.length; index++) {
             setTimeout(() => {
                 child.stdin.write('y\n');
             }, timeout);
@@ -215,7 +215,7 @@ describe.only('AEproject Init', () => {
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
 
         await fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
-        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
 
         delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
         let updatedProjectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
@@ -261,7 +261,7 @@ describe.only('AEproject Init', () => {
         
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
-        let result = await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
+        let result = await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
         console.log('this is the result -- > ', result)
         console.log(result);
         
@@ -377,7 +377,7 @@ describe.only('AEproject Init', () => {
         console.log('init result');
         console.log(res);
         console.log();
-        let result = await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, [], executeOptions);
+        let result = await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, null, ['y\n'], executeOptions);
         // result = result.stdout ? result.stdout.toString('utf8') : "";
         // result += result.stderr ? result.stderr.toString('utf8') : "";
         // console.log('executeAndPassInput');
