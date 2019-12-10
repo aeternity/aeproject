@@ -96,120 +96,76 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 //
 
 // Latest
-// async function executeAndPassInputWorking (cli, command, args = [], options = {}) {
-//     let result = '';
+async function executeAndPassInputWorking (cli, command, args = [], options = {}) {
+    let result = '';
 
-//     return new Promise((resolve, reject) => {
-//         let timeout = 0;
-//         try {
-//             if (args.length === 0) {
-//                 args = [''];
-//             }
-//             var child = spawn(cli, [command, args[0]], options);
-//         } catch (e) {
-//             console.error(`Error trying to execute command ${ command }`);
-//             console.error(e);
-//             console.log('error', e.message);
-//             console.log('Finished');
-//             reject(new Error(e));
-//         }
-//         child.stdout.on('data', async (data) => {
-
-//             result += data;
-//             console.log('data -->>');
-//             console.log(data.toString('utf8'));
-
-//             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
-//                 console.log('here');
-
-//                 // resolve(result)
-//             }
-
-//             if (data.includes(`Do you want to overwrite './package.json`)) {
-//                 setTimeout(() => {
-//                     child.stdin.write('y\n');
-//                     // child.stdin()
-//                 }, 2000);
-
-//                 // resolve(result)
-//             }
-
-//         });
-
-//         child.on('error', e => {
-//             console.log('here in the error');
-//             console.log(e);
-//             console.log('-----');
-
-//         })
-
-//         child.once('exit', (code, signal) => {
-//             if (code === 0) {
-//                 console.log('success1111');
-//                 console.log('signal -> ', signal)
-//                 resolve(result)
-
-//             } else {
-//                 reject(new Error('Exit with error code: ' + code));
-//             }
-//         });
-//         child.once('error', (err) => {
-//             reject(err);
-//         });
-
-//         for (let index = 1; index < args.length; index++) {
-//             setTimeout(() => {
-//                 child.stdin.write('y\n');
-//             }, timeout);
-
-//             timeout += 2000;
-//         }
-//     });
-// }
-
-const executeAndPassInput3 = async (cli, command, args = [], options = {}) => {
-    console.log('here');
-    console.log(args);
-    let timeout = 1000
-    if (args.length === 0) {
-        args = [''];
-    }
-    const child = spawn(cli, [command, args[0]], options);
-    
-    let i = 0;
-    child.stdout.on('data', function (data) {
-        
-        console.log('stdout: ' + i + ' ' + data);
-        i++
-        if (data.includes('Do you want to overwrite')) {
-            child.stdin.write('y\n');
-            // child.stdin.write('');
+    return new Promise((resolve, reject) => {
+        let timeout = 0;
+        try {
+            if (args.length === 0) {
+                args = [''];
+            }
+            var child = spawn(cli, [command, args[0]], options);
+        } catch (e) {
+            console.error(`Error trying to execute command ${ command }`);
+            console.error(e);
+            console.log('error', e.message);
+            console.log('Finished');
+            reject(new Error(e));
         }
+        child.stdout.on('data', (data) => {
 
-        console.log('stdout: ', data.toString('utf8'));
-        error += data
-        if (data.includes('Do you want to overwrite')) {
-            setTimeout(function () {
+            result += data;
+            console.log('data -->>');
+            console.log(data.toString('utf8'));
+
+            if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
+                console.log('here');
+
+                // resolve(result)
+            }
+
+            if (data.includes(`Do you want to overwrite './package.json`)) {
+                setTimeout(() => {
+                    child.stdin.write('y\n');
+                    // child.stdin()
+                }, 2000);
+
+                // resolve(result)
+            }
+
+        });
+
+        child.on('error', e => {
+            console.log('here in the error');
+            console.log(e);
+            console.log('-----');
+
+        })
+
+        child.once('exit', (code, signal) => {
+            if (code === 0) {
+                console.log('success1111');
+                console.log('signal -> ', signal)
+                resolve(result)
+
+            } else {
+                reject(new Error('Exit with error code: ' + code));
+            }
+        });
+        child.once('error', (err) => {
+            reject(err);
+        });
+
+        for (let index = 1; index < args.length; index++) {
+            setTimeout(() => {
                 child.stdin.write('y\n');
-                timeout += 500
-            }, timeout)
-            // console.log(667)
+            }, timeout);
+
+            timeout += 2000;
         }
-
-        // if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
-        //     console.log('here');
-        //     return child;
-        // }
     });
-    let error = '';
-    child.stderr.on('data', function (data) {
-
-        console.log('data in error-->', data);
-    });
-
-    // child.stdin.end();
-    return child;
-};
+}
 
 describe.only('AEproject Init', () => {
     beforeEach(async () => {
@@ -294,7 +250,7 @@ describe.only('AEproject Init', () => {
         
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
-        let result = await executeAndPassInput3('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
+        let result = await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
         console.log('this is the result -- > ', result)
         console.log(result);
         
@@ -392,7 +348,7 @@ describe.only('AEproject Init', () => {
     //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     // });
 
-    it('Should terminate init process and re-inited project successfully', async () => {
+    it.only('Should terminate init process and re-inited project successfully', async () => {
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
             `===== Installing AEproject locally =====`,
@@ -410,9 +366,9 @@ describe.only('AEproject Init', () => {
         console.log('init result');
         console.log(res);
         console.log();
-        let result = await executeAndPassInput3('aeproject', constants.cliCommands.INIT, [], executeOptions);
-        result = result.stdout ? result.stdout.toString('utf8') : "";
-        result += result.stderr ? result.stderr.toString('utf8') : "";
+        let result = await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, [], executeOptions);
+        // result = result.stdout ? result.stdout.toString('utf8') : "";
+        // result += result.stderr ? result.stderr.toString('utf8') : "";
         // console.log('executeAndPassInput');
         // console.log(result);
         // console.log();
