@@ -118,7 +118,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
                 console.log('here');
 
-                resolve(result)
+                // resolve(result)
             }
 
             if (data.includes(`Do you want to overwrite './package.json`)) {
@@ -142,6 +142,8 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         child.once('exit', (code, signal) => {
             if (code === 0) {
                 console.log('success1111');
+                resolve(result)
+
             } else {
                 reject(new Error('Exit with error code: ' + code));
             }
