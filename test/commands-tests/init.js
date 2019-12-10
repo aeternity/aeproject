@@ -73,8 +73,11 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
                 setTimeout(() => {
                     child.stdin.write('y\n');
                 }, 1000);
-                
+                child.stdin.end();
                 let awaitedProcess = await child;
+                
+                
+                
                 console.log('in the package changes part')
                 console.log(awaitedProcess.stdout.toString('utf8'));
                 
