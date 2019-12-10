@@ -272,7 +272,8 @@ describe.only('AEproject Init', () => {
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
         console.log('test');
-        
+        console.log(result)
+        console.log('this was result')
         for (let line of expectedResult) {
             assert.isOk(result.trim().includes(line.trim()), `There is missing initialization action.`);
         }
