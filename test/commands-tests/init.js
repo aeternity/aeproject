@@ -101,10 +101,6 @@ function executeAndPassInputWorking (cli, command, subcommand, inputParams = [],
 
     return new Promise((resolve, reject) => {
         let timeout = 1000;
-        if (!subcommand) {
-            subcommand = '';
-        }
-
         var child = spawn(cli, [command, subcommand], options);
         
         child.stdout.on('data', (data) => {
@@ -117,21 +113,11 @@ function executeAndPassInputWorking (cli, command, subcommand, inputParams = [],
 
         for (let param in inputParams) {
             setTimeout(() => {
-                console.log('here ->', inputParams[param]);
-                
                 child.stdin.write(inputParams[param]);
             }, timeout);
 
             timeout += 2000;
         }
-
-        // for (let index = 0; index < args.length; index++) {
-        //     setTimeout(() => {
-        //         child.stdin.write('y\n');
-        //     }, timeout);
-
-        //     timeout += 2000;
-        // }
     });
 }
 
