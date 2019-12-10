@@ -251,7 +251,7 @@ describe.only('AEproject Init', () => {
         
     });
 
-    it.only('Should terminate init process and re-inited project successfully', async () => {
+    it('Should terminate init process and re-inited project successfully', async () => {
 
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
@@ -299,7 +299,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    // afterEach(async () => {
-    //     fs.removeSync(`.${ constants.initTestsFolderPath }`);
-    // })
+    afterEach(async () => {
+        fs.removeSync(`.${ constants.initTestsFolderPath }`);
+    })
 })
