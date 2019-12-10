@@ -232,7 +232,7 @@ describe.only('AEproject Init', () => {
         projectPackageJson['dependencies']['aeproject-lib'] = "^1.0.3";
 
         await fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
-        await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
+        await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
 
         delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
         let updatedProjectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
@@ -242,7 +242,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it.only('Should update project successfully', async () => {
+    it('Should update project successfully', async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
@@ -262,13 +262,8 @@ describe.only('AEproject Init', () => {
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
         let result = await executeAndPassInputWorking('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
-        console.log('this is the result -- > ', result)
-        console.log(result);
         
-        // result = result.stdout ? result.stdout.toString('utf8') : "";
-        // result += result.stderr ? result.stderr.toString('utf8') : "";
-        
-        // assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
+        assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
         // assert
         let editedDockerComposeNodeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
@@ -359,7 +354,7 @@ describe.only('AEproject Init', () => {
     //     assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     // });
 
-    it.only('Should terminate init process and re-inited project successfully', async () => {
+    it('Should terminate init process and re-inited project successfully', async () => {
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
             `===== Installing AEproject locally =====`,
