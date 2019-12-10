@@ -441,13 +441,13 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    // afterEach(async () => {
-    //     try {
-    //         await fs.remove(`.${ constants.initTestsFolderPath }`);
-    //         console.log('success');
+    afterEach(async () => {
+        try {
+            await fs.remove(`.${ constants.initTestsFolderPath }`);
+            console.log('success');
             
-    //     } catch (error) {
-    //         console.error(error)
-    //     }
-    // })
+        } catch (error) {
+            console.error(error)
+        }
+    })
 })
