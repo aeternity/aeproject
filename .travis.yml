@@ -1,7 +1,7 @@
 language:
   - node_js
 node_js:
-  - 10.16.3
+  - 11.10.1
 before_install:
   # Install certain version of docker-compose
   - sudo rm /usr/local/bin/docker-compose
