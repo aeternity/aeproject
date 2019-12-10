@@ -97,130 +97,134 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 
 
 //Latest
-// async function executeAndPassInput (cli, command, args = [], options = {}) {
-//     let result = '';
+async function executeAndPassInput (cli, command, args = [], options = {}) {
+    let result = '';
 
-//     return new Promise((resolve, reject) => {
-//         let timeout = 0;
-//         try {
-//             // var child = spawn(cli, [command, args[0]], options);
-//             var child = spawn(cli, [command], options);
-//         } catch (e) {
-//             console.error(`Error trying to execute command ${ command }`);
-//             console.error(e);
-//             console.log('error', e.message);
-//             console.log('Finished');
-//             reject(new Error(e));
-//         }
-//         child.stdout.on('data', async (data) => {
+    return new Promise((resolve, reject) => {
+        let timeout = 0;
+        try {
+            if (args.length === 0) {
+                args = [''];
+            }
+            var child = spawn(cli, [command, args[0]], options);
+            // var child = spawn(cli, [command], options);
+        } catch (e) {
+            console.error(`Error trying to execute command ${ command }`);
+            console.error(e);
+            console.log('error', e.message);
+            console.log('Finished');
+            reject(new Error(e));
+        }
+        child.stdout.on('data', async (data) => {
 
-//             result += data;
-//             console.log('data -->>');
-//             console.log(data.toString('utf8'));
+            result += data;
+            console.log('data -->>');
+            console.log(data.toString('utf8'));
 
-//             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
-//                 console.log('here');
+            if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
+                console.log('here');
 
-//                 // resolve(result)
-//             }
+                // resolve(result)
+            }
 
-//             if (data.includes(`Do you want to overwrite './package.json`)) {
-//                 setTimeout(() => {
-//                     child.stdin.write('y\n');
-//                     // child.stdin()
-//                 }, 2000);
+            if (data.includes(`Do you want to overwrite './package.json`)) {
+                setTimeout(() => {
+                    child.stdin.write('y\n');
+                    // child.stdin()
+                }, 2000);
 
-//                 // resolve(result)
-//             }
+                // resolve(result)
+            }
 
-//         });
+        });
 
-//         child.on('error', e => {
-//             console.log('here in the error');
-//             console.log(e);
-//             console.log('-----');
+        child.on('error', e => {
+            console.log('here in the error');
+            console.log(e);
+            console.log('-----');
 
-//         })
+        })
 
-//         child.once('exit', (code, signal) => {
-//             if (code === 0) {
-//                 console.log('success1111');
-//                 resolve(result)
+        child.once('exit', (code, signal) => {
+            if (code === 0) {
+                console.log('success1111');
+                console.log('signal -> ', signal)
+                resolve(result)
 
-//             } else {
-//                 reject(new Error('Exit with error code: ' + code));
-//             }
-//         });
-//         child.once('error', (err) => {
-//             reject(err);
-//         });
+            } else {
+                reject(new Error('Exit with error code: ' + code));
+            }
+        });
+        child.once('error', (err) => {
+            reject(err);
+        });
 
-//         for (let index = 1; index < args.length; index++) {
-//             setTimeout(() => {
-//                 child.stdin.write('y\n');
-//             }, timeout);
+        for (let index = 1; index < args.length; index++) {
+            setTimeout(() => {
+                child.stdin.write('y\n');
+            }, timeout);
 
-//             timeout += 2000;
+            timeout += 2000;
+        }
+    });
+}
+
+
+// const executeAndPassInput = async (cli, command, args = [], options = {}) => {
+//     // try {
+//     //     const child = spawn(cli, [command, ...args], options);
+//     //     // pass needed input to 'terminal'
+//     //     child.stdin.write('y\n');
+//     //     child.stdout.on('data', function (data) {
+//     //         // console.log('stdout: ' + data);
+//     //     });
+//     //     child.stdin.end();
+//     //     let awaitedProcess = await child;
+//     //     let result = awaitedProcess.stdout.toString('utf8');
+//     //     result += awaitedProcess.stderr.toString('utf8');
+//     //     return result;
+//     // } catch (e) {
+//     //     console.log(e)
+//     //     let result = e.stdout ? e.stdout.toString('utf8') : e.message;
+//     //     result += e.stderr ? e.stderr.toString('utf8') : e.message;
+//     //     return result;
+//     // }
+//     if (args.length === 0) {
+//         args = [''];
+//     }
+//     const child = spawn(cli, [command, args[0]], options);
+//     // pass needed input to 'terminal'
+//     // child.stdin.write('y\n');
+//     // child.stdin.on('data', function (data) {
+//     //     console.log('stdin: ' + data);
+//     // })
+//     let i = 0;
+//     child.stdout.on('data', function (data) {
+//         console.log('stdout: ' + i + ' ' + data);
+//         i++
+//         if (data.includes('Do you want to overwrite')) {
+//             child.stdin.write('y\n');
+//             // child.stdin.write('');
+//             // setTimeout(function () {
+//             //     child.stdin.write('y\n');
+//             // }, 1000)
+//             // console.log(667)
 //         }
 //     });
-// }
-
-
-const executeAndPassInput = async (cli, command, args = [], options = {}) => {
-    // try {
-    //     const child = spawn(cli, [command, ...args], options);
-    //     // pass needed input to 'terminal'
-    //     child.stdin.write('y\n');
-    //     child.stdout.on('data', function (data) {
-    //         // console.log('stdout: ' + data);
-    //     });
-    //     child.stdin.end();
-    //     let awaitedProcess = await child;
-    //     let result = awaitedProcess.stdout.toString('utf8');
-    //     result += awaitedProcess.stderr.toString('utf8');
-    //     return result;
-    // } catch (e) {
-    //     console.log(e)
-    //     let result = e.stdout ? e.stdout.toString('utf8') : e.message;
-    //     result += e.stderr ? e.stderr.toString('utf8') : e.message;
-    //     return result;
-    // }
-    if (args.length === 0) {
-        args = [''];
-    }
-    const child = spawn(cli, [command, args[0]], options);
-    // pass needed input to 'terminal'
-    // child.stdin.write('y\n');
-    // child.stdin.on('data', function (data) {
-    //     console.log('stdin: ' + data);
-    // })
-    let i = 0;
-    child.stdout.on('data', function (data) {
-        console.log('stdout: ' + i + ' ' + data);
-        i++
-        if (data.includes('Do you want to overwrite')) {
-            child.stdin.write('y\n');
-            // child.stdin.write('');
-            // setTimeout(function () {
-            //     child.stdin.write('y\n');
-            // }, 1000)
-            // console.log(667)
-        }
-    });
-    let error = '';
-    child.stderr.on('data', function (data) {
-        console.log('stdout: ', data);
-        error += data
-        if (data.includes('Do you want to overwrite')) {
-            setTimeout(function () {
-                child.stdin.write('y\n');
-            }, 1000)
-            console.log(667)
-        }
-    });
-    // child.stdin.end();
-    return child;
-};
+//     let error = '';
+//     child.stderr.on('data', function (data) {
+//         console.log('stdout: ', data);
+//         error += data
+//         if (data.includes('Do you want to overwrite')) {
+//             setTimeout(function () {
+//                 child.stdin.write('y\n');
+//             }, 1000)
+//             console.log(667)
+//         }
+//     });
+//     // child.stdin.end();
+//     return child;
+// };
 
 describe.only('AEproject Init', () => {
     beforeEach(async () => {
@@ -306,8 +310,8 @@ describe.only('AEproject Init', () => {
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
-        result = result.stdout ? result.stdout.toString('utf8') : "";
-        result += result.stderr ? result.stderr.toString('utf8') : "";
+        // result = result.stdout ? result.stdout.toString('utf8') : "";
+        // result += result.stderr ? result.stderr.toString('utf8') : "";
         
         assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
@@ -419,11 +423,11 @@ describe.only('AEproject Init', () => {
         console.log(res);
         console.log();
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [], executeOptions);
-        result = result.stdout ? result.stdout.toString('utf8') : "";
-        result += result.stderr ? result.stderr.toString('utf8') : "";
-        console.log('executeAndPassInput');
-        console.log(result);
-        console.log();
+        // result = result.stdout ? result.stdout.toString('utf8') : "";
+        // result += result.stderr ? result.stderr.toString('utf8') : "";
+        // console.log('executeAndPassInput');
+        // console.log(result);
+        // console.log();
         assert.isOk(result.trim().includes(`Do you want to overwrite './package.json'? (YES/no):\u001b[22m \u001b[90m…\u001b[39m y\u001b7\u001b8`), `'Init' command do not produce expected result (prompt for user action)`);
         for (let line of expectedResult) {
             assert.isOk(result.trim().includes(line.trim()), `There is missing initialization action.`);
