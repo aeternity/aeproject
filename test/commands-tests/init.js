@@ -96,11 +96,11 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
 //
 
 // Latest
-async function executeAndPassInputWorking (cli, command, args = [], options = {}) {
+function executeAndPassInputWorking (cli, command, args = [], options = {}) {
     let result = '';
 
     return new Promise((resolve, reject) => {
-        let timeout = 0;
+        let timeout = 1000;
         try {
             if (args.length === 0) {
                 args = [''];
@@ -125,11 +125,22 @@ async function executeAndPassInputWorking (cli, command, args = [], options = {}
                 // resolve(result)
             }
 
-            if (data.includes(`Do you want to overwrite './package.json`)) {
+            // if (data.includes(`Do you want to overwrite './package.json`)) {
+            //     setTimeout(() => {
+            //         child.stdin.write('y\n');
+            //         // child.stdin()
+            //     }, 2000);
+
+            //     // resolve(result)
+            // }
+
+            if (data.includes(`Do you want to overwrite`)) {
+                console.log('do yoy ');
+                
                 setTimeout(() => {
                     child.stdin.write('y\n');
-                    // child.stdin()
-                }, 2000);
+                    timeout += 800
+                }, timeout);
 
                 // resolve(result)
             }
@@ -157,13 +168,13 @@ async function executeAndPassInputWorking (cli, command, args = [], options = {}
             reject(err);
         });
 
-        for (let index = 1; index < args.length; index++) {
-            setTimeout(() => {
-                child.stdin.write('y\n');
-            }, timeout);
+        // for (let index = 1; index < args.length; index++) {
+        //     setTimeout(() => {
+        //         child.stdin.write('y\n');
+        //     }, timeout);
 
-            timeout += 2000;
-        }
+        //     timeout += 2000;
+        // }
     });
 }
 
