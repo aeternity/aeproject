@@ -258,7 +258,7 @@ async function prompt (error) {
     });
 
     let input = response.value;
-    if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y' || input.includes('y')) {
+    if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y') {
         funcToExecute(...args.slice(2), {
             overwrite: true
         });
