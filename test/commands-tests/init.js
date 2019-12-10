@@ -122,7 +122,7 @@ function executeAndPassInputWorking (cli, command, args = [], options = {}) {
             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
                 console.log('here');
 
-                // resolve(result)
+                resolve(result)
             }
 
             // if (data.includes(`Do you want to overwrite './package.json`)) {
@@ -147,26 +147,26 @@ function executeAndPassInputWorking (cli, command, args = [], options = {}) {
 
         });
 
-        child.on('error', e => {
-            console.log('here in the error');
-            console.log(e);
-            console.log('-----');
+        // child.on('error', e => {
+        //     console.log('here in the error');
+        //     console.log(e);
+        //     console.log('-----');
 
-        })
+        // })
 
-        child.once('exit', (code, signal) => {
-            if (code === 0) {
-                console.log('success1111');
-                console.log('signal -> ', signal)
-                resolve(result)
+        // child.once('exit', (code, signal) => {
+        //     if (code === 0) {
+        //         console.log('success1111');
+        //         console.log('signal -> ', signal)
+        //         resolve(result)
 
-            } else {
-                reject(new Error('Exit with error code: ' + code));
-            }
-        });
-        child.once('error', (err) => {
-            reject(err);
-        });
+        //     } else {
+        //         reject(new Error('Exit with error code: ' + code));
+        //     }
+        // });
+        // child.once('error', (err) => {
+        //     reject(err);
+        // });
 
         // for (let index = 1; index < args.length; index++) {
         //     setTimeout(() => {
