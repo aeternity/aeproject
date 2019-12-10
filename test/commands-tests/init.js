@@ -73,7 +73,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
                 setTimeout(() => {
                     child.stdin.write('y\n');
                 }, 1000);
-                child.stdin.end();
+                // child.stdin.end();
                 let awaitedProcess = await child;
                 
                 
