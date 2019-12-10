@@ -102,7 +102,7 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
         let timeout = 0;
         try {
             // var child = spawn(cli, [command, args[0]], options);
-            var child = spawn(cli, [], options);
+            var child = spawn(cli, [command], options);
         } catch (e) {
             console.error(`Error trying to execute command ${ command }`);
             console.error(e);
