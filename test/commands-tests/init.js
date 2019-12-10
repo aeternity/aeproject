@@ -187,7 +187,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it('Should update project successfully', async () => {
+    it.only('Should update project successfully', async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
