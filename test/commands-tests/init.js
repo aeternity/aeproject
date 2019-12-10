@@ -185,21 +185,40 @@ const executeAndPassInput = async (cli, command, args = [], options = {}) => {
     //     result += e.stderr ? e.stderr.toString('utf8') : e.message;
     //     return result;
     // }
-    const child = spawn(cli, [command, ...args], options);
+    if (args.length === 0) {
+        args = [''];
+    }
+    const child = spawn(cli, [command, args[0]], options);
     // pass needed input to 'terminal'
-    child.stdin.write('y\n');
+    // child.stdin.write('y\n');
+    // child.stdin.on('data', function (data) {
+    //     console.log('stdin: ' + data);
+    // })
+    let i = 0;
     child.stdout.on('data', function (data) {
-        // console.log('stdout: ' + data);
+        console.log('stdout: ' + i + ' ' + data);
+        i++
+        if (data.includes('Do you want to overwrite')) {
+            child.stdin.write('y\n');
+            // child.stdin.write('');
+            // setTimeout(function () {
+            //     child.stdin.write('y\n');
+            // }, 1000)
+            // console.log(667)
+        }
     });
     let error = '';
     child.stderr.on('data', function (data) {
         console.log('stdout: ', data);
         error += data
+        if (data.includes('Do you want to overwrite')) {
+            setTimeout(function () {
+                child.stdin.write('y\n');
+            }, 1000)
+            console.log(667)
+        }
     });
-    child.stdin.end();
-    // let awaitedProcess = await child;
-    // let result = awaitedProcess.stdout.toString('utf8');
-    // result += awaitedProcess.stderr.toString('utf8');
+    // child.stdin.end();
     return child;
 };
 
@@ -267,7 +286,7 @@ describe.only('AEproject Init', () => {
         assert.isNotTrue(aeprojectLibInProject.includes(aeprojectLibVersion), "aeproject-lib is not updated properly");
     })
 
-    it('Should update project successfully', async () => {
+    it.only('Should update project successfully', async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions)
 
         // Arrange
@@ -287,6 +306,8 @@ describe.only('AEproject Init', () => {
         fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, [constants.cliCommandsOptions.UPDATE, 'y\n', 'y\n', 'y\n'], executeOptions)
+        result = result.stdout ? result.stdout.toString('utf8') : "";
+        result += result.stderr ? result.stderr.toString('utf8') : "";
         
         assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
 
