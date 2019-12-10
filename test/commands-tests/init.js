@@ -125,16 +125,10 @@ async function executeAndPassInput (cli, command, args = [], options = {}) {
             if (data.includes(`Do you want to overwrite './package.json`)) {
                 setTimeout(() => {
                     child.stdin.write('y\n');
+                    child.stdin.end()
                 }, 2000);
 
-                child.stdout.on('error', function (err) { 
-                    console.log('1. eerror');
-                    console.log(err); 
-                });
-                child.stderr.on('error', function (err) { 
-                    console.log('2. errorr');
-                    console.log(err); 
-                });
+              
 
                 // resolve(result)
             }
