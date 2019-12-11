@@ -15,8 +15,7 @@ let executeOptions = {
 chai.use(chaiFiles);
 
 const {
-    spawn,
-    exec
+    spawn
 } = require('promisify-child-process');
 
 const executeAndKill = async (cli, command, args = [], options = {}) => {
@@ -40,62 +39,6 @@ const executeAndKill = async (cli, command, args = [], options = {}) => {
     }
 };
 
-// WORKING
-// async function executeAndPassInput (cli, command, args = [], options = {}) {
-//     let result = '';
-
-//     return new Promise((resolve, reject) => {
-//         let timeout = 0;
-//         try {
-//             var child = spawn(cli, [command, args[0]], options);
-//             // var child = spawn(cli, [command], options);
-//         } catch (e) {
-//             console.error(`Error trying to execute command ${ command }`);
-//             console.error(e);
-//             console.log('error', e.message);
-//             console.log('Finished');
-//             reject(new Error(e));
-//         }
-//         child.stdout.on('data', async (data) => {
-
-//             result += data;
-//             console.log('data -->>');
-//             console.log(data.toString('utf8'));
-
-//             if (data.includes('AEproject was successfully updated') || data.includes('AEproject was successfully initialized')) {
-//             // if (data.includes(`AEproject was successfully ${updated}`)) {
-//                 console.log('here');
-                
-//                 resolve(result)
-//             }
-
-//             if (data.includes(`Do you want to overwrite './package.json`)) {
-//                 setTimeout(() => {
-//                     child.stdin.write('y\n');
-//                 }, 1000);
-//             }
-
-//         });
-
-//         child.on('error', e => {
-//             console.log('here in the error');
-//             console.log(e);
-//             console.log('-----');
-            
-//         })
-
-//         for (let index = 1; index < args.length; index++) {
-//             setTimeout(() => {
-//                 child.stdin.write('y\n');
-//             }, timeout);
-
-//             timeout += 2000;
-//         }
-//     });
-// }
-//
-
-// Latest
 function executeAndPassInputWorking (cli, command, subcommand, inputParams = [], options = {}) {
     let result = '';
 
