@@ -54,7 +54,10 @@ const DefaultColumnVariable = 'export COLUMNS=1000';
 const POSSIBLE_ERRORS = [
     'port is already allocated',
     'address already in use',
-    'request canceled'
+    // messages when docker is blocked by firewall
+    'request canceled',
+    'Temporary failure in name resolution',
+    'registry-1.docker.io'
 ]
 
 class EnvService {
