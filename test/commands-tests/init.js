@@ -64,7 +64,7 @@ function executeAndPassInputWorking (cli, command, subcommand, inputParams = [],
     });
 }
 
-describe.only('AEproject Init', () => {
+describe('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
