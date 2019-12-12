@@ -19,6 +19,7 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const { LogNodeService } = require('aeproject-logger');
 let nodeService = new LogNodeService();
 const {
+    exec,
     spawn
 } = require('promisify-child-process');
 const {
@@ -48,6 +49,7 @@ const nodeConfiguration = nodeConfig.nodeConfiguration;
 const DEFAULT_COMPILER_PORT = 3080;
 const DEFAULT_NODE_PORT = 3001;
 const MAX_SECONDS_TO_RUN_NODE = 90;
+const DefaultColumnVariable = 'export COLUMNS=1000';
 
 class EnvService {
     
@@ -197,25 +199,13 @@ class EnvService {
         let compilerPath = nodeService.getCompilerPath();
         
         if (!this._unit && nodePath && compilerPath) {
-            return spawn('docker-compose', [
-                '-f',
-                `${ nodePath }`,
-                '-f',
-                `${ compilerPath }`,
-                'ps'
-            ], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } -f ${ compilerPath } ps`, options);
         } else if (this._unit.indexOf('node') >= 0 && nodePath) {
-            return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } ps`, options);
         } else if (this._unit.indexOf('compiler') >= 0 && compilerPath) {
-            return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ compilerPath } ps`, options);
         } else {
-            return spawn('docker-compose', [
-                '-f',
-                `${ 'docker-compose.yml' }`,
-                '-f',
-                `${ 'docker-compose.compiler.yml' }`,
-                'ps'
-            ], options);
+            return exec(`${ DefaultColumnVariable } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml ps`, options);
         }
     }
 
@@ -233,7 +223,7 @@ class EnvService {
     }
 
     async isImageRunning (image, options) {
-       
+
         try {
             let running = false;
 
@@ -257,8 +247,8 @@ class EnvService {
 
             if (this.checkForMissingDirectory(error)) {
                 return false;
-            }
-
+            } 
+            
             if (error.stderr) {
                 console.log(error.stderr.toString('utf8'));
             } else {
@@ -308,7 +298,7 @@ class EnvService {
     }
 
     checkForMissingDirectory (e) {
-        return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory'));
+        return (e.stderr && e.stderr.toString('utf-8').indexOf('No such file or directory') >= 0);
     }
 
     async checkForAllocatedPort (...portArgs) {
