@@ -57,7 +57,8 @@ const POSSIBLE_ERRORS = [
     // messages when docker is blocked by firewall
     'request canceled',
     'Temporary failure in name resolution',
-    'registry-1.docker.io'
+    'registry-1.docker.io',
+    'forbidden by its access permissions'
 ]
 
 class EnvService {
