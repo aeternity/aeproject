@@ -54,6 +54,7 @@ const DefaultColumnVariable = 'export COLUMNS=1000';
 const POSSIBLE_ERRORS = [
     'port is already allocated',
     'address already in use',
+    'not found',
     // messages when docker is blocked by firewall
     'request canceled',
     'Temporary failure in name resolution',
@@ -160,6 +161,7 @@ class EnvService {
         if (runCommand.stderr) {
             runCommand.stderr.on('data', (data) => {
                 errorMessage += data.toString();
+                console.log(data.toString());
             });
         }
 
@@ -275,7 +277,7 @@ class EnvService {
     }
 
     async isImageRunning (image, options) {
-
+        
         try {
             let running = false;
 
@@ -296,7 +298,7 @@ class EnvService {
 
             return running;
         } catch (error) {
-
+            
             if (this.checkForMissingDirectory(error)) {
                 return false;
             } 
