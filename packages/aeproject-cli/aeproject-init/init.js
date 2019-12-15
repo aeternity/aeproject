@@ -95,7 +95,7 @@ const installAeppSDK = async (_sdkVersion = '') => {
 
 const installAEproject = async () => {
     print(`===== Installing AEproject locally =====`);
-    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-lib`, '--save-exact', '--ignore-scripts', '--no-bin-links']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-lib`, '--ignore-scripts', '--no-bin-links']);
 }
 
 const installYarn = async () => {
@@ -117,10 +117,6 @@ const uninstallForgaeDependencies = async () => {
 
     if (match[1] == 'forgae-project') {
         match = forgaeRgx.exec(forgaeDependencies)
-    }
-
-    if (!match) {
-        return
     }
 
     print(`===== Removing ForgAE deprecated dependencies =====`);
