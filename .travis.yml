@@ -22,6 +22,7 @@ install:
   - npm run develop
 services:
   - docker
+
 script:
   - npm run aetest
 

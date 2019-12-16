@@ -62,6 +62,8 @@ const POSSIBLE_ERRORS = [
     'forbidden by its access permissions'
 ]
 
+const isWindowsPlatform = process.platform === 'win32';
+
 class EnvService {
     
     constructor (unit) {
@@ -252,14 +254,26 @@ class EnvService {
         let nodePath = nodeService.getNodePath();
         let compilerPath = nodeService.getCompilerPath();
         
-        if (!this._unit && nodePath && compilerPath) {
-            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } -f ${ compilerPath } ps`, options);
-        } else if (this._unit.indexOf('node') >= 0 && nodePath) {
-            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } ps`, options);
-        } else if (this._unit.indexOf('compiler') >= 0 && compilerPath) {
-            return exec(`${ DefaultColumnVariable } && docker-compose -f ${ compilerPath } ps`, options);
+        if (isWindowsPlatform) {
+            if (!this._unit && nodePath && compilerPath) {
+                return exec(`docker-compose -f ${ nodePath } -f ${ compilerPath } ps`, options);
+            } else if (this._unit.indexOf('node') >= 0 && nodePath) {
+                return exec(`docker-compose -f ${ nodePath } ps`, options);
+            } else if (this._unit.indexOf('compiler') >= 0 && compilerPath) {
+                return exec(`docker-compose -f ${ compilerPath } ps`, options);
+            } else {
+                return exec(`docker-compose -f docker-compose.yml -f docker-compose.compiler.yml ps`, options);
+            }
         } else {
-            return exec(`${ DefaultColumnVariable } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml ps`, options);
+            if (!this._unit && nodePath && compilerPath) {
+                return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } -f ${ compilerPath } ps`, options);
+            } else if (this._unit.indexOf('node') >= 0 && nodePath) {
+                return exec(`${ DefaultColumnVariable } && docker-compose -f ${ nodePath } ps`, options);
+            } else if (this._unit.indexOf('compiler') >= 0 && compilerPath) {
+                return exec(`${ DefaultColumnVariable } && docker-compose -f ${ compilerPath } ps`, options);
+            } else {
+                return exec(`${ DefaultColumnVariable } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml ps`, options);
+            }
         }
     }
 
@@ -282,6 +296,7 @@ class EnvService {
             let running = false;
 
             let result = await this.getInfo(options);
+
             let res = readSpawnOutput(result);
 
             if (res) {
