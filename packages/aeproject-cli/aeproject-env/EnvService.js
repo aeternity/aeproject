@@ -51,6 +51,17 @@ const DEFAULT_NODE_PORT = 3001;
 const MAX_SECONDS_TO_RUN_NODE = 90;
 const DefaultColumnVariable = 'export COLUMNS=1000';
 
+const POSSIBLE_ERRORS = [
+    'port is already allocated',
+    'address already in use',
+    'not found',
+    // messages when docker is blocked by firewall
+    'request canceled',
+    'Temporary failure in name resolution',
+    'registry-1.docker.io',
+    'forbidden by its access permissions'
+]
+
 const isWindowsPlatform = process.platform === 'win32';
 
 class EnvService {
@@ -124,20 +135,63 @@ class EnvService {
         return true;
     }
 
-    async start () {
+    async start (image) {
+        
+        let runCommand;
         switch (this._unit) {
             case 'compiler':
-                spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
+                runCommand = spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
                 nodeService.save(this._unit);
                 break;
             case 'node':
-                spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
+                runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
                 nodeService.save(this._unit);
                 break;
             default:
-                spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+                runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
                 nodeService.save();
         }
+
+        // toggle loader
+        if (runCommand.stdout) {
+            runCommand.stdout.on('data', (data) => {
+                print(data.toString());
+            });
+        }
+
+        let errorMessage = '';
+        if (runCommand.stderr) {
+            runCommand.stderr.on('data', (data) => {
+                errorMessage += data.toString();
+                console.log(data.toString());
+            });
+        }
+
+        let counter = 0;
+        while (!(await this.isImageRunning(`${ image }`))) {
+            for (let possibleError of POSSIBLE_ERRORS) {
+                if (errorMessage.indexOf(possibleError) >= 0) {
+                    await this.stopAll();
+                    console.log('Cannot start AE Node!');
+                    throw new Error(errorMessage);
+                }
+            }
+
+            process.stdout.write(".");
+            sleep(1000);
+
+            // prevent infinity loop
+            counter++;
+            if (counter >= MAX_SECONDS_TO_RUN_NODE) {
+                // if node is started and error message is another,
+                // we should stop docker
+
+                await this.stopAll();
+                throw new Error("Cannot start AE Node!");
+            }
+        }
+
+        return runCommand;
     }
 
     async stopAll () {
@@ -200,7 +254,7 @@ class EnvService {
         let nodePath = nodeService.getNodePath();
         let compilerPath = nodeService.getCompilerPath();
         
-        if(isWindowsPlatform){
+        if (isWindowsPlatform) {
             if (!this._unit && nodePath && compilerPath) {
                 return exec(`docker-compose -f ${ nodePath } -f ${ compilerPath } ps`, options);
             } else if (this._unit.indexOf('node') >= 0 && nodePath) {
@@ -237,7 +291,7 @@ class EnvService {
     }
 
     async isImageRunning (image, options) {
-
+        
         try {
             let running = false;
 
@@ -259,7 +313,7 @@ class EnvService {
 
             return running;
         } catch (error) {
-
+            
             if (this.checkForMissingDirectory(error)) {
                 return false;
             } 
@@ -271,44 +325,6 @@ class EnvService {
             }
 
             throw Error(error);
-        }
-    }
-
-    async toggleLoader (startingNodeSpawn, image) {
-
-        if (startingNodeSpawn.stdout) {
-            startingNodeSpawn.stdout.on('data', (data) => {
-                print(data.toString());
-            });
-        }
-
-        let errorMessage = '';
-        if (startingNodeSpawn.stderr) {
-            startingNodeSpawn.stderr.on('data', (data) => {
-                errorMessage += data.toString();
-                print(data.toString());
-            });
-        }
-
-        let counter = 0;
-        while (!(await this.isImageRunning(`${ image }`))) {
-            if (errorMessage.indexOf('port is already allocated') >= 0 || errorMessage.indexOf(`address already in use`) >= 0) {
-                await this.stopAll();
-                throw new Error(`Cannot start AE node, port is already allocated!`);
-            }
-
-            process.stdout.write(".");
-            sleep(1000);
-
-            // prevent infinity loop
-            counter++;
-            if (counter >= MAX_SECONDS_TO_RUN_NODE) {
-                // if node is started and error message is another,
-                // we should stop docker
-
-                await this.stopAll();
-                throw new Error("Cannot start AE Node!");
-            }
         }
     }
 

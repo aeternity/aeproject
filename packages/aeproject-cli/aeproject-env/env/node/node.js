@@ -76,9 +76,7 @@ class Node extends EnvService {
 
             super.printStarMsg()
 
-            let startingNodeSpawn = super.start();
-
-            await super.toggleLoader(startingNodeSpawn, dockerImage)
+            await super.start(dockerImage);
 
             super.printSuccessMsg()
 
