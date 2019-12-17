@@ -36,8 +36,14 @@ const run = async (options) => {
         const isInstalled = await isFireEditorInstalled(moduleName);
         if (!isInstalled) {
             // install the repo
-            console.log("Installing Fire Editor Aepp");
+            console.log("====== Installing Fire Editor Aepp ======");
             await installFireEditorRepo();
+            process.chdir(modulePath);
+            await installModuleDependencies();
+        }
+
+        // update Fire Editor Aepp
+        if (options.update) {
             process.chdir(modulePath);
             await installModuleDependencies();
         }
@@ -46,7 +52,7 @@ const run = async (options) => {
         // -- set previous CWD to copy user contracts, keys, etc.
         
         // start fire editor
-        console.log("Starting Fire Editor Aepp");
+        console.log("====== Starting Fire Editor Aepp ======");
         process.chdir(modulePath);
         startModule(cwd);
 
