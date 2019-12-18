@@ -9,7 +9,9 @@ aeproject history [limit]
 
 Parameters:
 - limit - [Optional] By specifying --limit you can set the max number of historical records to be shown. Default is 5. 
+
 Example: 
+
 ```
 aeproject history --limit 10
 ```
