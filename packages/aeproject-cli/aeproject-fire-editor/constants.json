@@ -1,6 +1,5 @@
 {
     "MODULE_NAME": "fire-editor",
-    "MODULE_GITHUB_URL": "git+https://github.com/alekseytsekov/test-fire-editor-nf#master",
-    "MODULE_GITHUB_URL1": "git+https://github.com/nikita-fuchs/fire-editor#master",
+    "MODULE_GITHUB_URL": "git+https://github.com/nikita-fuchs/fire-editor#master",
     "MODULE_START_CMD": "npm run start"
  }
