@@ -2,7 +2,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const fs = require('fs-extra');
 const path = require('path');
-const opn = require('opn');
+const open = require('open');
 const {
     spawn
 } = require('promisify-child-process');
@@ -64,7 +64,7 @@ const serveContractsAepp = async (options) => {
                 return;
             }
 
-            opn(contractsConstants.DEFAULT_CONTRACTS_AEPP_URL);
+            open(contractsConstants.DEFAULT_CONTRACTS_AEPP_URL);
         }
     });
 

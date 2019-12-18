@@ -19,6 +19,7 @@ const util = require('util');
 const pureExec = require('child_process').exec;
 const exec = util.promisify(pureExec);
 const path = require('path');
+const open = require('open');
 
 const constants = require('./constants.json');
 
@@ -54,7 +55,8 @@ const run = async (options) => {
         // start fire editor
         console.log("====== Starting Fire Editor Aepp ======");
         process.chdir(modulePath);
-        startModule(cwd);
+        const openInBrowser = !(options.ignoreBrowser || options.ignorebrowser);
+        startModule(openInBrowser);
 
     } catch (e) {
         console.error(e);
@@ -98,10 +100,20 @@ const getGlobalNpmRoot = async () => {
     return exec('npm root -g');
 }
 
-const startModule = async () => {
+const startModule = async (shouldOpenInBrowser) => {
     let childProcess = pureExec(constants.MODULE_START_CMD);
     childProcess.stdout.on('data', data => {
         console.log(data);
+
+        if (shouldOpenInBrowser && data.indexOf('open your browser on') >= 0) {
+            let tokens = data.split(/\s+/);
+            for (let index in tokens) {
+                if (tokens[index].startsWith('http')) {
+                    open(tokens[index]);
+                    break;
+                }
+            }
+        } 
     });
 
     childProcess.stderr.on('data', data => {
