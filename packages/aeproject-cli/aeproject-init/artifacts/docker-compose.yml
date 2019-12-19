@@ -2,7 +2,7 @@
 version: '3'
 services:
   node1:
-    image: aeternity/aeternity:v5.0.2
+    image: aeternity/aeternity:v5.2.0
     hostname: node1
     environment:
       AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
@@ -13,7 +13,7 @@ services:
       - ./docker/keys/node1:/home/aeternity/node/keys
 
   node2:
-    image: aeternity/aeternity:v5.0.2
+    image: aeternity/aeternity:v5.2.0
     hostname: node2
     environment:
       AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
@@ -24,7 +24,7 @@ services:
       - ./docker/keys/node2:/home/aeternity/node/keys
 
   node3:
-    image: aeternity/aeternity:v5.0.2
+    image: aeternity/aeternity:v5.2.0
     hostname: node3
     environment:
       AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
