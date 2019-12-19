@@ -30,7 +30,8 @@
 		"CONTRACTS": "contracts",
 		"SHAPE": "shape",
 		"CURL": "curl",
-		"INSPECT": "inspect"
+		"INSPECT": "inspect",
+		"FIRE_EDITOR": "fire-editor"
 	},
 	"cliSubCommands": {
 		"VUE": "vue",
@@ -53,7 +54,8 @@
 		"NETWORK": "--network",
 		"NETWORK_ID": "--networkId",
 		"LIMIT": "--limit",
-		"COMPILER_URL": "--compiler"
+		"COMPILER_URL": "--compiler",
+		"IGNORE_BROWSER": "--ignorebrowser"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",

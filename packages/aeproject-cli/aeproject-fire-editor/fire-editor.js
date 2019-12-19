@@ -22,6 +22,7 @@ const path = require('path');
 const open = require('open');
 
 const constants = require('./constants.json');
+const infoMessages = constants.MESSAGES;
 
 const moduleName = constants.MODULE_NAME;
 
@@ -37,7 +38,7 @@ const run = async (options) => {
         const isInstalled = await isFireEditorInstalled(moduleName);
         if (!isInstalled) {
             // install the repo
-            console.log("====== Installing Fire Editor Aepp ======");
+            console.log(`====== ${ infoMessages.START_INSTALLING } ======`);
             await installFireEditorRepo();
             process.chdir(modulePath);
             await installModuleDependencies();
@@ -45,15 +46,21 @@ const run = async (options) => {
 
         // update Fire Editor Aepp
         if (options.update) {
+            // TODO: should we uninstall current version (maybe some settings or files would be deleted like contracts, accounts, etc.)
+            // or only we should update dependencies (npm i)
+            await uninstallFireEditorRepo();
+            console.log(`====== ${ infoMessages.START_UPDATING } ======`);
+            await installFireEditorRepo();
             process.chdir(modulePath);
             await installModuleDependencies();
+            console.log(`====== ${ infoMessages.SUCCESSFUL_UPDATE } ======`);
         }
 
         // - set some options
         // -- set previous CWD to copy user contracts, keys, etc.
         
         // start fire editor
-        console.log("====== Starting Fire Editor Aepp ======");
+        console.log(`====== ${ infoMessages.STARTING_AEPP } ======`);
         process.chdir(modulePath);
         const openInBrowser = !(options.ignoreBrowser || options.ignorebrowser);
         startModule(openInBrowser);
@@ -94,6 +101,10 @@ const isFireEditorInstalled = async (moduleName) => {
 
 const installFireEditorRepo = async () => {
     await exec(`npm i -g ${ constants.MODULE_GITHUB_URL }`); 
+}
+
+const uninstallFireEditorRepo = async () => {
+    await exec(`npm uninstall -g ${ constants.MODULE_GITHUB_URL }`); 
 }
 
 const getGlobalNpmRoot = async () => {
