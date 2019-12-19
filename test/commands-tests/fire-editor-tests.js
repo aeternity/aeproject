@@ -16,7 +16,7 @@ const maxSecondsToWaitProcess = 1000 * 60 * 5; // minutes
 
 const cwd = process.cwd();
 
-describe('AEproject contracts', () => {
+describe('AEproject Fire Editor', () => {
 
     before(async function () {
         // uninstall globally fire-editor
@@ -44,6 +44,11 @@ describe('AEproject contracts', () => {
                         clearTimeout(timeout);
                         resolve(true)
                     }
+                });
+
+                childProcess.stderr.on('data', data => {
+                    // console.log('err', data);
+                    reject(data);
                 });
             })
         }
@@ -73,6 +78,11 @@ describe('AEproject contracts', () => {
                         clearTimeout(timeout);
                         resolve(true)
                     }
+                });
+
+                childProcess.stderr.on('data', data => {
+                    // console.log('err', data);
+                    reject(data);
                 });
             })
         }
