@@ -19,6 +19,7 @@
   * [aeproject contracts](developer-documentation/aeproject-cli/contracts.md)   
   * [aeproject shape](developer-documentation/aeproject-cli/shapes.md)
   * [aeproject inspect](developer-documentation/aeproject-cli/tx-inspect.md)
+  * [aeproject fire-editor](developer-documentation/aeproject-cli/fire-editor.md)
 * [AEproject Utils](developer-documentation/aeproject-utils/README.md)
   * [aeproject-utils](developer-documentation/aeproject-utils/utils.md)
 * [AEproject Config](developer-documentation/aeproject-config/README.md)
