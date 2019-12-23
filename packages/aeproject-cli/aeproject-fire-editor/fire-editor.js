@@ -26,6 +26,8 @@ const infoMessages = constants.MESSAGES;
 
 const moduleName = constants.MODULE_NAME;
 
+const isWindowsPlatform = process.platform === 'win32';
+
 const run = async (options) => {
     
     try {
@@ -112,7 +114,15 @@ const getGlobalNpmRoot = async () => {
 }
 
 const startModule = async (shouldOpenInBrowser) => {
-    let childProcess = pureExec(constants.MODULE_START_CMD);
+    // let childProcess = pureExec(constants.MODULE_START_CMD);
+
+    let childProcess;
+    if (!isWindowsPlatform) {
+        childProcess = pureExec('yarn run start');
+    } else {
+        childProcess = pureExec('yarn run start-win');
+    }
+    
     childProcess.stdout.on('data', data => {
         console.log(data);
 
@@ -134,6 +144,13 @@ const startModule = async (shouldOpenInBrowser) => {
 
 const installModuleDependencies = async () => {
     await exec('npm i');
+
+    if (!isWindowsPlatform) {
+        await exec('npm run init');
+    } else {
+
+        await exec('npm run init-win');
+    }
 }
 
 module.exports = {
