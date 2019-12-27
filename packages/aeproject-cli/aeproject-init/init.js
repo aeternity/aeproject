@@ -28,6 +28,9 @@ const readFileRelative = utils.readFileRelative;
 
 const prompts = require('prompts');
 
+const fs = require('fs');
+const path = require('path');
+
 async function run (update) {
     if (update) {
         await updateAEprojectProjectLibraries(sdkVersion);
@@ -59,8 +62,44 @@ const createAEprojectProjectStructure = async (shape) => {
     print('===== AEproject was successfully initialized! =====');
 }
 
+const compareSdkVersions = async (_sdkVersion, cwd) => {
+    // get current sdk version
+    let userPackageJson = JSON.parse(fs.readFileSync(path.join(cwd, './package.json'), 'utf8'));
+    let userSdkVersion = userPackageJson.dependencies['@aeternity/aepp-sdk'];
+
+    if (userSdkVersion) {
+        let userVersioning = userSdkVersion.split('.');
+        let updateToVersioning = _sdkVersion.split('.');
+
+        let promptMessage = `Found newer or different version of sdk ${ userSdkVersion }. Keep it, instead of ${ _sdkVersion }?`;
+
+        for (let i = 0; i < 3; i++) {
+            let user = userVersioning[i];
+            let updateTo = updateToVersioning[i];
+
+            if (!isNaN(updateTo) && !isNaN(user)) {
+                if (parseInt(user) > parseInt(updateTo)) {
+                    if (await promptUpdate(promptMessage)) {
+                        _sdkVersion = userSdkVersion;
+                        break;
+                    }
+                }
+            } else if (!isNaN(updateTo) && isNaN(user)) {
+                if (await promptUpdate(promptMessage)) {
+                    _sdkVersion = userSdkVersion;
+                    break;
+                }
+            }
+        }
+    }
+
+    return _sdkVersion;
+}
+
 const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     print(`===== Updating AEproject files =====`);
+    
+    _sdkVersion = await compareSdkVersions(_sdkVersion, process.cwd());
 
     await setupDocker();
     await installAEproject();
@@ -265,6 +304,24 @@ async function prompt (error) {
     } else {
         console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
     }
+}
+
+async function promptUpdate (message) {
+
+    // // Prompt user to input data in console.
+    const response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: `${ message } (Y/n):`
+        // validate: value => value < 18 ? `some validation text` : true
+    });
+
+    let input = response.value;
+    if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y') {
+        return true;
+    } 
+    
+    return false;
 }
 
 module.exports = {
