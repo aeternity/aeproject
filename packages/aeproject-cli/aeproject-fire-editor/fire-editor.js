@@ -29,7 +29,7 @@ const moduleName = constants.MODULE_NAME;
 const isWindowsPlatform = process.platform === 'win32';
 
 const run = async (options) => {
-    
+
     try {
         let cwd = process.cwd();
         let npmGlobalPath = await getGlobalNpmRoot();
@@ -118,9 +118,9 @@ const startModule = async (shouldOpenInBrowser) => {
 
     let childProcess;
     if (!isWindowsPlatform) {
-        childProcess = pureExec('yarn run start');
+        childProcess = pureExec('npm run start');
     } else {
-        childProcess = pureExec('yarn run start-win');
+        childProcess = pureExec('npm run start-win');
     }
     
     childProcess.stdout.on('data', data => {
@@ -130,6 +130,11 @@ const startModule = async (shouldOpenInBrowser) => {
             let tokens = data.split(/\s+/);
             for (let index in tokens) {
                 if (tokens[index].startsWith('http')) {
+                    
+                    if(isWindowsPlatform){
+                        tokens[index] = tokens[index].replace('localhost', '127.0.0.1')
+                    }
+
                     open(tokens[index]);
                     break;
                 }
@@ -148,7 +153,6 @@ const installModuleDependencies = async () => {
     if (!isWindowsPlatform) {
         await exec('npm run init');
     } else {
-
         await exec('npm run init-win');
     }
 }
