@@ -69,6 +69,16 @@ function executeAndPassInput (cli, command, subcommand, inputParams = [], option
     });
 }
 
+function increaseSdkVersion (sdkVersion) {
+    let tokens = sdkVersion.split('.');
+    if (!isNaN(tokens[0])) {
+        let nextMajorVersion = parseInt(tokens[0]) + 1;
+        return nextMajorVersion + '.0.0';
+    }
+
+    return sdkVersion;
+}
+
 describe('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
@@ -234,7 +244,7 @@ describe('AEproject Init', () => {
     // set higher version of sdk. check output of executeAndPass, if prompt text contains higher version , test should be OK
     it("Should keep user's sdk version", async () => {
 
-        const highestSdkVersion = '8.0.0'
+        const highestSdkVersion = increaseSdkVersion(sdkVersion);
 
         await execute(constants.cliCommands.INIT, [], executeOptions);
 
