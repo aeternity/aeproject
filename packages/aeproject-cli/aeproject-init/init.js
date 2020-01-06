@@ -27,6 +27,9 @@ const writeFileRelative = utils.writeFileRelative;
 const readFileRelative = utils.readFileRelative;
 
 const prompts = require('prompts');
+const yaml = require('js-yaml');
+const fs = require('fs');
+const path = require('path');
 
 async function run (update) {
     if (update) {
@@ -62,7 +65,7 @@ const createAEprojectProjectStructure = async (shape) => {
 const updateAEprojectProjectLibraries = async (_sdkVersion) => {
     print(`===== Updating AEproject files =====`);
 
-    await setupDocker();
+    await setupDocker(true);
     await installAEproject();
     await installAeppSDK(_sdkVersion);
     await installYarn();
@@ -194,15 +197,87 @@ const setupDeploy = async (shape) => {
     }
 }
 
-const setupDocker = async () => {
-    print(`===== Creating docker directory =====`);
-    const dockerFilesSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerTemplateDir }`;
-    const copyOptions = {
-        overwrite: false
+const setDockerImageVersion = (pathToDockerYmlFile, dockerImage) => {
+    let doc = yaml.safeLoad(fs.readFileSync(pathToDockerYmlFile, 'utf8'));
+
+    let tokens = dockerImage.split(':');
+    let imageLiteral = tokens[0];
+
+    for (let i in doc.services) {
+        let image = doc.services[i].image;
+
+        if (image.startsWith(imageLiteral)) {
+            doc.services[i].image = dockerImage;
+        }
     }
 
+    let yamlStr = yaml.safeDump(doc);
+    fs.writeFileSync(pathToDockerYmlFile, yamlStr, 'utf8');
+}
+
+const setupDocker = async (isUpdate) => {
+    print(`===== Creating docker directory =====`);
+    
+    const dockerFilesSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerTemplateDir }`;
     const dockerNodeYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerNodeYmlFile }`;
 
+    const nodeTokens = constants.aeNodeImage.split(':');
+    const compilerTokens = constants.aeCompilerImage.split(':');
+
+    let nodeVersion = [];
+    let compilerVersion = [];
+    
+    // get user's version
+    if (isUpdate) {
+
+        const aeternityNodeImageLiteral = nodeTokens[0];
+        const aeternityCompilerImageLiteral = compilerTokens[0];
+
+        try {
+            // read user's node yml
+            let userNodeYmlPath = path.join(process.cwd(), constants.dockerNodeYmlFile);
+            let doc = yaml.safeLoad(fs.readFileSync(userNodeYmlPath, 'utf8'));
+
+            for (let i in doc.services) {
+                let image = doc.services[i].image;
+
+                if (image.startsWith(aeternityNodeImageLiteral)) {
+                    let imageTokens = image.split(':')
+                    let currentVersion = imageTokens[1];
+
+                    nodeVersion.push(currentVersion);  
+                }
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+
+        try {
+            // read user's compiler yml
+            let userCompilerYmlPath = path.join(process.cwd(), constants.dockerCompilerYmlFile);
+            let doc = yaml.safeLoad(fs.readFileSync(userCompilerYmlPath, 'utf8'));
+
+            for (let i in doc.services) {
+                let image = doc.services[i].image;
+
+                if (image.startsWith(aeternityCompilerImageLiteral)) {
+                    let imageTokens = image.split(':')
+                    let currentVersion = imageTokens[1];
+
+                    compilerVersion.push(currentVersion);
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    // set latest version
+    setDockerImageVersion(dockerNodeYmlFileSource, constants.aeNodeImage);
+
+    // update user's files
+    // docker-compose.yml - node config
     try {
         copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
     } catch (error) {
@@ -213,6 +288,21 @@ const setupDocker = async () => {
         }
     }
 
+    // docker-compose.compiler.yml - compiler config
+    const dockerCompilerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerCompilerYmlFile }`;
+    // set latest version
+    setDockerImageVersion(dockerCompilerYmlFileSource, constants.aeCompilerImage);
+    try {
+        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
+        } else {
+            throw Error(error);
+        }
+    }
+
+    // ./docker files
     try {
         copyFileOrDir(dockerFilesSource, constants.dockerFilesDestination);
     } catch (error) {
@@ -223,16 +313,72 @@ const setupDocker = async () => {
         }
     }
 
-    const dockerCompilerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerCompilerYmlFile }`;
-    try {
-        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
-    } catch (error) {
-        if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
-        } else {
-            throw Error(error);
+    // set user's version if newer
+    if (isUpdate) {
+
+        const aeternityNodeImageLiteral = nodeTokens[0];
+        const aeternityCompilerImageLiteral = compilerTokens[0];
+
+        const defaultNodeVersion = nodeTokens[1];
+        const defaultCompilerVersion = compilerTokens[1];
+        
+        try {
+            // read user's node yml
+            let userNodeYmlPath = path.join(process.cwd(), constants.dockerNodeYmlFile);
+            let doc = yaml.safeLoad(fs.readFileSync(userNodeYmlPath, 'utf8'));
+
+            let index = 0;
+            for (let i in doc.services) {
+                let image = doc.services[i].image;
+
+                if (image.startsWith(aeternityNodeImageLiteral)) {
+                    let currentVersion = nodeVersion[index];
+
+                    const promptMessage = `Default node version is ${ defaultNodeVersion }, found ${ currentVersion }. Do you want to keep ${ currentVersion } instead of ${ defaultNodeVersion }?`;
+
+                    let versionToSet = await compareVersion(currentVersion, defaultNodeVersion, promptMessage);
+
+                    doc.services[i].image = `${ aeternityNodeImageLiteral }:${ versionToSet }`;
+                }
+
+                index++;
+            }
+
+            let yamlStr = yaml.safeDump(doc);
+            fs.writeFileSync(userNodeYmlPath, yamlStr, 'utf8');
+
+        } catch (e) {
+            console.log(e);
         }
-    }
+
+        try {
+            // read user's compiler yml
+            let userCompilerYmlPath = path.join(process.cwd(), constants.dockerCompilerYmlFile);
+            let doc = yaml.safeLoad(fs.readFileSync(userCompilerYmlPath, 'utf8'));
+            let index = 0;
+            for (let i in doc.services) {
+                let image = doc.services[i].image;
+
+                if (image.startsWith(aeternityCompilerImageLiteral)) {
+                    let currentVersion = compilerVersion[index];
+
+                    const promptMessage = `Default compiler version is ${ defaultCompilerVersion }, found ${ currentVersion }. Do you want to keep ${ currentVersion } instead of ${ defaultCompilerVersion }?`;
+
+                    let versionToSet = await compareVersion(currentVersion, defaultCompilerVersion, promptMessage);
+
+                    doc.services[i].image = `${ aeternityCompilerImageLiteral }:${ versionToSet }`;
+                }
+
+                index++;
+            }
+
+            let yamlStr = yaml.safeDump(doc);
+            fs.writeFileSync(userCompilerYmlPath, yamlStr, 'utf8');
+
+        } catch (e) {
+            console.log(e);
+        }
+    } 
 }
 
 const addIgnoreFile = () => {
@@ -265,6 +411,50 @@ async function prompt (error) {
     } else {
         console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
     }
+}
+
+async function promptUpdate (message) {
+
+    // // Prompt user to input data in console.
+    const response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: `${ message } (Y/n):`
+        // validate: value => value < 18 ? `some validation text` : true
+    });
+
+    let input = response.value;
+    if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y') {
+        return true;
+    } 
+
+    return false;
+}
+
+const compareVersion = async (currentVersion, defaultVersion, promptMessage) => {
+    let currentVersionTokens = currentVersion.replace('v', '').split('.');
+    let defaultVersionTokens = defaultVersion.replace('v', '').split('.');
+
+    for (let i = 0; i < 3; i++) {
+        let user = currentVersionTokens[i];
+        let updateTo = defaultVersionTokens[i];
+
+        if (!isNaN(updateTo) && !isNaN(user)) {
+            if (parseInt(user) > parseInt(updateTo)) {
+                if (await promptUpdate(promptMessage)) {
+                    defaultVersion = currentVersion;
+                    break;
+                }
+            }
+        } else if (!isNaN(updateTo) && isNaN(user)) {
+            if (await promptUpdate(promptMessage)) {
+                defaultVersion = currentVersion;
+                break;
+            }
+        }
+    }
+
+    return defaultVersion;
 }
 
 module.exports = {
