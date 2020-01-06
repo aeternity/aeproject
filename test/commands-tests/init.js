@@ -6,7 +6,11 @@ const fs = require('fs-extra')
 const constants = require('../constants.json')
 const utilsPackageJson = require('../../packages/aeproject-utils/package.json')
 const aeprojectLibVersion = require('../../packages/aeproject-lib/package.json').version;
-const path = require('path')
+const path = require('path');
+const yaml = require('js-yaml');
+const initConstants = require('./../../packages/aeproject-cli/aeproject-init/constants.json');
+const nodeVersion = initConstants.aeNodeImage;
+const compilerVersion = initConstants.aeCompilerImage;
 
 let executeOptions = {
     cwd: process.cwd() + constants.initTestsFolderPath
@@ -64,7 +68,17 @@ function executeAndPassInput (cli, command, subcommand, inputParams = [], option
     });
 }
 
-describe('AEproject Init', () => {
+function increaseVersion (version) {
+    let tokens = version.replace('v', '').split('.');
+    if (!isNaN(tokens[0])) {
+        let nextMajorVersion = parseInt(tokens[0]) + 1;
+        return nextMajorVersion + '.0.0';
+    }
+
+    return version;
+}
+
+describe.only('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -226,7 +240,141 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
+    it.only("Should update docker-compose.yml and use user's node version", async () => {
+        // await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        console.log(executeOptions.cwd);
+        let nodeDockerComposePath = path.join(executeOptions.cwd, 'docker-compose.yml')
+
+        let doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
+
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith('aeternity/aeternity')) {
+                // let currentVersion = doc.services[i];
+
+                // const promptMessage = `Default node version is ${ defaultNodeVersion }, found ${ currentVersion }. Do you want to keep ${ currentVersion } instead of ${ defaultNodeVersion }?`;
+
+                // let versionToSet = await compareVersion(currentVersion, defaultNodeVersion, promptMessage);
+
+                // doc.services[i].image = `${ aeternityNodeImageLiteral }:${ versionToSet }`;
+                console.log(nodeVersion);
+                doc.services[i].image = `aeternity/aeternity:v${ increaseVersion(nodeVersion.split(':')[1]) }`;
+                console.log(image);
+            }
+        }
+
+        let yamlStr = yaml.safeDump(doc);
+        fs.writeFileSync(nodeDockerComposePath, yamlStr, 'utf8');
+
+        return
+        // Arrange
+        const editedNodeContent = "edited node content"
+        const editedCompilerContent = "edited compiler content"
+        const editedDockerConfigContent = "edited content in docker config"
+        const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
+        
+        // Act
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
+        
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
+        
+        assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
+
+        // assert
+        let editedDockerComposeNodeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
+        let editedDockerComposeCompilerYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, 'utf8')
+        let editedDockerAeNodeYaml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, 'utf8')
+
+        let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+        const sdkVersion = utilsPackageJson.dependencies['@aeternity/aepp-sdk'];
+        const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk'];
+
+        assert.notEqual(editedDockerComposeNodeYml, editedNodeContent);
+        assert.notEqual(editedDockerComposeCompilerYml, editedCompilerContent);
+        assert.notEqual(editedDockerAeNodeYaml, editedDockerConfigContent);
+
+        assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
+
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeNodeYml }`), "docker-compose.yml doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeCompilerYml }`), "docker-compose.compiler.yml doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.testContractPath }`), "test contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.deployScriptsPath }`), "deploy scripts doesn't exists");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsPath }`), "example contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode1 }`), "docker node node1 doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode2 }`), "docker node node2 doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode3 }`), "docker node node3 doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
+        
+    });
+
+    xit("Should update docker-compose.compiler.yml and use user's node version ", async () => {
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        // Arrange
+        const editedNodeContent = "edited node content"
+        const editedCompilerContent = "edited compiler content"
+        const editedDockerConfigContent = "edited content in docker config"
+        const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
+        
+        // Act
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
+        fs.writeFile(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
+        
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
+        
+        assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
+
+        // assert
+        let editedDockerComposeNodeYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, 'utf8')
+        let editedDockerComposeCompilerYml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, 'utf8')
+        let editedDockerAeNodeYaml = fs.readFileSync(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, 'utf8')
+
+        let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
+        const sdkVersion = utilsPackageJson.dependencies['@aeternity/aepp-sdk'];
+        const sdkVersionInProject = projectPackageJson.dependencies['@aeternity/aepp-sdk'];
+
+        assert.notEqual(editedDockerComposeNodeYml, editedNodeContent);
+        assert.notEqual(editedDockerComposeCompilerYml, editedCompilerContent);
+        assert.notEqual(editedDockerAeNodeYaml, editedDockerConfigContent);
+
+        assert.equal(sdkVersion, sdkVersionInProject, "sdk version is not updated properly");
+
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageJson }`), "package.json doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.packageLockJson }`), "package-lock.json doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeNodeYml }`), "docker-compose.yml doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerComposeCompilerYml }`), "docker-compose.compiler.yml doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.testContractPath }`), "test contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.deployScriptsPath }`), "deploy scripts doesn't exists");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsPath }`), "example contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode1 }`), "docker node node1 doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode2 }`), "docker node node2 doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode3 }`), "docker node node3 doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
+        
+    });
+
     afterEach(async () => {
-        fs.removeSync(`.${ constants.initTestsFolderPath }`);
+        // fs.removeSync(`.${ constants.initTestsFolderPath }`);
     })
 })
