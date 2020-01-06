@@ -2,7 +2,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const fs = require('fs-extra');
 const path = require('path');
-const opn = require('opn');
+const opn = require('open');
 const {
     spawn
 } = require('promisify-child-process');
