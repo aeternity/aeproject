@@ -144,7 +144,8 @@ class EnvService {
                 nodeService.save(this._unit);
                 break;
             case 'node':
-                runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
+                // runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
+                runCommand = exec(`export NODE_TAG=v5.0.2 && docker-compose -f docker-compose.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             default:
