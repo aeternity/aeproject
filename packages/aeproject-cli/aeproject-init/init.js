@@ -77,14 +77,14 @@ const compareSdkVersions = async (_sdkVersion, cwd) => {
             let user = userVersioning[i];
             let updateTo = updateToVersioning[i];
 
-            if (!isNaN(updateTo) && !isNaN(user)) {
+            if (!isNaN(user)) {
                 if (parseInt(user) > parseInt(updateTo)) {
                     if (await promptUpdate(promptMessage)) {
                         _sdkVersion = userSdkVersion;
                         break;
                     }
                 }
-            } else if (!isNaN(updateTo) && isNaN(user)) {
+            } else {
                 if (await promptUpdate(promptMessage)) {
                     _sdkVersion = userSdkVersion;
                     break;
