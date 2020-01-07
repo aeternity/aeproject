@@ -220,6 +220,7 @@ const setupDocker = async (isUpdate) => {
     
     const dockerFilesSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerTemplateDir }`;
     const dockerNodeYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerNodeYmlFile }`;
+    const dockerCompilerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerCompilerYmlFile }`;
 
     const nodeTokens = constants.aeNodeImage.split(':');
     const compilerTokens = constants.aeCompilerImage.split(':');
@@ -227,7 +228,6 @@ const setupDocker = async (isUpdate) => {
     let nodeVersion = [];
     let compilerVersion = [];
     
-    // get user's version
     if (isUpdate) {
 
         const aeternityNodeImageLiteral = nodeTokens[0];
@@ -271,11 +271,32 @@ const setupDocker = async (isUpdate) => {
         } catch (e) {
             console.log(e);
         }
+    } else {
+        nodeVersion.push(nodeTokens[1]);
+        compilerVersion.push(compilerTokens[1]);
     }
 
     // set latest version
-    setDockerImageVersion(dockerNodeYmlFileSource, constants.aeNodeImage);
+    const aeternityNodeImageLiteral = nodeTokens[0];
+    const aeternityCompilerImageLiteral = compilerTokens[0];
 
+    const defaultNodeVersion = nodeTokens[1];
+    const defaultCompilerVersion = compilerTokens[1];
+
+    const promptNodeMessage = `Default node version is ${ defaultNodeVersion }, found ${ nodeVersion[0] }. Do you want to keep current .yml file with node version: ${ nodeVersion[0] } instead of default one with ${ defaultNodeVersion }?`;
+    let nodeVersionToSet = await compareVersion(nodeVersion[0], defaultNodeVersion, promptNodeMessage);
+
+    const promptCompilerMessage = `Default compiler version is ${ defaultCompilerVersion }, found ${ compilerVersion[0] }. Do you want to keep current .yml file with compiler version: ${ compilerVersion[0] } instead of default one with ${ defaultCompilerVersion }?`;
+    let compilerVersionToSet = await compareVersion(compilerVersion[0], defaultCompilerVersion, promptCompilerMessage);
+
+    if (nodeVersionToSet !== defaultNodeVersion) {
+        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:${ nodeVersionToSet }`);
+    }
+
+    if (compilerVersionToSet !== defaultCompilerVersion) {
+        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ compilerVersionToSet }`);
+    }
+    
     // update user's files
     // docker-compose.yml - node config
     try {
@@ -288,10 +309,6 @@ const setupDocker = async (isUpdate) => {
         }
     }
 
-    // docker-compose.compiler.yml - compiler config
-    const dockerCompilerYmlFileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.dockerCompilerYmlFile }`;
-    // set latest version
-    setDockerImageVersion(dockerCompilerYmlFileSource, constants.aeCompilerImage);
     try {
         copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
     } catch (error) {
@@ -313,72 +330,14 @@ const setupDocker = async (isUpdate) => {
         }
     }
 
-    // set user's version if newer
-    if (isUpdate) {
+    // set default image version if there are changes
+    if (nodeVersionToSet !== defaultNodeVersion) {
+        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:${ defaultNodeVersion }`);
+    }
 
-        const aeternityNodeImageLiteral = nodeTokens[0];
-        const aeternityCompilerImageLiteral = compilerTokens[0];
-
-        const defaultNodeVersion = nodeTokens[1];
-        const defaultCompilerVersion = compilerTokens[1];
-        
-        try {
-            // read user's node yml
-            let userNodeYmlPath = path.join(process.cwd(), constants.dockerNodeYmlFile);
-            let doc = yaml.safeLoad(fs.readFileSync(userNodeYmlPath, 'utf8'));
-
-            let index = 0;
-            for (let i in doc.services) {
-                let image = doc.services[i].image;
-
-                if (image.startsWith(aeternityNodeImageLiteral)) {
-                    let currentVersion = nodeVersion[index];
-
-                    const promptMessage = `Default node version is ${ defaultNodeVersion }, found ${ currentVersion }. Do you want to keep ${ currentVersion } instead of ${ defaultNodeVersion }?`;
-
-                    let versionToSet = await compareVersion(currentVersion, defaultNodeVersion, promptMessage);
-
-                    doc.services[i].image = `${ aeternityNodeImageLiteral }:${ versionToSet }`;
-                }
-
-                index++;
-            }
-
-            let yamlStr = yaml.safeDump(doc);
-            fs.writeFileSync(userNodeYmlPath, yamlStr, 'utf8');
-
-        } catch (e) {
-            console.log(e);
-        }
-
-        try {
-            // read user's compiler yml
-            let userCompilerYmlPath = path.join(process.cwd(), constants.dockerCompilerYmlFile);
-            let doc = yaml.safeLoad(fs.readFileSync(userCompilerYmlPath, 'utf8'));
-            let index = 0;
-            for (let i in doc.services) {
-                let image = doc.services[i].image;
-
-                if (image.startsWith(aeternityCompilerImageLiteral)) {
-                    let currentVersion = compilerVersion[index];
-
-                    const promptMessage = `Default compiler version is ${ defaultCompilerVersion }, found ${ currentVersion }. Do you want to keep ${ currentVersion } instead of ${ defaultCompilerVersion }?`;
-
-                    let versionToSet = await compareVersion(currentVersion, defaultCompilerVersion, promptMessage);
-
-                    doc.services[i].image = `${ aeternityCompilerImageLiteral }:${ versionToSet }`;
-                }
-
-                index++;
-            }
-
-            let yamlStr = yaml.safeDump(doc);
-            fs.writeFileSync(userCompilerYmlPath, yamlStr, 'utf8');
-
-        } catch (e) {
-            console.log(e);
-        }
-    } 
+    if (compilerVersionToSet !== defaultCompilerVersion) {
+        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ defaultCompilerVersion }`);
+    }
 }
 
 const addIgnoreFile = () => {
@@ -432,6 +391,11 @@ async function promptUpdate (message) {
 }
 
 const compareVersion = async (currentVersion, defaultVersion, promptMessage) => {
+
+    if (!currentVersion) {
+        return defaultVersion;
+    }
+
     let currentVersionTokens = currentVersion.replace('v', '').split('.');
     let defaultVersionTokens = defaultVersion.replace('v', '').split('.');
 

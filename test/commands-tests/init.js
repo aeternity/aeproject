@@ -78,7 +78,7 @@ function increaseVersion (version) {
     return version;
 }
 
-describe.only('AEproject Init', () => {
+describe('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
@@ -153,10 +153,10 @@ describe.only('AEproject Init', () => {
         const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
         
         // Act
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
-        
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
+
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
         
         assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
@@ -262,7 +262,7 @@ describe.only('AEproject Init', () => {
         let yamlStr = yaml.safeDump(doc);
         fs.writeFileSync(nodeDockerComposePath, yamlStr, 'utf8');
 
-        await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n', 'y\n', 'y\n'], executeOptions);
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions);
 
         doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
         for (let i in doc.services) {
@@ -279,11 +279,11 @@ describe.only('AEproject Init', () => {
         const newerCompilerVersion = `${ compilerImage }:v${ increaseVersion(compilerVersion.split(':')[1]) }`;
 
         await execute(constants.cliCommands.INIT, [], executeOptions);
-        
-        let nodeDockerComposePath = path.join(executeOptions.cwd, constants.testsFiles.dockerComposeCompilerYml)
+
+        let compilerDockerComposePath = path.join(executeOptions.cwd, constants.testsFiles.dockerComposeCompilerYml)
 
         // get and set newer version of ae compiler
-        let doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
+        let doc = yaml.safeLoad(fs.readFileSync(compilerDockerComposePath, 'utf8'));
         for (let i in doc.services) {
             let image = doc.services[i].image;
 
@@ -293,11 +293,11 @@ describe.only('AEproject Init', () => {
         }
 
         let yamlStr = yaml.safeDump(doc);
-        fs.writeFileSync(nodeDockerComposePath, yamlStr, 'utf8');
+        fs.writeFileSync(compilerDockerComposePath, yamlStr, 'utf8');
 
         await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions);
 
-        doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
+        doc = yaml.safeLoad(fs.readFileSync(compilerDockerComposePath, 'utf8'));
         for (let i in doc.services) {
             let image = doc.services[i].image;
 
