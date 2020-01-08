@@ -300,7 +300,7 @@ const setupDocker = async (isUpdate) => {
     // update user's files
     // docker-compose.yml - node config
     try {
-        copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
+        copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination, { overwrite: nodeVersionToSet !== defaultNodeVersion });
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
@@ -310,7 +310,7 @@ const setupDocker = async (isUpdate) => {
     }
 
     try {
-        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
+        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, { overwrite: nodeVersionToSet !== defaultNodeVersion });
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
