@@ -6,7 +6,6 @@ const fs = require('fs-extra')
 const constants = require('../constants.json')
 const utilsPackageJson = require('../../packages/aeproject-utils/package.json')
 const aeprojectLibVersion = require('../../packages/aeproject-lib/package.json').version;
-const path = require('path')
 
 let executeOptions = {
     cwd: process.cwd() + constants.initTestsFolderPath
