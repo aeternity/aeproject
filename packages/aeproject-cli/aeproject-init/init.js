@@ -297,25 +297,29 @@ const setupDocker = async (isUpdate) => {
         setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ compilerResult.version }`);
     }
 
-    // update user's files
+    // PS: update user's files only if it choose default version
     // docker-compose.yml - node config
-    try {
-        copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination, { overwrite: nodeResult.isUserVersionGreater });
-    } catch (error) {
-        if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
-        } else {
-            throw Error(error);
+    if (nodeResult.version === defaultNodeVersion) {
+        try {
+            copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination, { overwrite: nodeResult.isUserVersionGreater });
+        } catch (error) {
+            if (error.message.includes('already exists')) {
+                await prompt(error, copyFileOrDir, dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
+            } else {
+                throw Error(error);
+            }
         }
     }
 
-    try {
-        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, { overwrite: compilerResult.isUserVersionGreater });
-    } catch (error) {
-        if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
-        } else {
-            throw Error(error);
+    if (compilerResult.version === defaultCompilerVersion) {
+        try {
+            copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, { overwrite: compilerResult.isUserVersionGreater });
+        } catch (error) {
+            if (error.message.includes('already exists')) {
+                await prompt(error, copyFileOrDir, dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
+            } else {
+                throw Error(error);
+            }
         }
     }
 
