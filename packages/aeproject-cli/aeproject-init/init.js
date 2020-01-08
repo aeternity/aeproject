@@ -284,23 +284,23 @@ const setupDocker = async (isUpdate) => {
     const defaultCompilerVersion = compilerTokens[1];
 
     const promptNodeMessage = `Default node version is ${ defaultNodeVersion }, found ${ nodeVersion[0] }. Do you want to keep current .yml file with node version: ${ nodeVersion[0] } instead of default one with ${ defaultNodeVersion }?`;
-    let nodeVersionToSet = await compareVersion(nodeVersion[0], defaultNodeVersion, promptNodeMessage);
+    let nodeResult = await compareVersion(nodeVersion[0], defaultNodeVersion, promptNodeMessage);
 
     const promptCompilerMessage = `Default compiler version is ${ defaultCompilerVersion }, found ${ compilerVersion[0] }. Do you want to keep current .yml file with compiler version: ${ compilerVersion[0] } instead of default one with ${ defaultCompilerVersion }?`;
-    let compilerVersionToSet = await compareVersion(compilerVersion[0], defaultCompilerVersion, promptCompilerMessage);
+    let compilerResult = await compareVersion(compilerVersion[0], defaultCompilerVersion, promptCompilerMessage);
 
-    if (nodeVersionToSet !== defaultNodeVersion) {
-        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:${ nodeVersionToSet }`);
+    if (nodeResult.version !== defaultNodeVersion) {
+        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:${ nodeResult.version }`);
     }
 
-    if (compilerVersionToSet !== defaultCompilerVersion) {
-        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ compilerVersionToSet }`);
+    if (compilerResult.version !== defaultCompilerVersion) {
+        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ compilerResult.version }`);
     }
-    
+
     // update user's files
     // docker-compose.yml - node config
     try {
-        copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination, { overwrite: nodeVersionToSet !== defaultNodeVersion });
+        copyFileOrDir(dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination, { overwrite: nodeResult.isUserVersionGreater });
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, dockerNodeYmlFileSource, constants.dockerNodeYmlFileDestination);
@@ -310,7 +310,7 @@ const setupDocker = async (isUpdate) => {
     }
 
     try {
-        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, { overwrite: nodeVersionToSet !== defaultNodeVersion });
+        copyFileOrDir(dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination, { overwrite: compilerResult.isUserVersionGreater });
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, dockerCompilerYmlFileSource, constants.dockerCompilerYmlFileDestination);
@@ -331,11 +331,11 @@ const setupDocker = async (isUpdate) => {
     }
 
     // set default image version if there are changes
-    if (nodeVersionToSet !== defaultNodeVersion) {
+    if (nodeResult.version !== defaultNodeVersion) {
         setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:${ defaultNodeVersion }`);
     }
 
-    if (compilerVersionToSet !== defaultCompilerVersion) {
+    if (compilerResult.version !== defaultCompilerVersion) {
         setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ defaultCompilerVersion }`);
     }
 }
@@ -367,9 +367,12 @@ async function prompt (error) {
         funcToExecute(...args.slice(2), {
             overwrite: true
         });
-    } else {
-        console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
-    }
+
+        return true;
+    } 
+    
+    console.log(`'${ error.message.replace(' already exists.', '') }' will not be overwritten.`);
+    return false;
 }
 
 async function promptUpdate (message) {
@@ -392,8 +395,13 @@ async function promptUpdate (message) {
 
 const compareVersion = async (currentVersion, defaultVersion, promptMessage) => {
 
+    let result = {
+        version: defaultVersion,
+        isUserVersionGreater: false
+    }
+
     if (!currentVersion) {
-        return defaultVersion;
+        return result;
     }
 
     let currentVersionTokens = currentVersion.replace('v', '').split('.');
@@ -405,20 +413,24 @@ const compareVersion = async (currentVersion, defaultVersion, promptMessage) => 
 
         if (!isNaN(updateTo) && !isNaN(user)) {
             if (parseInt(user) > parseInt(updateTo)) {
+                result.isUserVersionGreater = true;
                 if (await promptUpdate(promptMessage)) {
-                    defaultVersion = currentVersion;
+                    // defaultVersion = currentVersion;
+                    result.version = currentVersion;
                     break;
                 }
             }
         } else if (!isNaN(updateTo) && isNaN(user)) {
+            result.isUserVersionGreater = true;
             if (await promptUpdate(promptMessage)) {
-                defaultVersion = currentVersion;
+                // defaultVersion = currentVersion;
+                result.version = currentVersion;
                 break;
             }
         }
     }
 
-    return defaultVersion;
+    return result;
 }
 
 module.exports = {
