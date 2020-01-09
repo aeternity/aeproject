@@ -87,7 +87,7 @@ async function linkPackages () {
     ])
 }
 
-describe('AEproject History', async () => {
+describe.only('AEproject History', async () => {
 
     describe('Log store service tests', () => {
 
@@ -259,7 +259,7 @@ describe('AEproject History', async () => {
         });
     });
 
-    describe('History - test deployment failures', async () => {
+    describe.only('History - test deployment failures', async () => {
         let currentCwd;
         let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
@@ -292,6 +292,10 @@ describe('AEproject History', async () => {
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.START]);
 
             await linkLocalPackages()
+        });
+
+        it.only('test', async () => {
+
         });
 
         it('log should have additional info like error, init state and options', async () => {
@@ -396,7 +400,7 @@ describe('AEproject History', async () => {
 
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP]);
 
-            fsExtra.removeSync(tempTestPath);
+            // fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
         });
     });
