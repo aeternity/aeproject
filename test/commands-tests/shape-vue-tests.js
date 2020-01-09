@@ -38,8 +38,6 @@ describe('AEproject Shape Vue', async () => {
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.nodeModules)), "node modules folder doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerEntryPoint)), "docker entrypoint.sh doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockernodeNode1)), "docker node node1 doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockernodeNode2)), "docker node node2 doesn't exist");
-        assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockernodeNode3)), "docker node node3 doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerHealthCheck)), "docker healtcheck.sh doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerNginxCors)), "docker nginx-cors.conf doesn't exist");
         assert.isTrue(fs.existsSync(path.join(workingDir, constants.testsFiles.dockerNginxDefault)), "docker nginx-default doesn't exist");

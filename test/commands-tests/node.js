@@ -37,7 +37,7 @@ const isImageRunningOpts = {
     options: executeOptions
 }
 
-describe("AEproject Node and Compiler Tests", async () => {
+describe.only("AEproject Node and Compiler Tests", async () => {
 
     before(async () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
@@ -46,14 +46,17 @@ describe("AEproject Node and Compiler Tests", async () => {
 
     describe('AEproject Env', () => {
         before(async () => {
-            await execute(constants.cliCommands.ENV, [], executeOptions);
+            let a = await execute(constants.cliCommands.ENV, [], executeOptions);
+            console.log('>>>> ENV');
+            console.log(a);
         })
 
-        it('Should start the node successfully', async () => {
+        it.only('Should start the node successfully', async () => {
             // We need to change directory where docker-compose config is located, so we can gather proper information for the node
             process.chdir(path.resolve(nodeTestDir))
-
+            console.log(isImageRunningOpts.dockerImage);
             let running = await isImageRunning(isImageRunningOpts.dockerImage);
+            // let running = await isImageRunning('aeternity/aeternity');
 
             assert.isTrue(running, "node wasn't started properly");
 

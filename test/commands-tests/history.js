@@ -87,7 +87,7 @@ async function linkPackages () {
     ])
 }
 
-describe.only('AEproject History', async () => {
+describe('AEproject History', async () => {
 
     describe('Log store service tests', () => {
 
@@ -259,7 +259,7 @@ describe.only('AEproject History', async () => {
         });
     });
 
-    describe.only('History - test deployment failures', async () => {
+    describe('History - test deployment failures', async () => {
         let currentCwd;
         let tempTestPath = path.join(process.cwd(), TEMP_TEST_PATH);
 
@@ -292,10 +292,6 @@ describe.only('AEproject History', async () => {
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.START]);
 
             await linkLocalPackages()
-        });
-
-        it.only('test', async () => {
-
         });
 
         it('log should have additional info like error, init state and options', async () => {
