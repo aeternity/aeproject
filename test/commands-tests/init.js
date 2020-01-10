@@ -93,7 +93,7 @@ function increaseVersion (version) {
     return version;
 }
 
-describe('AEproject Init', () => {
+describe.only('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
