@@ -289,7 +289,7 @@ describe.only('AEproject Init', () => {
         }
     });
 
-    it("Should update docker-compose.compiler.yml and use user's compiler version ", async () => {
+    xit("Should update docker-compose.compiler.yml and use user's compiler version ", async () => {
         const compilerImage = 'aeternity/aesophia_http';
         const newerCompilerVersion = `${ compilerImage }:v${ increaseVersion(compilerVersion.split(':')[1]) }`;
 
@@ -322,7 +322,7 @@ describe.only('AEproject Init', () => {
         }
     });
     // set higher version of sdk. check output of executeAndPass, if prompt text contains higher version , test should be OK
-    xit("Should keep user's sdk version", async () => {
+    it("Should keep user's sdk version", async () => {
 
         const highestSdkVersion = increaseSdkVersion(sdkVersion);
 
