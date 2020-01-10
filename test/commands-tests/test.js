@@ -150,7 +150,7 @@ describe('AEproject Test', () => {
         }
     })
 
-    describe('AEproject Test - test "test" command', () => {
+    describe.only('AEproject Test - test "test" command', () => {
 
         const expectedResultFromTestCommand = '"npm run test" command successfully execute exampleTest.js file';
         const expectedResultFromAeTestCommand = '"npm run aetest" command successfully execute exampleTest.js file';
