@@ -57,6 +57,8 @@ describe('Transaction inspector tests', async function () {
              txType: 'spendTx' }`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim());
+            // console.log(expectedResArr)
+            // console.log(result);
 
             expectedResArr.map(x => {
                 if (!result.includes(x)) {

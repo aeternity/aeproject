@@ -72,7 +72,7 @@ describe('AEproject contracts', () => {
         contractsResult = spawn(contractsConstants.AEPROJECT_CLI_COMMAND, [
             constants.cliCommands.CONTRACTS,
             constants.cliCommandsOptions.NODE_URL,
-            contractsConstants.SPECIFIC_LOCAL_NODE_URL,
+            contractsConstants.DEFAULT_LOCAL_NODE_URL,
             constants.cliCommandsOptions.IGNORE_OPENING
         ], {});
 
@@ -80,7 +80,7 @@ describe('AEproject contracts', () => {
         await timeout(contractsConstants.STARTING_AEPP_TIMEOUT);
         const logContent = fs.readFileSync(contractsConstants.LOG_FILE, 'utf8');
 
-        assert.include(logContent, contractsConstants.SPECIFIC_LOCAL_NODE_URL);
+        assert.include(logContent, contractsConstants.DEFAULT_LOCAL_NODE_URL);
         assert.include(logContent, contractsConstants.LOCALHOST_SUCCESS);
         fs.removeSync(contractsConstants.LOG_FILE);
     });

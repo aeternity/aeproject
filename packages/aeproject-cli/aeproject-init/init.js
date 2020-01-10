@@ -473,24 +473,6 @@ const compareVersion = async (currentVersion, defaultVersion, promptMessage) => 
     return result;
 }
 
-async function promptUpdate (message) {
-
-    // // Prompt user to input data in console.
-    const response = await prompts({
-        type: 'text',
-        name: 'value',
-        message: `${ message } (Y/n):`
-        // validate: value => value < 18 ? `some validation text` : true
-    });
-
-    let input = response.value;
-    if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y') {
-        return true;
-    } 
-    
-    return false;
-}
-
 module.exports = {
     run,
     createAEprojectProjectStructure
