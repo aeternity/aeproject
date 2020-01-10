@@ -79,7 +79,7 @@ function increaseSdkVersion (sdkVersion) {
     return sdkVersion;
 }
 
-describe.only('AEproject Init', () => {
+describe('AEproject Init', () => {
     beforeEach(async () => {
         fs.ensureDirSync(`.${ constants.initTestsFolderPath }`)
     });
