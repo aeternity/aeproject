@@ -255,7 +255,7 @@ describe.only('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
-    it("Should update docker-compose.yml and use user's node version", async () => {
+    xit("Should update docker-compose.yml and use user's node version", async () => {
 
         const nodeImage = 'aeternity/aeternity';
         const newerNodeVersion = `${ nodeImage }:v${ increaseVersion(nodeVersion.split(':')[1]) }`;
