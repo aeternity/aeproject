@@ -183,8 +183,7 @@ const addFireEditor = (program) => {
         .command('fire-editor')
         .description('Download, install and run locally the Fire Editor')
         .option('--update [update]', 'Update the Fire Editor Aepp with the latest version.')
-        .option('--ignoreBrowser [ignoreBrowser]', 'Ignore browser opening')
-        .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
+        .option('--ignoreOpenInBrowser [ignoreOpenInBrowser]', 'Ignore browser opening')
         .action(async (options) => {
             await fireEditor.run(options);
         })

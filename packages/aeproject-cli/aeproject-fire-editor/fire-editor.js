@@ -48,9 +48,7 @@ const run = async (options) => {
 
         // update Fire Editor Aepp
         if (options.update) {
-            // TODO: should we uninstall current version (maybe some settings or files would be deleted like contracts, accounts, etc.)
-            // or only we should update dependencies (npm i)
-            await uninstallFireEditorRepo();
+
             console.log(`====== ${ infoMessages.START_UPDATING } ======`);
             await installFireEditorRepo();
             process.chdir(modulePath);

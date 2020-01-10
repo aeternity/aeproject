@@ -7,4 +7,4 @@ The integration between the aeproject and the [Fire Editor aepp](http://fireedit
 The Fire Editor aepp runs on [http://localhost:4200/](http://localhost:4200/) by default. There are two optional parameters to `aeproject fire-editor`:
 
 * --update - update the Fire Editor aepp with the latest version;
-* --ignoreBrowser (--ignorebrowser) - ignoring opening of the browser;
+* --ignoreOpenInBrowser - ignoring opening of the browser;
