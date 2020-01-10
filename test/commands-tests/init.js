@@ -11,6 +11,7 @@ const yaml = require('js-yaml');
 const initConstants = require('./../../packages/aeproject-cli/aeproject-init/constants.json');
 const nodeVersion = initConstants.aeNodeImage;
 const compilerVersion = initConstants.aeCompilerImage;
+const sdkVersion = require('./../../packages/aeproject-cli/aeproject-init/constants.json').sdkVersion;
 
 let executeOptions = {
     cwd: process.cwd() + constants.initTestsFolderPath
@@ -58,6 +59,10 @@ function executeAndPassInput (cli, command, subcommand, inputParams = [], option
             }
         });
 
+        child.stderr.on('data', (data) => {
+            console.log('err', data.toString('utf8'));
+        });
+
         for (let param in inputParams) {
             setTimeout(() => {
                 child.stdin.write(inputParams[param]);
@@ -66,6 +71,16 @@ function executeAndPassInput (cli, command, subcommand, inputParams = [], option
             timeout += 2000;
         }
     });
+}
+
+function increaseSdkVersion (sdkVersion) {
+    let tokens = sdkVersion.split('.');
+    if (!isNaN(tokens[0])) {
+        let nextMajorVersion = parseInt(tokens[0]) + 1;
+        return nextMajorVersion + '.0.0';
+    }
+
+    return sdkVersion;
 }
 
 function increaseVersion (version) {
@@ -114,7 +129,7 @@ describe('AEproject Init', () => {
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
 
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
 
         delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
@@ -131,7 +146,7 @@ describe('AEproject Init', () => {
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^1.0.3";
 
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
 
         // we need to delete the allocated memory cache for this file, otherwise we could not fetch the updated data.
@@ -306,6 +321,24 @@ describe('AEproject Init', () => {
             }
         }
     });
+    // set higher version of sdk. check output of executeAndPass, if prompt text contains higher version , test should be OK
+    it("Should keep user's sdk version", async () => {
+
+        const highestSdkVersion = increaseSdkVersion(sdkVersion);
+
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let packageJson = fs.readFileSync(path.join(executeOptions.cwd, './package.json'), 'utf8');
+        packageJson = packageJson.replace(`"@aeternity/aepp-sdk": "${ sdkVersion }",`, `"@aeternity/aepp-sdk": "${ highestSdkVersion }",`)
+
+        fs.writeFileSync(path.join(executeOptions.cwd, './package.json'), packageJson);
+
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions)
+
+        let isSdkPrompt = result.indexOf(`Found newer or different version of sdk ${ highestSdkVersion }. Keep it, instead of ${ sdkVersion }?`) >= 0;
+
+        assert.isOk(isSdkPrompt, 'Missing prompt for keeping user version')
+    })
 
     afterEach(async () => {
         fs.removeSync(`.${ constants.initTestsFolderPath }`);
