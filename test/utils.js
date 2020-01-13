@@ -95,10 +95,6 @@ async function getInfo (image, options) {
     let compilerPath = nodeService.getCompilerPath();
 
     if (image && nodePath && compilerPath) {
-        console.log(10)
-        console.log(nodePath)
-        console.log(compilerPath)
-        console.log('<<<<')
         return spawn('docker-compose', [
             '-f',
             `${ nodePath }`,
@@ -107,13 +103,10 @@ async function getInfo (image, options) {
             'ps'
         ], options);
     } else if (image.indexOf('node') >= 0 && nodePath) {
-        console.log(20)
         return spawn('docker-compose', ['-f', `${ nodePath }`, 'ps'], options);
     } else if (image.indexOf('compiler') >= 0 && compilerPath) {
-        console.log(30)
         return spawn('docker-compose', ['-f', `${ compilerPath }`, 'ps'], options);
     } else {
-        console.log(40)
         return spawn('docker-compose', [
             '-f',
             `${ 'docker-compose.yml' }`,
