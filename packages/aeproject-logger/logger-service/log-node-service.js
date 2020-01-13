@@ -26,8 +26,6 @@ class LogNodeService {
     }
 
     save (unit) {
-        console.log('this._nodeStore')
-        console.log(this._nodeStore)
         if (unit === 'compiler') {
             return this._nodeStore.writeCompilerPathToStore()
             

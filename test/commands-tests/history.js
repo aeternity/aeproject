@@ -396,7 +396,7 @@ describe('AEproject History', async () => {
 
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP]);
 
-            // fsExtra.removeSync(tempTestPath);
+            fsExtra.removeSync(tempTestPath);
             process.chdir(currentCwd);
         });
     });

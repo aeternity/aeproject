@@ -26,8 +26,6 @@ class LogJSONNode {
     }
 
     writeNodePathToStore () {
-        console.log('this.nodeStorePath')
-        console.log(this.nodeStorePath)
         this.store.node = path.resolve(process.cwd() + dockerConfig)
         this.save()
     }

@@ -63,9 +63,7 @@ async function isImageRunning (image, options) {
 
         let result = await getInfo(image, options);
         let res = readSpawnOutput(result);
-        console.log('>>> image')
-        console.log(image)
-        console.log(res)
+
         if (res) {
             res = res.split('\n');
         }
