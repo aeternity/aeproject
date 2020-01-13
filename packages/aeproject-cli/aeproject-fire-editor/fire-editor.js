@@ -129,7 +129,7 @@ const startModule = async (shouldOpenInBrowser) => {
             for (let index in tokens) {
                 if (tokens[index].startsWith('http')) {
                     
-                    if(isWindowsPlatform){
+                    if (isWindowsPlatform) {
                         tokens[index] = tokens[index].replace('localhost', '127.0.0.1')
                     }
 

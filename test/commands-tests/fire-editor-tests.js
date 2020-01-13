@@ -47,7 +47,7 @@ describe.only('AEproject Fire Editor', () => {
                 });
 
                 childProcess.stderr.on('data', data => {
-                    // console.log('err', data);
+                    console.log('>> err', data);
                     reject(data);
                 });
             })
