@@ -30,7 +30,8 @@
 		"CONTRACTS": "contracts",
 		"SHAPE": "shape",
 		"CURL": "curl",
-		"INSPECT": "inspect"
+		"INSPECT": "inspect",
+		"FIRE_EDITOR": "fire-editor"
 	},
 	"cliSubCommands": {
 		"VUE": "vue",
