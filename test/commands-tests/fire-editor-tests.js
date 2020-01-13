@@ -12,7 +12,7 @@ const cliCmdOptions = constants.cliCommandsOptions;
 const fireEditorInfoMessages = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json').MESSAGES;
 const fireEditorName = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json').MODULE_NAME;
 
-const maxSecondsToWaitProcess = 1000 * 60 * 5; // minutes
+const maxSecondsToWaitProcess = 1000 * 60 * 10; // minutes
 
 const cwd = process.cwd();
 
@@ -47,7 +47,7 @@ describe.only('AEproject Fire Editor', () => {
                 });
 
                 childProcess.stderr.on('data', data => {
-                    console.log('>> err', data);
+                    console.log('>> err', data.toString('utf8'));
                     reject(data);
                 });
             })
