@@ -24,7 +24,7 @@ describe.only('AEproject Fire Editor', () => {
     });
 
     it('should install Fire Editor globally and run it', async function () {
-
+        // ignoreOpenInBrowser
         let promise = () => {
             return new Promise(function (resolve, reject) {
                 let childProcess = pureExec(`aeproject ${ cliCmds.FIRE_EDITOR } ${ cliCmdOptions.IGNORE_BROWSER }`)
@@ -36,7 +36,7 @@ describe.only('AEproject Fire Editor', () => {
                 }, maxSecondsToWaitProcess);
 
                 childProcess.stdout.on('data', data => {
-                    // console.log(data);
+                    console.log(data.toString('utf8'));
 
                     if (data.indexOf('open your browser on') >= 0) {
                         // kill -9 pId
