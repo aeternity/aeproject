@@ -16,7 +16,7 @@ const maxSecondsToWaitProcess = 1000 * 60 * 10; // minutes
 
 const cwd = process.cwd();
 
-describe.only('AEproject Fire Editor', () => {
+describe('AEproject Fire Editor', () => {
 
     before(async function () {
         // uninstall globally fire-editor
@@ -36,7 +36,7 @@ describe.only('AEproject Fire Editor', () => {
                 }, maxSecondsToWaitProcess);
 
                 childProcess.stdout.on('data', data => {
-                    console.log(data.toString('utf8'));
+                    // console.log(data.toString('utf8'));
 
                     if (data.indexOf('open your browser on') >= 0) {
                         // kill -9 pId
@@ -47,7 +47,7 @@ describe.only('AEproject Fire Editor', () => {
                 });
 
                 childProcess.stderr.on('data', data => {
-                    console.log('>> err', data.toString('utf8'));
+                    // console.log(data.toString('utf8'));
                     reject(data);
                 });
             })
