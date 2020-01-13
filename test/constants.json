@@ -54,8 +54,7 @@
 		"NETWORK": "--network",
 		"NETWORK_ID": "--networkId",
 		"LIMIT": "--limit",
-		"COMPILER_URL": "--compiler",
-		"IGNORE_BROWSER": "--ignoreOpenInBrowser"
+		"COMPILER_URL": "--compiler"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",

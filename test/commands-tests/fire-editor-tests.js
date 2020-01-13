@@ -27,7 +27,7 @@ describe('AEproject Fire Editor', () => {
         // ignoreOpenInBrowser
         let promise = () => {
             return new Promise(function (resolve, reject) {
-                let childProcess = pureExec(`aeproject ${ cliCmds.FIRE_EDITOR } ${ cliCmdOptions.IGNORE_BROWSER }`)
+                let childProcess = pureExec(`aeproject ${ cliCmds.FIRE_EDITOR } ${ cliCmdOptions.IGNORE_OPENING }`)
 
                 // if process stuck or something went wrong, this timeout will kill current command/process
                 let timeout = setTimeout(function () {
@@ -61,7 +61,7 @@ describe('AEproject Fire Editor', () => {
     it('should execute fire-editor cli command with update parameter correctly', async function () {
         let promise = () => {
             return new Promise(function (resolve, reject) {
-                let childProcess = pureExec(`aeproject ${ cliCmds.FIRE_EDITOR } ${ cliCmdOptions.UPDATE } ${ cliCmdOptions.IGNORE_BROWSER }`)
+                let childProcess = pureExec(`aeproject ${ cliCmds.FIRE_EDITOR } ${ cliCmdOptions.UPDATE } ${ cliCmdOptions.IGNORE_OPENING }`)
 
                 // if process stuck or something went wrong, this timeout will kill current command/process
                 let timeout = setTimeout(function () {
