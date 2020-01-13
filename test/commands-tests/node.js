@@ -54,7 +54,6 @@ describe("AEproject Node and Compiler Tests", async () => {
             process.chdir(path.resolve(nodeTestDir))
 
             let running = await isImageRunning(isImageRunningOpts.dockerImage);
-            // let running = await isImageRunning('aeternity/aeternity');
 
             assert.isTrue(running, "node wasn't started properly");
 
