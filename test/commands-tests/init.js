@@ -7,6 +7,10 @@ const constants = require('../constants.json')
 const utilsPackageJson = require('../../packages/aeproject-utils/package.json')
 const aeprojectLibVersion = require('../../packages/aeproject-lib/package.json').version;
 const path = require('path');
+const yaml = require('js-yaml');
+const initConstants = require('./../../packages/aeproject-cli/aeproject-init/constants.json');
+const nodeVersion = initConstants.aeNodeImage;
+const compilerVersion = initConstants.aeCompilerImage;
 const sdkVersion = require('./../../packages/aeproject-cli/aeproject-init/constants.json').sdkVersion;
 
 let executeOptions = {
@@ -77,6 +81,16 @@ function increaseSdkVersion (sdkVersion) {
     }
 
     return sdkVersion;
+}
+
+function increaseVersion (version) {
+    let tokens = version.replace('v', '').split('.');
+    if (!isNaN(tokens[0])) {
+        let nextMajorVersion = parseInt(tokens[0]) + 1;
+        return nextMajorVersion + '.0.0';
+    }
+
+    return version;
 }
 
 describe('AEproject Init', () => {
@@ -155,7 +169,7 @@ describe('AEproject Init', () => {
         fs.writeFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
         fs.writeFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
         fs.writeFileSync(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
-        
+
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
         
         assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
@@ -235,6 +249,72 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
 
+    xit("Should update docker-compose.yml and use user's node version", async () => {
+
+        const nodeImage = 'aeternity/aeternity';
+        const newerNodeVersion = `${ nodeImage }:v${ increaseVersion(nodeVersion.split(':')[1]) }`;
+
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let nodeDockerComposePath = path.join(executeOptions.cwd, constants.testsFiles.dockerComposeNodeYml)
+
+        // get and set newer version of ae node
+        let doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(nodeImage)) {
+                doc.services[i].image = newerNodeVersion;
+            }
+        }
+
+        let yamlStr = yaml.safeDump(doc);
+        fs.writeFileSync(nodeDockerComposePath, yamlStr, 'utf8');
+
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions);
+
+        doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(nodeImage)) {
+                assert.isOk(newerNodeVersion === image, "Mismatch of node's version");
+            }
+        }
+    });
+
+    xit("Should update docker-compose.compiler.yml and use user's compiler version ", async () => {
+        const compilerImage = 'aeternity/aesophia_http';
+        const newerCompilerVersion = `${ compilerImage }:v${ increaseVersion(compilerVersion.split(':')[1]) }`;
+
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let compilerDockerComposePath = path.join(executeOptions.cwd, constants.testsFiles.dockerComposeCompilerYml)
+
+        // get and set newer version of ae compiler
+        let doc = yaml.safeLoad(fs.readFileSync(compilerDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(compilerImage)) {
+                doc.services[i].image = newerCompilerVersion;
+            }
+        }
+
+        let yamlStr = yaml.safeDump(doc);
+        fs.writeFileSync(compilerDockerComposePath, yamlStr, 'utf8');
+
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions);
+
+        doc = yaml.safeLoad(fs.readFileSync(compilerDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(compilerImage)) {
+                assert.isOk(newerCompilerVersion === image, "Mismatch of compiler's version");
+            }
+        }
+    });
     // set higher version of sdk. check output of executeAndPass, if prompt text contains higher version , test should be OK
     it("Should keep user's sdk version", async () => {
 

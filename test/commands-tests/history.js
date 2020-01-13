@@ -291,7 +291,7 @@ describe('AEproject History', async () => {
             await execute(constants.cliCommands.INIT, []);
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.START]);
 
-            await linkLocalPackages()
+            // await linkLocalPackages()
         });
 
         it('log should have additional info like error, init state and options', async () => {
