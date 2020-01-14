@@ -30,8 +30,8 @@ const isWindowsPlatform = process.platform === 'win32';
 
 const run = async (options) => {
     let result = await isNodeVersionSupported();
-    return
-    if (!(result >= 0)) {
+
+    if (!(result >== 0)) {
         revert(result)
     } 
 
@@ -171,7 +171,7 @@ const isNodeVersionSupported = (fireEditorNodeVersion = constants.FIRE_EDITOR_NO
 
     for (var i = 0; i < fireEditorTokens.length; ++i) {
 
-        if (fireEditorTokens[i] == localNodeTokens[i]) {
+        if (fireEditorTokens[i] === localNodeTokens[i]) {
             continue;
         } else if (localNodeTokens[i] > fireEditorTokens[i]) {
             return 1;
