@@ -9,9 +9,13 @@ const constants = require('../constants.json');
 const cliCmds = constants.cliCommands;
 const cliCmdOptions = constants.cliCommandsOptions;
 
-const fireEditorInfoMessages = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json').MESSAGES;
-const fireEditorName = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json').MODULE_NAME;
+const fireEditorConstants = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json');
 
+const fireEditorInfoMessages = fireEditorConstants.MESSAGES;
+const fireEditorName = fireEditorConstants.MODULE_NAME;
+const fireEditorNodeVersion = fireEditorConstants.FIRE_EDITOR_NODE_VERSION;
+
+const isNodeVersionSupported = require('./../../packages/aeproject-cli/aeproject-fire-editor/fire-editor').isNodeVersionSupported;
 const maxSecondsToWaitProcess = 1000 * 60 * 10; // minutes
 
 const cwd = process.cwd();
@@ -22,6 +26,28 @@ describe('AEproject Fire Editor', () => {
         // uninstall globally fire-editor
         await exec(`npm uninstall -g ${ fireEditorName }`);
     });
+
+    it('should fail if node version is less than the required', () => {
+        let nodeVersion = "9.5.0";
+        let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
+
+        assert.equal(result, -1);
+    })
+
+    it('should fail if node version is not stable release', () => {
+        let nodeVersion = "9.5.0asd";
+        let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
+
+        assert.isTrue(isNaN(result));
+    })
+
+    it('should fail if fire editor version is not stable release', () => {
+        let nodeVersion = "9.5.0";
+        let fireEditorVersion = "10.0.0-next.1"
+        let result = isNodeVersionSupported(fireEditorVersion, nodeVersion)
+
+        assert.isTrue(isNaN(result));
+    })
 
     it('should install Fire Editor globally and run it', async function () {
         // ignoreOpenInBrowser

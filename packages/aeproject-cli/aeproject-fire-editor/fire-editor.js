@@ -29,6 +29,11 @@ const moduleName = constants.MODULE_NAME;
 const isWindowsPlatform = process.platform === 'win32';
 
 const run = async (options) => {
+    let result = await isNodeVersionSupported();
+    
+    if (!(result >= 0)) {
+        revert(result)
+    } 
 
     try {
         let cwd = process.cwd();
@@ -112,7 +117,6 @@ const getGlobalNpmRoot = async () => {
 }
 
 const startModule = async (shouldOpenInBrowser) => {
-    // let childProcess = pureExec(constants.MODULE_START_CMD);
 
     let childProcess;
     if (!isWindowsPlatform) {
@@ -155,6 +159,53 @@ const installModuleDependencies = async () => {
     }
 }
 
+const isNodeVersionSupported = (fireEditorNodeVersion = constants.FIRE_EDITOR_NODE_VERSION, localNodeVersion = process.version) => {
+
+    let fireEditorTokens = fireEditorNodeVersion.split('.');
+    let localNodeTokens = localNodeVersion.replace('v', '').split('.');
+
+    fireEditorTokens = fireEditorTokens.map(Number);
+    localNodeTokens = localNodeTokens.map(Number);
+
+    function isValidPart (x) {
+        return (/^\d+$/).test(x);
+    }
+
+    if (!fireEditorTokens.every(isValidPart) || !localNodeTokens.every(isValidPart)) {
+        return NaN;
+    }
+
+    for (var i = 0; i < fireEditorTokens.length; ++i) {
+
+        if (fireEditorTokens[i] == localNodeTokens[i]) {
+            continue;
+        } else if (localNodeTokens[i] > fireEditorTokens[i]) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    if (fireEditorTokens.length != localNodeTokens.length) {
+        
+        return -1;
+    }
+
+    return 0;
+}
+
+const revert = (reason) => {
+    if (reason == -1) {
+        console.log("\x1b[31m", `[ERROR] \x1b[0m Your version is not supported by Angular CLI 8.0+`);
+        throw new Error(`A NodeJS version higher or equal to ${constants.FIRE_EDITOR_NODE_VERSION} is required`)
+    }
+    if (isNaN(reason)) {
+        console.log("\x1b[31m", `[ERROR] \x1b[0m Only official releases are supported`);
+        throw new Error("")
+    }
+}
+
 module.exports = {
-    run
+    run,
+    isNodeVersionSupported
 };
