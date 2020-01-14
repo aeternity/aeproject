@@ -9,9 +9,13 @@ const constants = require('../constants.json');
 const cliCmds = constants.cliCommands;
 const cliCmdOptions = constants.cliCommandsOptions;
 
-const fireEditorInfoMessages = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json').MESSAGES;
-const fireEditorName = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json').MODULE_NAME;
+const fireEditorConstants = require('./../../packages/aeproject-cli/aeproject-fire-editor/constants.json');
 
+const fireEditorInfoMessages = fireEditorConstants.MESSAGES;
+const fireEditorName = fireEditorConstants.MODULE_NAME;
+const fireEditorNodeVersion = fireEditorConstants.FIRE_EDITOR_NODE_VERSION;
+
+const isNodeVersionSupported = require('./../../packages/aeproject-cli/aeproject-fire-editor/fire-editor').isNodeVersionSupported;
 const maxSecondsToWaitProcess = 1000 * 60 * 10; // minutes
 
 const cwd = process.cwd();
@@ -22,6 +26,27 @@ describe('AEproject Fire Editor', () => {
         // uninstall globally fire-editor
         await exec(`npm uninstall -g ${ fireEditorName }`);
     });
+
+    it('should fail if node version is less than the required', () => {
+        let nodeVersion = "9.5.0";
+        let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
+
+        assert.equal(result, false);
+    })
+
+    it('should pass if node version is equal than the required', () => {
+        let nodeVersion = "10.9.0";
+        let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
+
+        assert.equal(result, true);
+    })
+
+    it('should pass if node version is greater than the required', () => {
+        let nodeVersion = "12.1.0";
+        let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
+
+        assert.equal(result, true);
+    })
 
     it('should install Fire Editor globally and run it', async function () {
         let promise = () => {
