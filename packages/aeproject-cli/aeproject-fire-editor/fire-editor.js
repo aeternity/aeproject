@@ -29,9 +29,8 @@ const moduleName = constants.MODULE_NAME;
 const isWindowsPlatform = process.platform === 'win32';
 
 const run = async (options) => {
-    let result = await isNodeVersionSupported();
     
-    if (!result) {
+    if (!isNodeVersionSupported()) {
         console.log("\x1b[31m", `[ERROR] \x1b[0m Your version is not supported by Angular CLI 8.0+`);
         throw new Error(`A NodeJS version higher or equal to ${ constants.FIRE_EDITOR_NODE_VERSION } is required`);
     } 
