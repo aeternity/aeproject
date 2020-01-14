@@ -30,7 +30,8 @@
 		"CONTRACTS": "contracts",
 		"SHAPE": "shape",
 		"CURL": "curl",
-		"INSPECT": "inspect"
+		"INSPECT": "inspect",
+		"FIRE_EDITOR": "fire-editor"
 	},
 	"cliSubCommands": {
 		"VUE": "vue",
@@ -44,7 +45,7 @@
 		"PORT": "--port",
 		"UPDATE": "--update",
 		"NODE_URL": "--nodeUrl",
-		"IGNORE_OPENING": "--ignoreOpenInBrowser",
+		"IGNORE_OPENING": "--ignorebrowser",
 		"ONLY": "--only",
 		"ONLYCOMPILER": "--only-compiler",
 		"INFO": "--info",

@@ -3,7 +3,7 @@
 ## Requirements
 In order to have aeproject working you must have installed the following:
 ```
-nodejs 9.5.0
+nodejs 9.5.0 (if you are willing to use the *fire-editor* aepp locally with *aeproject* you would need to use version not lower to 10.9.0. For more information check [aeproject fire-editor](developer-documentation/aeproject-cli/fire-editor.md))
 python 
 docker 
 ```

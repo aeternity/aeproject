@@ -32,6 +32,7 @@ const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
 const txInspector = require('./aeproject-tx-inspector/tx-inspector');
+const fireEditor = require('./aeproject-fire-editor/fire-editor');
 
 const addInitOption = (program) => {
     program
@@ -139,7 +140,7 @@ const addContractsAeppIntegrationOption = (program) => {
         .description('Running a Contract web aepp locally and connect it to the spawned aeproject node.')
         .option('--nodeUrl [nodeUrl]', 'Specify the url of the local spawned node', 'http://localhost:3001/')
         .option('--update [update]', 'Update the contracts aepp with the latest version of develop branch')
-        .option('--ignoreOpenInBrowser [ignoreOpenInBrowser]', 'Ignore browser opening')
+        .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
         .action(async (options) => {
             await contracts.run(options);
         })
@@ -177,6 +178,17 @@ const addTxInspector = (program) => {
         })
 };
 
+const addFireEditor = (program) => {
+    program
+        .command('fire-editor')
+        .description('Download, install and run locally the Fire Editor')
+        .option('--update [update]', 'Update the Fire Editor Aepp with the latest version.')
+        .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
+        .action(async (options) => {
+            await fireEditor.run(options);
+        })
+};
+
 const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
@@ -189,7 +201,8 @@ const initCommands = (program) => {
     addContractsAeppIntegrationOption(program)
     addShapeOption(program);
     addExportConfigOption(program);
-    addTxInspector(program)
+    addTxInspector(program);
+    addFireEditor(program);
 }
 
 module.exports = {

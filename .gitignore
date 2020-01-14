@@ -7,5 +7,3 @@ contractLogFile.log
 .DS_Store
 lerna-debug.log
 test/.DS_Store
-package-lock.json
-packages/**/package-lock.json
