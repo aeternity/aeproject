@@ -160,7 +160,6 @@ const installModuleDependencies = async () => {
 }
 
 const isNodeVersionSupported = (fireEditorNodeVersion = constants.FIRE_EDITOR_NODE_VERSION, localNodeVersion = process.version) => {
-
     let fireEditorTokens = fireEditorNodeVersion.split('.');
     let localNodeTokens = localNodeVersion.replace('v', '').split('.');
 
@@ -187,7 +186,6 @@ const isNodeVersionSupported = (fireEditorNodeVersion = constants.FIRE_EDITOR_NO
     }
 
     if (fireEditorTokens.length != localNodeTokens.length) {
-        
         return -1;
     }
 
