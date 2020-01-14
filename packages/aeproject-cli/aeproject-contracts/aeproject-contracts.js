@@ -60,7 +60,7 @@ const serveContractsAepp = async (options) => {
             console.log(`====== The Aepp will connect to the spawned local node on ${ options.nodeUrl ? options.nodeUrl : contractsConstants.DEFAULT_LOCAL_NODE_URL } ======`);
             console.log('====== Please install browser extension which allows CORS. (Access-Control-Allow-Origin to perform cross-domain requests in the web application) ======');
 
-            if (options.ignoreOpenInBrowser) {
+            if (options.ignorebrowser) {
                 return;
             }
 

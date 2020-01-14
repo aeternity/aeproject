@@ -45,7 +45,7 @@
 		"PORT": "--port",
 		"UPDATE": "--update",
 		"NODE_URL": "--nodeUrl",
-		"IGNORE_OPENING": "--ignoreOpenInBrowser",
+		"IGNORE_OPENING": "--ignorebrowser",
 		"ONLY": "--only",
 		"ONLYCOMPILER": "--only-compiler",
 		"INFO": "--info",

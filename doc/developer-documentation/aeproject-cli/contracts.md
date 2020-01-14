@@ -17,5 +17,5 @@ The Contracts aepp runs on [http://localhost:8080/](http://localhost:8080/) by d
     It defaults to the following url -  [http://localhost:3001/](http://localhost:3001/); 
 
 * --update - update the contracts aepp with the latest version;
-* --ignoreOpenInBrowser - ignoring opening of the browser;
+* --ignorebrowser - ignoring opening of the browser;
 

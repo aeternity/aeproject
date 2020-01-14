@@ -140,7 +140,7 @@ const addContractsAeppIntegrationOption = (program) => {
         .description('Running a Contract web aepp locally and connect it to the spawned aeproject node.')
         .option('--nodeUrl [nodeUrl]', 'Specify the url of the local spawned node', 'http://localhost:3001/')
         .option('--update [update]', 'Update the contracts aepp with the latest version of develop branch')
-        .option('--ignoreOpenInBrowser [ignoreOpenInBrowser]', 'Ignore browser opening')
+        .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
         .action(async (options) => {
             await contracts.run(options);
         })
@@ -183,7 +183,7 @@ const addFireEditor = (program) => {
         .command('fire-editor')
         .description('Download, install and run locally the Fire Editor')
         .option('--update [update]', 'Update the Fire Editor Aepp with the latest version.')
-        .option('--ignoreOpenInBrowser [ignoreOpenInBrowser]', 'Ignore browser opening')
+        .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
         .action(async (options) => {
             await fireEditor.run(options);
         })

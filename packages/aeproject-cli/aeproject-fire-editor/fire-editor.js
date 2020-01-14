@@ -62,7 +62,7 @@ const run = async (options) => {
         // start fire editor
         console.log(`====== ${ infoMessages.STARTING_AEPP } ======`);
         process.chdir(modulePath);
-        const openInBrowser = !(options.ignoreOpenInBrowser);
+        const openInBrowser = !(options.ignorebrowser);
         startModule(openInBrowser);
 
     } catch (e) {
