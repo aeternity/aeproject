@@ -30,9 +30,10 @@ const isWindowsPlatform = process.platform === 'win32';
 
 const run = async (options) => {
     let result = await isNodeVersionSupported();
-
-    if (!(result >== 0)) {
-        revert(result)
+    
+    if (!result) {
+        console.log("\x1b[31m", `[ERROR] \x1b[0m Your version is not supported by Angular CLI 8.0+`);
+        throw new Error(`A NodeJS version higher or equal to ${ constants.FIRE_EDITOR_NODE_VERSION } is required`);
     } 
 
     try {
@@ -163,8 +164,8 @@ const isNodeVersionSupported = (fireEditorNodeVersion = constants.FIRE_EDITOR_NO
     let fireEditorTokens = fireEditorNodeVersion.split('.');
     let localNodeTokens = localNodeVersion.replace('v', '').split('.');
 
-    while (fireEditorTokens.length < localNodeTokens.length) fireEditorTokens.push("0");
-    while (localNodeTokens.length < fireEditorTokens.length) localNodeTokens.push("0");
+    while (fireEditorTokens.length < localNodeTokens.length) fireEditorTokens.push(0);
+    while (localNodeTokens.length < fireEditorTokens.length) localNodeTokens.push(0);
 
     fireEditorTokens = fireEditorTokens.map(Number);
     localNodeTokens = localNodeTokens.map(Number);
@@ -174,22 +175,13 @@ const isNodeVersionSupported = (fireEditorNodeVersion = constants.FIRE_EDITOR_NO
         if (fireEditorTokens[i] === localNodeTokens[i]) {
             continue;
         } else if (localNodeTokens[i] > fireEditorTokens[i]) {
-            return 1;
+            return true;
         } else {
-            return -1;
+            return false;
         }
     }
 
-    return 0;
-}
-
-const revert = (reason) => {
-    switch (reason) {
-        case -1:
-            console.log("\x1b[31m", `[ERROR] \x1b[0m Your version is not supported by Angular CLI 8.0+`);
-            throw new Error(`A NodeJS version higher or equal to ${ constants.FIRE_EDITOR_NODE_VERSION } is required`);
-    }
-        
+    return true;
 }
 
 module.exports = {

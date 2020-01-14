@@ -31,21 +31,21 @@ describe('AEproject Fire Editor', () => {
         let nodeVersion = "9.5.0";
         let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
 
-        assert.equal(result, -1);
+        assert.equal(result, false);
     })
 
     it('should pass if node version is equal than the required', () => {
         let nodeVersion = "10.9.0";
         let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
 
-        assert.equal(result, 0);
+        assert.equal(result, true);
     })
 
     it('should pass if node version is greater than the required', () => {
         let nodeVersion = "12.1.0";
         let result = isNodeVersionSupported(fireEditorNodeVersion, nodeVersion)
 
-        assert.equal(result, 1);
+        assert.equal(result, true);
     })
 
     it('should install Fire Editor globally and run it', async function () {
