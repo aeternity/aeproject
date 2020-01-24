@@ -103,8 +103,6 @@ const updateAEprojectProjectLibraries = async (_sdkVersion) => {
 
     await setupDocker(true);
     await installAEproject();
-    await installAeppSDK(_sdkVersion);
-    await installYarn();
     await uninstallForgaeDependencies();
 
     print('===== AEproject was successfully updated! =====');
@@ -124,7 +122,6 @@ const installLibraries = async () => {
 
     await installAeppSDK(sdkVersion)
     await installAEproject()
-    await installYarn()
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
@@ -135,11 +132,6 @@ const installAeppSDK = async (_sdkVersion = '') => {
 const installAEproject = async () => {
     print(`===== Installing AEproject locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-lib`, '--ignore-scripts', '--no-bin-links']);
-}
-
-const installYarn = async () => {
-    print(`===== Installing yarn locally =====`);
-    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const uninstallForgaeDependencies = async () => {
