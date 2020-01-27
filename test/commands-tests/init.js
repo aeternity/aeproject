@@ -6,7 +6,12 @@ const fs = require('fs-extra')
 const constants = require('../constants.json')
 const utilsPackageJson = require('../../packages/aeproject-utils/package.json')
 const aeprojectLibVersion = require('../../packages/aeproject-lib/package.json').version;
-const path = require('path')
+const path = require('path');
+const yaml = require('js-yaml');
+const initConstants = require('./../../packages/aeproject-cli/aeproject-init/constants.json');
+const nodeVersion = initConstants.aeNodeImage;
+const compilerVersion = initConstants.aeCompilerImage;
+const sdkVersion = require('./../../packages/aeproject-cli/aeproject-init/constants.json').sdkVersion;
 
 let executeOptions = {
     cwd: process.cwd() + constants.initTestsFolderPath
@@ -54,6 +59,10 @@ function executeAndPassInput (cli, command, subcommand, inputParams = [], option
             }
         });
 
+        child.stderr.on('data', (data) => {
+            console.log('err', data.toString('utf8'));
+        });
+
         for (let param in inputParams) {
             setTimeout(() => {
                 child.stdin.write(inputParams[param]);
@@ -62,6 +71,26 @@ function executeAndPassInput (cli, command, subcommand, inputParams = [], option
             timeout += 2000;
         }
     });
+}
+
+function increaseSdkVersion (sdkVersion) {
+    let tokens = sdkVersion.split('.');
+    if (!isNaN(tokens[0])) {
+        let nextMajorVersion = parseInt(tokens[0]) + 1;
+        return nextMajorVersion + '.0.0';
+    }
+
+    return sdkVersion;
+}
+
+function increaseVersion (version) {
+    let tokens = version.replace('v', '').split('.');
+    if (!isNaN(tokens[0])) {
+        let nextMajorVersion = parseInt(tokens[0]) + 1;
+        return nextMajorVersion + '.0.0';
+    }
+
+    return version;
 }
 
 describe('AEproject Init', () => {
@@ -84,8 +113,6 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode1 }`), "docker node node1 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode2 }`), "docker node node2 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode3 }`), "docker node node3 doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
@@ -100,7 +127,7 @@ describe('AEproject Init', () => {
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^2.0.0";
 
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
 
         delete require.cache[require.resolve(executeOptions.cwd + constants.testsFiles.packageJson)];
@@ -117,7 +144,7 @@ describe('AEproject Init', () => {
         let projectPackageJson = require(executeOptions.cwd + constants.testsFiles.packageJson);
         projectPackageJson['dependencies']['aeproject-lib'] = "^1.0.3";
 
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.packageJson, JSON.stringify(projectPackageJson))
         await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
 
         // we need to delete the allocated memory cache for this file, otherwise we could not fetch the updated data.
@@ -139,10 +166,10 @@ describe('AEproject Init', () => {
         const expectedUpdateOutput = "===== AEproject was successfully updated! =====";
         
         // Act
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
-        fs.writeFile(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
-        
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeNodeYml, editedNodeContent)
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.dockerComposeCompilerYml, editedCompilerContent)
+        fs.writeFileSync(executeOptions.cwd + constants.testsFiles.aeNodeOneConfig, editedDockerConfigContent)
+
         let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n'], executeOptions)
         
         assert.isTrue(result.includes(expectedUpdateOutput), 'project has not been updated successfully')
@@ -172,8 +199,6 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode1 }`), "docker node node1 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode2 }`), "docker node node2 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode3 }`), "docker node node3 doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
@@ -216,8 +241,6 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode1 }`), "docker node node1 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode2 }`), "docker node node2 doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockernodeNode3 }`), "docker node node3 doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
@@ -225,6 +248,91 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
     });
+
+    xit("Should update docker-compose.yml and use user's node version", async () => {
+
+        const nodeImage = 'aeternity/aeternity';
+        const newerNodeVersion = `${ nodeImage }:v${ increaseVersion(nodeVersion.split(':')[1]) }`;
+
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let nodeDockerComposePath = path.join(executeOptions.cwd, constants.testsFiles.dockerComposeNodeYml)
+
+        // get and set newer version of ae node
+        let doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(nodeImage)) {
+                doc.services[i].image = newerNodeVersion;
+            }
+        }
+
+        let yamlStr = yaml.safeDump(doc);
+        fs.writeFileSync(nodeDockerComposePath, yamlStr, 'utf8');
+
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions);
+
+        doc = yaml.safeLoad(fs.readFileSync(nodeDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(nodeImage)) {
+                assert.isOk(newerNodeVersion === image, "Mismatch of node's version");
+            }
+        }
+    });
+
+    xit("Should update docker-compose.compiler.yml and use user's compiler version ", async () => {
+        const compilerImage = 'aeternity/aesophia_http';
+        const newerCompilerVersion = `${ compilerImage }:v${ increaseVersion(compilerVersion.split(':')[1]) }`;
+
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let compilerDockerComposePath = path.join(executeOptions.cwd, constants.testsFiles.dockerComposeCompilerYml)
+
+        // get and set newer version of ae compiler
+        let doc = yaml.safeLoad(fs.readFileSync(compilerDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(compilerImage)) {
+                doc.services[i].image = newerCompilerVersion;
+            }
+        }
+
+        let yamlStr = yaml.safeDump(doc);
+        fs.writeFileSync(compilerDockerComposePath, yamlStr, 'utf8');
+
+        await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions);
+
+        doc = yaml.safeLoad(fs.readFileSync(compilerDockerComposePath, 'utf8'));
+        for (let i in doc.services) {
+            let image = doc.services[i].image;
+
+            if (image.startsWith(compilerImage)) {
+                assert.isOk(newerCompilerVersion === image, "Mismatch of compiler's version");
+            }
+        }
+    });
+    // set higher version of sdk. check output of executeAndPass, if prompt text contains higher version , test should be OK
+    it("Should keep user's sdk version", async () => {
+
+        const highestSdkVersion = increaseSdkVersion(sdkVersion);
+
+        await execute(constants.cliCommands.INIT, [], executeOptions);
+
+        let packageJson = fs.readFileSync(path.join(executeOptions.cwd, './package.json'), 'utf8');
+        packageJson = packageJson.replace(`"@aeternity/aepp-sdk": "${ sdkVersion }",`, `"@aeternity/aepp-sdk": "${ highestSdkVersion }",`)
+
+        fs.writeFileSync(path.join(executeOptions.cwd, './package.json'), packageJson);
+
+        let result = await executeAndPassInput('aeproject', constants.cliCommands.INIT, constants.cliCommandsOptions.UPDATE, ['y\n', 'y\n', 'y\n', 'y\n'], executeOptions)
+
+        let isSdkPrompt = result.indexOf(`Found newer or different version of sdk ${ highestSdkVersion }. Keep it, instead of ${ sdkVersion }?`) >= 0;
+
+        assert.isOk(isSdkPrompt, 'Missing prompt for keeping user version')
+    })
 
     afterEach(async () => {
         fs.removeSync(`.${ constants.initTestsFolderPath }`);

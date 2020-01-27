@@ -106,6 +106,8 @@ class EnvService {
 
         let nodeFileContent = fs.readFileSync(nodeConfigFilePath, 'utf-8');
 
+        nodeFileContent = nodeFileContent.replace(/'/g, '');
+
         if (nodeFileContent.indexOf(nodeConfiguration.textToSearch) < 0) {
             print(`Invalid ${ neededNodeConfigFile } file!`);
             return false;
