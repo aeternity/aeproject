@@ -138,20 +138,20 @@ class EnvService {
         return true;
     }
 
-    async start (image) {
+    async start (image, nodeVersion, compilerVersion) {
         
         let runCommand;
         switch (this._unit) {
             case 'compiler':
-                runCommand = exec(`export ${ compilerConfigs.envLiteral }=${ compilerConfigs.imageVersion } &&  docker-compose -f docker-compose.compiler.yml up -d`);
+                runCommand = exec(`export ${ compilerConfigs.envLiteral }=${ compilerVersion } &&  docker-compose -f docker-compose.compiler.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             case 'node':
-                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeConfiguration.imageVersion } && docker-compose -f docker-compose.yml up -d`);
+                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeVersion } && docker-compose -f docker-compose.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             default:
-                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeConfiguration.imageVersion } ${ compilerConfigs.envLiteral }=${ compilerConfigs.imageVersion } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml up -d`);
+                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeVersion } ${ compilerConfigs.envLiteral }=${ compilerVersion } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml up -d`);
                 nodeService.save();
         }
 

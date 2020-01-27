@@ -33,6 +33,9 @@ const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
 const txInspector = require('./aeproject-tx-inspector/tx-inspector');
 const fireEditor = require('./aeproject-fire-editor/fire-editor');
+const compatibility = require('./aeproject-compatibility/compatibility');
+const nodeConfig = config.nodeConfiguration;
+const compilerConfig = config.compilerConfiguration;
 
 const addInitOption = (program) => {
     program
@@ -74,6 +77,8 @@ const addEnvOption = (program) => {
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
+        .option('--nodeVersion [nodeVersion]', `Specify node version, default is ${ nodeConfig.imageVersion }`, nodeConfig.imageVersion)
+        .option('--compilerVersion [compilerVersion]', `Specify compiler version, default is ${ compilerConfig.imageVersion }`, compilerConfig.imageVersion)
         .action(async (options) => {
             await env.run(options);
         })
@@ -88,6 +93,7 @@ const addNodeOption = (program) => {
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
+        .option('--nodeVersion [nodeVersion]', `Specify node version, default is ${ nodeConfig.imageVersion }`, nodeConfig.imageVersion)
         .action(async (options) => {
             await node.run(options);
         })
@@ -100,6 +106,7 @@ const addCompilerOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
+        .option('--compilerVersion [compilerVersion]', `Specify compiler version, default is ${ compilerConfig.imageVersion }`, compilerConfig.imageVersion)
         .action(async (options) => {
             await compiler.run(options);
         })
@@ -189,6 +196,17 @@ const addFireEditor = (program) => {
         })
 };
 
+const addCompatibility = (program) => {
+    program
+        .command('compatibility')
+        .description('Start env with latest versions and test current project for compatibility')
+        .option('--nodeVersion [nodeVersion]', `Specify node version`)
+        .option('--compilerVersion [compilerVersion]', `Specify compiler version`)
+        .action(async (options) => {
+            await compatibility.run(options);
+        })
+};
+
 const initCommands = (program) => {
     addInitOption(program);
     addCompileOption(program);
@@ -203,6 +221,7 @@ const initCommands = (program) => {
     addExportConfigOption(program);
     addTxInspector(program);
     addFireEditor(program);
+    addCompatibility(program);
 }
 
 module.exports = {
