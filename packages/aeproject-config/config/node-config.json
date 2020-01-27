@@ -56,7 +56,9 @@
 		"textToSearch": "image: aeternity/",
 		"dockerImage": "aeternity/aeternity",
 		"dockerServiceNodeName" : "node1",
-		"dockerMachineIP" : "192.168.99.100"
+		"dockerMachineIP" : "192.168.99.100",
+		"imageVersion": "v5.3.0",
+		"envLiteral": "NODE_TAG"
 	},
 
 	"compilerConfiguration": {
@@ -64,6 +66,7 @@
 		"textToSearch": "aeternity/aesophia_http",
 		"dockerImage": "aeternity/aesophia_http",
 		"dockerServiceCompilerName": "compiler",
-		"imageVersion": "v3.1.0"
+		"imageVersion": "v4.1.0",
+		"envLiteral": "COMPILER_TAG"
 	}
 }

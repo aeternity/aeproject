@@ -32,9 +32,10 @@ const {
 
 const fs = require('fs');
 const path = require('path');
-const nodeConfig = require('aeproject-config')
-const config = nodeConfig.config;
 const utils = require('aeproject-utils');
+
+const nodeConfig = require('./../../aeproject-config/index');
+const config = nodeConfig.config;
 
 const defaultWallets = nodeConfig.defaultWallets;
 let network = nodeConfig.localhostParams
@@ -142,16 +143,15 @@ class EnvService {
         let runCommand;
         switch (this._unit) {
             case 'compiler':
-                runCommand = spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
+                runCommand = exec(`export ${ compilerConfigs.envLiteral }=${ compilerConfigs.imageVersion } &&  docker-compose -f docker-compose.compiler.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             case 'node':
-                // runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
-                runCommand = exec(`export NODE_TAG=v5.0.2 && docker-compose -f docker-compose.yml up -d`);
+                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeConfiguration.imageVersion } && docker-compose -f docker-compose.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             default:
-                runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeConfiguration.imageVersion } ${ compilerConfigs.envLiteral }=${ compilerConfigs.imageVersion } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml up -d`);
                 nodeService.save();
         }
 
