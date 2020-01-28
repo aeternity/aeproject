@@ -27,6 +27,8 @@ const {
     spawn
 } = require('promisify-child-process');
 
+const nodeConfig = require('aeproject-config').nodeConfiguration;
+
 async function run (option) {
 
     let nodeVersion = option.nodeVersion;
@@ -43,21 +45,27 @@ async function run (option) {
     } else {
         compilerVersion = 'latest';
         nodeVersion = 'latest';
-    
 
-    let childProcess = await exec(`aeproject env --nodeVersion ${ nodeVersion } --compilerVersion ${ compilerVersion }`);
-    printChildProcessResult(childProcess);
+        let cmdToExecute = `aeproject env --nodeVersion ${ nodeVersion } --compilerVersion ${ compilerVersion }`;
+        if(option.windows){
+            cmdToExecute += ` --windows --docker-ip ${ option.dockerIp ? option.dockerIp : nodeConfig.dockerMachineIP }`;
+        }
 
-    // childProcess = await exec(`docker ps`);
-    // console.log('>> docker ps');
-    // console.log(process.stdout);
-    // console.log(process.stderr);
-
-    let testResult = await exec(`aeproject test`);
-    printChildProcessResult(testResult);
-
-    childProcess = await exec(`aeproject env --stop`);
-    printChildProcessResult(childProcess);
+        console.log('Starting environment...');
+        await exec(cmdToExecute);
+        
+        try {
+            console.log('Running tests...');
+            let testResult = await exec(`aeproject test`);
+            printChildProcessResult(testResult);
+        } catch (error) {
+            console.log(error.stdout);
+            console.log(error.stderr);
+        }
+        
+        let stopResult = await exec(`aeproject env --stop`);
+        printChildProcessResult(stopResult);
+    }
 }
 
 const printChildProcessResult = childProcess => {

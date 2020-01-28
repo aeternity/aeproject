@@ -139,26 +139,33 @@ class EnvService {
     }
 
     async start (image, nodeVersion, compilerVersion) {
-        
+
+        let nodeVerEnvVar = `export ${ nodeConfiguration.envLiteral }=${ nodeVersion }`;
+        let compilerVerEnvVar = `export ${ compilerConfigs.envLiteral }=${ compilerVersion }`;
+        if (isWindowsPlatform){
+            nodeVerEnvVar = `set "${ nodeConfiguration.envLiteral }=${ nodeVersion }"`;
+            compilerVerEnvVar = `set "${ compilerConfigs.envLiteral }=${ compilerVersion }"`
+        }
+
         let runCommand;
         switch (this._unit) {
             case 'compiler':
-                runCommand = exec(`export ${ compilerConfigs.envLiteral }=${ compilerVersion } &&  docker-compose -f docker-compose.compiler.yml up -d`);
+                runCommand = exec(`${ compilerVerEnvVar } &&  docker-compose -f docker-compose.compiler.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             case 'node':
-                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeVersion } && docker-compose -f docker-compose.yml up -d`);
+                runCommand = exec(`${ nodeVerEnvVar } && docker-compose -f docker-compose.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             default:
-                runCommand = exec(`export ${ nodeConfiguration.envLiteral }=${ nodeVersion } ${ compilerConfigs.envLiteral }=${ compilerVersion } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml up -d`);
+                runCommand = exec(`${ nodeVerEnvVar } && ${ compilerVerEnvVar } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml up -d`);
                 nodeService.save();
         }
 
         // toggle loader
         if (runCommand.stdout) {
             runCommand.stdout.on('data', (data) => {
-                print(data.toString());
+                print(data.toString('utf8'));
             });
         }
 
@@ -166,7 +173,7 @@ class EnvService {
         if (runCommand.stderr) {
             runCommand.stderr.on('data', (data) => {
                 errorMessage += data.toString();
-                console.log(data.toString());
+                console.log(data.toString('utf8'));
             });
         }
 
@@ -447,7 +454,11 @@ class EnvService {
     async fundWallet (client, recipient) {
         await client.spend(config.amountToFund, recipient)
     }
+}
 
+const printChildProcessResult = childProcess => {
+    console.log(childProcess.stdout);
+    console.log(childProcess.stderr);
 }
 
 module.exports = EnvService

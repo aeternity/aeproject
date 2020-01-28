@@ -202,6 +202,8 @@ const addCompatibility = (program) => {
         .description('Start env with latest versions and test current project for compatibility')
         .option('--nodeVersion [nodeVersion]', `Specify node version`)
         .option('--compilerVersion [compilerVersion]', `Specify compiler version`)
+        .option('--windows', 'Start the node in windows env')
+        .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
         .action(async (options) => {
             await compatibility.run(options);
         })
