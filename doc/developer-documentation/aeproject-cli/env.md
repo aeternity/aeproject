@@ -6,11 +6,11 @@
 aeproject env
 ```
 
-The command is responsible for setting up a healthy local network. The **env** command help developers run their local nodes, as well as local compiler on docker. The local network contains 3 nodes. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
+The command is responsible for setting up a healthy local network. The **env** command help developers run their local nodes, as well as local compiler on docker. The local network contains 1 node. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
 
 
 ### If you are running on Windows environment and it is before `Windows 10` 
-* You need to start manualy your `Docker Quickstart Terminal`. 
+* You need to start manually your `Docker Quickstart Terminal`. 
 * Optional parameter **\-\-windows** allows you run AE node and compiler with predefined configuration. It uses **docker-compose** cli commands and it starts with the default docker machine with IP "192.168.99.100"
 
 ```text
@@ -31,6 +31,17 @@ You can stop both the node and the compiler by running `aeproject env --stop`
 ```text
 aeproject env --stop
 ```
+
+There are optional parameters **--nodeVersion** and **--compilerVersion**. To specify a specific version of node or compiler, or both, you should type
+```text
+aeproject env --nodeVersion v5.3.0
+or
+aeproject env --compilerVersion v4.0.0
+or
+aeproject env --nodeVersion v5.3.0 --compilerVersion v4.0.0
+```
+also applies to **aeproject node** and **aeproject compiler**
+
 
 To see whether you have running instances of the nodes along with a compiler you could run the following command
 ```text
