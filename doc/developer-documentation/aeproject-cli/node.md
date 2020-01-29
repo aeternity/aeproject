@@ -35,7 +35,7 @@ If you have running instances of the node started from `aeproject` you could che
 aeproject node --info
 ```
 
-There is optional parameter **--nodeVersion**. To specify a specific version of node, you should type
+There is optional parameter **\-\-nodeVersion**. To specify a specific version of node, you should type
 ```text
 aeproject node --nodeVersion v5.3.0
 ```

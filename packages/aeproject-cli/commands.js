@@ -199,7 +199,7 @@ const addFireEditor = (program) => {
 const addCompatibility = (program) => {
     program
         .command('compatibility')
-        .description('Start env with latest versions and test current project for compatibility')
+        .description('Start env with latest versions and test the current project for compatibility')
         .option('--nodeVersion [nodeVersion]', `Specify node version`)
         .option('--compilerVersion [compilerVersion]', `Specify compiler version`)
         .option('--windows', 'Start the node in windows env')

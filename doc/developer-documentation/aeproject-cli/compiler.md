@@ -21,7 +21,7 @@ If you have running instances of the compiler started from `aeproject` you could
 aeproject compiler --info
 ```
 
-There is optional parameter **--compilerVersion**. To specify a specific version of compiler, you should type
+There is optional parameter **\-\-compilerVersion**. To specify a specific version of compiler, you should type
 ```text
 
 aeproject compiler --compilerVersion v4.0.0

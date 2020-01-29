@@ -32,7 +32,7 @@ You can stop both the node and the compiler by running `aeproject env --stop`
 aeproject env --stop
 ```
 
-There are optional parameters **--nodeVersion** and **--compilerVersion**. To specify a specific version of node or compiler, or both, you should type
+There are optional parameters **\-\-nodeVersion** and **\-\-compilerVersion**. To specify a specific version of node or compiler, or both, you should type
 ```text
 aeproject env --nodeVersion v5.3.0
 or
