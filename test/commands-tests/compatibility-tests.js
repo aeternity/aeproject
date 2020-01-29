@@ -71,7 +71,7 @@ const compatibilityCmd = (options) => {
     });
 }
 
-describe.only('Compatibility tests', async function () {
+describe('Compatibility tests', async function () {
     let tempCWD = process.cwd();
 
     before(async function () {
