@@ -130,16 +130,16 @@ describe('AEproject Test', () => {
             fs.removeSync(`.${ constants.testTestsFolderPath }`);
         })
 
-        async function insertAdditionalFiles (cwd, copyArtifactsWithInvalidData = false) {
+        async function insertAdditionalFiles(cwd, copyArtifactsWithInvalidData = false) {
             const contractDestinationFolder = `${ cwd }/contracts`;
             const testDestinationFolder = `${ cwd }/test`;
-    
+
             const calculatorSourcePath = path.resolve(cwd, './../artifacts/calculator.aes');
             const sophiaTestSourcePath = path.resolve(cwd, './../artifacts/calculator-tests.aes');
-    
+
             const calculatorWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-invalid-name.aes');
             const sophiaTestWithInvalidNameSourcePath = path.resolve(cwd, './../artifacts/calculator-tests-invalid-contract-name.aes');
-    
+
             if (!copyArtifactsWithInvalidData) {
                 fs.copyFileSync(calculatorSourcePath, `${ contractDestinationFolder }/calculator.aes`);
                 fs.copyFileSync(sophiaTestSourcePath, `${ testDestinationFolder }/calculator-tests.aes`);
@@ -157,7 +157,7 @@ describe('AEproject Test', () => {
 
         const testFilePath = path.join(process.cwd(), `.${ constants.testTestsFolderPath }`, `/test/exampleTest.js`);
 
-        function replaceContentOfTestFile (content) {
+        function replaceContentOfTestFile(content) {
             // change content in test.js file
             // command should find and execute tests/file
             fs.removeSync(testFilePath)

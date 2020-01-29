@@ -1,7 +1,6 @@
 {
    "NODE_MODULES_LITERAL": "node_modules",
    "CONTRACTS_AEPP_LITERAL": "contracts-aepp",
-   "YARN_LITERAL": "yarn",
    "CONTRACTS_AEPP_GITHUB_URL": "git+https://github.com/aeternity/aepp-contracts#master",
    "CONTRACTS_SETTINGS_PATH": "/src/settings.js",
    "AEPROJECT_SETTINGS_PATH": "./integrations/contractsAeppSettings.js",
