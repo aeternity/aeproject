@@ -93,7 +93,7 @@ const addNodeOption = (program) => {
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
         .option('--windows', 'Start the node in windows env')
         .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${ dockerIp }"`, dockerIp)
-        .option('--nodeVersion [nodeVersion]', `Specify node version, default is ${ nodeConfig.imageVersion }`, nodeConfig.imageVersion)
+        .option('--v [v]', `Specify node version, default is ${ nodeConfig.imageVersion }`, nodeConfig.imageVersion)
         .action(async (options) => {
             await node.run(options);
         })
@@ -106,7 +106,7 @@ const addCompilerOption = (program) => {
         .option('--stop', 'Stop the node')
         .option('--start', 'Start the node')
         .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
-        .option('--compilerVersion [compilerVersion]', `Specify compiler version, default is ${ compilerConfig.imageVersion }`, compilerConfig.imageVersion)
+        .option('--v [v]', `Specify compiler version, default is ${ compilerConfig.imageVersion }`, compilerConfig.imageVersion)
         .action(async (options) => {
             await compiler.run(options);
         })

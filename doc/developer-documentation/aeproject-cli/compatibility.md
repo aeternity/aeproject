@@ -9,11 +9,11 @@ Compatibility would start env with latest docker images of node and compiler, wo
 
 Some of optional parameters are **\-\-nodeVersion** and **\-\-compilerVersion**. To specify a specific version of node or compiler, or both, you should type
 ```text
-aeproject env --nodeVersion v5.3.0
+aeproject compatibility --nodeVersion v5.3.0
 or
-aeproject env --compilerVersion v4.0.0
+aeproject compatibility --compilerVersion v4.0.0
 or
-aeproject env --nodeVersion v5.3.0 --compilerVersion v4.0.0
+aeproject compatibility --nodeVersion v5.3.0 --compilerVersion v4.0.0
 ```
 
 ### If you are running on Windows environment and it is before `Windows 10` 
@@ -23,9 +23,9 @@ aeproject env --nodeVersion v5.3.0 --compilerVersion v4.0.0
 * if docker default machine IP is running on different IP, you can set it by **\-\-docker-ip** optional parameter. Default IP is "192.168.99.100"
 
 ```text
-aeproject env --nodeVersion v5.3.0 --compilerVersion v4.0.0 --windows
+aeproject compatibility --nodeVersion v5.3.0 --compilerVersion v4.0.0 --windows
 or 
-aeproject env --nodeVersion v5.3.0 --compilerVersion v4.0.0 --windows --docker-ip 192.168.99.102
+aeproject compatibility --nodeVersion v5.3.0 --compilerVersion v4.0.0 --windows --docker-ip 192.168.99.102
 or
-aeproject env --windows --docker-ip 192.168.99.102
+aeproject compatibility --windows --docker-ip 192.168.99.102
 ```

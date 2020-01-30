@@ -39,8 +39,8 @@ class Compiler extends EnvService {
         let compilerImage = compilerConfigs.dockerServiceCompilerName;
         let compilerVersion = compilerConfigs.compilerVersion;
 
-        if (option.compilerVersion) {
-            compilerVersion = option.compilerVersion;
+        if (option.v) {
+            compilerVersion = option.v;
         } 
         
         try {

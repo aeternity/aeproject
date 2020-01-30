@@ -82,16 +82,16 @@ describe('Compatibility tests', async function () {
 
     it('Docker images should be run with "latest" versions', async function () {
         let result = await compatibilityCmd();
-
-        if (result && result.stdout) {
+        if (result.stdout) {
             const isNodeLatestVersion = result.stdout.indexOf(`${ nodeConfig.dockerImage }:latest`) >= 0;
             const isCompilerLatestVersion = result.stdout.indexOf(`${ compilerConfig.dockerImage }:latest`) >= 0;
 
             assert.isOk(isNodeLatestVersion && isCompilerLatestVersion, 'Node is not running with latest version');
             assert.isOk(isCompilerLatestVersion, 'Compiler is not running with latest version');
         } else {
-            assert.isOk(false, 'Cannot get result of "docker ps" command');
+            assert.isOk(false, 'Cannot execute properly "compatibility" command');
         }
+        
     })
 
     it('Docker images should be run with "specific" versions', async function () {
@@ -99,8 +99,7 @@ describe('Compatibility tests', async function () {
         const compilerVersion = 'v3.1.0';
         
         let result = await compatibilityCmd({ nodeVersion: nodeVersion, compilerVersion: compilerVersion });
-
-        if (result && result.stdout) {
+        if (result.stdout) {
             const isNodeLatestVersion = result.stdout.indexOf(`${ nodeConfig.dockerImage }:${ nodeVersion }`) >= 0;
             const isCompilerLatestVersion = result.stdout.indexOf(`${ compilerConfig.dockerImage }:${ compilerVersion }`) >= 0;
 
@@ -111,7 +110,7 @@ describe('Compatibility tests', async function () {
         }
     })
 
-    it('Tests should be run successfully and should not be running docker images', async function () {
+    it('Tests should be run successfully and should stop node and compiler', async function () {
         let result = await compatibilityCmd({ logs: true });
 
         const isTestsStarted = result.indexOf('Starting Tests');
@@ -120,13 +119,10 @@ describe('Compatibility tests', async function () {
         assert.isOk(isTestsStarted && isContractDeployed);
 
         let dockerPSResult = await exec(cliCommands.DOCKER_PS);
+        const isNodeRunning = dockerPSResult.stdout.indexOf(nodeConfig.dockerImage) >= 0;
+        const isCompilerRunning = dockerPSResult.stdout.indexOf(compilerConfig.dockerImage) >= 0;
 
-        if (dockerPSResult.stdout) {
-            const isNodeRunning = dockerPSResult.stdout.indexOf(nodeConfig.dockerImage) >= 0;
-            const isCompilerRunning = dockerPSResult.stdout.indexOf(compilerConfig.dockerImage) >= 0;
-
-            assert.isNotOk(isNodeRunning || isCompilerRunning, 'Node or Compiler is running');
-        }
+        assert.isNotOk(isNodeRunning || isCompilerRunning, 'Node or Compiler is running');
     })
 
     after(async function () {

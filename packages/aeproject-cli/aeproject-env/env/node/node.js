@@ -40,8 +40,8 @@ class Node extends EnvService {
 
         let nodeVersion = nodeConfiguration.nodeVersion;
 
-        if (option.nodeVersion) {
-            nodeVersion = option.nodeVersion;
+        if (option.v) {
+            nodeVersion = option.v;
         }
 
         try {

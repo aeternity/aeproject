@@ -142,7 +142,7 @@ class EnvService {
 
         let nodeVerEnvVar = `export ${ nodeConfiguration.envLiteral }=${ nodeVersion }`;
         let compilerVerEnvVar = `export ${ compilerConfigs.envLiteral }=${ compilerVersion }`;
-        if (isWindowsPlatform){
+        if (isWindowsPlatform) {
             nodeVerEnvVar = `set "${ nodeConfiguration.envLiteral }=${ nodeVersion }"`;
             compilerVerEnvVar = `set "${ compilerConfigs.envLiteral }=${ compilerVersion }"`
         }
@@ -454,11 +454,6 @@ class EnvService {
     async fundWallet (client, recipient) {
         await client.spend(config.amountToFund, recipient)
     }
-}
-
-const printChildProcessResult = childProcess => {
-    console.log(childProcess.stdout);
-    console.log(childProcess.stderr);
 }
 
 module.exports = EnvService

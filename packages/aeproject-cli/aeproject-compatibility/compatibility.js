@@ -35,7 +35,7 @@ async function run (option) {
     let compilerVersion = option.compilerVersion;
 
     if (nodeVersion && compilerVersion) {
-        print('===== Testing current project with latest node and compiler version =====');
+        print(`===== Testing current project with latest node ${ nodeVersion } and compiler ${ compilerVersion } version =====`);
     } else if (nodeVersion && !compilerVersion) {
         print(`===== Testing current project with node ${ nodeVersion } and latest compiler version =====`);
         compilerVersion = 'latest';
@@ -43,6 +43,7 @@ async function run (option) {
         print(`===== Testing current project with compiler ${ compilerVersion } and latest node version =====`);
         nodeVersion = 'latest';
     } else {
+        print('===== Testing current project with latest node and compiler version =====');
         compilerVersion = 'latest';
         nodeVersion = 'latest';
     }
