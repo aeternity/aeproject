@@ -212,7 +212,6 @@ describe('AEproject Init', () => {
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
             `===== Installing AEproject locally =====`,
-            `===== Installing yarn locally =====`,
             `===== Creating project file & dir structure =====`,
             `===== Creating contracts directory =====`,
             `===== Creating tests directory =====`,
@@ -265,7 +264,7 @@ describe('AEproject Init', () => {
 
             if (image.startsWith(nodeImage)) {
                 doc.services[i].image = newerNodeVersion;
-            }
+        }
         }
 
         let yamlStr = yaml.safeDump(doc);
