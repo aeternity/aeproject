@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe('AEproject contracts', () => {
+xdescribe('AEproject contracts', () => {
     let contractsResult;
     let projectDir;
     let testFolderDir;

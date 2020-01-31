@@ -5,6 +5,7 @@ chai.use(chaiFiles);
 
 const fs = require('fs-extra');
 const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const path = require('path');
 
 const {
     exec,
@@ -123,6 +124,26 @@ describe('Compatibility tests', async function () {
         const isCompilerRunning = dockerPSResult.stdout.indexOf(compilerConfig.dockerImage) >= 0;
 
         assert.isNotOk(isNodeRunning || isCompilerRunning, 'Node or Compiler is running');
+    })
+
+    it('Test "compatibility" with invalid VM', async () => {
+
+        fs.copySync(path.resolve(__dirname, './artifacts/crypto-hamster-broken-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
+        let result = await compatibilityCmd({ logs: true });
+
+        let isVMNotSupported = result.indexOF('VM VERSION 4 do not support by this node') >= 0;
+        assert.isOk(isVMNotSupported, "invalid VM was not triggered");
+    })
+
+    it('Test "compatibility", Node do not support syntax', async () => {
+
+        fs.copySync(path.resolve(__dirname, './artifacts/token-migration.aes'), path.join(process.cwd(), './contracts/ExampleContract.aes'), { overwrite: true });
+        fs.copySync(path.resolve(__dirname, './artifacts/token-migration-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
+        
+        let result = await compatibilityCmd({ nodeVersion: 'v3.3.0', logs: true });
+
+        let isTransactionStuck = result.indexOf('Giving up after 10 blocks mined') >= 0;
+        assert.isOk(isTransactionStuck, "Transaction was mined");
     })
 
     after(async function () {
