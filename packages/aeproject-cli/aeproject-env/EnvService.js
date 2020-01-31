@@ -34,7 +34,7 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('aeproject-utils');
 
-const nodeConfig = require('./../../aeproject-config/index');
+const nodeConfig = require('aeproject-config');
 const config = nodeConfig.config;
 
 const defaultWallets = nodeConfig.defaultWallets;
