@@ -17,6 +17,7 @@
 const constants = require('./constants.json');
 const sdkVersion = constants.sdkVersion;
 
+const config = require('aeproject-config');
 const utils = require('aeproject-utils');
 const execute = utils.execute;
 const printError = utils.printError;
@@ -364,11 +365,11 @@ const setupDocker = async (isUpdate) => {
 
     // set default image version if there are changes
     if (nodeResult.version !== defaultNodeVersion) {
-        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:${ defaultNodeVersion }`);
+        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:{${ config.nodeConfiguration.envLiteral }}`);
     }
 
     if (compilerResult.version !== defaultCompilerVersion) {
-        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ defaultCompilerVersion }`);
+        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:{${ config.compilerConfiguration.envLiteral }}`);
     }
 }
 
