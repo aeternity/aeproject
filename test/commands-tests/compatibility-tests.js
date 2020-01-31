@@ -131,7 +131,9 @@ describe('Compatibility tests', async function () {
         fs.copySync(path.resolve(__dirname, './artifacts/crypto-hamster-broken-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
         let result = await compatibilityCmd({ logs: true });
 
-        let isVMNotSupported = result.indexOF('VM VERSION 4 do not support by this node') >= 0;
+        console.log(result)
+
+        let isVMNotSupported = result.indexOf('VM VERSION 4 do not support by this node') >= 0;
         assert.isOk(isVMNotSupported, "invalid VM was not triggered");
     })
 
