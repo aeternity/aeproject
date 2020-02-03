@@ -312,6 +312,22 @@ function capitalize (_string) {
     return _string.charAt(0).toUpperCase() + _string.slice(1)
 }
 
+const addCaretToDependencyVersion = (dependecy) => {
+    let pJson = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), './package.json'), 'utf8'))
+
+    let libVersion = pJson.dependencies[dependecy];
+
+    if (!libVersion) {
+        return;
+    }
+
+    if (!libVersion.startsWith('^')) {
+        pJson.dependencies[dependecy] = '^' + libVersion;
+    }
+
+    fs.writeFileSync(path.resolve(process.cwd(), './package.json'), JSON.stringify(pJson), 'utf8');
+}
+
 module.exports = {
     config,
     getClient,
@@ -329,5 +345,6 @@ module.exports = {
     TransactionValidator,
     readSpawnOutput,
     readErrorSpawnOutput,
-    capitalize
+    capitalize,
+    addCaretToDependencyVersion
 }
