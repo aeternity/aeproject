@@ -46,6 +46,9 @@ const compatibilityCmd = (options) => {
                 log += str;
                 if (str.trim() == 'Running tests...') {
                     result = await exec(cliCommands.DOCKER_PS);
+                    if (result.stdout) {
+                        result = result.stdout;
+                    }
                 }
             });
         }
@@ -83,15 +86,14 @@ describe('Compatibility tests', async function () {
 
     it('Docker images should be run with "latest" versions', async function () {
         let result = await compatibilityCmd();
-        if (result.stdout) {
-            const isNodeLatestVersion = result.stdout.indexOf(`${ nodeConfig.dockerImage }:latest`) >= 0;
-            const isCompilerLatestVersion = result.stdout.indexOf(`${ compilerConfig.dockerImage }:latest`) >= 0;
+        console.log('>>> result 111');
+        console.log(result)
 
-            assert.isOk(isNodeLatestVersion && isCompilerLatestVersion, 'Node is not running with latest version');
-            assert.isOk(isCompilerLatestVersion, 'Compiler is not running with latest version');
-        } else {
-            assert.isOk(false, 'Cannot execute properly "compatibility" command');
-        }
+        const isNodeLatestVersion = result.indexOf(`${ nodeConfig.dockerImage }:latest`) >= 0;
+        const isCompilerLatestVersion = result.indexOf(`${ compilerConfig.dockerImage }:latest`) >= 0;
+
+        assert.isOk(isNodeLatestVersion && isCompilerLatestVersion, 'Node is not running with latest version');
+        assert.isOk(isCompilerLatestVersion, 'Compiler is not running with latest version');
         
     })
 
@@ -100,15 +102,11 @@ describe('Compatibility tests', async function () {
         const compilerVersion = 'v3.1.0';
         
         let result = await compatibilityCmd({ nodeVersion: nodeVersion, compilerVersion: compilerVersion });
-        if (result.stdout) {
-            const isNodeLatestVersion = result.stdout.indexOf(`${ nodeConfig.dockerImage }:${ nodeVersion }`) >= 0;
-            const isCompilerLatestVersion = result.stdout.indexOf(`${ compilerConfig.dockerImage }:${ compilerVersion }`) >= 0;
+        const isNodeLatestVersion = result.indexOf(`${ nodeConfig.dockerImage }:${ nodeVersion }`) >= 0;
+        const isCompilerLatestVersion = result.indexOf(`${ compilerConfig.dockerImage }:${ compilerVersion }`) >= 0;
 
-            assert.isOk(isNodeLatestVersion && isCompilerLatestVersion, 'Node is not running with specific version');
-            assert.isOk(isCompilerLatestVersion, 'Compiler is not running with specific version');
-        } else {
-            assert.isOk(false, 'Cannot get result of "docker ps" command');
-        }
+        assert.isOk(isNodeLatestVersion && isCompilerLatestVersion, 'Node is not running with specific version');
+        assert.isOk(isCompilerLatestVersion, 'Compiler is not running with specific version');
     })
 
     it('Tests should be run successfully and should stop node and compiler', async function () {
