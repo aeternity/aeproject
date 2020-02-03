@@ -86,8 +86,6 @@ describe('Compatibility tests', async function () {
 
     it('Docker images should be run with "latest" versions', async function () {
         let result = await compatibilityCmd();
-        console.log('>>> result 111');
-        console.log(result)
 
         const isNodeLatestVersion = result.indexOf(`${ nodeConfig.dockerImage }:latest`) >= 0;
         const isCompilerLatestVersion = result.indexOf(`${ compilerConfig.dockerImage }:latest`) >= 0;
