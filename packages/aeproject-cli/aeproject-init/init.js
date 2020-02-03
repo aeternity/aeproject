@@ -34,7 +34,7 @@ const path = require('path');
 
 async function run (update) {
     if (update) {
-        await updateAEprojectProjectLibraries(sdkVersion);
+        await updateAEprojectProjectLibraries(sdkVersion, update);
         return;
     }
 
@@ -97,13 +97,13 @@ const compareSdkVersions = async (_sdkVersion, cwd) => {
     return _sdkVersion;
 }
 
-const updateAEprojectProjectLibraries = async (_sdkVersion) => {
+const updateAEprojectProjectLibraries = async (_sdkVersion, update) => {
     print(`===== Updating AEproject files =====`);
     
     _sdkVersion = await compareSdkVersions(_sdkVersion, process.cwd());
 
     await setupDocker(true);
-    await installAEproject();
+    await installAEproject(update);
     await uninstallForgaeDependencies();
 
     print('===== AEproject was successfully updated! =====');
@@ -130,7 +130,12 @@ const installAeppSDK = async (_sdkVersion = '') => {
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${ _sdkVersion }`, '--save-exact']);
 }
 
-const installAEproject = async () => {
+const installAEproject = async (isUpdate) => {
+
+    if (isUpdate) {
+        utils.addCaretToDependencyVersion("aeproject-lib");
+    }
+
     print(`===== Installing AEproject locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-lib`, '--ignore-scripts', '--no-bin-links']);
 }
