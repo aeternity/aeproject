@@ -145,10 +145,11 @@ const getYarnNodeModulePath = async () => {
     let yarnGlobalDir = await exec('yarn global dir');
     console.log('yarnGlobalDir.stdout', yarnGlobalDir.stdout);
 
-    let temp = process.cwd(); 
+    let temp = process.cwd(); // printenv
     console.log('---------');
+    console.log(await exec('printenv'));
     process.chdir(yarnGlobalDir.stdout.replace('\n', ''))
-    console.log(await exec('ls -la'));
+    console.log(await exec('ls -l'));
 
     process.chdir(temp);
     return path.resolve(yarnGlobalDir.stdout.replace('\n', ''), './node_modules');

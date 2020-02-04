@@ -16,7 +16,7 @@ before_install:
   - sudo apt-get install -y -qq yarn
   - export PATH="$(yarn global bin):$PATH"
 cache:
-  yarn: false
+  yarn: true
 install:
   - npm install
   - lerna bootstrap
