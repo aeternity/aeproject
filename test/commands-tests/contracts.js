@@ -91,6 +91,10 @@ describe('AEproject contracts', () => {
 
         await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions);
         fs.removeSync(`.${ constants.testTestsFolderPath }`);
-        await exec('kill $(lsof -t -i:8080)');
+        try {
+            await exec('kill $(lsof -t -i:8080)');
+        } catch (error) {
+            
+        }
     })
 });
