@@ -147,8 +147,9 @@ const getYarnNodeModulePath = async () => {
 
     let temp = process.cwd(); // printenv
     console.log('---------');
-    console.log(await exec('printenv'));
-    process.chdir(yarnGlobalDir.stdout.replace('\n', ''))
+    // console.log(await exec('printenv'));
+    // process.chdir(yarnGlobalDir.stdout.replace('\n', ''))
+    process.chdir('/home/travis/.yarn/bin')
     console.log(await exec('ls -l'));
 
     process.chdir(temp);
