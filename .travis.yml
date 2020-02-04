@@ -15,7 +15,7 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq yarn
 cache:
-  yarn: true
+  yarn: false
 install:
   - npm install
   - lerna bootstrap
