@@ -55,13 +55,13 @@ const checkGlobalModuleExistence = async (stdout, moduleName) => {
     nodeModulesPath = path.join(devDependenciesPath, contractsConstants.NODE_MODULES_LITERAL);
     const modulesContent = fs.readdirSync(nodeModulesPath);
 
-    let yarnNodeModulePath = await getYarnNodeModulePath();
-    let tempCwd = process.cwd();
-    process.chdir(yarnNodeModulePath);
+    // let yarnNodeModulePath = await getYarnNodeModulePath();
+    // let tempCwd = process.cwd();
+    // process.chdir(yarnNodeModulePath);
 
-    let yarnLS = await exec('ls');
-    let isContractsInstalled = yarnLS.stdout.split('\n').indexOf('contracts-aepp') >= 0;
-    process.chdir(tempCwd);
+    // let yarnLS = await exec('ls');
+    let isContractsInstalled = false // yarnLS.stdout.split('\n').indexOf('contracts-aepp') >= 0;
+    // process.chdir(tempCwd);
 
     return modulesContent.includes(moduleName) || isContractsInstalled;
 };
@@ -143,16 +143,7 @@ const resolveFreshlyInstalledContractsAeppPath = () => {
 
 const getYarnNodeModulePath = async () => {
     let yarnGlobalDir = await exec('yarn global dir');
-    console.log('yarnGlobalDir.stdout', yarnGlobalDir.stdout);
 
-    let temp = process.cwd(); // printenv
-    console.log('---------');
-    // console.log(await exec('printenv'));
-    // process.chdir(yarnGlobalDir.stdout.replace('\n', ''))
-    process.chdir('/home/travis/.yarn')
-    console.log(await exec('ls -l'));
-
-    process.chdir(temp);
     return path.resolve(yarnGlobalDir.stdout.replace('\n', ''), './node_modules');
 }
 
