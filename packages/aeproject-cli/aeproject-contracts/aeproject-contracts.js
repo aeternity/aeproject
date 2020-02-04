@@ -55,13 +55,20 @@ const checkGlobalModuleExistence = async (stdout, moduleName) => {
     nodeModulesPath = path.join(devDependenciesPath, contractsConstants.NODE_MODULES_LITERAL);
     const modulesContent = fs.readdirSync(nodeModulesPath);
 
-    // let yarnNodeModulePath = await getYarnNodeModulePath();
-    // let tempCwd = process.cwd();
-    // process.chdir(yarnNodeModulePath);
+    let isContractsInstalled = false;
+    // Travis throw exception when there are NO installed packages
+    let tempCwd = process.cwd();
+    try {
+        let yarnNodeModulePath = await getYarnNodeModulePath();
+        process.chdir(yarnNodeModulePath);
 
-    // let yarnLS = await exec('ls');
-    let isContractsInstalled = false // yarnLS.stdout.split('\n').indexOf('contracts-aepp') >= 0;
-    // process.chdir(tempCwd);
+        let yarnLS = await exec('ls');
+        isContractsInstalled = yarnLS.stdout.split('\n').indexOf('contracts-aepp') >= 0;
+    } catch (error) {
+        
+    }
+    
+    process.chdir(tempCwd);
 
     return modulesContent.includes(moduleName) || isContractsInstalled;
 };

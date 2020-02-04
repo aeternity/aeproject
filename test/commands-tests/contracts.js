@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe('AEproject contracts', () => {
+describe.only('AEproject contracts', () => {
     let contractsResult;
     let projectDir;
     let testFolderDir;
@@ -36,7 +36,7 @@ describe('AEproject contracts', () => {
         process.chdir(fullPath);
     });
 
-    it.only('should execute contracts cli command correctly', async function () {
+    it('should execute contracts cli command correctly', async function () {
         const logStream = fs.createWriteStream(contractsConstants.LOG_FILE, {
             flags: 'a'
         });
