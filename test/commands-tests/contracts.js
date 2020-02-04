@@ -95,7 +95,7 @@ describe('AEproject contracts', () => {
             await exec('kill $(lsof -t -i:8080)');
         } catch (error) {
             // when there is broken test
-            // and aeproject wont start
+            // and contracts wont start
             // this command throw error
             // because nothing is running on 8080
         }
