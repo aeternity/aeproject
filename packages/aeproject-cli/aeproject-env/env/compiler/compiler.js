@@ -37,6 +37,11 @@ class Compiler extends EnvService {
     async run (option) {
 
         let compilerImage = compilerConfigs.dockerServiceCompilerName;
+        let compilerVersion = compilerConfigs.compilerVersion;
+
+        if (option.v) {
+            compilerVersion = option.v;
+        } 
         
         try {
             
@@ -75,7 +80,7 @@ class Compiler extends EnvService {
 
             super.printStarMsg()
 
-            await super.start(compilerImage);
+            await super.start(compilerImage, null, compilerVersion);
 
             super.printSuccessMsg()
 

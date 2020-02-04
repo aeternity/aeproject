@@ -36,7 +36,13 @@ class Node extends EnvService {
 
     async run (option) {
 
-        let dockerImage = nodeConfiguration.dockerServiceNodeName
+        let dockerImage = nodeConfiguration.dockerServiceNodeName;
+
+        let nodeVersion = nodeConfiguration.nodeVersion;
+
+        if (option.v) {
+            nodeVersion = option.v;
+        }
 
         try {
             let running = await super.isImageRunning(dockerImage);
@@ -76,7 +82,7 @@ class Node extends EnvService {
 
             super.printStarMsg()
 
-            await super.start(dockerImage);
+            await super.start(dockerImage, nodeVersion, null);
 
             super.printSuccessMsg()
 

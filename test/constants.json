@@ -17,8 +17,10 @@
 	"exportAEprojectConfigTestsFolderPath": "/test/commands-tests/exportAEprojectConfigTestFolder",
 	"nodeDockerFilesFolderPath": "./test/node-docker-compose-files",
 	"txInspectorTestFolder": "/test/commands-tests/tx-inspector-test-folder",
+	"compatibilityTestFolder": "/test/commands-tests/compatibility-test-folder",
 	"nodeStoreFolder": "/packages/aeproject-logger/.aeproject-node-store",
 	"cliCommands": {
+		"AEPROJECT": "aeproject",
 		"INIT": "init",
 		"TEST": "test",
 		"ENV": "env",
@@ -31,7 +33,9 @@
 		"SHAPE": "shape",
 		"CURL": "curl",
 		"INSPECT": "inspect",
-		"FIRE_EDITOR": "fire-editor"
+		"FIRE_EDITOR": "fire-editor",
+		"COMPATIBILITY": "compatibility",
+		"DOCKER_PS":"docker ps"
 	},
 	"cliSubCommands": {
 		"VUE": "vue",
@@ -54,7 +58,9 @@
 		"NETWORK": "--network",
 		"NETWORK_ID": "--networkId",
 		"LIMIT": "--limit",
-		"COMPILER_URL": "--compiler"
+		"COMPILER_URL": "--compiler",
+		"NODE_VERSION": "--nodeVersion",
+		"COMPILER_VERSION": "--compilerVersion"
 	},
 	"testsFiles": {
 		"packageJson": "/package.json",

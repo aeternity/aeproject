@@ -32,9 +32,10 @@ const {
 
 const fs = require('fs');
 const path = require('path');
-const nodeConfig = require('aeproject-config')
-const config = nodeConfig.config;
 const utils = require('aeproject-utils');
+
+const nodeConfig = require('aeproject-config');
+const config = nodeConfig.config;
 
 const defaultWallets = nodeConfig.defaultWallets;
 let network = nodeConfig.localhostParams
@@ -137,27 +138,34 @@ class EnvService {
         return true;
     }
 
-    async start (image) {
-        
+    async start (image, nodeVersion, compilerVersion) {
+
+        let nodeVerEnvVar = `export ${ nodeConfiguration.envLiteral }=${ nodeVersion }`;
+        let compilerVerEnvVar = `export ${ compilerConfigs.envLiteral }=${ compilerVersion }`;
+        if (isWindowsPlatform) {
+            nodeVerEnvVar = `set "${ nodeConfiguration.envLiteral }=${ nodeVersion }"`;
+            compilerVerEnvVar = `set "${ compilerConfigs.envLiteral }=${ compilerVersion }"`
+        }
+
         let runCommand;
         switch (this._unit) {
             case 'compiler':
-                runCommand = spawn('docker-compose', ['-f', 'docker-compose.compiler.yml', 'up', '-d']);
+                runCommand = exec(`${ compilerVerEnvVar } &&  docker-compose -f docker-compose.compiler.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             case 'node':
-                runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d']);
+                runCommand = exec(`${ nodeVerEnvVar } && docker-compose -f docker-compose.yml up -d`);
                 nodeService.save(this._unit);
                 break;
             default:
-                runCommand = spawn('docker-compose', ['-f', 'docker-compose.yml', '-f', 'docker-compose.compiler.yml', 'up', '-d']);
+                runCommand = exec(`${ nodeVerEnvVar } && ${ compilerVerEnvVar } && docker-compose -f docker-compose.yml -f docker-compose.compiler.yml up -d`);
                 nodeService.save();
         }
 
         // toggle loader
         if (runCommand.stdout) {
             runCommand.stdout.on('data', (data) => {
-                print(data.toString());
+                print(data.toString('utf8'));
             });
         }
 
@@ -165,7 +173,7 @@ class EnvService {
         if (runCommand.stderr) {
             runCommand.stderr.on('data', (data) => {
                 errorMessage += data.toString();
-                console.log(data.toString());
+                console.log(data.toString('utf8'));
             });
         }
 
@@ -446,7 +454,6 @@ class EnvService {
     async fundWallet (client, recipient) {
         await client.spend(config.amountToFund, recipient)
     }
-
 }
 
 module.exports = EnvService
