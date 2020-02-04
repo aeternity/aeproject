@@ -41,10 +41,18 @@ describe('AEproject contracts', () => {
             flags: 'a'
         });
         contractsResult = spawn(contractsConstants.AEPROJECT_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.IGNORE_OPENING], {});
+        contractsResult.stderr.on('data', (data) => {
+            console.log('err:', data.toString('utf8'));
+        });
+
+        contractsResult.stdout.on('data', (data) => {
+            console.log('stdout:', data.toString('utf8'));
+        });
         contractsResult.stdout.pipe(logStream);
         await timeout(contractsConstants.STARTING_AEPP_TIMEOUT);
         const logContent = fs.readFileSync(contractsConstants.LOG_FILE, 'utf8');
         console.log(logContent);
+        console.log('yarn', await exec('yarn --version'));
         assert.include(logContent, contractsConstants.LOCALHOST_SUCCESS);
         fs.removeSync(contractsConstants.LOG_FILE);
     });
