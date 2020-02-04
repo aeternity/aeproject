@@ -29,7 +29,7 @@ const installYarn = async () => {
     }
 
     if (!isYarnInstalled) {
-        await prompt('Yarn not found! Contracts depends on it. Do you want to install "yarn"?', exec, 'brew install yarn'); // brew install yarn
+        await prompt('Yarn not found! Contracts depends on it. Do you want to install "yarn"?', exec, 'npm install --global yarn');
     }
 }
 
