@@ -35,6 +35,7 @@ const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
 const capitalize = aeprojectUtils.capitalize;
 const addCaretToDependencyVersion = aeprojectUtils.addCaretToDependencyVersion;
+const prompt = aeprojectUtils.prompt;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -87,5 +88,6 @@ module.exports = {
     readSpawnOutput,
     readErrorSpawnOutput,
     capitalize,
-    addCaretToDependencyVersion
+    addCaretToDependencyVersion,
+    prompt
 }
