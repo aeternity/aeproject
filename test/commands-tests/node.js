@@ -44,7 +44,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         await execute(constants.cliCommands.INIT, [], executeOptions);
     })
 
-    describe('AEproject Env', () => {
+    describe.only('AEproject Env', () => {
         before(async () => {
             await execute(constants.cliCommands.ENV, [], executeOptions);
         })
