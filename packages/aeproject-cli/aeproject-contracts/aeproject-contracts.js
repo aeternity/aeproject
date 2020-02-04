@@ -144,6 +144,13 @@ const resolveFreshlyInstalledContractsAeppPath = () => {
 const getYarnNodeModulePath = async () => {
     let yarnGlobalDir = await exec('yarn global dir');
     console.log('yarnGlobalDir.stdout', yarnGlobalDir.stdout);
+
+    let temp = process.cwd(); 
+    console.log('---------');
+    process.chdir(yarnGlobalDir.stdout.replace('\n', ''))
+    console.log(await exec('ls -la'));
+
+    process.chdir(temp);
     return path.resolve(yarnGlobalDir.stdout.replace('\n', ''), './node_modules');
 }
 
