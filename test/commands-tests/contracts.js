@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe.only('AEproject contracts', () => {
+describe('AEproject contracts', () => {
     let contractsResult;
     let projectDir;
     let testFolderDir;
@@ -41,18 +41,10 @@ describe.only('AEproject contracts', () => {
             flags: 'a'
         });
         contractsResult = spawn(contractsConstants.AEPROJECT_CLI_COMMAND, [constants.cliCommands.CONTRACTS, constants.cliCommandsOptions.IGNORE_OPENING], {});
-        contractsResult.stderr.on('data', (data) => {
-            console.log('err:', data.toString('utf8'));
-        });
-
-        contractsResult.stdout.on('data', (data) => {
-            console.log('stdout:', data.toString('utf8'));
-        });
         contractsResult.stdout.pipe(logStream);
         await timeout(contractsConstants.STARTING_AEPP_TIMEOUT);
         const logContent = fs.readFileSync(contractsConstants.LOG_FILE, 'utf8');
-        console.log(logContent);
-        console.log('yarn', await exec('yarn --version'));
+
         assert.include(logContent, contractsConstants.LOCALHOST_SUCCESS);
         fs.removeSync(contractsConstants.LOG_FILE);
     });
@@ -102,7 +94,10 @@ describe.only('AEproject contracts', () => {
         try {
             await exec('kill $(lsof -t -i:8080)');
         } catch (error) {
-            
+            // when there is broken test
+            // and aeproject wont start
+            // this command throw error
+            // because nothing is running on 8080
         }
     })
 });

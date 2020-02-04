@@ -29,8 +29,6 @@ const installYarn = async () => {
     }
 
     if (!isYarnInstalled) {
-        // await exec('npm install -g yarn@berry'); // npm uninstall -g yarn@berry
-        // await prompt('Yarn not found! Contracts depends on it. Do you want to install "yarn"?', exec, 'npm install -g yarn@berry');
         await prompt('Yarn not found! Contracts depends on it. Do you want to install "yarn"?', exec, 'brew install yarn'); // brew install yarn
     }
 }
@@ -65,9 +63,9 @@ const checkGlobalModuleExistence = async (stdout, moduleName) => {
         let yarnLS = await exec('ls');
         isContractsInstalled = yarnLS.stdout.split('\n').indexOf('contracts-aepp') >= 0;
     } catch (error) {
-        
+        // When there is no installed package/directory is missing/, tests on travis throw error
     }
-    
+
     process.chdir(tempCwd);
 
     return modulesContent.includes(moduleName) || isContractsInstalled;
@@ -86,12 +84,12 @@ const installRepo = async () => {
 
 const serveContractsAepp = async (options) => {
     console.log('====== Starting Contracts web Aepp ======');
-    console.log(2, process.cwd());
+
     let yarnGlobalDir = await exec('yarn global dir');
     let contractAeppPath = path.resolve(yarnGlobalDir.stdout.replace('\n', ''), './node_modules/contracts-aepp');
 
     const currentDir = process.cwd();
-    // process.chdir(contractAeppProjectPath);
+    
     process.chdir(contractAeppPath);
     updateSettingsFile(options, currentDir);
     configureSettings(currentDir);
