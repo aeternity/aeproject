@@ -36,7 +36,7 @@ describe('AEproject contracts', () => {
         process.chdir(fullPath);
     });
 
-    it('should execute contracts cli command correctly', async function () {
+    it.only('should execute contracts cli command correctly', async function () {
         const logStream = fs.createWriteStream(contractsConstants.LOG_FILE, {
             flags: 'a'
         });
@@ -44,6 +44,7 @@ describe('AEproject contracts', () => {
         contractsResult.stdout.pipe(logStream);
         await timeout(contractsConstants.STARTING_AEPP_TIMEOUT);
         const logContent = fs.readFileSync(contractsConstants.LOG_FILE, 'utf8');
+        console.log(logContent);
         assert.include(logContent, contractsConstants.LOCALHOST_SUCCESS);
         fs.removeSync(contractsConstants.LOG_FILE);
     });
