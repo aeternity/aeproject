@@ -37,7 +37,7 @@ const isImageRunningOpts = {
     options: executeOptions
 }
 
-describe.only("AEproject Node and Compiler Tests", async () => {
+describe("AEproject Node and Compiler Tests", async () => {
 
     before(async () => {
         fs.ensureDirSync(`.${ constants.nodeTestsFolderPath }`)
