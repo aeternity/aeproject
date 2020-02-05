@@ -370,11 +370,11 @@ const setupDocker = async (isUpdate) => {
 
     // set default image version if there are changes
     if (nodeResult.version !== defaultNodeVersion) {
-        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:{${ config.nodeConfiguration.envLiteral }}`);
+        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:\${${ config.nodeConfiguration.envLiteral }}`);
     }
 
     if (compilerResult.version !== defaultCompilerVersion) {
-        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:{${ config.compilerConfiguration.envLiteral }}`);
+        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:\${${ config.compilerConfiguration.envLiteral }}`);
     }
 }
 
