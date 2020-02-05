@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-xdescribe('AEproject contracts', () => {
+describe('AEproject contracts', () => {
     let contractsResult;
     let projectDir;
     let testFolderDir;
@@ -44,6 +44,7 @@ xdescribe('AEproject contracts', () => {
         contractsResult.stdout.pipe(logStream);
         await timeout(contractsConstants.STARTING_AEPP_TIMEOUT);
         const logContent = fs.readFileSync(contractsConstants.LOG_FILE, 'utf8');
+
         assert.include(logContent, contractsConstants.LOCALHOST_SUCCESS);
         fs.removeSync(contractsConstants.LOG_FILE);
     });
@@ -90,6 +91,13 @@ xdescribe('AEproject contracts', () => {
 
         await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions);
         fs.removeSync(`.${ constants.testTestsFolderPath }`);
-        await exec('kill $(lsof -t -i:8080)');
+        try {
+            await exec('kill $(lsof -t -i:8080)');
+        } catch (error) {
+            // when there is broken test
+            // and contracts wont start
+            // this command throw error
+            // because nothing is running on 8080
+        }
     })
 });
