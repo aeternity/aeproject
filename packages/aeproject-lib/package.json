@@ -11,9 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aeproject-config": "^2.1.1",
-    "aeproject-logger": "^2.1.1",
-    "aeproject-utils": "^2.1.1",
     "typescript": "^3.5.2"
   }
 }
