@@ -62,6 +62,7 @@ const run = async function (paths = [], testFolder = process.cwd()) {
 
             const AeSDK = require('@aeternity/aepp-sdk');
             const Universal = AeSDK.Universal;
+            const Node = AeSDK.Node;
             const config = {
                 host: "http://localhost:3001/",
                 internalHost: "http://localhost:3001/internal/",
@@ -72,14 +73,32 @@ const run = async function (paths = [], testFolder = process.cwd()) {
             }
 
             const getClient = async function (Universal, clientConfig, keyPair) {
-                let client = await Universal({
+                let network = {
                     url: clientConfig.host,
                     internalUrl: clientConfig.internalHost,
-                    keypair: keyPair,
-                    nativeMode: true,
                     networkId: "ae_devnet",
                     compilerUrl: config.compilerUrl
-                });
+                }
+            
+                let node = await Node({
+                    url: network.url,
+                    internalUrl: network.internalUrl,
+                    forceCompatibility: true
+                })
+            
+                let client = await Universal({
+                    nodes: [{
+                        name: 'ANY_NAME',
+                        instance: node
+                    }],
+                    accounts: [AeSDK.MemoryAccount({
+                        keypair: keyPair
+                    })],
+                    nativeMode: true,
+                    networkId: network.networkId,
+                    compilerUrl: network.compilerUrl,
+                    forceCompatibility: true
+                })
             
                 return client;
             }
