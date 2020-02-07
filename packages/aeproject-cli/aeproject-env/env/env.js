@@ -61,6 +61,17 @@ class Env extends EnvService {
         let running;
         let dockerImage = nodeConfiguration.dockerServiceNodeName
         let compilerImage = compilerConfiguration.dockerServiceCompilerName;
+
+        let nodeVersion = nodeConfiguration.nodeVersion;
+        let compilerVersion = compilerConfiguration.compilerVersion;
+
+        if (option.nodeVersion) {
+            nodeVersion = option.nodeVersion;
+        }
+
+        if (option.compilerVersion) {
+            compilerVersion = option.compilerVersion;
+        } 
         
         running = await this.areNodeAndCompilerRunning(dockerImage, compilerImage)
 
@@ -96,7 +107,7 @@ class Env extends EnvService {
         try {
             super.printStarMsg()
 
-            await super.start(dockerImage);
+            await super.start(dockerImage, nodeVersion, compilerVersion);
 
             super.printSuccessMsg()
             

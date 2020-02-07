@@ -21,8 +21,8 @@ const Deployer = require('./../../../../packages/aeproject-lib/dist/aeproject-de
 
 let contractPath = './../contracts/ExampleContract2.aes';
 
-const deploy = async (network, privateKey) => {
-    let deployer = new Deployer(network, privateKey);
+const deploy = async (network, privateKey, compiler, networkId) => {
+    let deployer = new Deployer(network, privateKey, compiler, networkId)
     await deployer.deploy(path.resolve(__dirname, contractPath), ['"asd"']);
 };
 

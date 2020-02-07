@@ -34,6 +34,8 @@ const txValidator = aeprojectUtils.TransactionValidator;
 const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
 const capitalize = aeprojectUtils.capitalize;
+const addCaretToDependencyVersion = aeprojectUtils.addCaretToDependencyVersion;
+const prompt = aeprojectUtils.prompt;
 
 const contractUtils = require('./utils/contract-utils');
 const keyToHex = contractUtils.keyToHex;
@@ -85,5 +87,7 @@ module.exports = {
     httpGet,
     readSpawnOutput,
     readErrorSpawnOutput,
-    capitalize
+    capitalize,
+    addCaretToDependencyVersion,
+    prompt
 }

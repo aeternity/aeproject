@@ -20,3 +20,9 @@ If you have running instances of the compiler started from `aeproject` you could
 ```text
 aeproject compiler --info
 ```
+
+There is optional parameter **\-\-v**. To specify a specific version of compiler, you should type
+```text
+
+aeproject compiler --v v4.0.0
+```

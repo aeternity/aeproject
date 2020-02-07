@@ -17,6 +17,7 @@
 const constants = require('./constants.json');
 const sdkVersion = constants.sdkVersion;
 
+const config = require('aeproject-config');
 const utils = require('aeproject-utils');
 const execute = utils.execute;
 const printError = utils.printError;
@@ -33,7 +34,7 @@ const path = require('path');
 
 async function run (update) {
     if (update) {
-        await updateAEprojectProjectLibraries(sdkVersion);
+        await updateAEprojectProjectLibraries(sdkVersion, update);
         return;
     }
 
@@ -96,15 +97,13 @@ const compareSdkVersions = async (_sdkVersion, cwd) => {
     return _sdkVersion;
 }
 
-const updateAEprojectProjectLibraries = async (_sdkVersion) => {
+const updateAEprojectProjectLibraries = async (_sdkVersion, update) => {
     print(`===== Updating AEproject files =====`);
     
     _sdkVersion = await compareSdkVersions(_sdkVersion, process.cwd());
 
     await setupDocker(true);
-    await installAEproject();
-    await installAeppSDK(_sdkVersion);
-    await installYarn();
+    await installAEproject(update);
     await uninstallForgaeDependencies();
 
     print('===== AEproject was successfully updated! =====');
@@ -124,7 +123,6 @@ const installLibraries = async () => {
 
     await installAeppSDK(sdkVersion)
     await installAEproject()
-    await installYarn()
 }
 
 const installAeppSDK = async (_sdkVersion = '') => {
@@ -132,14 +130,14 @@ const installAeppSDK = async (_sdkVersion = '') => {
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`@aeternity/aepp-sdk@${ _sdkVersion }`, '--save-exact']);
 }
 
-const installAEproject = async () => {
+const installAEproject = async (isUpdate) => {
+
+    if (isUpdate) {
+        utils.addCaretToDependencyVersion("aeproject-lib");
+    }
+
     print(`===== Installing AEproject locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-lib`, '--ignore-scripts', '--no-bin-links']);
-}
-
-const installYarn = async () => {
-    print(`===== Installing yarn locally =====`);
-    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', ['yarn', '--save-exact', '--ignore-scripts', '--no-bin-links']);
 }
 
 const uninstallForgaeDependencies = async () => {
@@ -372,11 +370,11 @@ const setupDocker = async (isUpdate) => {
 
     // set default image version if there are changes
     if (nodeResult.version !== defaultNodeVersion) {
-        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:${ defaultNodeVersion }`);
+        setDockerImageVersion(dockerNodeYmlFileSource, `${ aeternityNodeImageLiteral }:\${${ config.nodeConfiguration.envLiteral }}`);
     }
 
     if (compilerResult.version !== defaultCompilerVersion) {
-        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:${ defaultCompilerVersion }`);
+        setDockerImageVersion(dockerCompilerYmlFileSource, `${ aeternityCompilerImageLiteral }:\${${ config.compilerConfiguration.envLiteral }}`);
     }
 }
 

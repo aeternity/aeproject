@@ -1,7 +1,8 @@
 require = require('esm')(module /*, options */) // use to handle es6 import/export 
 let axios = require('axios');
 const fs = require('fs');
-const path = require('path')
+const path = require('path');
+const prompts = require('prompts');
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const Node = AeSDK.Node;
@@ -312,6 +313,45 @@ function capitalize (_string) {
     return _string.charAt(0).toUpperCase() + _string.slice(1)
 }
 
+const addCaretToDependencyVersion = (dependecy) => {
+    let pJson = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), './package.json'), 'utf8'))
+
+    let libVersion = pJson.dependencies[dependecy];
+
+    if (!libVersion) {
+        return;
+    }
+
+    if (!libVersion.startsWith('^')) {
+        pJson.dependencies[dependecy] = '^' + libVersion;
+    }
+
+    fs.writeFileSync(path.resolve(process.cwd(), './package.json'), JSON.stringify(pJson), 'utf8');
+}
+
+async function prompt (promptMessage, functionToExecute) {
+
+    const args = [...arguments];
+    // [0] - promptMessage
+    // [1] - function to execute
+    // [..] rest = function arguments 
+
+    // // Prompt user to input data in console.
+    const response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: `${ promptMessage } (YES/Y/yes/y || No/no/N/n):`
+        // validate: value => value < 18 ? `some validation text` : true
+    });
+
+    let input = response.value;
+    if (input === 'YES' || input === 'yes' || input === 'Y' || input === 'y') {
+        return functionToExecute(...args.slice(2));
+    } 
+    
+    return null;
+}
+
 module.exports = {
     config,
     getClient,
@@ -329,5 +369,7 @@ module.exports = {
     TransactionValidator,
     readSpawnOutput,
     readErrorSpawnOutput,
-    capitalize
+    capitalize,
+    addCaretToDependencyVersion,
+    prompt
 }

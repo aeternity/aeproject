@@ -7,18 +7,36 @@ const {
     spawn
 } = require('promisify-child-process');
 
+const prompt = require('aeproject-utils').prompt;
+
 const contractsConstants = require('./contracts-constants.json');
 
 let nodeModulesPath;
 let contractAeppProjectPath;
 
 const run = async (options) => {
+    await installYarn();
     await mainFlow(options);
 };
 
+const installYarn = async () => {
+    let isYarnInstalled = false;
+    try {
+        await exec('yarn --version');
+        isYarnInstalled = true;
+    } catch (error) {
+        // yarn not found...
+    }
+
+    if (!isYarnInstalled) {
+        await prompt('Yarn not found! Contracts depends on it. Do you want to install "yarn"?', exec, 'npm install --global yarn');
+    }
+}
+
 const mainFlow = async (options) => {
     exec('npm list -g --depth 0', async function (error, stdout) {
-        const contractsAeppInstalled = checkGlobalModuleExistence(stdout, contractsConstants.CONTRACTS_AEPP_LITERAL);
+
+        const contractsAeppInstalled = await checkGlobalModuleExistence(stdout, contractsConstants.CONTRACTS_AEPP_LITERAL);
 
         if (!contractsAeppInstalled || options.update) {
             await installRepo();
@@ -30,27 +48,51 @@ const mainFlow = async (options) => {
     });
 };
 
-const checkGlobalModuleExistence = (stdout, moduleName) => {
+const checkGlobalModuleExistence = async (stdout, moduleName) => {
     const devDependenciesPath = stdout.split('\n')[0];
     nodeModulesPath = path.join(devDependenciesPath, contractsConstants.NODE_MODULES_LITERAL);
     const modulesContent = fs.readdirSync(nodeModulesPath);
-    return modulesContent.includes(moduleName);
+
+    let isContractsInstalled = false;
+    // Travis throw exception when there are NO installed packages
+    let tempCwd = process.cwd();
+    try {
+        let yarnNodeModulePath = await getYarnNodeModulePath();
+        process.chdir(yarnNodeModulePath);
+
+        let yarnLS = await exec('ls');
+        isContractsInstalled = yarnLS.stdout.split('\n').indexOf('contracts-aepp') >= 0;
+    } catch (error) {
+        // When there is no installed package/directory is missing/, tests on travis throw error
+    }
+
+    process.chdir(tempCwd);
+
+    return modulesContent.includes(moduleName) || isContractsInstalled;
 };
 
 const installRepo = async () => {
+    const currentPath = process.cwd();
     console.log('====== Installing Contracts web Aepp ======');
-    await exec(`npm install -g ${ contractsConstants.CONTRACTS_AEPP_GITHUB_URL }`);
+
+    await exec(`yarn global add ${ contractsConstants.CONTRACTS_AEPP_GITHUB_URL }`);
+    process.chdir(path.resolve(await getYarnNodeModulePath(), 'contracts-aepp'))
+    await exec('yarn');
+
+    process.chdir(currentPath);
 };
 
 const serveContractsAepp = async (options) => {
     console.log('====== Starting Contracts web Aepp ======');
-    const currentDir = process.cwd();
-    process.chdir(contractAeppProjectPath);
 
+    let yarnGlobalDir = await exec('yarn global dir');
+    let contractAeppPath = path.resolve(yarnGlobalDir.stdout.replace('\n', ''), './node_modules/contracts-aepp');
+
+    const currentDir = process.cwd();
+    
+    process.chdir(contractAeppPath);
     updateSettingsFile(options, currentDir);
     configureSettings(currentDir);
-
-    await exec(`yarn install --force`);
 
     const startingAeppProcess = spawn('yarn', ['run', 'start:dev']);
 
@@ -89,16 +131,26 @@ const updateSettingsFile = (options, currentDir) => {
 const resolveFreshlyInstalledContractsAeppPath = () => {
     return new Promise((resolve, reject) => {
         exec('npm list -g --depth 0', async function (error, stdout) {
-            const contractsAeppIsInstalled = checkGlobalModuleExistence(stdout, contractsConstants.CONTRACTS_AEPP_LITERAL);
+            if (error) {
+                resolve(false)
+            }
 
+            const contractsAeppIsInstalled = checkGlobalModuleExistence(stdout, contractsConstants.CONTRACTS_AEPP_LITERAL);
             if (contractsAeppIsInstalled) {
                 contractAeppProjectPath = path.join(nodeModulesPath, contractsConstants.CONTRACTS_AEPP_LITERAL);
-                resolve();
+                resolve(true);
             }
-            reject();
+
+            resolve(false);
         });
     })
 };
+
+const getYarnNodeModulePath = async () => {
+    let yarnGlobalDir = await exec('yarn global dir');
+
+    return path.resolve(yarnGlobalDir.stdout.replace('\n', ''), './node_modules');
+}
 
 module.exports = {
     run
