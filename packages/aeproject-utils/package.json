@@ -17,7 +17,8 @@
     "moment": "^2.23.0",
     "node-dir": "^0.1.17",
     "path": "^0.12.7",
-    "promisify-child-process": "^2.1.2"
+    "promisify-child-process": "^2.1.2",
+    "prompts": "^2.3.1"
   },
   "keywords": [],
   "author": "",
