@@ -1,6 +1,6 @@
 {
   "name": "aeproject",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "This is the default package.json generated for your project",
   "main": "index.js",
   "bin": {
@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aeproject-config": "^2.1.1",
-    "aeproject-logger": "^2.1.1",
-    "aeproject-utils": "^2.1.1",
+    "aeproject-config": "^2.2.0",
+    "aeproject-logger": "^2.2.0",
+    "aeproject-utils": "^2.2.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "commander": "^2.19.0",
