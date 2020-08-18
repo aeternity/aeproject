@@ -19,9 +19,6 @@ const assert = chai.assert;
 const http = require('http');
 
 const defaultWallets = nodeConfig.defaultWallets
-let balanceOptions = {
-    format: false
-}
 
 let mainDir = process.cwd();
 let nodeTestDir = process.cwd() + constants.nodeTestsFolderPath;
@@ -65,7 +62,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             let client = await utils.getClient(network);
             await waitUntilFundedBlocks(client, isImageRunningOpts)
             for (let wallet in defaultWallets) {
-                let recipientBalance = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                let recipientBalance = await client.balance(defaultWallets[wallet].publicKey)
                 assert.isAbove(Number(recipientBalance), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
             }
         })
@@ -73,7 +70,7 @@ describe("AEproject Node and Compiler Tests", async () => {
         it('Should check if the wallets are funded with the exact amount', async () => {
             let client = await utils.getClient(network);
             for (let wallet in defaultWallets) {
-                let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
                 assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
             }
         })
@@ -562,7 +559,7 @@ describe("AEproject Node and Compiler Tests", async () => {
                     options: executeOptions
                 })
                 for (let wallet in defaultWallets) {
-                    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
                     assert.isAbove(Number(recipientBalanace), 0, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
                 }
             })
@@ -570,7 +567,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             it('Should check if the wallets are funded with the exact amount', async () => {
                 let client = await utils.getClient(network);
                 for (let wallet in defaultWallets) {
-                    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey, balanceOptions)
+                    let recipientBalanace = await client.balance(defaultWallets[wallet].publicKey)
                     assert.equal(recipientBalanace, nodeConfig.config.amountToFund, `${ defaultWallets[wallet].publicKey } balance is not greater than 0`);
                 }
             })
