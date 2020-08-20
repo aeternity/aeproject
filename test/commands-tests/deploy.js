@@ -43,8 +43,8 @@ function insertAdditionalFiles () {
 
 async function linkLocalPackages () {
     process.chdir(executeOptions.cwd);
-    await exec('yarn link aeproject-lib')
-    await exec('yarn link aeproject-utils')
+    await exec('npm link aeproject-lib')
+    await exec('npm link aeproject-utils')
 
 }
 
