@@ -1,6 +1,6 @@
 {
     "MODULE_NAME": "fire-editor",
-    "MODULE_GITHUB_URL": "git+https://github.com/nikita-fuchs/fire-editor#master",
+    "MODULE_GITHUB_URL": "github:aeternity/fire-editor#master",
     "MODULE_START_CMD": "npm run start",
     "MESSAGES": {
         "START_INSTALLING": "Installing Fire Editor Aepp",

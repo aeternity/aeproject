@@ -105,7 +105,7 @@ const isFireEditorInstalled = async (moduleName) => {
 }
 
 const installFireEditorRepo = async () => {
-    await exec(`npm i -g ${ constants.MODULE_GITHUB_URL }`); 
+    await exec(`npm i -g  --ignore-scripts ${ constants.MODULE_GITHUB_URL }`);
 }
 
 const uninstallFireEditorRepo = async () => {
