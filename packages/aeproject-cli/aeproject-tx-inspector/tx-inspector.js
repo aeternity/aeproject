@@ -17,9 +17,9 @@
 
 require = require('esm')(module /*, options */) // use to handle es6 import/export
 
+const { TransactionValidator, Node } = require('@aeternity/aepp-sdk');
 const utils = require('aeproject-utils');
 
-const TxValidator = utils.txValidator;
 const httpGet = utils.httpGet;
 
 const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
@@ -36,13 +36,12 @@ async function run (option) {
 
     const network = utils.getNetwork(option.network ? option.network : 'local', option.networkId);
 
-    const validator = await TxValidator({
-        url: network.url,
-        internalUrl: network.url + '/internal',
+    const validator = await TransactionValidator({
+        nodes: [{ name: 'temp', instance: await Node({ url: network.url }) }],
         forceCompatibility: true
     });
 
-    let result = await validator.unpackAndVerify(option.tx, network.networkId);
+    let result = await validator.unpackAndVerify(option.tx, { networkId: network.networkId });
 
     let publicKey = getPublicKeyFromTx(result.txType, result.tx);
 

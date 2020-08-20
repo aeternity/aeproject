@@ -30,7 +30,6 @@ const timeout = aeprojectUtils.timeout;
 const contractCompile = aeprojectUtils.contractCompile;
 const checkNestedProperty = aeprojectUtils.checkNestedProperty;
 const winExec = aeprojectUtils.winExec;
-const txValidator = aeprojectUtils.TransactionValidator;
 const readSpawnOutput = aeprojectUtils.readSpawnOutput;
 const readErrorSpawnOutput = aeprojectUtils.readErrorSpawnOutput;
 const capitalize = aeprojectUtils.capitalize;
@@ -83,7 +82,6 @@ module.exports = {
     createDirIfNotExists,
     writeFileSync,
     winExec,
-    txValidator,
     httpGet,
     readSpawnOutput,
     readErrorSpawnOutput,

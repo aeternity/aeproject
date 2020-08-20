@@ -6,7 +6,6 @@ const prompts = require('prompts');
 const AeSDK = require('@aeternity/aepp-sdk');
 const Universal = AeSDK.Universal;
 const Node = AeSDK.Node;
-const TransactionValidator = AeSDK.TransactionValidator;
 
 let rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
 let dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
@@ -366,7 +365,6 @@ module.exports = {
     contractCompile,
     checkNestedProperty,
     winExec,
-    TransactionValidator,
     readSpawnOutput,
     readErrorSpawnOutput,
     capitalize,
