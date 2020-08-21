@@ -12,7 +12,6 @@ let expectedResult1 = "ExampleContract1.aes has been successfully compiled"
 let expectedResult2 = "ExampleContract2.aes has been successfully compiled"
 let expectedResult3 = "ExampleContract3.aes has been successfully compiled"
 let expectedResult4 = "math.aes has been successfully compiled"
-let expectedResult5 = "ENOTFOUND compiler.somewhere.com"
 let executeOptions = {
     cwd: process.cwd() + constants.compileTestsFolderPath
 };
@@ -74,7 +73,9 @@ describe('AEproject Compile', () => {
     describe('NOT Compile', () => {
         it('Should NOT compile contracts with --compiler argument - invalid one ', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", INVALID_COMPILER_URL], executeOptions)
-            assert.include(result, expectedResult5);
+            chai.expect(result).to.satisfy(result =>
+                result.includes('ENOTFOUND compiler.somewhere.com') ||
+                result.includes('EAI_AGAIN compiler.somewhere.com'));
         })
 
         it('Should display error message to user if contract has not been compiled', async () => {

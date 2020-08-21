@@ -1,13 +1,13 @@
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
-const aeprojectExecute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const aeprojectExecute = require('../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra');
 const path = require('path');
 
 chai.use(chaiFiles);
 
-const constants = require('../constants.json');
+const constants = require('../test/constants.json');
 const cliCmds = constants.cliCommands;
 const cliSubCmds = constants.cliSubCommands;
 

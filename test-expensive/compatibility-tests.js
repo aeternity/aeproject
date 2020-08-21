@@ -4,7 +4,7 @@ const assert = chai.assert;
 chai.use(chaiFiles);
 
 const fs = require('fs-extra');
-const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const execute = require('../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const path = require('path');
 
 const {
@@ -12,7 +12,7 @@ const {
     spawn
 } = require('promisify-child-process');
 
-const constants = require('../constants.json');
+const constants = require('../test/constants.json');
 const testFolder = constants.compatibilityTestFolder;
 const cliCommands = constants.cliCommands;
 const cliCmdOptions = constants.cliCommandsOptions;
@@ -124,7 +124,7 @@ describe('Compatibility tests', async function () {
 
     it('Test "compatibility" with invalid VM', async () => {
 
-        fs.copySync(path.resolve(__dirname, './artifacts/crypto-hamster-broken-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
+        fs.copySync(path.resolve(__dirname, '../test/commands-tests/artifacts/crypto-hamster-broken-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
         let result = await compatibilityCmd({ logs: true });
 
         let isVMNotSupported = result.indexOf('VM VERSION 4 do not support by this node') >= 0;
@@ -133,8 +133,8 @@ describe('Compatibility tests', async function () {
 
     it('Test "compatibility", Node do not support syntax', async () => {
 
-        fs.copySync(path.resolve(__dirname, './artifacts/token-migration.aes'), path.join(process.cwd(), './contracts/ExampleContract.aes'), { overwrite: true });
-        fs.copySync(path.resolve(__dirname, './artifacts/token-migration-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
+        fs.copySync(path.resolve(__dirname, '../test/commands-tests/artifacts/token-migration.aes'), path.join(process.cwd(), './contracts/ExampleContract.aes'), { overwrite: true });
+        fs.copySync(path.resolve(__dirname, '../test/commands-tests/artifacts/token-migration-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
         
         let result = await compatibilityCmd({ nodeVersion: 'v3.3.0', logs: true });
 
