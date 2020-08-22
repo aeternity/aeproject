@@ -13,7 +13,7 @@
     "unlink-npm": "cd packages/aeproject-cli && npm unlink && cd .. && cd aeproject-lib && npm unlink && npm unlink aeproject-config && npm unlink aeproject-utils && npm unlink aeproject-logger && cd .. && cd aeproject-config && npm unlink && cd .. && cd aeproject-utils && npm unlink && npm unlink aeproject-logger && cd .. && cd aeproject-logger && npm unlink"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "7.0.0",
+    "@aeternity/aepp-sdk": "7.6.0",
     "aeproject-lib": "^2.0.1",
     "esm": "^3.0.77",
     "fs-extra": "^7.0.1",

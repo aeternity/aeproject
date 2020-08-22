@@ -40,9 +40,6 @@ const config = nodeConfig.config;
 const defaultWallets = nodeConfig.defaultWallets;
 let network = nodeConfig.localhostParams
 network.compilerUrl = nodeConfig.localhostParams.compilerUrl
-let balanceOptions = {
-    format: false
-}
 
 const compilerConfigs = nodeConfig.compilerConfiguration;
 const nodeConfiguration = nodeConfig.nodeConfiguration;
@@ -443,7 +440,7 @@ class EnvService {
     }
 
     async printWallet (client, keyPair, label) {
-        let keyPairBalance = await client.balance(keyPair.publicKey, balanceOptions)
+        let keyPairBalance = await client.balance(keyPair.publicKey)
 
         print(`${ label } ------------------------------------------------------------`)
         print(`public key: ${ keyPair.publicKey }`)
