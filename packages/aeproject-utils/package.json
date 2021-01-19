@@ -9,7 +9,7 @@
   "dependencies": {
     "@aeternity/aepp-sdk": "7.7.0",
     "aeproject-config": "^2.2.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "chalk": "^2.4.1",
     "cli-table": "^0.3.1",
     "esm": "^3.0.77",
