@@ -1,4 +1,4 @@
-name: ae-projects-js CI
+name: ae-project-js CI
 
 on: push
 
@@ -21,13 +21,13 @@ jobs:
       run: |
         npm ci
         npm run develop
-    - name: Node
-      run: npm run mocha -- test-expensive/node.js
-    - name: Contracts
-      run: npm run mocha -- test-expensive/contracts.js
-    - name: Compatibility tests
-      run: npm run mocha -- test-expensive/compatibility-tests.js
-    - name: Shape
-      run: npm run mocha -- test-expensive/shape-*.js
+    # - name: Node
+    #   run: npm run mocha -- test-expensive/node.js
+    # - name: Contracts
+    #   run: npm run mocha -- test-expensive/contracts.js
+    # - name: Compatibility tests
+    #   run: npm run mocha -- test-expensive/compatibility-tests.js
+    # - name: Shape
+    #   run: npm run mocha -- test-expensive/shape-*.js
     - name: Other tests
       run: npm run aetest
