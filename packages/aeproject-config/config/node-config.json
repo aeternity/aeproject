@@ -55,7 +55,7 @@
 		"configFileName": "docker-compose.yml",
 		"textToSearch": "image: aeternity/",
 		"dockerImage": "aeternity/aeternity",
-		"dockerServiceNodeName" : "node1",
+		"dockerServiceNodeName" : "node",
 		"dockerMachineIP" : "192.168.99.100",
 		"imageVersion": "v6.0.0-rc1",
 		"envLiteral": "NODE_TAG"
