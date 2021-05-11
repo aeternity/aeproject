@@ -126,7 +126,7 @@ describe('Compatibility tests', async function () {
 
         fs.copySync(path.resolve(__dirname, '../test/commands-tests/artifacts/crypto-hamster-broken-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
         let result = await compatibilityCmd({ logs: true });
-
+        console.log(JSON.stringify(result));
         let isVMNotSupported = result.indexOf('VM VERSION 4 do not support by this node') >= 0;
         assert.isOk(isVMNotSupported, "invalid VM was not triggered");
     })
@@ -137,7 +137,7 @@ describe('Compatibility tests', async function () {
         fs.copySync(path.resolve(__dirname, '../test/commands-tests/artifacts/token-migration-tests.jss'), path.join(process.cwd(), './test/exampleTest.js'), { overwrite: true });
         
         let result = await compatibilityCmd({ nodeVersion: 'v3.3.0', logs: true });
-
+        console.log(JSON.stringify(result));
         let isTransactionStuck = result.indexOf('Giving up after 10 blocks mined') >= 0;
         assert.isOk(isTransactionStuck, "Transaction was mined");
     })
