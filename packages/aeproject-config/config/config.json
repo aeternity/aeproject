@@ -4,11 +4,11 @@
         "networkId": "ae_devnet"
     },
     "testNetParams": {
-        "url": "https://testnet.aeternity.io/",
+        "url": "https://testnet.aeternity.io",
         "networkId": "ae_uat"
     },
     "mainNetParams": {
-        "url": "https://mainnet.aeternity.io/",
+        "url": "https://mainnet.aeternity.io",
         "networkId": "ae_mainnet"
     },
     "keypair": {
