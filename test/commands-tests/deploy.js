@@ -74,7 +74,7 @@ describe('AEproject Deploy', () => {
 
         it('Should init Deployer with testnet network', async () => {
             // Arrange
-            const expectedNetwork = "https://sdk-testnet.aepps.com"
+            const expectedNetwork = "https://testnet.aeternity.io"
             const passedNetwork = "testnet"
 
             // Act
@@ -86,7 +86,7 @@ describe('AEproject Deploy', () => {
 
         it('Should init Deployer with mainnet network', async () => {
             // Arrange
-            const expectedNetwork = "https://sdk-mainnet.aepps.com"
+            const expectedNetwork = "https://mainnet.aeternity.io"
             const passedNetwork = "mainnet"
 
             // Act

@@ -4,11 +4,11 @@
         "networkId": "ae_devnet"
     },
     "testNetParams": {
-        "url": "https://iris.testnet.aeternity.art",
+        "url": "https://testnet.aeternity.io/",
         "networkId": "ae_uat"
     },
     "mainNetParams": {
-        "url": "https://sdk-mainnet.aepps.com",
+        "url": "https://mainnet.aeternity.io/",
         "networkId": "ae_mainnet"
     },
     "keypair": {

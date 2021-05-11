@@ -11,8 +11,8 @@ The **deploy** command helps developers run their deployment scripts and thus de
 You can specify network using the **-n** or **--network** option. There are 3 options for networks predefined and available :
 
 * "local" - "[http://localhost:3001](http://localhost:3001)"
-* "testnet" - "[https://sdk-testnet.aepps.com](https://sdk-testnet.aepps.com)"
-* "mainnet" - "[https://sdk-mainnet.aepps.com](https://sdk-mainnet.aepps.com)"
+* "testnet" - "[https://testnet.aeternity.io](https://testnet.aeternity.io)"
+* "mainnet" - "[https://mainnet.aeternity.io](https://mainnet.aeternity.io)"
 
 Example:
 

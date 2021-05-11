@@ -13,7 +13,7 @@ const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js
 const isImageRunning = require('../utils').isImageRunning;
 const nodeConfig = require('./../../packages/aeproject-config/config/node-config.json');
 
-const contractPath = './contracts/example-contract.aes';
+const contractPath = './contracts/example-contract-compiler-v5.aes';
 
 const keyPairs = require('./constants/keyPairs.json');
 const ownerKeyPair = keyPairs.owner;
