@@ -1,15 +1,15 @@
 version: '3'
 services:
-  node1:
+  node:
     image: 'aeternity/aeternity:${NODE_TAG}'
-    hostname: node1
+    hostname: node
     environment:
       AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
     command: |
       bin/aeternity console -noinput -aehttp enable_debug_endpoints true
     volumes:
-      - './docker/aeternity_node1_mean15.yaml:/home/aeternity/aeternity.yaml'
-      - './docker/keys/node1:/home/aeternity/node/keys'
+      - './docker/aeternity.yaml:/home/aeternity/aeternity.yaml'
+      - './docker/keys/node:/home/aeternity/node/keys'
   proxy:
     image: 'nginx:1.13.8'
     hostname: proxy

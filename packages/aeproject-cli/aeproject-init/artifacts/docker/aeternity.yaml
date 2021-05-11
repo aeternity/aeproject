@@ -1,7 +1,4 @@
----
-peers:
-    - aenode://pp_28uQUgsPcsy7TQwnRxhF8GMKU4ykFLKsgf4TwDwPMNaSCXwWV8@node2:3015
-    - aenode://pp_Dxq41rJN33j26MLqryvh7AnhuZywefWKEPBiiYu2Da2vDWLBq@node3:3015
+peers: []
 
 http:
   external:
@@ -21,15 +18,6 @@ keys:
   peer_password: "top secret"
   dir: ./keys
 
-chain:
-  persist: true
-  hard_forks:
-    "1": 0
-    "2": 1
-    "3": 2
-    "4": 3
-  
-
 mining:
   autostart: true
   beneficiary: "ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU"
@@ -43,6 +31,6 @@ mining:
       edge_bits: 15
 
 fork_management:
-  network_id: "ae_devnet"
+  network_id: ae_devnet
 
 
