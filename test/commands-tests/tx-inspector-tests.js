@@ -159,7 +159,9 @@ describe('Transaction inspector tests', async function () {
         })
     })
 
-    describe('Testnet network', async function () {
+    // excluded due to active Iris fork that the current sdk version cannot handle:
+    // Error: Unsupported node version 6.0.0-rc1. Supported: >= 5.0.0 < 6.0.0
+    xdescribe('Testnet network', async function () {
 
         let network = 'testnet';
 
