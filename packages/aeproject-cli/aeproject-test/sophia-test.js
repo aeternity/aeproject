@@ -64,8 +64,8 @@ const run = async function (paths = [], testFolder = process.cwd()) {
             const Universal = AeSDK.Universal;
             const Node = AeSDK.Node;
             const config = {
-                host: "http://localhost:3001/",
-                internalHost: "http://localhost:3001/internal/",
+                host: "http://localhost:3001",
+                internalHost: "http://localhost:3001",
                 gas: 200000,
                 ttl: 55,
                 compilerUrl: 'http://localhost:3080',

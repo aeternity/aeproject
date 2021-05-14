@@ -28,9 +28,6 @@ const SOPHIA_LIBS_PATH = '../artifacts/sophia-libs/';
 const getClient = async function (network, keypair = config.keypair) {
     let client;
     let internalUrl = network.url;
-    if (network.url.includes("localhost")) {
-        internalUrl = internalUrl + "/internal"
-    }
 
     let node = await Node({
         url: network.url,

@@ -122,7 +122,7 @@ const updateSettingsFile = (options, currentDir) => {
     const pathToAEprojectSettings = path.join(currentDir, contractsConstants.AEPROJECT_SETTINGS_PATH);
     const settingsObj = require(pathToAEprojectSettings);
     settingsObj.url = options.nodeUrl ? options.nodeUrl : contractsConstants.DEFAULT_LOCAL_NODE_URL;
-    settingsObj.internalUrl = `${ options.nodeUrl ? options.nodeUrl : contractsConstants.DEFAULT_LOCAL_NODE_URL }/internal/`;
+    settingsObj.internalUrl = options.nodeUrl ? options.nodeUrl : contractsConstants.DEFAULT_LOCAL_NODE_URL;
     const settingString = JSON.stringify(settingsObj);
     const replacementResult = `${ contractsConstants.EXPORT_FILE_LITERAL } ${ settingString }`;
     fs.writeFileSync(pathToAEprojectSettings, replacementResult);

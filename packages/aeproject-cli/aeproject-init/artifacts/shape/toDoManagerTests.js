@@ -18,8 +18,8 @@ const Deployer = require('aeproject-lib').Deployer;
 const EXAMPLE_CONTRACT_PATH = "./contracts/ToDoManager.aes";
 
 const config = {
-	host: "http://localhost:3001/",
-	internalHost: "http://localhost:3001/internal/",
+	host: "http://localhost:3001",
+	internalHost: "http://localhost:3001",
 	gas: 200000,
 	ttl: 55
 }

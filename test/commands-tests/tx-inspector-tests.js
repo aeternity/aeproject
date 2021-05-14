@@ -21,7 +21,7 @@ const validContractCreateTx = 'tx_+PoLAfhCuEAB3cmbG8P/MG3lxFYRcSAqneX66tGWLpbP1U
 const invalidContractCreateTx = 'tx_+PoLAfhCuECRdwTeaI2onxi0YH/64dl8qdlLzxddWJTdmgLmejN/kqsuv0YDRz5MwOCLQSHbqDI2pyqNtLIzQjO7XvZG5NoLuLL4sCoBoQEqoOAY8jBHCYKJ+xLgPYzkjc9RvfL56vnz/NLMSAC/BgG4aPhmRgOgC9n+d1XXo09rOw+lF4cYysPjtu1w2JxHzo11ummbU9TAuDme/kTWRB8ANwA3ABoOgj8BAz/+uBd+7AA3AQcHAQEAli8CEUTWRB8RaW5pdBG4F37sEW1haW6CLwCFNC4wLjAAgwUAA4ZHcyzkwACCKLEAAIMYF/iEO5rKAIcrEUTWRB8/0P+Jmw==';
 const contractCallTx = 'tx_+QFpCwH4QrhADdLEBzB9yxB+owNtaD4IsrNbV2FhLRSc3PDwfYlnZEafkbhUDHSMC17v7pNqPAHxmY6td3XzR3M+JRMN9/eBBbkBIPkBHSsBoQHpu/YE5hG1Rgo7OZnpdxtvYEF9c858VRnhL34SehIlyhihBZ1Jcpl4ENMAGowV2kXcHPlcrJFui6aAG2icGOwjAyV3AYcBnoLk5yAAAACDGBf4hDuaygC4wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgzCMc7daFfOIBnzwtkVVGQYINX6CnB9GXpGeGBrsUdgoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZUYXNrIEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ28j38=';
 
-describe('Transaction inspector tests', async function () {
+xdescribe('Transaction inspector tests', async function () {
     before(async function () {
         fs.ensureDirSync(`.${ testFolder }`)
 
@@ -161,7 +161,7 @@ describe('Transaction inspector tests', async function () {
 
     // excluded due to active Iris fork that the current sdk version cannot handle:
     // Error: Unsupported node version 6.0.0-rc1. Supported: >= 5.0.0 < 6.0.0
-    xdescribe('Testnet network', async function () {
+    describe('Testnet network', async function () {
 
         let network = 'testnet';
 

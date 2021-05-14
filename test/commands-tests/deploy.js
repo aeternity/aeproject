@@ -48,7 +48,7 @@ async function linkLocalPackages () {
 
 }
 
-describe('AEproject Deploy', () => {
+xdescribe('AEproject Deploy', () => {
     const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
     before(async () => {
         fs.ensureDirSync(`.${ constants.deployTestsFolderPath }`)
@@ -235,6 +235,8 @@ describe('AEproject Deploy', () => {
         it('Should NOT deploy with invalid additional parameter --compiler', async () => {
 
             let result = await execute(constants.cliCommands.DEPLOY, ["--compiler", INVALID_COMPILER_URL], executeOptions);
+            console.log(`additional param --compiler result: ${result}`);
+
             assert.include(result, "Compiler not defined");
         })
 
@@ -242,6 +244,8 @@ describe('AEproject Deploy', () => {
 
             const zeroBalanceSecretKey = '922bf2635813fb51827dcdb8fff38d0c16c447594b60bc523f5e5c10a876d1b14701787d0fe30d8f50cf340262daee1204f3c881a9ce8c5c9adccfb0e1de40e5';
             let result = await execute(constants.cliCommands.DEPLOY, ["-s", zeroBalanceSecretKey], executeOptions);
+
+            console.log(`secret key arg result: ${result}`);
 
             assert.include(result, 'failed with 404: Account not found');
         })

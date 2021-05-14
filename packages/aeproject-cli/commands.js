@@ -145,7 +145,7 @@ const addContractsAeppIntegrationOption = (program) => {
     program
         .command('contracts')
         .description('Running a Contract web aepp locally and connect it to the spawned aeproject node.')
-        .option('--nodeUrl [nodeUrl]', 'Specify the url of the local spawned node', 'http://localhost:3001/')
+        .option('--nodeUrl [nodeUrl]', 'Specify the url of the local spawned node', 'http://localhost:3001')
         .option('--update [update]', 'Update the contracts aepp with the latest version of develop branch')
         .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
         .action(async (options) => {

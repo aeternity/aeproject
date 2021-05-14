@@ -43,7 +43,7 @@ function exportNodeConfiguration (config) {
     const localhostConfig = {
         networkId: localHostParams.networkId,
         host: localHostParams.url,
-        internalHost: `${ localHostParams.url }/internal`,
+        internalHost: localHostParams.url,
         compilerUrl: config.compilerUrl
     }
 

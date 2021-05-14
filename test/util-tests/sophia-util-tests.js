@@ -29,7 +29,7 @@ const INVALID_TEST_FUNCTIONS = [
     'commented_am_i_private'
 ];
 
-describe('Sophia util tests', async () => {
+xdescribe('Sophia util tests', async () => {
 
     it('Should parse only one smart contract', async () => {
         const contractName = 'Calculator';

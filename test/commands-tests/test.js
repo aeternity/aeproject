@@ -77,7 +77,7 @@ describe('AEproject Test', () => {
         })
     })
 
-    describe('AEproject Test - sophia tests', () => {
+    xdescribe('AEproject Test - sophia tests', () => {
 
         beforeEach(async function () {
             fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
@@ -150,7 +150,7 @@ describe('AEproject Test', () => {
         }
     })
 
-    describe('AEproject Test - test "test" command', () => {
+    xdescribe('AEproject Test - test "test" command', () => {
 
         const expectedResultFromTestCommand = '"npm run test" command successfully execute exampleTest.js file';
         const expectedResultFromAeTestCommand = '"npm run aetest" command successfully execute exampleTest.js file';

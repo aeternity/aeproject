@@ -33,16 +33,17 @@ describe('Example Contract', () => {
         const deployedPromise = deployer.deploy(EXAMPLE_CONTRACT_PATH) // Deploy it
 
         await assert.isFulfilled(deployedPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check whether it's deployed
-        instance = await Promise.resolve(deployedPromise)
+        instance = await Promise.resolve(deployedPromise);
     })
 
     it('Should check if hamster has been created', async () => {
         hamsterName = 'C.Hamster';
-        await instance.createHamster(hamsterName)
+        await instance.createHamster(hamsterName);
+        console.log('yeah hamster has been created');
+        let result = await instance.nameExists(hamsterName);
+        console.log(`hamster exists result: ${result}`);
 
-        let exists = (await instance.nameExists(hamsterName)).decodedResult
-
-        assert.isTrue(exists, 'hamster has not been created')
+        assert.isTrue(result.decodedResult, 'hamster has not been created');
     })
 
     it('Should REVERT if hamster already exists', async () => {
@@ -51,9 +52,11 @@ describe('Example Contract', () => {
 
     it('Should return false if name does not exist', async () => {
         hamsterName = 'DoesHamsterExists';
-        let exists = (await instance.nameExists(hamsterName)).decodedResult
 
-        assert.isOk(!exists)
+        let result = await instance.nameExists(hamsterName);
+        console.log(`hamster exists result: ${result}`);
+
+        assert.isOk(!result.decodedResult);
     })
 
     it('Should return true if the name exists', async () => {
@@ -61,8 +64,9 @@ describe('Example Contract', () => {
 
         await instance.createHamster(hamsterName)
 
-        let exists = (await instance.nameExists(hamsterName)).decodedResult
+        let result = await instance.nameExists(hamsterName);
+        console.log(`hamster exists result: ${result}`)
 
-        assert.isOk(exists)
+        assert.isOk(result.exists)
     })
 })

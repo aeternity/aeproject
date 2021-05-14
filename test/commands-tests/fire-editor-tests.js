@@ -20,7 +20,7 @@ const maxSecondsToWaitProcess = 1000 * 60 * 10; // minutes
 
 const cwd = process.cwd();
 
-describe('AEproject Fire Editor', () => {
+xdescribe('AEproject Fire Editor', () => {
 
     before(async function () {
         // uninstall globally fire-editor
