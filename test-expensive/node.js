@@ -266,7 +266,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             let result = await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.INFO], executeOptions)
 
-            assert.isOk(result.indexOf('node1') >= 0, "Node is not running");
+            assert.isOk(result.indexOf('node') >= 0, "Node is not running");
             assert.isOk(result.indexOf('compiler') >= 0, "Compiler is not running");
 
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
@@ -277,7 +277,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             let result = await execute(constants.cliCommands.COMPILER, [constants.cliCommandsOptions.INFO], executeOptions)
             assert.isOk(result.indexOf('compiler') >= 0, "Compiler is not running");
-            assert.isOk(result.indexOf('node1') < 0, "Node is running");
+            assert.isOk(result.indexOf('node') < 0, "Node is running");
 
             await execute(constants.cliCommands.COMPILER, [constants.cliCommandsOptions.STOP], executeOptions)
         })
@@ -286,7 +286,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
 
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
-            assert.isOk(result.indexOf('node1') >= 0, "Node is not running");
+            assert.isOk(result.indexOf('node') >= 0, "Node is not running");
             assert.isOk(result.indexOf('compiler') < 0, "Compiler is running");
 
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)

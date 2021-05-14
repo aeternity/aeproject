@@ -134,10 +134,15 @@ const installAEproject = async (isUpdate) => {
 
     if (isUpdate) {
         utils.addCaretToDependencyVersion("aeproject-lib");
+        utils.addCaretToDependencyVersion("aeproject-logger");
+        utils.addCaretToDependencyVersion("aeproject-utils");
     }
 
     print(`===== Installing AEproject locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-lib`, '--ignore-scripts', '--no-bin-links']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-logger`, '--ignore-scripts', '--no-bin-links']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`aeproject-utils`, '--ignore-scripts', '--no-bin-links']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`prompts`, '--ignore-scripts', '--no-bin-links']);
 }
 
 const uninstallForgaeDependencies = async () => {
