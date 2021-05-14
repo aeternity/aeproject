@@ -21,7 +21,7 @@ const validContractCreateTx = 'tx_+PoLAfhCuEAB3cmbG8P/MG3lxFYRcSAqneX66tGWLpbP1U
 const invalidContractCreateTx = 'tx_+PoLAfhCuECRdwTeaI2onxi0YH/64dl8qdlLzxddWJTdmgLmejN/kqsuv0YDRz5MwOCLQSHbqDI2pyqNtLIzQjO7XvZG5NoLuLL4sCoBoQEqoOAY8jBHCYKJ+xLgPYzkjc9RvfL56vnz/NLMSAC/BgG4aPhmRgOgC9n+d1XXo09rOw+lF4cYysPjtu1w2JxHzo11ummbU9TAuDme/kTWRB8ANwA3ABoOgj8BAz/+uBd+7AA3AQcHAQEAli8CEUTWRB8RaW5pdBG4F37sEW1haW6CLwCFNC4wLjAAgwUAA4ZHcyzkwACCKLEAAIMYF/iEO5rKAIcrEUTWRB8/0P+Jmw==';
 const contractCallTx = 'tx_+QFpCwH4QrhADdLEBzB9yxB+owNtaD4IsrNbV2FhLRSc3PDwfYlnZEafkbhUDHSMC17v7pNqPAHxmY6td3XzR3M+JRMN9/eBBbkBIPkBHSsBoQHpu/YE5hG1Rgo7OZnpdxtvYEF9c858VRnhL34SehIlyhihBZ1Jcpl4ENMAGowV2kXcHPlcrJFui6aAG2icGOwjAyV3AYcBnoLk5yAAAACDGBf4hDuaygC4wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgzCMc7daFfOIBnzwtkVVGQYINX6CnB9GXpGeGBrsUdgoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZUYXNrIEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ28j38=';
 
-xdescribe('Transaction inspector tests', async function () {
+describe('Transaction inspector tests', async function () {
     before(async function () {
         fs.ensureDirSync(`.${ testFolder }`)
 
@@ -198,7 +198,7 @@ xdescribe('Transaction inspector tests', async function () {
             expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
-        it('Should inspect valid contract create tx in testnet network', async function () {
+        it('Should inspect invalid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
                 validContractCreateTx,
                 cliCmdOptions.NETWORK,
@@ -207,7 +207,7 @@ xdescribe('Transaction inspector tests', async function () {
 
             let expectedResultAsText = `nonce used in tx is '11'.
             'ttl' - The TTL is already expired
-            'nonce' - The nonce is invalid(already used). 
+            'nonce' - The nonce is invalid (already used). 
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '42'
@@ -235,7 +235,7 @@ xdescribe('Transaction inspector tests', async function () {
             expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
-        it('Should inspect invalid contract create tx in testnet network', async function () {
+        it('Should inspect valid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
                 invalidContractCreateTx,
                 cliCmdOptions.NETWORK,
@@ -280,7 +280,7 @@ xdescribe('Transaction inspector tests', async function () {
             ]);
 
             let expectedResultAsText = `nonce used in tx is '24'.
-            'nonce' - The nonce is invalid(already used).
+            'nonce' - The nonce is invalid (already used).
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '43'
@@ -467,8 +467,7 @@ xdescribe('Transaction inspector tests', async function () {
                 cliCmdOptions.NETWORK_ID,
                 'ae_invalid'
             ]);
-
-            assert.isOk(result.includes('Error: connect'), 'There is connection to not existent ae node')
+            assert.isOk(result.includes('FetchError: request'), 'There is connection to not existent ae node')
         })
     })
 
