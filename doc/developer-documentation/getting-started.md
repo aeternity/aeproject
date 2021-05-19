@@ -3,7 +3,7 @@
 ## Requirements
 In order to have aeproject working you must have installed the following:
 ```
-nodejs 9.5.0 (if you are willing to use the *fire-editor* aepp locally with *aeproject* you would need to use version not lower to 10.9.0. For more information check [aeproject fire-editor](developer-documentation/aeproject-cli/fire-editor.md))
+nodejs 9.5.0
 python 
 docker 
 ```
@@ -12,7 +12,7 @@ docker
 ## Install
 
 ```text
-npm install -g aeproject
+npm install -g @aeternity/aeproject
 ```
 
 ## Init a project
@@ -23,49 +23,27 @@ aeproject init
 
 This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
 
-## Running local node
-In a project folder:
-```text
-aeproject node
-```
-
-To stop already spawned local node use `aeproject node --stop`
-
-## Access deployed smart contract functions
-
-You can execute function of smart contract from deployed instance
-
-Examples
+## Running a local environment
 
 ```text
-contract ExampleContract =
-
-  public function say_hello(name : string) : string = 
-    String.concat("Hello, ", name)
-
-  public function donate() : int =
-    Call.value
+aeproject env
 ```
 
-```javascript
-let deployer = new Deployer('local', privateKey);
-deployedContract = await deployer.deploy( contractPath, []); // empty array for init params
+This will run a local network (node, compiler and nginx-proxy) and prefund multiple addresses which can be used for tests.
 
-let result = await deployedContract.say_hello('World'); // result would be: "Hello, World"
+To stop an already spawned local environment use `aeproject env --stop`
+
+Node and compiler can also be started independently:
+- `aeproject node`
+- `aeproject compiler`
+
+## Testing
+
+```text
+aeproject test
 ```
 
-or you can execute/call functions from another private/secret key
-
-```javascript
-const fromInstance = await deployedContract.from(anotherSecretKey);
-let result = await fromInstance.say_hello('Friend'); // result would be: "Hello, Friend"
-```
-
-or you just want to donate some aettos
-
-```javascript
-await deployedContract.donate({ value: 991 });
-```
+This will run the tests located in `./test` folder.
 
 ## Deploying
 

@@ -105,7 +105,6 @@ const updateAEprojectProjectLibraries = async (_sdkVersion, update) => {
 
     await setupDocker(true);
     await installAEproject(update);
-    await uninstallForgaeDependencies();
 
     print('===== AEproject was successfully updated! =====');
 }
@@ -135,30 +134,6 @@ const installAEproject = async (isUpdate) => {
 
     print(`===== Installing AEproject locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`prompts`, '--ignore-scripts', '--no-bin-links']);
-}
-
-const uninstallForgaeDependencies = async () => {
-    const localPackageJson = require(process.cwd() + `/package.json`);
-    let forgaeRgx = /\s*"(forgae[^"]*)"\s*/gm;
-    let forgaeDependencies = JSON.stringify(localPackageJson);
-    let match;
-
-    match = forgaeRgx.exec(forgaeDependencies);
-
-    if (!match) {
-        return
-    }
-
-    if (match[1] == 'forgae-project') {
-        match = forgaeRgx.exec(forgaeDependencies)
-    }
-
-    print(`===== Removing ForgAE deprecated dependencies =====`);
-
-    while (match) {
-        await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'uninstall', [`${ match[1] }`]);
-        match = forgaeRgx.exec(forgaeDependencies)
-    }
 }
 
 const setupContracts = async (shape) => {

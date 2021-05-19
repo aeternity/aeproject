@@ -18,7 +18,7 @@
 	"nodeDockerFilesFolderPath": "./test/node-docker-compose-files",
 	"txInspectorTestFolder": "/test/commands-tests/tx-inspector-test-folder",
 	"compatibilityTestFolder": "/test/commands-tests/compatibility-test-folder",
-	"nodeStoreFolder": "/packages/aeproject-logger/.aeproject-node-store",
+	"nodeStoreFolder": "/aeproject-logger/.aeproject-node-store",
 	"cliCommands": {
 		"AEPROJECT": "aeproject",
 		"INIT": "init",
@@ -95,6 +95,6 @@
 	"getNodeVersionURL": "http://localhost:3001/v2/status",
 	"LOCAL_COMPILER_URL": "http://localhost:3080/compile",
 	"folderPaths": {
-		"dockerInitResourcesPath": "/packages/aeproject-cli/aeproject-init/artifacts"
+		"dockerInitResourcesPath": "/aeproject-cli/aeproject-init/artifacts"
 	}
 }

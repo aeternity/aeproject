@@ -28,11 +28,9 @@ const {
 } = require('../aeproject-logger');
 const printReportTable = require('../aeproject-utils').printReportTable;
 const contracts = require('./aeproject-contracts/aeproject-contracts.js');
-const shape = require('./aeproject-shapes/shape-commander');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
 const txInspector = require('./aeproject-tx-inspector/tx-inspector');
-const fireEditor = require('./aeproject-fire-editor/fire-editor');
 const compatibility = require('./aeproject-compatibility/compatibility');
 const nodeConfig = config.nodeConfiguration;
 const compilerConfig = config.compilerConfiguration;
@@ -153,16 +151,6 @@ const addContractsAeppIntegrationOption = (program) => {
         })
 };
 
-const addShapeOption = (program) => {
-    program
-        .command('shape')
-        .description('Initialize a web Vue project.')
-        .arguments('<type> [type]', 'Type can be Vue|vue.')
-        .action(async (options) => {
-            await shape.run(options);
-        })
-};
-
 const addExportConfigOption = (program) => {
     program
         .command('export-config')
@@ -182,17 +170,6 @@ const addTxInspector = (program) => {
         .action(async (tx, options) => {
             options.tx = tx;
             await txInspector.run(options);
-        })
-};
-
-const addFireEditor = (program) => {
-    program
-        .command('fire-editor')
-        .description('Download, install and run locally the Fire Editor')
-        .option('--update [update]', 'Update the Fire Editor Aepp with the latest version.')
-        .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
-        .action(async (options) => {
-            await fireEditor.run(options);
         })
 };
 
@@ -219,10 +196,8 @@ const initCommands = (program) => {
     addDeployOption(program);
     addHistoryOption(program);
     addContractsAeppIntegrationOption(program)
-    addShapeOption(program);
     addExportConfigOption(program);
     addTxInspector(program);
-    addFireEditor(program);
     addCompatibility(program);
 }
 

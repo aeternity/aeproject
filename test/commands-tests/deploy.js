@@ -3,12 +3,12 @@ const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
-const utils = require('./../../packages/aeproject-utils/index.js');
+const utils = require('./../../aeproject-utils/index.js');
 const execute = utils.aeprojectExecute;
 const isImageRunning = require('../utils').isImageRunning;
 const constants = require('../constants.json');
 const fs = require('fs-extra');
-const nodeConfig = require('../../packages/aeproject-config/config/node-config.json');
+const nodeConfig = require('../../aeproject-config/config/node-config.json');
 
 let executeOptions = {
     cwd: process.cwd() + constants.deployTestsFolderPath
@@ -17,7 +17,6 @@ let executeOptions = {
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const Deployer = require('./../../packages/aeproject-lib/dist/aeproject-deployer').Deployer;
 const config = require('./../constants.json');
 
 const INVALID_COMPILER_URL = 'http://compiler.somewhere.com';
@@ -41,20 +40,12 @@ function insertAdditionalFiles () {
     fs.copyFileSync(additionalSC, `${ testFolder }/${ additionalSCPath }`);
 }
 
-async function linkLocalPackages () {
-    process.chdir(executeOptions.cwd);
-    await exec('npm link aeproject-lib')
-    await exec('npm link aeproject-utils')
-
-}
-
 xdescribe('AEproject Deploy', () => {
     const secretKey = "bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca"
     before(async () => {
         fs.ensureDirSync(`.${ constants.deployTestsFolderPath }`)
 
         await execute(constants.cliCommands.INIT, [], executeOptions)
-        await linkLocalPackages()
         await execute(constants.cliCommands.ENV, [], executeOptions)
 
     })
@@ -126,7 +117,6 @@ xdescribe('AEproject Deploy', () => {
             const expectedError = "Both [--network] and [--networkId] should be passed";
             let result;
 
-            await linkLocalPackages();
             process.chdir(mainAEprojectProjectDir)
 
             result = await execute(constants.cliCommands.DEPLOY, ["-n", "192.168.99.100:3001"], executeOptions);

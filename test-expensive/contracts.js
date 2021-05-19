@@ -3,10 +3,10 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const assert = chai.assert;
-const execute = require('../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
-const timeout = require('../packages/aeproject-utils/utils/aeproject-utils.js').timeout;
+const execute = require('../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const timeout = require('../aeproject-utils/utils/aeproject-utils.js').timeout;
 const constants = require('../test/constants.json');
-const contractsConstants = require('../packages/aeproject-cli/aeproject-contracts/contracts-constants.json');
+const contractsConstants = require('../aeproject-cli/aeproject-contracts/contracts-constants.json');
 const {
     spawn
 } = require('promisify-child-process');

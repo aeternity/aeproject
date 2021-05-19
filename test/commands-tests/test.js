@@ -3,9 +3,9 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
-const exec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').execute;
-const test = require('../../packages/aeproject-cli/aeproject-test/test')
+const execute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const exec = require('../../aeproject-utils/utils/aeproject-utils.js').execute;
+const test = require('../../aeproject-cli/aeproject-test/test')
 const sinon = require('sinon')
 const constants = require('./../constants.json')
 const countPhraseRepeats = require('./../utils').countPhraseRepeats;
@@ -18,7 +18,7 @@ let executeOptions = {
     cwd: process.cwd() + constants.testTestsFolderPath
 };
 
-describe('AEproject Test', () => {
+xdescribe('AEproject Test', () => {
 
     const nodeCWD = path.resolve(process.cwd(), constants.nodeDockerFilesFolderPath);
     const prevCWD = executeOptions.cwd;
@@ -77,7 +77,7 @@ describe('AEproject Test', () => {
         })
     })
 
-    xdescribe('AEproject Test - sophia tests', () => {
+    describe('AEproject Test - sophia tests', () => {
 
         beforeEach(async function () {
             fs.ensureDirSync(`.${ constants.testTestsFolderPath }`);
@@ -150,7 +150,7 @@ describe('AEproject Test', () => {
         }
     })
 
-    xdescribe('AEproject Test - test "test" command', () => {
+    describe('AEproject Test - test "test" command', () => {
 
         const expectedResultFromTestCommand = '"npm run test" command successfully execute exampleTest.js file';
         const expectedResultFromAeTestCommand = '"npm run aetest" command successfully execute exampleTest.js file';

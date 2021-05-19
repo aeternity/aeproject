@@ -3,11 +3,11 @@ const chaiFiles = require('chai-files');
 const assert = chai.assert;
 chai.use(chaiFiles);
 
-const aeprojectExecute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const aeprojectExecute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra');
 const path = require('path');
 
-const aeprojectConfigDefaultFileName = require('./../../packages/aeproject-cli/aeproject-export/constants').aeprojectConfigFileName;
+const aeprojectConfigDefaultFileName = require('./../../aeproject-cli/aeproject-export/constants').aeprojectConfigFileName;
 const constants = require('../constants.json');
 // const cliCmds = constants.cliCommands;
 // const cliSubCmds = constants.cliSubCommands;
@@ -40,7 +40,7 @@ const expectedTerminalOutput = {
     ]
 };
 
-xdescribe('AEproject Export AEproject Config', async () => {
+describe('AEproject Export AEproject Config', async () => {
 
     let workingDir;
 

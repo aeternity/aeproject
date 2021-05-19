@@ -8,10 +8,9 @@ const fs = require('fs-extra');
 
 const constants = require('./../constants.json');
 
-const Deployer = require('./../../packages/aeproject-lib/dist/aeproject-deployer').Deployer;
-const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const execute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const isImageRunning = require('../utils').isImageRunning;
-const nodeConfig = require('./../../packages/aeproject-config/config/node-config.json');
+const nodeConfig = require('./../../aeproject-config/config/node-config.json');
 
 const contractPath = './contracts/example-contract-compiler-v5.aes';
 

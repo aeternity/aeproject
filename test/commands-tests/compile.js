@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
-const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const execute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra')
 const path = require('path');
 const constants = require('../constants.json')
@@ -20,7 +20,7 @@ chai.use(chaiAsPromised);
 const LOCAL_COMPILER_URL = constants.LOCAL_COMPILER_URL;
 const INVALID_COMPILER_URL = 'https://compiler.somewhere.com';
 
-xdescribe('AEproject Compile', () => {
+describe('AEproject Compile', () => {
     before(async () => {
         fs.ensureDirSync(`.${ constants.compileTestsFolderPath }`)
         await execute(constants.cliCommands.INIT, [], executeOptions)

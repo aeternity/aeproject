@@ -6,7 +6,7 @@ chai.use(chaiAsPromised);
 const path = require('path');
 const fs = require('fs');
 
-const SophiaUtil = require('./../../packages/aeproject-utils/utils/sophia-util');
+const SophiaUtil = require('./../../aeproject-utils/utils/sophia-util');
 
 const sophiaContractPath = './../commands-tests/artifacts/calculator.aes';
 const invalidContractNameSophiaContractPath = './../commands-tests/artifacts/calculator-invalid-name.aes';
@@ -29,7 +29,7 @@ const INVALID_TEST_FUNCTIONS = [
     'commented_am_i_private'
 ];
 
-xdescribe('Sophia util tests', async () => {
+describe('Sophia util tests', async () => {
 
     it('Should parse only one smart contract', async () => {
         const contractName = 'Calculator';
