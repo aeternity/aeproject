@@ -1,20 +1,24 @@
 {
-  "name": "aeproject-monorepo",
-  "version": "0.0.1",
-  "private": true,
+  "name": "@aeternity/aeproject",
+  "version": "3.0.0-beta.1",
+  "bin": {
+    "aeproject": "./aeproject-cli/aeproject-cli.js"
+  },
   "scripts": {
     "test": "mocha ./test/**/*.js --timeout 0 --exit",
     "mocha": "mocha --timeout 0 --exit",
-    "aetest": "aeproject test",
-    "link": "lerna bootstrap && cd packages/aeproject-cli && npm link",
-    "develop": "lerna bootstrap && cd packages/aeproject-cli && npm link && cd .. && cd aeproject-config && npm install && npm link && cd .. && cd aeproject-logger && npm install && npm link && cd .. && cd aeproject-utils && npm install && npm link  && npm link aeproject-logger && cd .. && cd aeproject-lib && npm install && npm link && npm link aeproject-config && npm link aeproject-logger && npm link aeproject-utils",
-    "unlink": "cd packages/aeproject-cli && npm unlink && cd .. && cd aeproject-lib && npm unlink && npm unlink aeproject-config && npm unlink aeproject-utils && npm unlink aeproject-logger && cd .. && cd aeproject-config && npm unlink && cd .. && cd aeproject-utils && npm unlink && npm unlink aeproject-logger && cd .. && cd aeproject-logger && npm unlink"
+    "aetest": "aeproject test"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "8.0.0-beta.2",
-    "aeproject-lib": "^2.0.1",
+    "@aeternity/aepp-sdk": "8.0.0",
+    "axios": "^0.21.1",
+    "cli-table": "^0.3.1",
     "esm": "^3.0.77",
     "fs-extra": "^7.0.1",
+    "moment": "^2.23.0",
+    "node-dir": "^0.1.17",
+    "open": "^7.0.0",
+    "original-require": "^1.0.1",
     "prompts": "^2.2.1"
   },
   "devDependencies": {
