@@ -57,7 +57,7 @@
 		"dockerImage": "aeternity/aeternity",
 		"dockerServiceNodeName" : "node",
 		"dockerMachineIP" : "192.168.99.100",
-		"imageVersion": "v6.0.0-rc2",
+		"imageVersion": "v6.0.0-rc3",
 		"envLiteral": "NODE_TAG"
 	},
 

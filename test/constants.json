@@ -10,9 +10,6 @@
 	"dockerFolderPath": "/cli-commands/aeproject-init/artifacts",
 	"nodeStartingFolder": "/test/commands-tests/contractsTests/artifacts",
 	"historyTestsFolderPath": "/test/commands-tests/historyTestFolder",
-	"shapeVueTestsFolderPath": "/test/commands-tests/shapeVueTestFolder",
-	"shapeAngularTestsFolderPath": "/test/commands-tests/shapeAngularTestFolder",
-	"shapeReactTestsFolderPath": "/test/commands-tests/shapeReactTestFolder",
 	"contractWrapperTestsFolderPath": "/test/contract-wrapper-tests/contractWrapperTestFolder",
 	"exportAEprojectConfigTestsFolderPath": "/test/commands-tests/exportAEprojectConfigTestFolder",
 	"nodeDockerFilesFolderPath": "./test/node-docker-compose-files",
@@ -29,18 +26,10 @@
 		"COMPILE": "compile",
 		"DEPLOY": "deploy",
 		"HISTORY": "history",
-		"CONTRACTS": "contracts",
-		"SHAPE": "shape",
 		"CURL": "curl",
 		"INSPECT": "inspect",
-		"FIRE_EDITOR": "fire-editor",
 		"COMPATIBILITY": "compatibility",
 		"DOCKER_PS":"docker ps"
-	},
-	"cliSubCommands": {
-		"VUE": "vue",
-		"ANGULAR": "angular",
-		"REACT": "react"
 	},
 	"cliCommandsOptions": {
 		"START": "--start",
@@ -71,7 +60,6 @@
 		"testContractPath": "/test/exampleTest.js",
 		"deployScriptsPath": "/deployment/deploy.js",
 		"contractsPath": "/contracts/ExampleContract.aes",
-		"contractsAeppSettings": "/integrations/contractsAeppSettings.js",
 		"nodeModules": "/node_modules",
 		"dockerEntryPoint": "/docker/entrypoint.sh",
 		"dockerNode": "/docker/aeternity.yaml",
@@ -83,11 +71,6 @@
 		"aeprojectStore": "/.aeproject-store",
 		"toDoContract": "/contracts/ToDoManager.aes",
 		"toDoTestContractPath": "/test/toDoManagerTests.js",
-		"vueWebProjectPath": "/aepp-aeproject-shape-vue",
-		"reactWebProjectPath": "/aepp-aeproject-shape-react",
-		"angularWebProjectPath": "/aepp-aeproject-shape-angular",
-		"shapeAeppProjectPath": "/aepp",
-		"shapeIdentityProviderProjectPath": "/identity-provider",
 		"gitIgnoreFile": "/.gitignore"
 	},
 	"privateKeyTestnetDeploy": "123a422a7d60a14559f65d64e1762cce04706844d8249e9ca708a4f6d99c8aed3c95e234526e2baec1f800ffc979b3fea0e2006a5336aa66fab7f17ec0e3b319",

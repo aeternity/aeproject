@@ -27,7 +27,6 @@ const {
     history
 } = require('../aeproject-logger');
 const printReportTable = require('../aeproject-utils').printReportTable;
-const contracts = require('./aeproject-contracts/aeproject-contracts.js');
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
 const txInspector = require('./aeproject-tx-inspector/tx-inspector');
@@ -115,12 +114,11 @@ const addDeployOption = (program) => {
         .command('deploy')
         .description('Run deploy script')
         .option('--path [deploy path]', 'Path to deployment file', './deployment/deploy.js')
-        .option('-n --network [network]', 'Select network', "LOCAL")
-        .option('--networkId [networkId]', 'Configure your network id')
-        .option('-s --secretKey [secretKey]', 'Wallet secretKey(privateKey)')
-        .option('--compiler [compiler_url]', 'Url to the desired compiler')
+        .option('-s --secretKey [secretKey]', 'SecretKey (privateKey) to use for deployment')
+        .option('-n --network [network]', 'Select a network defined in config/network.json', "local")
+        .option('-c --compiler [compiler_url]', 'URL of the http compiler to use')
         .action(async (options) => {
-            await deploy.run(options.path, options.network, options.secretKey, options.compiler, options.networkId);
+            await deploy.run(options.path, options.secretKey, options.network, options.compiler);
         })
 }
 
@@ -138,18 +136,6 @@ const addHistoryOption = (program) => {
             }
         })
 }
-
-const addContractsAeppIntegrationOption = (program) => {
-    program
-        .command('contracts')
-        .description('Running a Contract web aepp locally and connect it to the spawned aeproject node.')
-        .option('--nodeUrl [nodeUrl]', 'Specify the url of the local spawned node', 'http://localhost:3001')
-        .option('--update [update]', 'Update the contracts aepp with the latest version of develop branch')
-        .option('--ignorebrowser [ignorebrowser]', 'Ignore browser opening')
-        .action(async (options) => {
-            await contracts.run(options);
-        })
-};
 
 const addExportConfigOption = (program) => {
     program
@@ -195,7 +181,6 @@ const initCommands = (program) => {
     addCompilerOption(program);
     addDeployOption(program);
     addHistoryOption(program);
-    addContractsAeppIntegrationOption(program)
     addExportConfigOption(program);
     addTxInspector(program);
     addCompatibility(program);

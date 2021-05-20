@@ -55,7 +55,6 @@ const createAEprojectProjectStructure = async (shape) => {
 
     await setupContracts(shape);
     await setupTests(shape);
-    await setupIntegrations();
     await setupDeploy(shape);
     await setupDocker();
     await setupConfig();
@@ -166,22 +165,6 @@ const setupConfig = async () => {
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, destination);
-        } else {
-            throw Error(error);
-        }
-    }
-}
-
-const setupIntegrations = async () => {
-    print(`===== Creating integrations directory =====`);
-    const fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.contratsAeppSetting }`;
-    createMissingFolder(constants.integrationsDir);
-
-    try {
-        copyFileOrDir(fileSource, constants.contratsAeppSettingFileDestination);
-    } catch (error) {
-        if (error.message.includes('already exists')) {
-            await prompt(error, copyFileOrDir, fileSource, constants.contratsAeppSettingFileDestination);
         } else {
             throw Error(error);
         }

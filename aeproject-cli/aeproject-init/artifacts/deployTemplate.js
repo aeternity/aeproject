@@ -15,8 +15,37 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 
-const deploy = async (network, privateKey, compiler, networkId) => {
-    console.log("NOT SUPPORTED RIGHT NOW, WILL BE ADDED SOON");
+const fs = require('fs');
+const { Universal: Ae, MemoryAccount, Node, Crypto } = require('@aeternity/aepp-sdk');
+const NETWORKS = require('../config/network.json');
+const DEFAULT_NETWORK_NAME = "local";
+
+const deploy = async (secretKey, network, compiler) => {
+    if(!secretKey) {
+        throw new Error(`Required option missing: secretKey`);
+    }
+    const KEYPAIR = {
+        secretKey: secretKey,
+        publicKey: Crypto.getAddressFromPriv(secretKey)
+    }
+    const NETWORK_NAME = network ? network : DEFAULT_NETWORK_NAME;
+
+    const account = MemoryAccount({ keypair: KEYPAIR });
+    const node = await Node({ url: NETWORKS[NETWORK_NAME].nodeUrl, internalUrl: NETWORKS[NETWORK_NAME].nodeUrl });
+
+    const client = await Ae({
+        nodes: [
+            { name: NETWORK_NAME, instance: node },
+        ],
+        compilerUrl: compiler ? compiler : NETWORKS[NETWORK_NAME].compilerUrl,
+        accounts: [account],
+        address: KEYPAIR.publicKey
+    });
+
+    const EXAMPLE_CONTRACT = fs.readFileSync('./contracts/ExampleContract.aes', 'utf8');
+    contract = await client.getContractInstance(EXAMPLE_CONTRACT);
+    const deploymentResult = await contract.deploy([]);
+    console.log(deploymentResult);
 };
 
 module.exports = {

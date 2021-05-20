@@ -19,7 +19,7 @@ const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
 const EXAMPLE_CONTRACT = fs.readFileSync('./contracts/ExampleContract.aes', 'utf8')
 const NETWORKS = require('../config/network.json');
-const NETWORK_NAME = "LOCAL";
+const NETWORK_NAME = "local";
 
 describe('Example Contract', () => {
     let contract;
