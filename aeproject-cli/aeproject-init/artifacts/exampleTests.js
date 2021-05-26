@@ -14,11 +14,18 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-const fs = require('fs')
+const fs = require('fs');
+const chai = require('chai');
+var chai_as_promised = require("chai-as-promised");
+chai.use(chai_as_promised);
+const assert = chai.assert;
+const expect = chai.expect;
+
 const { Universal, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
-const EXAMPLE_CONTRACT = fs.readFileSync('./contracts/ExampleContract.aes', 'utf8')
+const EXAMPLE_CONTRACT = fs.readFileSync('./contracts/ExampleContract.aes', 'utf8');
 const NETWORKS = require('../config/network.json');
+const {defaultWallets: WALLETS} = require('../config/wallets.json');
 const NETWORK_NAME = "local";
 
 describe('Example Contract', () => {
@@ -32,41 +39,39 @@ describe('Example Contract', () => {
               { name: NETWORK_NAME, instance: node },
             ],
             compilerUrl: NETWORKS[NETWORK_NAME].compilerUrl,
-            // using the first of pre-funded wallets defined in https://github.com/aeternity/aepp-aeproject-js/blob/develop/aeproject-config/config/node-config.json
-            accounts: [MemoryAccount({ keypair: wallets[0] })],
-            address: wallets[0].publicKey
+            accounts: [MemoryAccount({ keypair: WALLETS[0] })],
+            address: WALLETS[0].publicKey
         });
         contract = await client.getContractInstance(EXAMPLE_CONTRACT); // Get contract instance
     });
 
     it('Deploying Example Contract', async () => {
         const deployedPromise = contract.deploy([]); // Deploy contract
-
-        await assert.isFulfilled(deployedPromise, 'Could not deploy the ExampleContract Smart Contract'); // Check whether contract is deployed
+        await expect(deployedPromise, 'Could not deploy the ExampleContract Smart Contract').to.be.fulfilled; // Check whether contract is deployed
         await Promise.resolve(deployedPromise);
     });
 
     it('Should check if hamster has been created', async () => {
         hamsterName = 'C.Hamster';
         await contract.methods.createHamster(hamsterName);
-        let result = await contract.methods.nameExists(hamsterName);
+        const result = await contract.methods.nameExists(hamsterName);
         assert.isTrue(result.decodedResult, 'hamster has not been created');
     });
 
     it('Should REVERT if hamster already exists', async () => {
-        await assert.isRejected(contract.methods.createHamster('C.Hamster'))
+        await expect(contract.methods.createHamster('C.Hamster')).to.be.rejected;
     });
 
     it('Should return false if name does not exist', async () => {
-        hamsterName = 'DoesHamsterExists';
-        let result = await contract.methods.nameExists(hamsterName);
+        hamsterName = 'DoesHamsterExist';
+        const result = await contract.methods.nameExists(hamsterName);
         assert.isFalse(result.decodedResult);
     });
 
     it('Should return true if the name exists', async () => {
-        hamsterName = 'DoesHamsterExists';
+        hamsterName = 'DoesHamsterExist';
         await contract.methods.createHamster(hamsterName)
-        let result = await contract.methods.nameExists(hamsterName);
+        const result = await contract.methods.nameExists(hamsterName);
         assert.isTrue(result.decodedResult)
     });
 })

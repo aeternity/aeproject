@@ -132,7 +132,10 @@ const installAeppSDK = async (_sdkVersion = '') => {
 const installAEproject = async (isUpdate) => {
 
     print(`===== Installing AEproject locally =====`);
-    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`prompts`, '--ignore-scripts', '--no-bin-links']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`prompts`]);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`chai`, '--save-dev']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`chai-as-promised`, '--save-dev']);
+    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`mocha`, '--save-dev']);
 }
 
 const setupContracts = async (shape) => {
@@ -155,11 +158,21 @@ const setupContracts = async (shape) => {
 }
 
 const setupConfig = async () => {
-
     print(`===== Creating config directory =====`);
-    const fileSource = `${ __dirname }/artifacts/network.json`;
     createMissingFolder("./config");
-    const destination = './config/network.json';
+    let fileSource = `${ __dirname }/artifacts/network.json`;
+    let destination = './config/network.json';
+    try {
+        copyFileOrDir(fileSource, destination);
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, fileSource, destination);
+        } else {
+            throw Error(error);
+        }
+    }
+    fileSource = `${ __dirname }/artifacts/wallets.json`;
+    destination = './config/wallets.json';
     try {
         copyFileOrDir(fileSource, destination);
     } catch (error) {

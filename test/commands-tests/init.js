@@ -116,6 +116,7 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/network.json`), "network.json file doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/wallets.json`), "wallets.json file doesn't exist");
     });
 
     it('Should terminate init process and re-inited project successfully', async () => {
@@ -156,6 +157,7 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/network.json`), "network.json file doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/wallets.json`), "wallets.json file doesn't exist");
     });
 
     xit("Should update docker-compose.yml and use user's node version", async () => {
