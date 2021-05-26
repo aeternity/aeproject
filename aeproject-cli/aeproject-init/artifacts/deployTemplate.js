@@ -16,7 +16,7 @@
  */
 
 const fs = require('fs');
-const { Universal: Ae, MemoryAccount, Node, Crypto } = require('@aeternity/aepp-sdk');
+const { Universal, MemoryAccount, Node, Crypto } = require('@aeternity/aepp-sdk');
 const NETWORKS = require('../config/network.json');
 const DEFAULT_NETWORK_NAME = "local";
 
@@ -30,15 +30,12 @@ const deploy = async (secretKey, network, compiler) => {
     }
     const NETWORK_NAME = network ? network : DEFAULT_NETWORK_NAME;
 
-    const account = MemoryAccount({ keypair: KEYPAIR });
-    const node = await Node({ url: NETWORKS[NETWORK_NAME].nodeUrl, internalUrl: NETWORKS[NETWORK_NAME].nodeUrl });
-
-    const client = await Ae({
+    const client = await Universal({
         nodes: [
-            { name: NETWORK_NAME, instance: node },
+            { name: NETWORK_NAME, instance: await Node({ url: NETWORKS[NETWORK_NAME].nodeUrl }) },
         ],
         compilerUrl: compiler ? compiler : NETWORKS[NETWORK_NAME].compilerUrl,
-        accounts: [account],
+        accounts: [MemoryAccount({ keypair: KEYPAIR })],
         address: KEYPAIR.publicKey
     });
 
