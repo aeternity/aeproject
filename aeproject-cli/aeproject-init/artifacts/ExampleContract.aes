@@ -1,4 +1,4 @@
-@compiler >= 5
+@compiler >= 6
 
 include "String.aes"
 

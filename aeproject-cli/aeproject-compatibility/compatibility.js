@@ -16,11 +16,10 @@
  */
 
 require = require('esm')(module /*, options */) // use to handle es6 import/export
-const { print } = require('../../aeproject-utils').print;
+const print = require('../../aeproject-utils').print;
 
 const {
-    exec,
-    spawn
+    exec
 } = require('promisify-child-process');
 
 const nodeConfig = require('../../aeproject-config').nodeConfiguration;

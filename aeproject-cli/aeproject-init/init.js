@@ -47,15 +47,15 @@ async function run (update) {
     }
 }
 
-const createAEprojectProjectStructure = async (shape) => {
+const createAEprojectProjectStructure = async () => {
     print('===== Initializing AEproject =====');
     await installLibraries();
 
     print(`===== Creating project file & dir structure =====`);
 
-    await setupContracts(shape);
-    await setupTests(shape);
-    await setupDeploy(shape);
+    await setupContracts();
+    await setupTests();
+    await setupDeploy();
     await setupDocker();
     await setupConfig();
     await addIgnoreFile();
@@ -131,20 +131,17 @@ const installAeppSDK = async (_sdkVersion = '') => {
 
 const installAEproject = async (isUpdate) => {
 
-    print(`===== Installing AEproject locally =====`);
+    print(`===== Installing other dependencies =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`prompts`]);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`chai`, '--save-dev']);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`mocha`, '--save-dev']);
 }
 
-const setupContracts = async (shape) => {
-
+const setupContracts = async () => {
     print(`===== Creating contracts directory =====`);
-    const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeContractTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.contractTemplateFile }`;
+    const fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.contractTemplateFile }`;
     createMissingFolder(constants.contractsDir);
-
-    const destination = shape ? constants.shapeContractFileDestination : constants.contractFileDestination;
-
+    const destination = constants.contractFileDestination;
     try {
         copyFileOrDir(fileSource, destination);
     } catch (error) {
@@ -183,13 +180,13 @@ const setupConfig = async () => {
     }
 }
 
-const setupTests = async (shape) => {
+const setupTests = async () => {
     print(`===== Creating tests directory =====`);
-    const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeTestTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.testTemplateFile }`;
+    const fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.testTemplateFile }`;
     createMissingFolder(constants.testDir, "Creating tests file structure");
 
     try {
-        copyFileOrDir(fileSource, shape ? constants.shapeTestFileDestination : constants.testFileDestination);
+        copyFileOrDir(fileSource, constants.testFileDestination);
     } catch (error) {
         if (error.message.includes('already exists')) {
             await prompt(error, copyFileOrDir, fileSource, constants.testFileDestination);
@@ -199,9 +196,9 @@ const setupTests = async (shape) => {
     }
 }
 
-const setupDeploy = async (shape) => {
+const setupDeploy = async () => {
     print(`===== Creating deploy directory =====`);
-    const fileSource = shape ? `${ __dirname }${ constants.shapeArtifactsDir }/${ constants.shapeDeployTemplateFile }` : `${ __dirname }${ constants.artifactsDir }/${ constants.deployTemplateFile }`;
+    const fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.deployTemplateFile }`;
     createMissingFolder(constants.deployDir, "Creating deploy directory file structure");
 
     try {
