@@ -214,7 +214,6 @@ async function contractCompile (source, contractPath, compileOptions) {
         options
     };
     const url = normalizeCompilerUrl(compileOptions.compilerUrl);
-
     result = await axios.post(url, body, options);
 
     return result;

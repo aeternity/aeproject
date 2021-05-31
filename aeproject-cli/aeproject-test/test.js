@@ -17,8 +17,6 @@
 
 const p = require('path');
 const aeprojectTest = require('./aeproject-test');
-
-const sophiaTest = require('./sophia-test');
 const utils = require('../../aeproject-utils');
 
 const run = async (path) => {
@@ -42,24 +40,12 @@ const run = async (path) => {
         testDirectory = workingDirectory;
     }
 
-    if (path.includes('.aes')) {
-        if (!workingDirectory.includes(path)) {
-            path = p.join(workingDirectory, path);
-        }
-
-        sophiaTest.run([path], workingDirectory);
-
-        return;
-    }
-
     const files = await utils.getFiles(testDirectory + '/test', `.*\\.(js|es|es6|jsx|sol)$`);
-    const aesFiles = await utils.getFiles(testDirectory + '/test', `.aes$`);
 
     let cwd = process.cwd()
     process.chdir(testDirectory);
 
     await aeprojectTest.run(files);
-    await sophiaTest.run(aesFiles, testDirectory);
     
     process.chdir(cwd);
 }
