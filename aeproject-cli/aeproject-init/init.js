@@ -134,7 +134,6 @@ const installAEproject = async (isUpdate) => {
     print(`===== Installing AEproject locally =====`);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`prompts`]);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`chai`, '--save-dev']);
-    await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`chai-as-promised`, '--save-dev']);
     await execute(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', 'install', [`mocha`, '--save-dev']);
 }
 

@@ -10,7 +10,7 @@
     "aetest": "aeproject test"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "8.0.0",
+    "@aeternity/aepp-sdk": "8.1.0",
     "axios": "^0.21.1",
     "cli-table": "^0.3.1",
     "esm": "^3.0.77",

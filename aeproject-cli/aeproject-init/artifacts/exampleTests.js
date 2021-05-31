@@ -16,10 +16,7 @@
  */
 const fs = require('fs');
 const chai = require('chai');
-var chai_as_promised = require("chai-as-promised");
-chai.use(chai_as_promised);
 const assert = chai.assert;
-const expect = chai.expect;
 
 const { Universal, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
@@ -46,9 +43,7 @@ describe('Example Contract', () => {
     });
 
     it('Deploying Example Contract', async () => {
-        const deployedPromise = contract.deploy([]); // Deploy contract
-        await expect(deployedPromise, 'Could not deploy the ExampleContract Smart Contract').to.be.fulfilled; // Check whether contract is deployed
-        await Promise.resolve(deployedPromise);
+        await contract.deploy([]); // Deploy contract
     });
 
     it('Should check if hamster has been created', async () => {
@@ -59,7 +54,12 @@ describe('Example Contract', () => {
     });
 
     it('Should REVERT if hamster already exists', async () => {
-        await expect(contract.methods.createHamster('C.Hamster')).to.be.rejected;
+        try {
+            await contract.methods.createHamster('C.Hamster');
+            assert.fail(`createHamster didn't fail`);
+        } catch(err) {
+            assert.include(err.message, 'Name is already taken', `expected error message doesn't exist`);
+        }
     });
 
     it('Should return false if name does not exist', async () => {

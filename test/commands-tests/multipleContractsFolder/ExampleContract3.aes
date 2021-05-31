@@ -1,2 +1,2 @@
 contract ExampleContract3 =
-  entrypoint main(x : int) = x
+  entrypoint common(x : int) = x
