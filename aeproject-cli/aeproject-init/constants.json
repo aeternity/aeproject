@@ -19,6 +19,6 @@
 	"gitIgnoreFile": ".gitignore",
 	"gitIgnoreContent": "git_ignore",
 	"sdkVersion": "8.1.0",
-	"aeNodeImage": "aeternity/aeternity:v6.0.0-rc4",
+	"aeNodeImage": "aeternity/aeternity:v6.0.0",
 	"aeCompilerImage": "aeternity/aesophia_http:v6.0.0"
 }
