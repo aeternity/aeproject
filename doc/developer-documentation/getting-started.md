@@ -4,27 +4,25 @@
 In order to have aeproject working you must have installed the following:
 ```
 nodejs 9.5.0
-python 
-docker 
+python
+docker
 ```
 
-**Note:** For older versions on widnows you can use docker-toolbox. This will install docker-compose as part of the toolkit. Please bear in mind that the your docker-compose version must be at least @**1.20.0** <i>
-## Install
+**Note:** For older versions on widnows you can use docker-toolbox. This will install docker-compose as part of the toolkit. Please bear in mind that the your docker-compose version must be at least `1.20.0`
 
+## Install
 ```text
 npm install -g @aeternity/aeproject
 ```
 
 ## Init a project
-
 ```text
 aeproject init
 ```
 
-This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
+This will create the project scaffold with an example contract including tests as well as a sample deployment script.
 
 ## Running a local environment
-
 ```text
 aeproject env
 ```
@@ -52,12 +50,3 @@ Run the following in order to execute the deployment file created from the **aep
 ```text
 aeproject deploy
 ```
-
-## History of your deploys
-
-In order to see a list of what you've deployed you can run the following command:
-
-```text
-aeproject history
-```
-

@@ -6,11 +6,10 @@
 aeproject compiler
 ```
 
-The **compiler** command will run a compiler locally so all the preprocessor statements get evaluated on your local machine.
-The compiler will run by default on `http://localhost:3080`
+The `compiler` command will run a compiler locally on `http://localhost:3080` by default.
 
 
-if you want to stop the compiler you should type
+If you want to stop the compiler you should type
 ```text
 aeproject compiler --stop
 ```

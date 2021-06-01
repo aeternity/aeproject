@@ -23,10 +23,6 @@ const compiler = require('./aeproject-env/env/compiler/compiler.js')
 const deploy = require('./aeproject-deploy/deploy.js');
 const config = require('../aeproject-config');
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
-const {
-    history
-} = require('../aeproject-logger');
-const printReportTable = require('../aeproject-utils').printReportTable;
 const exportConfig = require('./aeproject-export/export-config');
 const aeprojectConfigDefaultFileName = require('./aeproject-export/constants').aeprojectConfigFileName;
 const txInspector = require('./aeproject-tx-inspector/tx-inspector');
@@ -122,21 +118,6 @@ const addDeployOption = (program) => {
         })
 }
 
-const addHistoryOption = (program) => {
-    program
-        .command('history')
-        .description('Show deployment history info')
-        .option('--limit [limit]', 'Get last N records.', 5)
-        .action(async (options) => {
-
-            let data = history.getHistory().slice(options.limit * -1);
-
-            for (let i = 0; i < data.length; i++) {
-                printReportTable(data[i].actions);
-            }
-        })
-}
-
 const addExportConfigOption = (program) => {
     program
         .command('export-config')
@@ -180,7 +161,6 @@ const initCommands = (program) => {
     addNodeOption(program);
     addCompilerOption(program);
     addDeployOption(program);
-    addHistoryOption(program);
     addExportConfigOption(program);
     addTxInspector(program);
     addCompatibility(program);
