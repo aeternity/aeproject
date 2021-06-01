@@ -47,8 +47,8 @@ const addInitOption = (program) => {
 const addCompileOption = (program) => {
     program
         .command('compile')
-        .option('--path [compile path]', 'Path to contract files', './contracts')
-        .option('--compiler [compiler url]', 'Url to the desired compiler', config.compilerUrl + "/compile")
+        .option('-p --path [compile path]', 'Path to contract files', './contracts')
+        .option('-c --compiler [compiler url]', 'Url to the desired compiler', config.compilerUrl)
         .description('Compile contracts')
         .action(async (option) => {
             await compile.run(option.path, option.compiler);
@@ -59,7 +59,7 @@ const addTestOption = (program) => {
     program
         .command('test')
         .description('Running the tests')
-        .option('--path [tests path]', 'Path to test files', './test')
+        .option('-p --path [tests path]', 'Path to test files', './test')
         .action(async (options) => {
             await testConfig.run(options.path);
         })

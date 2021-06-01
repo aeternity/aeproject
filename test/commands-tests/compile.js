@@ -6,12 +6,12 @@ const fs = require('fs-extra')
 const path = require('path');
 const constants = require('../constants.json')
 
-const expectedCompileResultExampleContract = "ExampleContract.aes has been successfully compiled'"
+const expectedCompileResultExampleContract = "ExampleContract.aes' has been successfully compiled."
 
-let expectedResult1 = "ExampleContract1.aes has been successfully compiled"
-let expectedResult2 = "ExampleContract2.aes has been successfully compiled"
-let expectedResult3 = "ExampleContract3.aes has been successfully compiled"
-let expectedResult4 = "math.aes has been successfully compiled"
+let expectedResult1 = "ExampleContract1.aes' has been successfully compiled."
+let expectedResult2 = "ExampleContract2.aes' has been successfully compiled."
+let expectedResult3 = "ExampleContract3.aes' has been successfully compiled."
+let expectedResult4 = "math.aes' has been successfully compiled."
 let executeOptions = {
     cwd: process.cwd() + constants.compileTestsFolderPath
 };
@@ -28,12 +28,12 @@ describe('AEproject Compile', () => {
     })
 
     describe('Compile', () => {
-        xit('Should compile contract successfully with specific contract path', async () => {
+        it('Should compile contract successfully with specific contract path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ executeOptions.cwd }/contracts/ExampleContract.aes`])
             assert.include(result, expectedCompileResultExampleContract)
         })
 
-        xit('Should compile contract successfully without path', async () => {
+        it('Should compile contract successfully without path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [], executeOptions)
             assert.include(result, expectedCompileResultExampleContract)
         })
@@ -47,7 +47,7 @@ describe('AEproject Compile', () => {
             assert.include(result, expectedResult4)
         })
 
-        xit('Should compile contracts with --compiler argument', async () => {
+        it('Should compile contracts with --compiler argument', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", LOCAL_COMPILER_URL], executeOptions)
 
             assert.include(result, expectedCompileResultExampleContract);
@@ -61,11 +61,11 @@ describe('AEproject Compile', () => {
             fs.copyFileSync(sourceContractPath, destinationContractPath);
 
             let result = await execute(constants.cliCommands.COMPILE, [], executeOptions);
-            assert.include(result, "File to include 'List.aes' not found. Check your path or it is from Sophia default library");
-            assert.include(result, "File to include 'Option.aes' not found");
-            assert.include(result, "File to include 'Func.aes' not found.");
-            assert.include(result, "File to include 'Pair.aes' not found.");
-            assert.include(result, "File to include 'Triple.aes' not found.");
+            assert.include(result, "Skipping default include: String.aes");
+            assert.include(result, "Skipping default include: Option.aes");
+            assert.include(result, "Skipping default include: Func.aes");
+            assert.include(result, "Skipping default include: Pair.aes");
+            assert.include(result, "Skipping default include: Triple.aes");
             assert.include(result, expectedCompileResultExampleContract);
         })
     })
@@ -79,16 +79,14 @@ describe('AEproject Compile', () => {
         })
 
         it('Should display error message to user if contract has not been compiled', async () => {
-            let expectedError = 'type_error: Unbound variable a at line 3, column 9';
+            let expectedError = 'reason: Unbound variable a at line 3, column 9';
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ path.resolve(executeOptions.cwd, '../multipleContractsFolder') }/FalseContract.aes`])
-
             assert.include(result, expectedError)
         })
 
         it('Should display file not found if path to unexisting file is specified', async () => {
-            let expectedError = 'File not found';
+            let expectedError = 'reason: ENOENT: no such file or directory';
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder/NotExistingContract.aes"])
-
             assert.include(result, expectedError)
         })
     })

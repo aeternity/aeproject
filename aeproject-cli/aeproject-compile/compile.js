@@ -19,53 +19,38 @@ require = require('esm')(module /*, options */) // use to handle es6 import/expo
 const {
     printError,
     print,
-    readFile
 } = require('../../aeproject-utils');
 const utils = require('../../aeproject-utils');
 const config = require('../../aeproject-config');
+const { ContractCompilerAPI } = require('@aeternity/aepp-sdk');
 
-async function compileAndPrint (file, compileOptions) {
-    print('\r')
-    
+async function compileAndPrint (file, compiler) {
     try {
-        const code = readFile(file, 'utf-8');
-        const result = await utils.contractCompile(code.toString(), file, compileOptions);
-        
-        print(`Contract '${ file } has been successfully compiled'`)
-        print(`Contract bytecode: ${ JSON.stringify(result.data.bytecode) }`)
+        const result = await compiler.compileContractAPI(utils.get_contract_content(file), {filesystem: utils.get_filesystem(file)});
+        print(`Contract '${file}' has been successfully compiled.`);
+        print(`=> bytecode: ${result}`);
     } catch (error) {
-        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? error.response.data[0] : error.message
-
-        if (typeof (errorMessage) == 'string') {
-            printError(`Contract '${ file } has not been compiled'`)
-            printError(errorMessage)
-            
-            return
-        }
-        
-        printError(`Contract '${ file } has not been compiled'`)
-        printError(`${ errorMessage.type }: ${ errorMessage.message }`)
-        printError(`At: Line ${ errorMessage.pos.line }, Column ${ errorMessage.pos.col }`)
+        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? JSON.parse(error.response.data)[0].message : error.message;
+        printError(`Contract '${file}' has not been compiled.`);
+        printError(`=> reason: ${errorMessage}`);
     }
-
-    print('\r')
 }
 
-async function run (path, compiler = config.compilerUrl) {
-
+async function run (path, compilerUrl = config.compilerUrl) {
     print('===== Compiling contracts =====');
-    
-    const compileOptions = {
-        compilerUrl: compiler
-    }
-
+    print('\r');
+    const compiler = await ContractCompilerAPI({compilerUrl});
+    print(`Compiler URL: ${compilerUrl}`);
+    print(`Compiler version: ${await compiler.getCompilerVersion()}`);
+    print('\r');
+    print(`Contract path: ${path}`);
     if (path.includes('.aes')) {
-        compileAndPrint(path, compileOptions)
+        compileAndPrint(path, compiler)
     } else {
+        print('\r');
         const files = await utils.getFiles(`${ process.cwd() }/${ path }/`, `.*\.(aes)`);
-
         files.forEach(async (file) => {
-            compileAndPrint(file, compileOptions)
+            compileAndPrint(file, compiler)
         });
     }
 }

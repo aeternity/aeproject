@@ -6,6 +6,7 @@ const get_contract_content = (contract_source) => {
 }
 
 const get_filesystem = (contract_source) => {
+    console.log(`Creating filesystem by checking includes for: ${contract_source}`);
     const default_includes = [
         'List.aes', 'Option.aes', 'String.aes',
         'Func.aes', 'Pair.aes', 'Triple.aes',
@@ -29,10 +30,10 @@ const get_filesystem = (contract_source) => {
         const include_relative_path = rgx_include_path.exec(root_includes[i]);
         rgx_include_path.lastIndex = 0;
         if(default_includes.includes(include_relative_path[1])){
-            console.log(`Skipping default include: ${include_relative_path[1]}`);
+            console.log(`=> Skipping default include: ${include_relative_path[1]}`);
             continue;
         }
-        console.log(`Adding include to filesystem: ${include_relative_path[1]}`);
+        console.log(`=> Adding include: ${include_relative_path[1]}`);
         const include_path = path.resolve(`${contract_path[0]}/${include_relative_path[1]}`);
         try {
             const include_content = fs.readFileSync(include_path, 'utf-8');
@@ -40,8 +41,10 @@ const get_filesystem = (contract_source) => {
         } catch (error) {
             throw Error(`File to include '${include_relative_path[1]}' not found.`);
         }
+        console.log(``);
         Object.assign(filesystem, get_filesystem(include_path));
     }
+    console.log(``);
     return filesystem;
 }
 
