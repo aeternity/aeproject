@@ -14,11 +14,13 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-
-const fs = require('fs');
 const { Universal, MemoryAccount, Node, Crypto } = require('@aeternity/aepp-sdk');
+const contract_utils = require('../utils/contract-utils');
+
 const NETWORKS = require('../config/network.json');
-const DEFAULT_NETWORK_NAME = "local";
+const DEFAULT_NETWORK_NAME = 'local';
+
+const EXAMPLE_CONTRACT_SOURCE = './contracts/ExampleContract.aes';
 
 const deploy = async (secretKey, network, compiler) => {
     if(!secretKey) {
@@ -38,11 +40,13 @@ const deploy = async (secretKey, network, compiler) => {
         accounts: [MemoryAccount({ keypair: KEYPAIR })],
         address: KEYPAIR.publicKey
     });
-
-    const EXAMPLE_CONTRACT = fs.readFileSync('./contracts/ExampleContract.aes', 'utf8');
-    contract = await client.getContractInstance(EXAMPLE_CONTRACT);
-    const deploymentResult = await contract.deploy([]);
-    console.log(deploymentResult);
+    // a filesystem object must be passed to the compiler if the contract uses custom includes
+    const filesystem = contract_utils.get_filesystem(EXAMPLE_CONTRACT_SOURCE);
+    // get content of contract
+    const contract_content = contract_utils.get_contract_content(EXAMPLE_CONTRACT_SOURCE);
+    contract = await client.getContractInstance(contract_content, {filesystem});
+    const deployment_result = await contract.deploy([]);
+    console.log(deployment_result);
 };
 
 module.exports = {

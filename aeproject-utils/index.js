@@ -36,13 +36,9 @@ const capitalize = aeprojectUtils.capitalize;
 const addCaretToDependencyVersion = aeprojectUtils.addCaretToDependencyVersion;
 const prompt = aeprojectUtils.prompt;
 
-const contractUtils = require('./utils/contract-utils');
-const keyToHex = contractUtils.keyToHex;
-const isKeyPair = contractUtils.isKeyPair;
-const generatePublicKeyFromSecretKey = contractUtils.generatePublicKeyFromSecretKey;
-const generateKeyPairFromSecretKey = contractUtils.generateKeyPairFromSecretKey;
-const decodedHexAddressToPublicAddress = contractUtils.decodedHexAddressToPublicAddress;
-const trimAdresseses = contractUtils.trimAdresseses;
+const contract_utils = require('./utils/contract-utils');
+const get_filesystem = contract_utils.get_filesystem;
+const get_contract_content = contract_utils.get_contract_content;
 
 const SophiaUtil = require('./utils/sophia-util');
 const httpGet = require('./utils/http-utils').httpGet;
@@ -66,16 +62,10 @@ module.exports = {
     handleApiError,
     logApiError,
     timeout,
-    keyToHex,
     aeprojectExecute,
-    isKeyPair,
-    generatePublicKeyFromSecretKey,
-    generateKeyPairFromSecretKey,
-    decodedHexAddressToPublicAddress,
     readFileRelative,
     writeFileRelative,
     fileExists,
-    trimAdresseses,
     SophiaUtil,
     contractCompile,
     checkNestedProperty,
@@ -87,5 +77,7 @@ module.exports = {
     readErrorSpawnOutput,
     capitalize,
     addCaretToDependencyVersion,
-    prompt
+    prompt,
+    get_filesystem,
+    get_contract_content
 }

@@ -138,10 +138,34 @@ const installAEproject = async (isUpdate) => {
 }
 
 const setupContracts = async () => {
-    print(`===== Creating contracts directory =====`);
-    const fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.contractTemplateFile }`;
+    print(`===== Creating contracts & utils directory =====`);
+    let fileSource = `${ __dirname }${ constants.artifactsDir }/${ constants.contractTemplateFile }`;
     createMissingFolder(constants.contractsDir);
-    const destination = constants.contractFileDestination;
+    let destination = constants.contractFileDestination;
+    try {
+        copyFileOrDir(fileSource, destination);
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, fileSource, destination);
+        } else {
+            throw Error(error);
+        }
+    }
+    createMissingFolder(`${constants.contractsDir}/lib`);
+    fileSource = `${ __dirname }${ constants.artifactsDir }/ExampleLibrary.aes`;
+    destination = `${constants.contractsDir}/lib/ExampleLibrary.aes`;
+    try {
+        copyFileOrDir(fileSource, destination);
+    } catch (error) {
+        if (error.message.includes('already exists')) {
+            await prompt(error, copyFileOrDir, fileSource, destination);
+        } else {
+            throw Error(error);
+        }
+    }
+    createMissingFolder(`./utils`);
+    fileSource = `${ __dirname }/../../aeproject-utils/utils/contract-utils.js`;
+    destination = `./utils/contract-utils.js`;
     try {
         copyFileOrDir(fileSource, destination);
     } catch (error) {

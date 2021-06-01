@@ -106,25 +106,22 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.testContractPath }`), "test contract doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.deployScriptsPath }`), "deploy scripts doesn't exists");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsPath }`), "example contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/contracts/lib/ExampleLibrary.aes`), "example library doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNode }`), "docker node doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/docker/nginx.conf`), "docker nginx doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/network.json`), "network.json file doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/wallets.json`), "wallets.json file doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/utils/contract-utils.js`), "contract-utils.js file doesn't exist");
     });
 
     it('Should terminate init process and re-inited project successfully', async () => {
         let expectedResult = [
             `===== Installing aepp-sdk =====`,
-            `===== Installing AEproject locally =====`,
+            `===== Installing other dependencies =====`,
             `===== Creating project file & dir structure =====`,
-            `===== Creating contracts directory =====`,
+            `===== Creating contracts & utils directory =====`,
             `===== Creating tests directory =====`,
             `===== Creating deploy directory =====`,
             `===== Creating docker directory =====`,
@@ -147,14 +144,10 @@ describe('AEproject Init', () => {
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.testContractPath }`), "test contract doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.deployScriptsPath }`), "deploy scripts doesn't exists");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.contractsPath }`), "example contract doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/contracts/lib/ExampleLibrary.aes`), "example library doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.nodeModules }`), "node modules folder doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerEntryPoint }`), "docker entrypoint.sh doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNode }`), "docker node doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerHealthCheck }`), "docker healtcheck.sh doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxCors }`), "docker nginx-cors.conf doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxDefault }`), "docker nginx-default doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerNginxWs }`), "docker nginx-ws doesn't exist");
-        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.dockerKeys }`), "docker keys folder doesn't exist");
+        assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/docker/nginx.conf`), "docker nginx doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }${ constants.testsFiles.gitIgnoreFile }`), "git ignore file doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/network.json`), "network.json file doesn't exist");
         assert.isTrue(fs.existsSync(`${ executeOptions.cwd }/config/wallets.json`), "wallets.json file doesn't exist");

@@ -14,18 +14,20 @@
  *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  *  PERFORMANCE OF THIS SOFTWARE.
  */
-const fs = require('fs');
 const chai = require('chai');
 const assert = chai.assert;
 
 const { Universal, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
-const EXAMPLE_CONTRACT = fs.readFileSync('./contracts/ExampleContract.aes', 'utf8');
 const NETWORKS = require('../config/network.json');
-const {defaultWallets: WALLETS} = require('../config/wallets.json');
 const NETWORK_NAME = "local";
 
-describe('Example Contract', () => {
+const {defaultWallets: WALLETS} = require('../config/wallets.json');
+
+const contract_utils = require('../utils/contract-utils');
+const EXAMPLE_CONTRACT_SOURCE = './contracts/ExampleContract.aes';
+
+describe('ExampleContract', () => {
     let contract;
     let hamsterName;
 
@@ -39,11 +41,21 @@ describe('Example Contract', () => {
             accounts: [MemoryAccount({ keypair: WALLETS[0] })],
             address: WALLETS[0].publicKey
         });
-        contract = await client.getContractInstance(EXAMPLE_CONTRACT); // Get contract instance
+        try {
+            // a filesystem object must be passed to the compiler if the contract uses custom includes
+            const filesystem = contract_utils.get_filesystem(EXAMPLE_CONTRACT_SOURCE);
+            // get content of contract
+            const contract_content = contract_utils.get_contract_content(EXAMPLE_CONTRACT_SOURCE);
+            // initialize the contract instance
+            contract = await client.getContractInstance(contract_content, {filesystem});
+        } catch(err) {
+            console.error(err);
+            assert.fail('Could not initialize contract instance');
+        }
     });
 
-    it('Deploying Example Contract', async () => {
-        await contract.deploy([]); // Deploy contract
+    it('Should deploy ExampleContract', async () => {
+        await contract.deploy([]);
     });
 
     it('Should check if hamster has been created', async () => {
@@ -74,4 +86,4 @@ describe('Example Contract', () => {
         const result = await contract.methods.nameExists(hamsterName);
         assert.isTrue(result.decodedResult)
     });
-})
+});

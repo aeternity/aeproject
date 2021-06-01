@@ -1,87 +1,51 @@
-/*
- * ISC License (ISC)
- * Copyright (c) 2018 aeternity developers
- *
- *  Permission to use, copy, modify, and/or distribute this software for any
- *  purpose with or without fee is hereby granted, provided that the above
- *  copyright notice and this permission notice appear in all copies.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
- *  REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
- *  AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
- *  INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
- *  LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- *  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- *  PERFORMANCE OF THIS SOFTWARE.
- */
+const fs = require('fs');
+const path = require('path');
 
-require = require('esm')(module /*, options */) // use to handle es6 import/export
-
-const AeSDK = require('@aeternity/aepp-sdk');
-const Crypto = AeSDK.Crypto;
-const toBytes = require('@aeternity/aepp-sdk/es/utils/bytes').toBytes;
-
-function keyToHex (publicKey) {
-    let byteArray = Crypto.decodeBase58Check(publicKey.split('_')[1]);
-    let asHex = '#' + byteArray.toString('hex');
-    return asHex;
+const get_contract_content = (contract_source) => {
+    return fs.readFileSync(contract_source, 'utf8');
 }
 
-const isKeyPair = (k) => {
-    if (k == null) {
-        return false
+const get_filesystem = (contract_source) => {
+    const default_includes = [
+        'List.aes', 'Option.aes', 'String.aes',
+        'Func.aes', 'Pair.aes', 'Triple.aes',
+        'BLS12_381.aes', 'Frac.aes'
+    ];
+    const rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
+    const rgx_include_path = /"([\d\w\/\.\-\_]+)\"/gmi;
+    const rgx_main_path = /.*\//g;
+
+    const contract_content = get_contract_content(contract_source);
+    let filesystem = {};
+
+    const match = rgx.exec(contract_content);
+    if(!match) {
+        return filesystem;
     }
-    if (typeof k != 'object') {
-        return false
+    let root_includes = contract_content.match(rgx);
+    for (let i=0; i<root_includes.length; i++) {
+        const contract_path = rgx_main_path.exec(contract_source);
+        rgx_main_path.lastIndex = 0;
+        const include_relative_path = rgx_include_path.exec(root_includes[i]);
+        rgx_include_path.lastIndex = 0;
+        if(default_includes.includes(include_relative_path[1])){
+            console.log(`Skipping default include: ${include_relative_path[1]}`);
+            continue;
+        }
+        console.log(`Adding include to filesystem: ${include_relative_path[1]}`);
+        const include_path = path.resolve(`${contract_path[0]}/${include_relative_path[1]}`);
+        try {
+            const include_content = fs.readFileSync(include_path, 'utf-8');
+            filesystem[include_relative_path[1]] = include_content;
+        } catch (error) {
+            throw Error(`File to include '${include_relative_path[1]}' not found.`);
+        }
+        Object.assign(filesystem, get_filesystem(include_path));
     }
-
-    if (!k.hasOwnProperty('publicKey')) {
-        return false
-    }
-
-    if (!k.hasOwnProperty('secretKey')) {
-        return false
-    }
-
-    return true
-};
-
-const generatePublicKeyFromSecretKey = (secretKey) => {
-    const hexStr = Crypto.hexStringToByte(secretKey.trim())
-    const keys = Crypto.generateKeyPairFromSecret(hexStr)
-
-    return Crypto.aeEncodeKey(keys.publicKey)
+    return filesystem;
 }
 
-async function generateKeyPairFromSecretKey (secretKey) {
-    const hexStr = await Crypto.hexStringToByte(secretKey.trim());
-    const keys = await Crypto.generateKeyPairFromSecret(hexStr);
-
-    const publicKey = await Crypto.aeEncodeKey(keys.publicKey);
-
-    let keyPair = {
-        publicKey,
-        secretKey
-    }
-
-    return keyPair;
-}
-
-function decodedHexAddressToPublicAddress (hexAddress) {
-
-    const publicKey = Crypto.aeEncodeKey(toBytes(hexAddress, true));
-
-    return publicKey;
-}
-
-const trimAdresseses = (addressToTrim) => {
-    return addressToTrim.substring(3)
-}
 module.exports = {
-    keyToHex,
-    isKeyPair,
-    generatePublicKeyFromSecretKey,
-    generateKeyPairFromSecretKey,
-    decodedHexAddressToPublicAddress,
-    trimAdresseses
+    get_contract_content,
+    get_filesystem
 };

@@ -28,12 +28,12 @@ describe('AEproject Compile', () => {
     })
 
     describe('Compile', () => {
-        it('Should compile contract successfully with specif contract path', async () => {
+        xit('Should compile contract successfully with specific contract path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ executeOptions.cwd }/contracts/ExampleContract.aes`])
             assert.include(result, expectedCompileResultExampleContract)
         })
 
-        it('Should compile contract successfully without path', async () => {
+        xit('Should compile contract successfully without path', async () => {
             let result = await execute(constants.cliCommands.COMPILE, [], executeOptions)
             assert.include(result, expectedCompileResultExampleContract)
         })
@@ -47,7 +47,7 @@ describe('AEproject Compile', () => {
             assert.include(result, expectedResult4)
         })
 
-        it('Should compile contracts with --compiler argument', async () => {
+        xit('Should compile contracts with --compiler argument', async () => {
             let result = await execute(constants.cliCommands.COMPILE, ["--compiler", LOCAL_COMPILER_URL], executeOptions)
 
             assert.include(result, expectedCompileResultExampleContract);

@@ -1,6 +1,6 @@
 @compiler >= 6
 
-include "String.aes"
+include "./lib/ExampleLibrary.aes"
 
 contract CryptoHamster =
    datatype event = NewHamster(indexed int, string, hash)
@@ -25,4 +25,4 @@ contract CryptoHamster =
       Chain.event(NewHamster(state.next_id, name, dna))
  
    function generateDNA(name : string) : hash =
-      String.sha3(name)
+      ExampleHelpers.getDNA(name)
