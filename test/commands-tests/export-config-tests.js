@@ -3,11 +3,11 @@ const chaiFiles = require('chai-files');
 const assert = chai.assert;
 chai.use(chaiFiles);
 
-const aeprojectExecute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const aeprojectExecute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const fs = require('fs-extra');
 const path = require('path');
 
-const aeprojectConfigDefaultFileName = require('./../../packages/aeproject-cli/aeproject-export/constants').aeprojectConfigFileName;
+const aeprojectConfigDefaultFileName = require('./../../aeproject-cli/aeproject-export/constants').aeprojectConfigFileName;
 const constants = require('../constants.json');
 // const cliCmds = constants.cliCommands;
 // const cliSubCmds = constants.cliSubCommands;
@@ -19,7 +19,7 @@ let cwd = process.cwd();
 const expectedTerminalOutput = {
     networkId: 'ae_devnet',
     host: 'http://localhost:3001',
-    internalHost: 'http://localhost:3001/internal',
+    internalHost: 'http://localhost:3001',
     compilerUrl: 'http://localhost:3080',
     minerWallet: {
         publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU',

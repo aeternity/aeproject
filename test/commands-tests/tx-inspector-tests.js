@@ -5,7 +5,7 @@ chai.use(chaiFiles);
 chai.use(require('chai-as-promised'));
 
 const fs = require('fs-extra');
-const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const execute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 
 const constants = require('../constants.json');
 const testFolder = constants.txInspectorTestFolder;
@@ -159,9 +159,7 @@ describe('Transaction inspector tests', async function () {
         })
     })
 
-    // excluded due to active Iris fork that the current sdk version cannot handle:
-    // Error: Unsupported node version 6.0.0-rc1. Supported: >= 5.0.0 < 6.0.0
-    xdescribe('Testnet network', async function () {
+    describe('Testnet network', async function () {
 
         let network = 'testnet';
 
@@ -198,7 +196,7 @@ describe('Transaction inspector tests', async function () {
             expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
-        it('Should inspect valid contract create tx in testnet network', async function () {
+        it('Should inspect invalid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
                 validContractCreateTx,
                 cliCmdOptions.NETWORK,
@@ -207,7 +205,7 @@ describe('Transaction inspector tests', async function () {
 
             let expectedResultAsText = `nonce used in tx is '11'.
             'ttl' - The TTL is already expired
-            'nonce' - The nonce is invalid(already used). 
+            'nonce' - The nonce is invalid (already used). 
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '42'
@@ -235,7 +233,7 @@ describe('Transaction inspector tests', async function () {
             expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
-        it('Should inspect invalid contract create tx in testnet network', async function () {
+        it('Should inspect valid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
                 invalidContractCreateTx,
                 cliCmdOptions.NETWORK,
@@ -280,7 +278,7 @@ describe('Transaction inspector tests', async function () {
             ]);
 
             let expectedResultAsText = `nonce used in tx is '24'.
-            'nonce' - The nonce is invalid(already used).
+            'nonce' - The nonce is invalid (already used).
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '43'
@@ -467,8 +465,7 @@ describe('Transaction inspector tests', async function () {
                 cliCmdOptions.NETWORK_ID,
                 'ae_invalid'
             ]);
-
-            assert.isOk(result.includes('Error: connect'), 'There is connection to not existent ae node')
+            assert.isOk(result.includes('FetchError: request'), 'There is connection to not existent ae node')
         })
     })
 

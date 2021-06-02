@@ -3,14 +3,12 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const assert = chai.assert;
 
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const cliUtils = require('../../packages/aeproject-utils/utils/aeproject-utils.js');
+const cliUtils = require('../../aeproject-utils/utils/aeproject-utils.js');
 const execute = cliUtils.aeprojectExecute;
 const fs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const _store = require('../../packages/aeproject-logger/logger-service/log-store-service');
+const _store = require('../../aeproject-logger/logger-service/log-store-service');
 
 const constants = require('../constants.json');
 const TEMP_TEST_PATH = constants.historyTestsFolderPath;
@@ -21,11 +19,6 @@ const deployerPublicKey = 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU
 const invalidParamDeploymentScriptPath = 'deployment/deploy2.js';
 const missingParamDeploymentScriptPath = 'deployment/deploy3.js';
 const additionalSCPath = 'contracts/ExampleContract2.aes';
-
-async function linkLocalPackages () {
-    await exec('npm link aeproject-lib')
-    await exec('npm link aeproject-utils')
-}
 
 function insertAdditionalFiles (oldCWD) {
 
@@ -69,25 +62,7 @@ function countHistoryLogs (result) {
     return counter;
 }
 
-async function linkPackages () {
-    await cliUtils.execute('yarn', 'link', [
-        'aeproject-config'
-    ])
-
-    await cliUtils.execute('yarn', 'link', [
-        'aeproject-logger'
-    ])
-
-    await cliUtils.execute('yarn', 'link', [
-        'aeproject-utils'
-    ])
-
-    await cliUtils.execute('yarn', 'link', [
-        'aeproject-lib'
-    ])
-}
-
-describe('AEproject History', async () => {
+xdescribe('AEproject History', async () => {
 
     describe('Log store service tests', () => {
 
@@ -265,7 +240,7 @@ describe('AEproject History', async () => {
 
         let network = {
             url: 'http://localhost:3001',
-            internalUrl: 'http://localhost:3001/internal',
+            internalUrl: 'http://localhost:3001',
             networkId: "ae_devnet",
             compilerUrl: 'http://localhost:3080'
         }
@@ -355,8 +330,6 @@ describe('AEproject History', async () => {
             // or will throw exception of "account not found"
             await client.spend(1, keyPair.publicKey);
 
-            await linkPackages();
-
             await execute(constants.cliCommands.DEPLOY, [
                 constants.cliCommandsOptions.SECRET_KEY,
                 `fd1932a9bb48bd978038de6c67620a68839353e48318c556ec739ce50071d34a2aa0e018f23047098289fb12e03d8ce48dcf51bdf2f9eaf9f3fcd2cc4800bf06`
@@ -373,8 +346,6 @@ describe('AEproject History', async () => {
         });
 
         it('With invalid networkId, deployment should be unsuccessful and should has an error', async () => {
-            await linkPackages();
-
             await execute(constants.cliCommands.DEPLOY, [
                 constants.cliCommandsOptions.NETWORK,
                 "http://127.0.0.1:3001",

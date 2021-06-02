@@ -1,15 +1,15 @@
 const path = require('path');
 const chai = require('chai');
 let chaiAsPromised = require("chai-as-promised");
-const execute = require('../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
-const exec = require('../packages/aeproject-utils/utils/aeproject-utils.js').execute;
-const winExec = require('../packages/aeproject-utils/utils/aeproject-utils.js').winExec;
+const execute = require('../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const exec = require('../aeproject-utils/utils/aeproject-utils.js').execute;
+const winExec = require('../aeproject-utils/utils/aeproject-utils.js').winExec;
 const isImageRunning = require('../test/utils').isImageRunning;
 const waitUntilFundedBlocks = require('../test/utils').waitUntilFundedBlocks;
 const constants = require('../test/constants.json')
 const fs = require('fs-extra');
-const nodeConfig = require('../packages/aeproject-config/config/node-config.json');
-const utils = require('../packages/aeproject-utils/utils/aeproject-utils')
+const nodeConfig = require('../aeproject-config/config/node-config.json');
+const utils = require('../aeproject-utils/utils/aeproject-utils')
 let executeOptions = {
     cwd: process.cwd() + constants.nodeTestsFolderPath
 };
@@ -266,7 +266,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             let result = await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.INFO], executeOptions)
 
-            assert.isOk(result.indexOf('node1') >= 0, "Node is not running");
+            assert.isOk(result.indexOf('node') >= 0, "Node is not running");
             assert.isOk(result.indexOf('compiler') >= 0, "Compiler is not running");
 
             await execute(constants.cliCommands.ENV, [constants.cliCommandsOptions.STOP], executeOptions)
@@ -277,7 +277,7 @@ describe("AEproject Node and Compiler Tests", async () => {
 
             let result = await execute(constants.cliCommands.COMPILER, [constants.cliCommandsOptions.INFO], executeOptions)
             assert.isOk(result.indexOf('compiler') >= 0, "Compiler is not running");
-            assert.isOk(result.indexOf('node1') < 0, "Node is running");
+            assert.isOk(result.indexOf('node') < 0, "Node is running");
 
             await execute(constants.cliCommands.COMPILER, [constants.cliCommandsOptions.STOP], executeOptions)
         })
@@ -286,7 +286,7 @@ describe("AEproject Node and Compiler Tests", async () => {
             await execute(constants.cliCommands.NODE, [], executeOptions)
 
             let result = await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.INFO], executeOptions)
-            assert.isOk(result.indexOf('node1') >= 0, "Node is not running");
+            assert.isOk(result.indexOf('node') >= 0, "Node is not running");
             assert.isOk(result.indexOf('compiler') < 0, "Compiler is running");
 
             await execute(constants.cliCommands.NODE, [constants.cliCommandsOptions.STOP], executeOptions)

@@ -4,7 +4,7 @@ const assert = chai.assert;
 chai.use(chaiFiles);
 
 const fs = require('fs-extra');
-const execute = require('../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const execute = require('../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 const path = require('path');
 
 const {
@@ -17,7 +17,7 @@ const testFolder = constants.compatibilityTestFolder;
 const cliCommands = constants.cliCommands;
 const cliCmdOptions = constants.cliCommandsOptions;
 
-const aeConfig = require('aeproject-config');
+const aeConfig = require('../aeproject-config');
 const nodeConfig = aeConfig.nodeConfiguration;
 const compilerConfig = aeConfig.compilerConfiguration;
 
