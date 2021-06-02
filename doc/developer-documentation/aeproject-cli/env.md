@@ -6,8 +6,7 @@
 aeproject env
 ```
 
-The command is responsible for setting up a healthy local network. The **env** command help developers run their local nodes, as well as local compiler on docker. The local network contains 1 node. To spawn a fully functional network takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
-
+The command is responsible for setting up a healthy local environment. The `env` command helps developers run a local node and a local compiler using docker. To spawn a fully functional environment takes couple of minutes. At the end of this command you will be presented with accounts that you can use in your unit tests.
 
 ### If you are running on Windows environment and it is before `Windows 10` 
 * You need to start manually your `Docker Quickstart Terminal`. 
@@ -19,15 +18,9 @@ aeproject env --windows
 * if docker default machine IP is running on different IP, you can set it by **\-\-docker-ip** optional parameter. Default IP is "192.168.99.100"
 ```text
 aeproject env --windows --docker-ip 192.168.99.100
-
-
-Together with AE node `env` command run a local compiler that response at `http://localhost:3080` If you want to run only AE node, you should type 
-
-```text
-aeproject node
 ```
 
-You can stop both the node and the compiler by running `aeproject env --stop`
+You can stop both the node and the compiler by running
 ```text
 aeproject env --stop
 ```

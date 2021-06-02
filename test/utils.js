@@ -2,11 +2,11 @@ const {
     spawn
 } = require('promisify-child-process');
 
-const { LogNodeService } = require('../packages/aeproject-logger/logger-service/log-node-service');
+const { LogNodeService } = require('../aeproject-logger/logger-service/log-node-service');
 let nodeService = new LogNodeService();
 const {
     readSpawnOutput
-} = require('../packages/aeproject-utils/index.js')
+} = require('../aeproject-utils/index.js')
 
 async function waitUntilFundedBlocks (client, options) {
     if (!options.blocks) {

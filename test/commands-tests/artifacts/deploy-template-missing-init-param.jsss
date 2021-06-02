@@ -17,7 +17,7 @@
 
 const path = require('path');
 
-const Deployer = require('./../../../../packages/aeproject-lib/dist/aeproject-deployer').Deployer // use this path if you want to test it locally
+const Deployer = require('./../../../../aeproject-lib/aeproject-deployer').Deployer // use this path if you want to test it locally
 
 let contractPath = './../contracts/ExampleContract2.aes';
 

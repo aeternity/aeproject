@@ -3,9 +3,9 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra')
 const assert = chai.assert;
-const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
-const exec = require('../../packages/aeproject-utils/utils/aeproject-utils.js').execute;
-const test = require('../../packages/aeproject-cli/aeproject-test/test')
+const execute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const exec = require('../../aeproject-utils/utils/aeproject-utils.js').execute;
+const test = require('../../aeproject-cli/aeproject-test/test')
 const sinon = require('sinon')
 const constants = require('./../constants.json')
 const countPhraseRepeats = require('./../utils').countPhraseRepeats;
@@ -84,7 +84,7 @@ describe('AEproject Test', () => {
             await execute(constants.cliCommands.INIT, [], executeOptions);
         });
 
-        it('should parse sophia tests, create regular js file with tests and execute it.', async function () {
+        xit('should parse sophia tests, create regular js file with tests and execute it.', async function () {
             await insertAdditionalFiles(executeOptions.cwd);
 
             let result = await execute(constants.cliCommands.TEST, [], executeOptions);
@@ -99,7 +99,7 @@ describe('AEproject Test', () => {
             assert.isOk(shouldHaveSuccessfulTest && shouldHaveUnsuccessfulTest, "Tests have unexpected results.");
         })
 
-        it('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
+        xit('Should not create regular JS test file, sophia tests and smart contract does not have equal contract "Name"', async () => {
             insertAdditionalFiles(executeOptions.cwd, true);
 
             let result = await execute(constants.cliCommands.TEST, [
@@ -112,7 +112,7 @@ describe('AEproject Test', () => {
             }
         })
 
-        it('should run only "sophia test"', async function () {
+        xit('should run only "sophia test"', async function () {
             insertAdditionalFiles(executeOptions.cwd);
 
             let result = await execute(constants.cliCommands.TEST, [

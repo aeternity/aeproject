@@ -1,15 +1,14 @@
 # aeproject inspect
 
 ## Inspect raw tx 
-The **inspect** command unpack and verify raw transaction (verify nonce, ttl, fee, account balance). It can be used to verify failing transactions to check what the issue is.
+The `inspect` command unpacks and verifies raw transaction (nonce, ttl, fee, account balance). It can be used to verify failing transactions to check what the issue is.
 ```text
-    aeproject inspect tx_+E0MAaEBK4bq9XiZ/0QVdOa8Hs9V18v6dGZYIa8XXNYFpQh6yq6hAR8To7CL8AFABmKmi2nYdfeAPOxMCGR/btXYTHiXvVCjCoJOIAABgL6cZFo=
+aeproject inspect tx_+E0MAaEBK4bq9XiZ/0QVdOa8Hs9V18v6dGZYIa8XXNYFpQh6yq6hAR8To7CL8AFABmKmi2nYdfeAPOxMCGR/btXYTHiXvVCjCoJOIAABgL6cZFo=
 ```
 
+Default network is `local`, it connects to local node and verifies the transaction.
 
-
-Default network is **local**, it connects to local node and verifies transaction.
-If you want to inspect your transaction on another network there is optional parameter **--network**. You can set **testnet** or **mainnet**.
+If you want to inspect your transaction on another network there is optional parameter `--network`. You can set `testnet` or `mainnet`.
 ```text
 aeproject inspect tx_+E0MAaEBK4bq9XiZ/0QVdOa8Hs9V18v6dGZYIa8XXNYFpQh6yq6hAR8To7CL8AFABmKmi2nYdfeAPOxMCGR/btXYTHiXvVCjCoJOIAABgL6cZFo= --network testnet
 ```
@@ -18,7 +17,7 @@ or
 aeproject inspect tx_+E0MAaEBK4bq9XiZ/0QVdOa8Hs9V18v6dGZYIa8XXNYFpQh6yq6hAR8To7CL8AFABmKmi2nYdfeAPOxMCGR/btXYTHiXvVCjCoJOIAABgL6cZFo= --network mainnet
 ```
 
-Or if you want to set your custom network like **localhost:9999**, you should pass and another optional parameter **--networkId**
+You can also set your custom network like `localhost:9999` and pass and another optional parameter `--networkId` in case you are running the node with a custom network id.
 ```text
 aeproject inspect tx_+E0MAaEBK4bq9XiZ/0QVdOa8Hs9V18v6dGZYIa8XXNYFpQh6yq6hAR8To7CL8AFABmKmi2nYdfeAPOxMCGR/btXYTHiXvVCjCoJOIAABgL6cZFo= --network localhost:9999 --networkId ae_my_id
 ```

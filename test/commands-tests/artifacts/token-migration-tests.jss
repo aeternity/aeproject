@@ -41,7 +41,7 @@ describe('Example Contract', () => {
 
         let network = {
             url: 'http://localhost:3001',
-            internalUrl: 'http://localhost:3001/internal',
+            internalUrl: 'http://localhost:3001',
             networkId: "ae_devnet",
             compilerUrl: 'http://localhost:3080'
         }

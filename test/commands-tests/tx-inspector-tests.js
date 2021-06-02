@@ -2,9 +2,10 @@ const chai = require('chai');
 const chaiFiles = require('chai-files');
 const assert = chai.assert;
 chai.use(chaiFiles);
+chai.use(require('chai-as-promised'));
 
 const fs = require('fs-extra');
-const execute = require('../../packages/aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
+const execute = require('../../aeproject-utils/utils/aeproject-utils.js').aeprojectExecute;
 
 const constants = require('../constants.json');
 const testFolder = constants.txInspectorTestFolder;
@@ -57,13 +58,7 @@ describe('Transaction inspector tests', async function () {
              txType: 'spendTx'`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim());
-
-
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
         it('Should inspect valid contract create tx in local network', async function () {
@@ -94,16 +89,9 @@ describe('Transaction inspector tests', async function () {
                         'sg_FAQ2PoJsqHpv9ZDPiT4yozTNkuQ3YMAiK2e4c1yMuBi3DDsnKFLeBmrAzndeY6iGHesKwLHWaZ3AL54859mYg58RLorZ'
                 txType: 'contractCreateTx'`
 
-            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim().toLowerCase())
-
-            result = result.toLowerCase()
-            
-            expectedResArr.map(x => {
-
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim().toLowerCase());
+            result = result.toLowerCase();
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
         it('Should inspect invalid contract create tx in local network', async function () {
@@ -113,7 +101,6 @@ describe('Transaction inspector tests', async function () {
 
             let expectedResultAsText = `'Nonce' - Account not found
             'fee' - The account balance 0 is not enough to execute the transaction
-            'amount' - The account balance 0 is not enough to execute the transaction
            tx:
               tag: '42'
                 VSN: '1'
@@ -137,11 +124,7 @@ describe('Transaction inspector tests', async function () {
              txType: 'contractCreateTx'`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim());
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
         it('Should inspect contract call tx in local network', async function () {
@@ -172,11 +155,7 @@ describe('Transaction inspector tests', async function () {
              txType: 'contractCallTx'`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
     })
 
@@ -214,14 +193,10 @@ describe('Transaction inspector tests', async function () {
              txType: 'spendTx'`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
-        it('Should inspect valid contract create tx in testnet network', async function () {
+        it('Should inspect invalid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
                 validContractCreateTx,
                 cliCmdOptions.NETWORK,
@@ -230,7 +205,7 @@ describe('Transaction inspector tests', async function () {
 
             let expectedResultAsText = `nonce used in tx is '11'.
             'ttl' - The TTL is already expired
-            'nonce' - The nonce is invalid(already used). 
+            'nonce' - The nonce is invalid (already used). 
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '42'
@@ -255,14 +230,10 @@ describe('Transaction inspector tests', async function () {
              txType: 'contractCreateTx'`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
-        it('Should inspect invalid contract create tx in testnet network', async function () {
+        it('Should inspect valid contract create tx in testnet network', async function () {
             let result = await execute(INSPECT, [
                 invalidContractCreateTx,
                 cliCmdOptions.NETWORK,
@@ -272,7 +243,6 @@ describe('Transaction inspector tests', async function () {
             let expectedResultAsText = `'Nonce' - Account not found
             'ttl' - The TTL is already expired
             'fee' - The account balance 0 is not enough to execute the transaction
-            'amount' - The account balance 0 is not enough to execute the transaction
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '42'
@@ -296,12 +266,8 @@ describe('Transaction inspector tests', async function () {
                    'sg_L2o8HWfghDvanAe6wbyvMj7ttCe361fEyDTpqJXPw198z2twfM2Y97bRxFCBvhn75f2qPrnFBVr7pNxYbMYNtrCDwiQVu'
              txType: 'contractCreateTx'`
 
-            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim());
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
         it('Should inspect contract call tx in testnet network', async function () {
@@ -312,7 +278,7 @@ describe('Transaction inspector tests', async function () {
             ]);
 
             let expectedResultAsText = `nonce used in tx is '24'.
-            'nonce' - The nonce is invalid(already used).
+            'nonce' - The nonce is invalid (already used).
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '43'
@@ -336,11 +302,7 @@ describe('Transaction inspector tests', async function () {
              txType: 'contractCallTx'   `
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
     })
@@ -378,12 +340,8 @@ describe('Transaction inspector tests', async function () {
                 payload: 'ba_Xfbg4g=='
              txType: 'spendTx'`
 
-            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim());
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
         it('Should inspect valid contract create tx in mainnet network', async function () {
@@ -396,7 +354,6 @@ describe('Transaction inspector tests', async function () {
             let expectedResultAsText = `'Nonce' - Account not found
             'ttl' - The TTL is already expired
             'fee' - The account balance 0 is not enough to execute the transaction
-            'amount' - The account balance 0 is not enough to execute the transaction
             'nonce' - The nonce is technically valid but will not be processed immediately by the node
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
@@ -421,12 +378,8 @@ describe('Transaction inspector tests', async function () {
                    'sg_FAQ2PoJsqHpv9ZDPiT4yozTNkuQ3YMAiK2e4c1yMuBi3DDsnKFLeBmrAzndeY6iGHesKwLHWaZ3AL54859mYg58RLorZ'
              txType: 'contractCreateTx'`
 
-            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim());
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
         it('Should inspect invalid contract create tx in testnet network', async function () {
@@ -439,7 +392,6 @@ describe('Transaction inspector tests', async function () {
             let expectedResultAsText = `'Nonce' - Account not found
             'ttl' - The TTL is already expired,
             'fee' - The account balance 0 is not enough to execute the transaction
-            'amount' - The account balance 0 is not enough to execute the transaction
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
               tag: '42'
@@ -464,11 +416,7 @@ describe('Transaction inspector tests', async function () {
              txType: 'contractCreateTx'`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
 
         it('Should inspect contract call tx in testnet network', async function () {
@@ -480,7 +428,6 @@ describe('Transaction inspector tests', async function () {
 
             let expectedResultAsText = `'Nonce' - Account not found
             'fee' - The account balance 0 is not enough to execute the transaction
-            'amount' - The account balance 0 is not enough to execute the transaction
             'nonce' - The nonce is technically valid but will not be processed immediately by the node (next valid nonce is
             'signature' - The signature cannot be verified, please verify that you used the correct network id and the correct private key for the sender address
            tx:
@@ -505,11 +452,7 @@ describe('Transaction inspector tests', async function () {
              txType: 'contractCallTx'`
 
             let expectedResArr = expectedResultAsText.trim().split('\n').map(x => x.trim())
-            expectedResArr.map(x => {
-                if (!result.includes(x)) {
-                    assert.isOk(false, `Non expected data: ${ x }`)
-                }
-            });
+            expectedResArr.map(x => chai.expect(result).to.include(x));
         })
     })
 
@@ -522,8 +465,7 @@ describe('Transaction inspector tests', async function () {
                 cliCmdOptions.NETWORK_ID,
                 'ae_invalid'
             ]);
-
-            assert.isOk(result.includes('Error: connect'), 'There is connection to not existent ae node')
+            assert.isOk(result.includes('FetchError: request'), 'There is connection to not existent ae node')
         })
     })
 

@@ -7,7 +7,7 @@ aeproject compatibility
 ```
 Compatibility would start env with latest docker images of node and compiler, would test your project and if there are some issues could give some recommendations.
 
-Some of optional parameters are **\-\-nodeVersion** and **\-\-compilerVersion**. To specify a specific version of node or compiler, or both, you should type
+Some of optional parameters are `--nodeVersion` and `--compilerVersion`. To specify a specific version of node or compiler, or both, you should type
 ```text
 aeproject compatibility --nodeVersion v5.3.0
 or

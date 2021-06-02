@@ -5,7 +5,7 @@ include "Pair.aes"
 include "Triple.aes"
 
 contract TestExample =
-  entrypoint main(x : int) = x
+  entrypoint common(x : int) = x
 
   entrypoint is_empty() =
     List.is_empty([])
