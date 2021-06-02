@@ -1,54 +1,54 @@
 const fs = require('fs');
 const path = require('path');
 
-const get_contract_content = (contract_source) => {
-    return fs.readFileSync(contract_source, 'utf8');
+const getContractContent = (contractSource) => {
+    return fs.readFileSync(contractSource, 'utf8');
 }
 
-const get_filesystem = (contract_source) => {
-    console.log(`Creating filesystem by checking includes for: ${contract_source}`);
-    const default_includes = [
+const getFilesystem = (contractSource) => {
+    console.log(`Creating filesystem by checking includes for: ${contractSource}`);
+    const defaultIncludes = [
         'List.aes', 'Option.aes', 'String.aes',
         'Func.aes', 'Pair.aes', 'Triple.aes',
         'BLS12_381.aes', 'Frac.aes'
     ];
     const rgx = /^include\s+\"([\d\w\/\.\-\_]+)\"/gmi;
-    const rgx_include_path = /"([\d\w\/\.\-\_]+)\"/gmi;
-    const rgx_main_path = /.*\//g;
+    const rgxIncludePath = /"([\d\w\/\.\-\_]+)\"/gmi;
+    const rgxMainPath = /.*\//g;
 
-    const contract_content = get_contract_content(contract_source);
+    const contractContent = getContractContent(contractSource);
     let filesystem = {};
 
-    const match = rgx.exec(contract_content);
+    const match = rgx.exec(contractContent);
     if(!match) {
         return filesystem;
     }
-    let root_includes = contract_content.match(rgx);
-    for (let i=0; i<root_includes.length; i++) {
-        const contract_path = rgx_main_path.exec(contract_source);
-        rgx_main_path.lastIndex = 0;
-        const include_relative_path = rgx_include_path.exec(root_includes[i]);
-        rgx_include_path.lastIndex = 0;
-        if(default_includes.includes(include_relative_path[1])){
-            console.log(`=> Skipping default include: ${include_relative_path[1]}`);
+    let rootIncludes = contractContent.match(rgx);
+    for (let i=0; i<rootIncludes.length; i++) {
+        const contractPath = rgxMainPath.exec(contractSource);
+        rgxMainPath.lastIndex = 0;
+        const includeRelativePath = rgxIncludePath.exec(rootIncludes[i]);
+        rgxIncludePath.lastIndex = 0;
+        if(defaultIncludes.includes(includeRelativePath[1])){
+            console.log(`=> Skipping default include: ${includeRelativePath[1]}`);
             continue;
         }
-        console.log(`=> Adding include: ${include_relative_path[1]}`);
-        const include_path = path.resolve(`${contract_path[0]}/${include_relative_path[1]}`);
+        console.log(`=> Adding include: ${includeRelativePath[1]}`);
+        const includePath = path.resolve(`${contractPath[0]}/${includeRelativePath[1]}`);
         try {
-            const include_content = fs.readFileSync(include_path, 'utf-8');
-            filesystem[include_relative_path[1]] = include_content;
+            const includeContent = fs.readFileSync(includePath, 'utf-8');
+            filesystem[includeRelativePath[1]] = includeContent;
         } catch (error) {
-            throw Error(`File to include '${include_relative_path[1]}' not found.`);
+            throw Error(`File to include '${includeRelativePath[1]}' not found.`);
         }
         console.log(``);
-        Object.assign(filesystem, get_filesystem(include_path));
+        Object.assign(filesystem, getFilesystem(includePath));
     }
     console.log(``);
     return filesystem;
 }
 
 module.exports = {
-    get_contract_content,
-    get_filesystem
+    getContractContent,
+    getFilesystem
 };

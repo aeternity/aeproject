@@ -26,7 +26,7 @@ const { ContractCompilerAPI } = require('@aeternity/aepp-sdk');
 
 async function compileAndPrint (file, compiler) {
     try {
-        const result = await compiler.compileContractAPI(utils.get_contract_content(file), {filesystem: utils.get_filesystem(file)});
+        const result = await compiler.compileContractAPI(utils.getContractContent(file), {filesystem: utils.getFilesystem(file)});
         print(`Contract '${file}' has been successfully compiled.`);
         print(`=> bytecode: ${result}`);
     } catch (error) {

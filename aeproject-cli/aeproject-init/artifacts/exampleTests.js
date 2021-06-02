@@ -24,7 +24,7 @@ const NETWORK_NAME = "local";
 
 const {defaultWallets: WALLETS} = require('../config/wallets.json');
 
-const contract_utils = require('../utils/contract-utils');
+const contractUtils = require('../utils/contract-utils');
 const EXAMPLE_CONTRACT_SOURCE = './contracts/ExampleContract.aes';
 
 describe('ExampleContract', () => {
@@ -43,9 +43,9 @@ describe('ExampleContract', () => {
         });
         try {
             // a filesystem object must be passed to the compiler if the contract uses custom includes
-            const filesystem = contract_utils.get_filesystem(EXAMPLE_CONTRACT_SOURCE);
+            const filesystem = contractUtils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
             // get content of contract
-            const contract_content = contract_utils.get_contract_content(EXAMPLE_CONTRACT_SOURCE);
+            const contract_content = contractUtils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
             // initialize the contract instance
             contract = await client.getContractInstance(contract_content, {filesystem});
         } catch(err) {

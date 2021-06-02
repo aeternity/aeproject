@@ -15,7 +15,7 @@
  *  PERFORMANCE OF THIS SOFTWARE.
  */
 const { Universal, MemoryAccount, Node, Crypto } = require('@aeternity/aepp-sdk');
-const contract_utils = require('../utils/contract-utils');
+const contractUtils = require('../utils/contract-utils');
 
 const NETWORKS = require('../config/network.json');
 const DEFAULT_NETWORK_NAME = 'local';
@@ -41,9 +41,9 @@ const deploy = async (secretKey, network, compiler) => {
         address: KEYPAIR.publicKey
     });
     // a filesystem object must be passed to the compiler if the contract uses custom includes
-    const filesystem = contract_utils.get_filesystem(EXAMPLE_CONTRACT_SOURCE);
+    const filesystem = contractUtils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
     // get content of contract
-    const contract_content = contract_utils.get_contract_content(EXAMPLE_CONTRACT_SOURCE);
+    const contract_content = contractUtils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
     contract = await client.getContractInstance(contract_content, {filesystem});
     const deployment_result = await contract.deploy([]);
     console.log(deployment_result);

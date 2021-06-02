@@ -37,8 +37,8 @@ const addCaretToDependencyVersion = aeprojectUtils.addCaretToDependencyVersion;
 const prompt = aeprojectUtils.prompt;
 
 const contract_utils = require('./utils/contract-utils');
-const get_filesystem = contract_utils.get_filesystem;
-const get_contract_content = contract_utils.get_contract_content;
+const getFilesystem = contract_utils.getFilesystem;
+const getContractContent = contract_utils.getContractContent;
 
 const SophiaUtil = require('./utils/sophia-util');
 const httpGet = require('./utils/http-utils').httpGet;
@@ -78,6 +78,6 @@ module.exports = {
     capitalize,
     addCaretToDependencyVersion,
     prompt,
-    get_filesystem,
-    get_contract_content
+    getFilesystem,
+    getContractContent
 }
