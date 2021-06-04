@@ -12,6 +12,9 @@ http:
 
 chain:
   persist: true
+  hard_forks:
+    "1": 0
+    "5": 1
 
 websocket:
   channel:
