@@ -30,9 +30,9 @@ async function compileAndPrint (file, compiler) {
         print(`Contract '${file}' has been successfully compiled.`);
         print(`=> bytecode: ${result}`);
     } catch (error) {
-        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? JSON.parse(error.response.data)[0].message : error.message;
+        const errorMessage = utils.checkNestedProperty(error.response, 'data') ? JSON.parse(error.response.data)[0] : error.message;
         printError(`Contract '${file}' has not been compiled.`);
-        printError(`=> reason: ${errorMessage}`);
+        printError(`=> reason: ${JSON.stringify(errorMessage)}`);
     }
 }
 
