@@ -79,13 +79,13 @@ describe('AEproject Compile', () => {
         })
 
         it('Should display error message to user if contract has not been compiled', async () => {
-            let expectedError = 'reason: Unbound variable a at line 3, column 9';
+            let expectedError = 'reason: {"message":"Unbound variable a at line 3, column 9\\n","pos":{"col":9,"line":3},"type":"type_error"}';
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, `${ path.resolve(executeOptions.cwd, '../multipleContractsFolder') }/FalseContract.aes`])
             assert.include(result, expectedError)
         })
 
         it('Should display file not found if path to unexisting file is specified', async () => {
-            let expectedError = 'reason: ENOENT: no such file or directory';
+            let expectedError = `reason: "ENOENT: no such file or directory, open \'../multipleContractsFolder/NotExistingContract.aes\'"`;
             let result = await execute(constants.cliCommands.COMPILE, [constants.cliCommandsOptions.PATH, "../multipleContractsFolder/NotExistingContract.aes"])
             assert.include(result, expectedError)
         })
