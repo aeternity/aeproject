@@ -11,7 +11,7 @@
     "aetest": "aeproject test"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "8.1.0",
+    "@aeternity/aepp-sdk": "8.2.1",
     "axios": "^0.21.1",
     "chalk": "^4.1.1",
     "cli-table": "^0.3.6",
