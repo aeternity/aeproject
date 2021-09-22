@@ -5,7 +5,7 @@
 The framework can be installed via npm:
 
 ```text
-npm i -g aeproject
+npm install -g @aeternity/aeproject
 ```
 
 ## Help
