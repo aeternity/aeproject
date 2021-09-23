@@ -18,7 +18,7 @@
 	"dockerCompilerYmlFileDestination": "./docker-compose.compiler.yml",
 	"gitIgnoreFile": ".gitignore",
 	"gitIgnoreContent": "git_ignore",
-	"sdkVersion": "8.1.0",
-	"aeNodeImage": "aeternity/aeternity:v6.0.0",
-	"aeCompilerImage": "aeternity/aesophia_http:v6.0.0"
+	"sdkVersion": "8.2.1",
+	"aeNodeImage": "aeternity/aeternity:v6.2.0",
+	"aeCompilerImage": "aeternity/aesophia_http:v6.0.2"
 }
