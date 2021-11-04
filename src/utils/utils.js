@@ -13,6 +13,7 @@ const dependencyPathRgx = /"([\d\w\/\.\-\_]+)\"/gmi;
 const mainContractsPathRgx = /.*\//g;
 
 const COMPILER_URL_POSTFIX = '/compile';
+const defaultSpawnOptions = {encoding: 'utf8'};
 
 const getClient = async function (network, keypair = config.keypair) {
   let client;
@@ -128,7 +129,7 @@ const aeprojectExecute = async (command, args = [], options = {}) => execute('ae
 
 const execute = async (cli, command, args = [], options = {}) => {
   try {
-    const child = await spawn(cli, [command, ...args], options);
+    const child = await spawn(cli, [command, ...args], {...defaultSpawnOptions, ...options});
 
     let result = child.stdout.toString('utf8');
     result += child.stderr.toString('utf8');
@@ -320,6 +321,8 @@ async function prompt(promptMessage, functionToExecute) {
 }
 
 module.exports = {
+  print: console.log,
+  printError: console.error,
   config,
   getClient,
   getNetwork,

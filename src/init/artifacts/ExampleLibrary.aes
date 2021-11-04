@@ -1,7 +1,0 @@
-@compiler >= 6
-
-include "String.aes"
-
-namespace ExampleHelpers =
-  function getDNA(name: string): hash =
-    String.sha3(name)
