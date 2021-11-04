@@ -1,5 +1,0 @@
-
-contract SomeContract =
-    entrypoint sum(a: int, b: int) = a + b
-
-    entrypoint sub(a: int, b: int) = a - b

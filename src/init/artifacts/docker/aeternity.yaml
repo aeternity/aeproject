@@ -1,0 +1,41 @@
+http:
+  external:
+    gas_limit: 60000000
+  internal:
+    debug_endpoints: true
+    listen_address: 0.0.0.0
+  endpoints:
+    dry-run: true
+
+system:
+  plugin_path: /home/aeternity/node/plugins
+  plugins:
+    - name: aeplugin_dev_mode
+      config:
+        keyblock_interval: 0
+        microblock_interval: 0
+        auto_emit_microblocks: true
+
+fork_management:
+  network_id: ae_dev
+
+chain:
+  persist: true
+  consensus:
+    "0":
+      name: "on_demand"
+
+mining:
+  beneficiary: "ak_GLab8McCgXqng1pZbQDmjbCLw6f48qGyP4zWqzqBVnYwdNWVc"
+  beneficiary_reward_delay: 2
+  strictly_follow_top: true
+
+websocket:
+  channel:
+    port: 3014
+    listen_address: 0.0.0.0
+
+logging:
+  # Controls the overload protection in the logs.
+  hwm: 50
+  level: debug

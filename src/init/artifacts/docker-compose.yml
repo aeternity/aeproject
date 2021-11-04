@@ -1,0 +1,25 @@
+version: '3.6'
+services:
+
+  node:
+    image: aeternity/aeternity:${NODE_TAG}-bundle
+    hostname: node
+    environment:
+      AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
+    volumes:
+      - './aeternity.yaml:/home/aeternity/aeternity.yaml'
+      - './accounts_test.json:/home/aeternity/node/data/aecore/.genesis/accounts_test.json'
+
+  compiler:
+    image: aeternity/aesophia_http:${COMPILER_TAG}
+    hostname: compiler
+    ports:
+      - '3080:3080'
+
+  proxy:
+    image: nginx:latest
+    hostname: proxy
+    ports:
+      - '3001:3001'
+    volumes:
+      - './nginx.conf:/etc/nginx/conf.d/default.conf'

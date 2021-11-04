@@ -1,9 +1,0 @@
-contract ExampleContract =
-    record state = {
-        index : int}
-        
-    stateful entrypoint init(start_index: int) = 
-        { index = start_index}
-
-    entrypoint get_index() =
-        state.index

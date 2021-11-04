@@ -1,9 +1,0 @@
-contract ExampleContract4 =
-  record state = { 
-    name              : string}
-
-  stateful entrypoint  name() : string =
-    state.name
-  
-  stateful entrypoint  init(name : string) = {
-  	name = name}
