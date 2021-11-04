@@ -1,3 +1,0 @@
-namespace MathMul =
-  function multiply(x : int, y : int) : int =
-    x * y

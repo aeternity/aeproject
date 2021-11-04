@@ -1,3 +1,0 @@
-namespace MathDiv =
-    function divide (x: int, y: int) : int =
-        x / y

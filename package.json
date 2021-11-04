@@ -1,45 +1,27 @@
 {
-  "name": "@aeternity/aeproject",
-  "version": "3.0.5",
+  "name": "aeproject",
+  "version": "4.0.0-alpha1",
+  "description": "",
   "bin": {
-    "aeproject": "./aeproject-cli/aeproject-cli.js"
+    "aeproject": "./src/cli.js"
   },
   "scripts": {
-    "test": "mocha ./test/**/*.js --timeout 0 --exit",
-    "test-compile": "mocha ./test/commands-tests/compile.js --timeout 0 --exit",
-    "mocha": "mocha --timeout 0 --exit",
-    "aetest": "aeproject test"
+    "lint": "eslint .",
+    "lint:fix": "eslint --ext .js --fix .",
+    "lint:ci": "eslint --ext .js --max-warnings=0 ."
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "8.2.1",
-    "axios": "^0.21.1",
-    "chalk": "^4.1.1",
-    "cli-table": "^0.3.6",
-    "commander": "^2.19.0",
-    "esm": "^3.0.77",
-    "fs-extra": "^7.0.1",
-    "moment": "^2.23.0",
-    "node-dir": "^0.1.17",
-    "open": "^7.0.0",
-    "original-require": "^1.0.1",
-    "path": "^0.12.7",
-    "prompts": "^2.2.1",
-    "promisify-child-process": "^2.1.2",
-    "@typescript-eslint/parser": "^1.7.0",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
-    "chai-files": "^1.4.0",
-    "docker-cli-js": "^2.5.1",
-    "eslint": "^5.15.1",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "lerna": "^3.14.1",
-    "mocha": "^5.0.0",
-    "shelljs": "^0.8.2",
-    "sinon": "^7.1.1",
-    "typescript": "^3.5.2"
+    "@aeternity/aepp-sdk": "^9.0.1",
+    "axios": "^0.24.0",
+    "commander": "^8.3.0",
+    "promisify-child-process": "^4.1.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.25.2"
   }
 }

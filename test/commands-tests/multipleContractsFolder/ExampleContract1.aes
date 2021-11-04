@@ -1,3 +1,0 @@
-contract ExampleContract1 =
-  entrypoint common(x : int) = x
-  entrypoint common2(x : string) : string = x

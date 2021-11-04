@@ -1,2 +1,0 @@
-contract ExampleContract2 =
-  entrypoint common(x : int) = x

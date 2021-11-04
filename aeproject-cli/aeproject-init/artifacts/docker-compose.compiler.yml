@@ -1,7 +1,0 @@
-version: '3'
-services:
-  compiler:
-    hostname: compiler
-    image: 'aeternity/aesophia_http:${COMPILER_TAG}'
-    ports:
-      - '3080:3080'

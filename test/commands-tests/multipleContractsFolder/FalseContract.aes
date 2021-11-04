@@ -1,3 +1,0 @@
-contract False = 
-    entrypoint hello_world () =
-        a
