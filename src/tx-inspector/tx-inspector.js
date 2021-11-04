@@ -1,5 +1,5 @@
 const { TransactionValidator, Node } = require('@aeternity/aepp-sdk');
-const utils = require('../utils');
+const utils = require('../utils/utils');
 
 const { httpGet } = utils;
 

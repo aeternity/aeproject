@@ -1,17 +1,13 @@
-const compile = require('./compile/compile');
-const init = require('./init/init');
-const testConfig = require('./test/test');
-const env = require('./env/env/env');
-const node = require('./env/env/node/node');
-const compiler = require('./env/env/compiler/compiler');
-const deploy = require('./deploy/deploy');
-const config = require('./config');
+const compile = require('../compile/compile');
+const init = require('../init/init');
+const testConfig = require('../test/test');
+const env = require('../env/env');
+const deploy = require('../deploy/deploy');
+const config = require('../config/node-config.json');
 
 const dockerIp = config.nodeConfiguration.dockerMachineIP;
-const exportConfig = require('./export/export-config');
-const aeprojectConfigDefaultFileName = require('./export/constants').aeprojectConfigFileName;
-const txInspector = require('./tx-inspector/tx-inspector');
-const compatibility = require('./compatibility/compatibility');
+const txInspector = require('../tx-inspector/tx-inspector');
+const compatibility = require('../compatibility/compatibility');
 
 const nodeConfig = config.nodeConfiguration;
 const compilerConfig = config.compilerConfiguration;
@@ -63,34 +59,6 @@ const addEnvOption = (program) => {
     });
 };
 
-const addNodeOption = (program) => {
-  program
-    .command('node')
-    .description('Running a local node. Without any argument node will be run with --start argument')
-    .option('--stop', 'Stop the node')
-    .option('--start', 'Start the node')
-    .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
-    .option('--windows', 'Start the node in windows env')
-    .option('--docker-ip [default docker machine ip]', `Set docker machine IP, default is "${dockerIp}"`, dockerIp)
-    .option('--v [v]', `Specify node version, default is ${nodeConfig.imageVersion}`, nodeConfig.imageVersion)
-    .action(async (options) => {
-      await node.run(options);
-    });
-};
-
-const addCompilerOption = (program) => {
-  program
-    .command('compiler')
-    .description('Running a local compiler. Without any arguments compiler will be run with --start argument')
-    .option('--stop', 'Stop the node')
-    .option('--start', 'Start the node')
-    .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
-    .option('--v [v]', `Specify compiler version, default is ${compilerConfig.imageVersion}`, compilerConfig.imageVersion)
-    .action(async (options) => {
-      await compiler.run(options);
-    });
-};
-
 const addDeployOption = (program) => {
   program
     .command('deploy')
@@ -101,16 +69,6 @@ const addDeployOption = (program) => {
     .option('-c --compiler [compiler_url]', 'URL of the http compiler to use')
     .action(async (options) => {
       await deploy.run(options.path, options.secretKey, options.network, options.compiler);
-    });
-};
-
-const addExportConfigOption = (program) => {
-  program
-    .command('export-config')
-    .description('Export miner account, few funded accounts  and default node configuration.')
-    .option('--path [export path]', 'Path to export config file', aeprojectConfigDefaultFileName)
-    .action(async (options) => {
-      await exportConfig.run(options);
     });
 };
 
@@ -144,10 +102,7 @@ const initCommands = (program) => {
   addCompileOption(program);
   addTestOption(program);
   addEnvOption(program);
-  addNodeOption(program);
-  addCompilerOption(program);
   addDeployOption(program);
-  addExportConfigOption(program);
   addTxInspector(program);
   addCompatibility(program);
 };

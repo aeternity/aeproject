@@ -1,0 +1,4 @@
+@compiler >= 6
+
+main contract Example =
+  entrypoint example(x : int) = x

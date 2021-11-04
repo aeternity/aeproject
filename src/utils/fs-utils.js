@@ -1,34 +1,51 @@
 const fs = require('fs');
 const path = require('path');
+const prompts = require('prompts');
 
-// TODO replace dir, fs methods
+async function promptOverwrite(target) {
+  const response = await prompts({
+    type: 'text',
+    name: 'value',
+    message: `Do you want to overwrite '${target}'? (y/N):`,
+  });
 
-// Print helper
-const print = (msg, obj) => {
-  if (obj) {
-    console.log(msg, obj);
-  } else {
-    console.log(msg);
-  }
-};
+  const input = response.value.trim();
+  return input === 'YES' || input === 'yes' || input === 'Y' || input === 'y'
+}
 
-// Print error helper
-const printError = (msg) => {
-  console.log(msg);
-};
+async function copyFolderRecursiveSync(srcDir, dstDir) {
+  let src, dst;
 
-const createMissingFolder = (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-};
+  return fs.readdirSync(srcDir).reduce(async (accPromise, file) => {
+    await accPromise;
+    src = path.join(srcDir, file);
+    dst = path.join(dstDir, file);
+
+    const stat = fs.statSync(src);
+    if (stat && stat.isDirectory()) {
+      if (!fs.existsSync(dst)) {
+        fs.mkdirSync(dst);
+      }
+
+      await copyFolderRecursiveSync(src, dst)
+    } else {
+      if (!fs.existsSync(dst)) {
+        fs.writeFileSync(dst, fs.readFileSync(src));
+      } else {
+        if (await promptOverwrite(dst)) {
+          fs.writeFileSync(dst, fs.readFileSync(src));
+        }
+      }
+    }
+  }, Promise.resolve());
+}
 
 const copyFileOrDir = (sourceFileOrDir, destinationFileOrDir, copyOptions = {}) => {
   if (fs.existsSync(`${destinationFileOrDir}`) && !copyOptions.overwrite) {
     throw new Error(`${destinationFileOrDir} already exists.`);
   }
 
-  fs.copySync(sourceFileOrDir, destinationFileOrDir, copyOptions);
+  copySync(sourceFileOrDir, destinationFileOrDir, copyOptions);
 };
 
 const getFiles = async function (directory, regex) {
@@ -88,9 +105,6 @@ async function createDirIfNotExists(destination) {
 }
 
 module.exports = {
-  print,
-  printError,
-  createMissingFolder,
   copyFileOrDir,
   getFiles,
   readFile,
@@ -100,4 +114,5 @@ module.exports = {
   fileExists,
   deleteCreatedFiles,
   createDirIfNotExists,
+  copyFolderRecursiveSync,
 };

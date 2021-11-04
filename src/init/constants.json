@@ -1,24 +1,7 @@
 {
-	"testDir": "./test",
-	"testTemplateFile": "exampleTests.js",
-	"testFileDestination": "./test/exampleTest.js",
-	"deployDir": "./deployment",
-	"deployTemplateFile": "deployTemplate.js",
-	"deployFileDestination": "./deployment/deploy.js",
-	"contractsDir": "./contracts",
-	"contractTemplateFile": "ExampleContract.aes",
-	"contractFileDestination": "./contracts/ExampleContract.aes",
+	"artifactsDest": "./",
 	"artifactsDir": "/artifacts",
-	"dockerDir": "./docker",
-	"dockerTemplateDir": "docker",
-	"dockerFilesDestination": "./docker",
-	"dockerNodeYmlFile": "docker-compose.yml",
-	"dockerCompilerYmlFile": "docker-compose.compiler.yml",
-	"dockerNodeYmlFileDestination": "./docker-compose.yml",
-	"dockerCompilerYmlFileDestination": "./docker-compose.compiler.yml",
-	"gitIgnoreFile": ".gitignore",
-	"gitIgnoreContent": "git_ignore",
-	"sdkVersion": "8.2.1",
-	"aeNodeImage": "aeternity/aeternity:v6.2.0",
-	"aeCompilerImage": "aeternity/aesophia_http:v6.0.2"
+	"updateArtifactsDir": "/update-artifacts",
+	"aeNodeTag": "master",
+	"aeCompilerTag": "v6.1.2"
 }

@@ -1,7 +1,7 @@
 const { exec } = require('promisify-child-process');
-const { print } = require('../utils');
+const { print } = require('../utils/utils');
 
-const nodeConfig = require('../config').nodeConfiguration;
+const nodeConfig = require('../config/node-config.json').nodeConfiguration;
 
 async function run(option) {
   let { nodeVersion } = option;
