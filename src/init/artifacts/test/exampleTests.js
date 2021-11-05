@@ -8,7 +8,9 @@ describe('ExampleContract', () => {
   let contract;
 
   before(async () => {
-    const client = await Universal({
+    const client = await Universal.compose({
+      deepProps: {Ae: {defaults: {interval: 50}}}
+    })({
       nodes: [{name: 'node', instance: await Node({url: networks.devmode.nodeUrl, ignoreVersion: true})}],
       compilerUrl: networks.devmode.compilerUrl,
       accounts: [MemoryAccount({keypair: wallets[0]})]

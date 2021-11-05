@@ -1,6 +1,6 @@
 const {spawn, exec} = require("promisify-child-process");
 
-const {print, printError, readSpawnOutput} = require('../utils/utils');
+const {print, printError} = require('../utils/utils');
 const {nodeConfiguration, compilerConfiguration, proxyConfiguration} = require('../config/node-config.json');
 
 async function isEnvRunning() {

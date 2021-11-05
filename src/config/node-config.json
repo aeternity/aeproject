@@ -5,7 +5,7 @@
         "envLiteral": "NODE_TAG"
     },
     "compilerConfiguration": {
-        "imageVersion": "v6.1.0",
+        "imageVersion": "latest",
         "containerName": "aeproject_compiler",
         "envLiteral": "COMPILER_TAG"
     },
