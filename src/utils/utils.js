@@ -1,9 +1,6 @@
 const config = require('../config/config.json');
 
-const getNetwork = (network, networkId) => {
-  if (networkId) {
-    return createCustomNetwork(network, networkId);
-  }
+const getNetwork = (network) => {
 
   const networks = {
     local: {
@@ -20,24 +17,7 @@ const getNetwork = (network, networkId) => {
     },
   };
 
-  return networks[network] || createCustomNetwork(network, networkId);
-};
-
-const createCustomNetwork = (network, networkId) => {
-  if (!network || !networkId || network === 'local') {
-    throw new Error('Both [--network] and [--networkId] should be passed.');
-  }
-
-  network = network.toLowerCase();
-
-  if (!network.startsWith('http')) {
-    network = `http://${network}`;
-  }
-
-  return {
-    url: network,
-    networkId,
-  };
+  return networks[network];
 };
 
 module.exports = {
