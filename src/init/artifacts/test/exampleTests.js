@@ -1,20 +1,14 @@
-const {assert} = require('chai');
-const {Universal, MemoryAccount, Node} = require('@aeternity/aepp-sdk');
-const {wallets, networks, utils} = require('@aeternity/aeproject');
+const { assert } = require('chai');
+const { utils } = require('@aeternity/aeproject');
 
 const EXAMPLE_CONTRACT_SOURCE = './contracts/ExampleContract.aes';
 
 describe('ExampleContract', () => {
+  let client;
   let contract;
 
   before(async () => {
-    const client = await Universal.compose({
-      deepProps: {Ae: {defaults: {interval: 50}}}
-    })({
-      nodes: [{name: 'node', instance: await Node({url: networks.devmode.nodeUrl, ignoreVersion: true})}],
-      compilerUrl: networks.devmode.compilerUrl,
-      accounts: [MemoryAccount({keypair: wallets[0]})]
-    });
+    client = await utils.getClient();
 
     // a filesystem object must be passed to the compiler if the contract uses custom includes
     const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
@@ -23,15 +17,20 @@ describe('ExampleContract', () => {
     const contract_content = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 
     // initialize the contract instance
-    contract = await client.getContractInstance(contract_content, {filesystem});
+    contract = await client.getContractInstance(contract_content, { filesystem });
+    await contract.deploy();
+
+    // create a snapshot of the blockchain state
+    await utils.createSnapshot(client);
   });
 
-  it('deploy ExampleContract', async () => {
-    await contract.deploy();
+  // after each test roll back to initial state
+  afterEach(async () => {
+    await utils.rollbackSnapshot(client);
   });
 
   it('call ExampleContract', async () => {
-    const {decodedResult} = await contract.methods.example(42)
+    const { decodedResult } = await contract.methods.example(42);
     assert.equal(decodedResult, 42);
   });
 });

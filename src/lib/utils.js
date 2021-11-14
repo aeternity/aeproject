@@ -1,5 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
+const { exec } = require('promisify-child-process');
+const { Universal, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
+
+const networks = require('./networks.json');
+const wallets = require('./wallets.json');
 
 const getContractContent = (contractSource) => fs.readFileSync(contractSource, 'utf8');
 
@@ -40,7 +46,66 @@ const getFilesystem = (contractSource) => {
   return filesystem;
 };
 
+async function get(url) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(url, { method: 'GET' }, (res) => {
+      if (res.statusCode < 200 || res.statusCode > 299) {
+        return reject(new Error(`HTTP status code ${res.statusCode}`));
+      }
+
+      const body = [];
+      res.on('data', (chunk) => body.push(chunk));
+      res.on('end', () => resolve(Buffer.concat(body).toString()));
+    });
+
+    req.on('error', (err) => reject(err));
+
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Request time out'));
+    });
+
+    req.end();
+  });
+}
+
+const getClient = async () => Universal.compose({
+  deepProps: { Ae: { defaults: { interval: 50 } } },
+})({
+  nodes: [{ name: 'node', instance: await Node({ url: networks.devmode.nodeUrl, ignoreVersion: true }) }],
+  compilerUrl: networks.devmode.compilerUrl,
+  accounts: [MemoryAccount({ keypair: wallets[0] })],
+});
+
+const awaitKeyBlocks = async (client, n = 1) => {
+  const height = await client.height();
+  await get(`http://localhost:3001/emit_kb?n=${n}`);
+  await client.awaitHeight(height + n);
+};
+
+let snapshotHeight = -1;
+
+const createSnapshot = async (client) => {
+  snapshotHeight = await client.height();
+  await awaitKeyBlocks(client, 1);
+};
+
+const rollbackSnapshot = async (client) => {
+  const currentBlockHeight = await client.height();
+  if (currentBlockHeight > snapshotHeight) {
+    // TODO replace with http api call
+    const cmd = `docker exec aeproject_node bin/aeternity db_rollback --height ${snapshotHeight}`;
+    await exec(cmd);
+    await awaitKeyBlocks(client, 1);
+  } else {
+  }
+};
+
 module.exports = {
   getContractContent,
   getFilesystem,
+  awaitKeyBlocks,
+  createSnapshot,
+  rollbackSnapshot,
+  getClient,
 };

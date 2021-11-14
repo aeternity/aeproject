@@ -1,5 +1,5 @@
-const {print} = require("../utils/utils");
-const {exec} = require("promisify-child-process");
+const { exec } = require('promisify-child-process');
+const { print } = require('../utils/utils');
 
 const run = async () => {
   const workingDirectory = process.cwd();
@@ -10,7 +10,7 @@ const run = async () => {
 async function test() {
   print('===== Starting Tests =====');
 
-  const child = exec(`npm test`)
+  const child = exec('npm test');
 
   child.stdout.on('data', (out) => process.stdout.write(out));
   child.stderr.on('data', (err) => process.stderr.write(err));
