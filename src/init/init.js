@@ -1,9 +1,9 @@
-const {exec} = require('promisify-child-process');
+const { exec } = require('promisify-child-process');
 
 const constants = require('./constants.json');
-const {print} = require('../utils/utils');
+const { print } = require('../utils/utils');
 
-const {copyFolderRecursiveSync, fileExists} = require('../utils/fs-utils');
+const { copyFolderRecursiveSync, fileExists } = require('../utils/fs-utils');
 
 async function run(update) {
   if (update) {
@@ -48,12 +48,12 @@ const setupArtifacts = async () => {
 const updateArtifacts = async () => {
   print('===== creating project file and directory structure =====');
 
-  let fileSource = `${__dirname}${constants.updateArtifactsDir}`;
-  let destination = constants.artifactsDest;
+  const fileSource = `${__dirname}${constants.updateArtifactsDir}`;
+  const destination = constants.artifactsDest;
 
   await copyFolderRecursiveSync(fileSource, destination);
 };
 
 module.exports = {
-  run
+  run,
 };

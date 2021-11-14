@@ -1,7 +1,6 @@
 const config = require('../config/config.json');
 
 const getNetwork = (network) => {
-
   const networks = {
     local: {
       url: config.localhostParams.url,
