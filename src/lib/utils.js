@@ -69,13 +69,24 @@ async function get(url) {
   });
 }
 
-const getClient = async () => Universal.compose({
-  deepProps: { Ae: { defaults: { interval: 50 } } },
-})({
-  nodes: [{ name: 'node', instance: await Node({ url: networks.devmode.nodeUrl, ignoreVersion: true }) }],
-  compilerUrl: networks.devmode.compilerUrl,
-  accounts: [MemoryAccount({ keypair: wallets[0] })],
-});
+const getClient = async () => {
+  const instance = await Node({ url: networks.devmode.nodeUrl, ignoreVersion: true }).catch((error) => {
+    if (error.message && error.message.includes('ECONNREFUSED')) {
+      console.log('please start environment first using \'aeproject env\'');
+      process.exit(1);
+    } else {
+      throw error;
+    }
+  });
+
+  return Universal.compose({
+    deepProps: { Ae: { defaults: { interval: 50 } } },
+  })({
+    nodes: [{ name: 'node', instance }],
+    compilerUrl: networks.devmode.compilerUrl,
+    accounts: [MemoryAccount({ keypair: wallets[0] })],
+  });
+};
 
 const awaitKeyBlocks = async (client, n = 1) => {
   const height = await client.height();
