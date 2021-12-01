@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const { exec } = require('promisify-child-process');
 const { Universal, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
 const networks = require('./networks.json');
@@ -104,11 +103,8 @@ const createSnapshot = async (client) => {
 const rollbackSnapshot = async (client) => {
   const currentBlockHeight = await client.height();
   if (currentBlockHeight > snapshotHeight) {
-    // TODO replace with http api call
-    const cmd = `docker exec aeproject_node bin/aeternity db_rollback --height ${snapshotHeight}`;
-    await exec(cmd);
+    await get(`http://localhost:3001/rollback?height=${snapshotHeight}`);
     await awaitKeyBlocks(client, 1);
-  } else {
   }
 };
 

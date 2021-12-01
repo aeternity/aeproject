@@ -17,7 +17,7 @@ describe('ExampleContract', () => {
     const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 
     // initialize the contract instance
-    contract = await client.getContractInstance(source, { filesystem });
+    contract = await client.getContractInstance({ source, filesystem });
     await contract.deploy();
 
     // create a snapshot of the blockchain state
