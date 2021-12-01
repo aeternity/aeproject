@@ -7,9 +7,13 @@ async function isEnvRunning() {
   const info = await getInfo();
 
   if (info) {
-    const containers = [nodeConfiguration.containerName, compilerConfiguration.containerName, proxyConfiguration.containerName];
+    const containers = [
+      nodeConfiguration.containerName,
+      compilerConfiguration.containerName,
+      proxyConfiguration.containerName,
+    ];
     return containers.every((containerName) => {
-      const line = info.split('\n').find((line) => line.includes(containerName));
+      const line = info.split('\n').find((l) => l.includes(containerName));
       return line && line.includes('Up');
     });
   }
