@@ -14,8 +14,8 @@ const getFilesystem = (contractSource) => {
     'Func.aes', 'Pair.aes', 'Triple.aes',
     'BLS12_381.aes', 'Frac.aes',
   ];
-  const rgx = /^include\s+"([\d\w\/.\-_]+)"/gmi;
-  const rgxIncludePath = /"([\d\w\/.\-_]+)"/gmi;
+  const rgx = /^include\s+"([\d\w/.-_]+)"/gmi;
+  const rgxIncludePath = /"([\d\w/.-_]+)"/gmi;
   const rgxMainPath = /.*\//g;
 
   const contractContent = getContractContent(contractSource);
@@ -24,12 +24,15 @@ const getFilesystem = (contractSource) => {
   const rootIncludes = contractContent.match(rgx);
   if (!rootIncludes) return filesystem;
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const rootInclude of rootIncludes) {
     const contractPath = rgxMainPath.exec(contractSource);
     const includeRelativePath = rgxIncludePath.exec(rootInclude);
 
+    // eslint-disable-next-line no-continue
     if (defaultIncludes.includes(includeRelativePath[1])) continue;
 
+    // eslint-disable-next-line no-console
     console.log(`==> Adding include to filesystem: ${includeRelativePath[1]}`);
     const includePath = path.resolve(`${contractPath[0]}/${includeRelativePath[1]}`);
 
@@ -47,6 +50,7 @@ const getFilesystem = (contractSource) => {
 
 async function get(url) {
   return new Promise((resolve, reject) => {
+    // eslint-disable-next-line consistent-return
     const req = http.request(url, { method: 'GET' }, (res) => {
       if (res.statusCode < 200 || res.statusCode > 299) {
         return reject(new Error(`HTTP status code ${res.statusCode}`));
@@ -69,14 +73,16 @@ async function get(url) {
 }
 
 const getClient = async () => {
-  const instance = await Node({ url: networks.devmode.nodeUrl, ignoreVersion: true }).catch((error) => {
-    if (error.message && error.message.includes('ECONNREFUSED')) {
-      console.log('please start environment first using \'aeproject env\'');
-      process.exit(1);
-    } else {
-      throw error;
-    }
-  });
+  const instance = await Node({ url: networks.devmode.nodeUrl, ignoreVersion: true })
+    .catch((error) => {
+      if (error.message && error.message.includes('ECONNREFUSED')) {
+        // eslint-disable-next-line no-console
+        console.log('please start environment first using \'aeproject env\'');
+        process.exit(1);
+      } else {
+        throw error;
+      }
+    });
 
   return Universal.compose({
     deepProps: { Ae: { defaults: { interval: 50 } } },

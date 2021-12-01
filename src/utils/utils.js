@@ -20,7 +20,9 @@ const getNetwork = (network) => {
 };
 
 module.exports = {
+  // eslint-disable-next-line no-console
   print: console.log,
+  // eslint-disable-next-line no-console
   printError: console.error,
   config,
   getNetwork,

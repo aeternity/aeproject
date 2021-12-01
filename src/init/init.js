@@ -31,7 +31,7 @@ const updateAEprojectProjectLibraries = async () => {
   print('===== aeproject sucessfully initalized =====');
 };
 
-const installDependencies = async (_sdkVersion = '') => {
+const installDependencies = async () => {
   if (fileExists('./package.json')) {
     print('===== installing dependencies =====');
     await exec(/^win/.test(process.platform) ? 'npm.cmd install' : 'npm install');

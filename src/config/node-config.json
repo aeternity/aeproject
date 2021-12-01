@@ -1,13 +1,11 @@
 {
     "nodeConfiguration": {
         "imageVersion": "master",
-        "containerName": "aeproject_node",
-        "envLiteral": "NODE_TAG"
+        "containerName": "aeproject_node"
     },
     "compilerConfiguration": {
         "imageVersion": "latest",
-        "containerName": "aeproject_compiler",
-        "envLiteral": "COMPILER_TAG"
+        "containerName": "aeproject_compiler"
     },
     "proxyConfiguration": {
         "imageVersion": "latest",
