@@ -14,7 +14,7 @@ async function isEnvRunning() {
     ];
     return containers.every((containerName) => {
       const line = info.split('\n').find((l) => l.includes(containerName));
-      return line && line.includes('Up');
+      return line && (line.includes('Up') || line.includes('running'));
     });
   }
 
