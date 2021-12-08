@@ -1,6 +1,6 @@
 {
   "name": "@aeternity/aeproject",
-  "version": "4.0.0-alpha1",
+  "version": "4.0.0-alpha.2",
   "description": "aeternity smart contract testing tool",
   "main": "src/lib/index.js",
   "bin": {
@@ -13,7 +13,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "^10.0.0-beta.1",
+    "@aeternity/aepp-sdk": "^10.0.0",
     "axios": "^0.24.0",
     "commander": "^8.3.0",
     "promisify-child-process": "^4.1.1",
