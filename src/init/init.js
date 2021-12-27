@@ -6,12 +6,21 @@ const { print } = require('../utils/utils');
 const { copyFolderRecursiveSync, fileExists } = require('../utils/fs-utils');
 
 async function run(update) {
+  checkNodeVersion();
+
   if (update) {
     await updateAEprojectProjectLibraries();
   } else {
     await createAEprojectProjectStructure();
   }
 }
+
+const checkNodeVersion = () => {
+  if (parseInt(process.version.split('.')[0].replace('v', ''), 10) < 14) {
+    print('You need to use Node.js 14 or newer to use aeproject.');
+    process.exit(1);
+  }
+};
 
 const createAEprojectProjectStructure = async () => {
   print('===== initializing aeproject =====');
