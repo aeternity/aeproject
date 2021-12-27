@@ -89,7 +89,7 @@ const getClient = async () => {
   })({
     nodes: [{ name: 'node', instance }],
     compilerUrl: networks.devmode.compilerUrl,
-    accounts: [MemoryAccount({ keypair: wallets[0] })],
+    accounts: wallets.map((keypair) => MemoryAccount({ keypair })),
   });
 };
 
