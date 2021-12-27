@@ -1,6 +1,6 @@
 {
   "name": "@aeternity/aeproject",
-  "version": "4.0.0-alpha.2",
+  "version": "4.0.0-alpha.3",
   "description": "aeternity smart contract testing tool",
   "main": "src/lib/index.js",
   "bin": {
