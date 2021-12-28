@@ -2,11 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const prompts = require('prompts');
 
-async function promptOverwrite(target) {
+async function prompt(action, target) {
   const response = await prompts({
     type: 'text',
     name: 'value',
-    message: `Do you want to overwrite '${target}'? (y/N):`,
+    message: `Do you want to ${action} '${target}'? (y/N):`,
   });
 
   const input = response.value.trim();
@@ -31,10 +31,18 @@ async function copyFolderRecursiveSync(srcDir, dstDir) {
       await copyFolderRecursiveSync(src, dst);
     } else if (!fs.existsSync(dst)) {
       fs.writeFileSync(dst, fs.readFileSync(src));
-    } else if (await promptOverwrite(dst)) {
+    } else if (await prompt('overwrite', dst)) {
       fs.writeFileSync(dst, fs.readFileSync(src));
     }
   }, Promise.resolve());
+}
+
+async function deleteWithPrompt(target) {
+  if (fs.existsSync(target)) {
+    if (await prompt('delete', target)) {
+      fs.rmSync(target, { recursive: true });
+    }
+  }
 }
 
 const fileExists = (relativePath) => fs.existsSync(path.resolve(process.cwd(), relativePath));
@@ -42,4 +50,5 @@ const fileExists = (relativePath) => fs.existsSync(path.resolve(process.cwd(), r
 module.exports = {
   fileExists,
   copyFolderRecursiveSync,
+  deleteWithPrompt,
 };

@@ -9,7 +9,7 @@
     "@aeternity/aepp-sdk": "^10.0.0"
   },
   "devDependencies": {
-    "@aeternity/aeproject": "^4.0.0-alpha.2",
+    "@aeternity/aeproject": "^4.0.0-alpha.4",
     "chai": "^4.3.4",
     "mocha": "^9.1.3"
   }
