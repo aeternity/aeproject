@@ -2,6 +2,7 @@ const init = require('../init/init');
 const testConfig = require('../test/test');
 const env = require('../env/env');
 const config = require('../config/node-config.json');
+const constants = require('../init/constants.json');
 
 const nodeConfig = config.nodeConfiguration;
 const compilerConfig = config.compilerConfiguration;
@@ -10,9 +11,10 @@ const addInitOption = (program) => {
   program
     .command('init')
     .description('Initialize AEproject')
-    .option('--update [update]', 'Update project files')
-    .action(async (option) => {
-      await init.run(option.update);
+    .argument('[folder]', 'project name for folder to be created', constants.artifactsDest)
+    .option('--update', 'update project files')
+    .action(async (folder, option) => {
+      await init.run(folder, option.update);
     });
 };
 
