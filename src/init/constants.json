@@ -6,7 +6,7 @@
         "@aeternity/aepp-sdk@10"
     ],
     "devDependencies": [
-        "@aeternity/aeproject@4.0.0-alpha.4",
+        "@aeternity/aeproject@4.0.0-alpha.5",
         "chai@4",
         "mocha@9"
     ],

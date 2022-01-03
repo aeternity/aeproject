@@ -45,10 +45,7 @@ async function deleteWithPrompt(target) {
   }
 }
 
-const fileExists = (relativePath) => fs.existsSync(path.resolve(process.cwd(), relativePath));
-
 module.exports = {
-  fileExists,
   copyFolderRecursiveSync,
   deleteWithPrompt,
 };
