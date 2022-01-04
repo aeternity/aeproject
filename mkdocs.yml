@@ -1,0 +1,48 @@
+site_name: 'aeproject: aeternity contract testing tool'
+plugins:
+  - search
+repo_url: 'https://github.com/aeternity/aeproject'
+edit_uri: ''
+
+extra:
+  version:
+    provider: mike
+
+theme:
+  favicon: images/favicon.png
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: pink
+      accent: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: pink
+      accent: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - content.tabs.link
+    - search.highlight
+    - search.share
+    - search.suggest
+
+  # Don't include MkDocs' JavaScript
+  include_search_page: false
+  search_index_only: true
+
+markdown_extensions:
+  - pymdownx.magiclink
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - index.md
+  - migration-from-3.x.x-to-4.x.x.md
+  - cli/init.md
+  - cli/env.md
+  - cli/test.md
