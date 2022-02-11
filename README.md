@@ -7,7 +7,7 @@
 ## Install
 
 ```text
-npm install -g @aeternity/aeproject@4.0.0-beta.2
+npm install -g @aeternity/aeproject@beta
 ```
 
 ## Documentation

@@ -15,7 +15,7 @@ const getFilesystem = (contractSource) => {
     'BLS12_381.aes', 'Frac.aes',
   ];
   const rgx = /^include\s+"([\d\w/.-_]+)"/gmi;
-  const rgxIncludePath = /"([\d\w/.-_]+)"/gmi;
+  const rgxIncludePath = /"([\d\w/.-_]+)"/i;
   const rgxMainPath = /.*\//g;
 
   const contractContent = getContractContent(contractSource);
@@ -23,10 +23,10 @@ const getFilesystem = (contractSource) => {
 
   const rootIncludes = contractContent.match(rgx);
   if (!rootIncludes) return filesystem;
+  const contractPath = rgxMainPath.exec(contractSource);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const rootInclude of rootIncludes) {
-    const contractPath = rgxMainPath.exec(contractSource);
     const includeRelativePath = rgxIncludePath.exec(rootInclude);
 
     // eslint-disable-next-line no-continue
