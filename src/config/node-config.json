@@ -1,6 +1,6 @@
 {
     "nodeConfiguration": {
-        "imageVersion": "v6.4.0",
+        "imageVersion": "latest",
         "containerName": "aeproject_node"
     },
     "compilerConfiguration": {
