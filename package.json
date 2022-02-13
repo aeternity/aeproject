@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --ext .js --fix .",
-    "lint:ci": "eslint --ext .js --max-warnings=0 ."
+    "lint:ci": "eslint --ext .js --max-warnings=0 .",
+    "test": "npm link && mocha ./tests/**/*.js --timeout 0 --exit"
   },
   "license": "ISC",
   "dependencies": {
@@ -20,8 +21,10 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
+    "chai": "^4.3.6",
     "eslint": "^8.9.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.4"
+    "eslint-plugin-import": "^2.25.4",
+    "mocha": "^9.2.0"
   }
 }
