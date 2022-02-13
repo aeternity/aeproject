@@ -10,7 +10,7 @@ describe('Happy Path', () => {
   });
 
   after(() => {
-    fs.rmdirSync(cwd);
+    fs.rmSync(cwd, { recursive: true });
   });
 
   it('init', async () => {

@@ -1,6 +1,6 @@
 const { spawn, exec } = require('promisify-child-process');
 
-const { print, printError } = require('../utils/utils');
+const { print, printError, awaitNodeAvailable } = require('../utils/utils');
 const { nodeConfiguration, compilerConfiguration, proxyConfiguration } = require('../config/node-config.json');
 
 async function isEnvRunning() {
@@ -61,6 +61,8 @@ async function startEnv(nodeVersion, compilerVersion) {
 
   await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} docker-compose pull`);
   await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} docker-compose up -d`);
+
+  await awaitNodeAvailable();
 
   print('===== Env was successfully started! =====');
 }
