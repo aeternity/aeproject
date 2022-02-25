@@ -3,8 +3,8 @@ const { spawn, exec } = require('promisify-child-process');
 const { print, printError, awaitNodeAvailable } = require('../utils/utils');
 const { nodeConfiguration, compilerConfiguration, proxyConfiguration } = require('../config/node-config.json');
 
-async function isEnvRunning() {
-  const info = await getInfo();
+async function isEnvRunning(cwd = './') {
+  const info = await getInfo(cwd);
 
   if (info) {
     const containers = [
@@ -76,8 +76,8 @@ async function printInfo(running) {
   print(await getInfo());
 }
 
-async function getInfo() {
-  const info = await exec('docker-compose ps');
+async function getInfo(cwd) {
+  const info = await exec('docker-compose ps', { cwd });
 
   if (info && info.stdout) {
     return info.stdout;
@@ -88,4 +88,5 @@ async function getInfo() {
 
 module.exports = {
   run,
+  isEnvRunning,
 };
