@@ -3,13 +3,14 @@ const { exec: execP } = require('promisify-child-process');
 const fs = require('fs');
 const chai = require('chai');
 const chaiFiles = require('chai-files');
+const { isEnvRunning } = require('../src/env/env');
 
 chai.use(chaiFiles);
 const { assert } = chai;
 const { file } = chaiFiles;
 
 const cwd = path.join(process.cwd(), '.testdir');
-const exec = (cmd, options) => execP(`source ~/.profile;${cmd}`, options);
+const exec = (cmd, options) => execP(`. ~/.profile;${cmd}`, options);
 
 describe('Happy Path', () => {
   before(async () => {
@@ -37,13 +38,18 @@ describe('Happy Path', () => {
 
   it('env', async () => {
     await exec('aeproject env', { cwd });
+    assert.isTrue(await isEnvRunning(cwd));
   });
 
   it('test', async () => {
-    await exec('aeproject test', { cwd });
+    const res = await exec('aeproject test', { cwd });
+    assert.equal(res.code, 0);
+    assert.equal(res.stderr, '');
+    assert.include(res.stdout, '2 passing');
   });
 
   it('env --stop', async () => {
     await exec('aeproject env --stop', { cwd });
+    assert.isFalse(await isEnvRunning(cwd));
   });
 });
