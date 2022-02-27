@@ -4,6 +4,7 @@ const fs = require('fs');
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 const { isEnvRunning } = require('../src/env/env');
+const { version } = require('../package.json');
 
 chai.use(chaiFiles);
 const { assert } = chai;
@@ -22,22 +23,38 @@ describe('Happy Path', () => {
     fs.rmSync(cwd, { recursive: true });
   });
 
-  it('init', async () => {
-    await exec('aeproject init', { cwd });
-
-    assert.exists(file(path.join(cwd, '.gitignore')));
-    assert.exists(file(path.join(cwd, 'docker-compose.yml')));
-    assert.exists(file(path.join(cwd, 'package.json')));
-
-    assert.exists(file(path.join(cwd, 'contracts/ExampleContract.aes')));
-    assert.exists(file(path.join(cwd, 'docker/accounts.json')));
-    assert.exists(file(path.join(cwd, 'docker/aeternity.yaml')));
-    assert.exists(file(path.join(cwd, 'docker/nginx.conf')));
-    assert.exists(file(path.join(cwd, 'test/exampleTest.js')));
+  it('help', async () => {
+    const res = await exec('aeproject help', { cwd });
+    assert.equal(res.code, 0);
   });
 
+  it('version', async () => {
+    const res = await exec('aeproject --version', { cwd });
+    assert.equal(res.code, 0);
+    assert.include(res.stdout, version);
+  });
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const folder of [null, ['testprojectfolder']]) {
+    it(folder ? `init ${folder}` : 'init', async () => {
+      const res = await exec(folder ? `aeproject init ${folder}` : 'aeproject init', { cwd });
+      assert.equal(res.code, 0);
+
+      assert.exists(file(path.join(cwd, '.gitignore')));
+      assert.exists(file(path.join(cwd, 'docker-compose.yml')));
+      assert.exists(file(path.join(cwd, 'package.json')));
+
+      assert.exists(file(path.join(cwd, 'contracts/ExampleContract.aes')));
+      assert.exists(file(path.join(cwd, 'docker/accounts.json')));
+      assert.exists(file(path.join(cwd, 'docker/aeternity.yaml')));
+      assert.exists(file(path.join(cwd, 'docker/nginx.conf')));
+      assert.exists(file(path.join(cwd, 'test/exampleTest.js')));
+    });
+  }
+
   it('env', async () => {
-    await exec('aeproject env', { cwd });
+    const res = await exec('aeproject env', { cwd });
+    assert.equal(res.code, 0);
     assert.isTrue(await isEnvRunning(cwd));
   });
 
@@ -49,7 +66,8 @@ describe('Happy Path', () => {
   });
 
   it('env --stop', async () => {
-    await exec('aeproject env --stop', { cwd });
+    const res = await exec('aeproject env --stop', { cwd });
+    assert.equal(res.code, 0);
     assert.isFalse(await isEnvRunning(cwd));
   });
 });
