@@ -35,10 +35,13 @@ describe('Happy Path', () => {
   });
 
   // eslint-disable-next-line no-restricted-syntax
-  for (const folder of [null, ['testprojectfolder']]) {
+  for (const folder of [null, 'testprojectfolder']) {
     it(folder ? `init ${folder}` : 'init', async () => {
       const res = await exec(folder ? `aeproject init ${folder}` : 'aeproject init', { cwd });
       assert.equal(res.code, 0);
+
+      // link to use local aeproject utils
+      await exec('npm link @aeternity/aeproject', { cwd: folder ? path.join(cwd, folder) : cwd });
 
       assert.exists(file(path.join(cwd, '.gitignore')));
       assert.exists(file(path.join(cwd, 'docker-compose.yml')));
