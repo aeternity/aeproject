@@ -13,12 +13,12 @@ Following commands have been removed and cannot be used anymore. Most of them di
 
 - `aeproject compatibility` (discontinued)
 - `aeproject compile`
-    -  manual compilation isn't needed for use of aeproject, alternatively use [aecli](https://github.com/aeternity/aepp-cli-js) or the [sdk](https://github.com/aeternity/aepp-sdk-js) programmatically
+    -  manual compilation isn't needed for use of aeproject, alternatively use the [CLI](https://github.com/aeternity/aepp-cli-js) or the [SDK](https://github.com/aeternity/aepp-sdk-js) programmatically
 - `aeproject deploy`
-    - deployment isn't supported in aeproject anymore, alternatively use [aecli](https://github.com/aeternity/aepp-cli-js) or the [sdk](https://github.com/aeternity/aepp-sdk-js) programmatically
+    - deployment isn't supported in aeproject anymore, alternatively use the [CLI](https://github.com/aeternity/aepp-cli-js) or the [SDK](https://github.com/aeternity/aepp-sdk-js) programmatically
 - `aeproject export` (discontinued)
 - `aeproject tx-inspector` 
-    - manual tx inspection is moved to [aecli](https://github.com/aeternity/aepp-cli-js)
+    - manual tx inspection is moved to the [CLI](https://github.com/aeternity/aepp-cli-js)
 ### Changed commands
 - `aeproject init`
     - added the `folder` argument to create a new folder for the project initialization
@@ -30,7 +30,7 @@ Testing is now handled locally in the project using `mocha` and `chai` as direct
 
 `@aeternity/aeproject` is added itself as dependency and includes some library-functions that can be used in testing.
 
-```
+```js
 const { networks, utils, wallets } = require('@aeternity/aeproject');
 ```
 
@@ -38,11 +38,11 @@ const { networks, utils, wallets } = require('@aeternity/aeproject');
 - `wallets` includes example wallets that are prefunded in local development
 - `utils` includes helper functions for testing
     - `getFilesystem(source)` to get the filesystem definition for a given contract for deployment
-    - `getClient()` get a default client for local development
+    - `getSdk()` get an instance of the SDK for local development
         - initialized with all prefunded wallets for `onAccount` to be used calling from different accounts
-    - `awaitKeyBlocks(client, number)` await a certain number of key-blocks
-    - `createSnapshot(client)` create a snapshot for local testing
-    - `rollbackSnapshot(client)` rollback to previously created snapshot in local testing
+    - `awaitKeyBlocks(aeSdk, number)` await a certain number of key-blocks
+    - `createSnapshot(aeSdk)` create a snapshot for local testing
+    - `rollbackSnapshot(aeSdk)` rollback to previously created snapshot in local testing
 
 ## Migration of old projects
 1. Upgrade your project
@@ -63,4 +63,4 @@ const { networks, utils, wallets } = require('@aeternity/aeproject');
         - local testing network is now `devmode` instead of `local`
     - replace `defaultWallets` import with `const { wallets } = require('@aeternity/aeproject');` for prefunded wallets
     - replace `contractUtils` import with `const { utils } = require('@aeternity/aeproject');` for utils
-        - consider using the new helpers for getting a client and creating snapshots similar to `test/exampleTest.js`
+        - consider using the new helpers for initializing the SDK and creating snapshots similar to `test/exampleTest.js`
