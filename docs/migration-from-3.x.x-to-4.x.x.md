@@ -63,4 +63,4 @@ const { networks, utils, wallets } = require('@aeternity/aeproject');
         - local testing network is now `devmode` instead of `local`
     - replace `defaultWallets` import with `const { wallets } = require('@aeternity/aeproject');` for prefunded wallets
     - replace `contractUtils` import with `const { utils } = require('@aeternity/aeproject');` for utils
-        - consider using the new helpers for initializing the SDK and creating snapshots similar to `test/exampleTest.js`
+        - consider using the new helpers for initializing an instance of the SDK and creating snapshots similar to `test/exampleTest.js`
