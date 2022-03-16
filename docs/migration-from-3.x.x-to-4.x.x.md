@@ -1,7 +1,7 @@
-# Migrate from 3.x.x to 4.x.x
+# Migration from 3.x.x to 4.x.x
 
-## Migration of aeproject 3.x.x projects
-**AEproject** `v4.0.0` underwent some bigger changes, is now available as official package of the aeternity organization on NPM and is compatible to the recently published node [v6.3.0](https://github.com/aeternity/aeternity/blob/v6.3.0/docs/release-notes/RELEASE-NOTES-6.3.0.md).
+## Changes
+**AEproject** `v4.0.0` underwent some bigger changes, is now available as official package of the æternity organization on NPM and is compatible to the recently published node [v6.4.0](https://github.com/aeternity/aeternity/blob/v6.4.0/docs/release-notes/RELEASE-NOTES-6.4.0.md).
 
 Install the new AEproject version
 ```
@@ -19,11 +19,11 @@ Following commands have been removed and cannot be used anymore. Most of them di
 - `aeproject export` (discontinued)
 - `aeproject tx-inspector` 
     - manual tx inspection is moved to the [CLI](https://github.com/aeternity/aepp-cli-js)
-### Changed commands
+### Updated commands
 - `aeproject init`
     - added the `folder` argument to create a new folder for the project initialization
 
-### Important changes in the project structure
+### Project structure
 The latest available node and compiler will always be used with starting the testing environment.
 
 Testing is now handled locally in the project using `mocha` and `chai` as direct dev dependencies.
@@ -44,7 +44,7 @@ const { networks, utils, wallets } = require('@aeternity/aeproject');
     - `createSnapshot(aeSdk)` create a snapshot for local testing
     - `rollbackSnapshot(aeSdk)` rollback to previously created snapshot in local testing
 
-## Migration of old projects
+## Instructions
 1. Upgrade your project
     ```
     aeproject init --update

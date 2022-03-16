@@ -1,4 +1,4 @@
-site_name: 'aeproject: aeternity contract testing tool'
+site_name: 'AEproject: Smart Contract Testing Framework'
 plugins:
   - search
 repo_url: 'https://github.com/aeternity/aeproject'
@@ -42,7 +42,7 @@ markdown_extensions:
 
 nav:
   - index.md
-  - migration-from-3.x.x-to-4.x.x.md
   - cli/init.md
   - cli/env.md
   - cli/test.md
+  - migration-from-3.x.x-to-4.x.x.md
