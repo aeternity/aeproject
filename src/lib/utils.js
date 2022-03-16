@@ -72,7 +72,7 @@ async function get(url) {
   });
 }
 
-const getClient = async () => {
+const getSdk = async () => {
   const instance = await Node({ url: networks.devmode.nodeUrl, ignoreVersion: true })
     .catch((error) => {
       if (error.message && error.message.includes('ECONNREFUSED')) {
@@ -93,24 +93,24 @@ const getClient = async () => {
   });
 };
 
-const awaitKeyBlocks = async (client, n = 1) => {
-  const height = await client.height();
+const awaitKeyBlocks = async (aeSdk, n = 1) => {
+  const height = await aeSdk.height();
   await get(`http://localhost:3001/emit_kb?n=${n}`);
-  await client.awaitHeight(height + n);
+  await aeSdk.awaitHeight(height + n);
 };
 
 let snapshotHeight = -1;
 
-const createSnapshot = async (client) => {
-  snapshotHeight = await client.height();
-  await awaitKeyBlocks(client, 1);
+const createSnapshot = async (aeSdk) => {
+  snapshotHeight = await aeSdk.height();
+  await awaitKeyBlocks(aeSdk, 1);
 };
 
-const rollbackSnapshot = async (client) => {
-  const currentBlockHeight = await client.height();
+const rollbackSnapshot = async (aeSdk) => {
+  const currentBlockHeight = await aeSdk.height();
   if (currentBlockHeight > snapshotHeight) {
     await get(`http://localhost:3001/rollback?height=${snapshotHeight}`);
-    await awaitKeyBlocks(client, 1);
+    await awaitKeyBlocks(aeSdk, 1);
   }
 };
 
@@ -120,5 +120,5 @@ module.exports = {
   awaitKeyBlocks,
   createSnapshot,
   rollbackSnapshot,
-  getClient,
+  getSdk,
 };

@@ -17,27 +17,27 @@ In the `test/exampleTest.js` file you can find an example for unit testing using
 `const { assert } = require('chai');`
 Javascript testing framework used with [mocha](https://mochajs.org/) for assertions, documented at https://www.chaijs.com/api/assert/
 
-`const { networks, utils, wallets } = require('@aeternity/aeproject');` Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for client initialization and snapshotting.
+`const { networks, utils, wallets } = require('@aeternity/aeproject');` Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.
 
-### 2. Client and Snapshotting Setup
+### 2. SDK and Snapshotting Setup
 
 `before(...)` used in mocha for initializations needed to be done once before all tests
 
-`client = await utils.getClient();` use included utils to initialize default aeternity client
+`aeSdk = await utils.getSdk();` use included utils to initialize default SDK instance
 
 `const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);` use utils to get filesystem definition for given contract
 
 `const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);` read contract source from filesystem
 
-`contract = await client.getContractInstance({ source, filesystem });` initialize contract instance with client
+`contract = await aeSdk.getContractInstance({ source, filesystem });` initialize contract instance with aeSdk
 
 `await contract.deploy();` deploy initialized contract
 
-`await utils.createSnapshot(client);` create snapshot once before all tests, so we can rollback to a clean state after each test
+`await utils.createSnapshot(aeSdk);` create snapshot once before all tests, so we can rollback to a clean state after each test
 
 ```javascript
 afterEach(async () => {
-  await utils.rollbackSnapshot(client);
+  await utils.rollbackSnapshot(aeSdk);
 });
 ```
 
