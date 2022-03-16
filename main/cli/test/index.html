@@ -338,8 +338,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-client-and-snapshotting-setup" class="md-nav__link">
-    2. Client and Snapshotting Setup
+  <a href="#2-sdk-and-snapshotting-setup" class="md-nav__link">
+    2. SDK and Snapshotting Setup
   </a>
   
 </li>
@@ -412,8 +412,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-client-and-snapshotting-setup" class="md-nav__link">
-    2. Client and Snapshotting Setup
+  <a href="#2-sdk-and-snapshotting-setup" class="md-nav__link">
+    2. SDK and Snapshotting Setup
   </a>
   
 </li>
@@ -453,17 +453,17 @@
 <h3 id="1-dependencies">1. Dependencies</h3>
 <p><code>const { assert } = require('chai');</code>
 Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> for assertions, documented at <a href="https://www.chaijs.com/api/assert/">https://www.chaijs.com/api/assert/</a></p>
-<p><code>const { networks, utils, wallets } = require('@aeternity/aeproject');</code> Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for client initialization and snapshotting.</p>
-<h3 id="2-client-and-snapshotting-setup">2. Client and Snapshotting Setup</h3>
+<p><code>const { networks, utils, wallets } = require('@aeternity/aeproject');</code> Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.</p>
+<h3 id="2-sdk-and-snapshotting-setup">2. SDK and Snapshotting Setup</h3>
 <p><code>before(...)</code> used in mocha for initializations needed to be done once before all tests</p>
-<p><code>client = await utils.getClient();</code> use included utils to initialize default aeternity client</p>
+<p><code>aeSdk = await utils.getSdk();</code> use included utils to initialize default SDK instance</p>
 <p><code>const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);</code> use utils to get filesystem definition for given contract</p>
 <p><code>const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);</code> read contract source from filesystem</p>
-<p><code>contract = await client.getContractInstance({ source, filesystem });</code> initialize contract instance with client</p>
+<p><code>contract = await aeSdk.getContractInstance({ source, filesystem });</code> initialize contract instance with aeSdk</p>
 <p><code>await contract.deploy();</code> deploy initialized contract</p>
-<p><code>await utils.createSnapshot(client);</code> create snapshot once before all tests, so we can rollback to a clean state after each test</p>
+<p><code>await utils.createSnapshot(aeSdk);</code> create snapshot once before all tests, so we can rollback to a clean state after each test</p>
 <div class="highlight"><pre><span></span><code><span class="nx">afterEach</span><span class="p">(</span><span class="k">async</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
-  <span class="k">await</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackSnapshot</span><span class="p">(</span><span class="nx">client</span><span class="p">);</span>
+  <span class="k">await</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>after each test use the util to rollback to previously created snapshot for a clean state in the following tests</p>

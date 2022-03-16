@@ -454,16 +454,16 @@
 <ul>
 <li><code>aeproject compatibility</code> (discontinued)</li>
 <li><code>aeproject compile</code><ul>
-<li>manual compilation isn't needed for use of aeproject, alternatively use <a href="https://github.com/aeternity/aepp-cli-js">aecli</a> or the <a href="https://github.com/aeternity/aepp-sdk-js">sdk</a> programmatically</li>
+<li>manual compilation isn't needed for use of aeproject, alternatively use the <a href="https://github.com/aeternity/aepp-cli-js">CLI</a> or the <a href="https://github.com/aeternity/aepp-sdk-js">SDK</a> programmatically</li>
 </ul>
 </li>
 <li><code>aeproject deploy</code><ul>
-<li>deployment isn't supported in aeproject anymore, alternatively use <a href="https://github.com/aeternity/aepp-cli-js">aecli</a> or the <a href="https://github.com/aeternity/aepp-sdk-js">sdk</a> programmatically</li>
+<li>deployment isn't supported in aeproject anymore, alternatively use the <a href="https://github.com/aeternity/aepp-cli-js">CLI</a> or the <a href="https://github.com/aeternity/aepp-sdk-js">SDK</a> programmatically</li>
 </ul>
 </li>
 <li><code>aeproject export</code> (discontinued)</li>
 <li><code>aeproject tx-inspector</code> <ul>
-<li>manual tx inspection is moved to <a href="https://github.com/aeternity/aepp-cli-js">aecli</a></li>
+<li>manual tx inspection is moved to the <a href="https://github.com/aeternity/aepp-cli-js">CLI</a></li>
 </ul>
 </li>
 </ul>
@@ -478,20 +478,20 @@
 <p>The latest available node and compiler will always be used with starting the testing environment.</p>
 <p>Testing is now handled locally in the project using <code>mocha</code> and <code>chai</code> as direct dev dependencies.</p>
 <p><code>@aeternity/aeproject</code> is added itself as dependency and includes some library-functions that can be used in testing.</p>
-<div class="highlight"><pre><span></span><code>const { networks, utils, wallets } = require(&#39;@aeternity/aeproject&#39;);
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">networks</span><span class="p">,</span> <span class="nx">utils</span><span class="p">,</span> <span class="nx">wallets</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;@aeternity/aeproject&#39;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><code>networks</code> includes network definitions for local development, testnet and mainnet</li>
 <li><code>wallets</code> includes example wallets that are prefunded in local development</li>
 <li><code>utils</code> includes helper functions for testing<ul>
 <li><code>getFilesystem(source)</code> to get the filesystem definition for a given contract for deployment</li>
-<li><code>getClient()</code> get a default client for local development<ul>
+<li><code>getSdk()</code> get an instance of the SDK for local development<ul>
 <li>initialized with all prefunded wallets for <code>onAccount</code> to be used calling from different accounts</li>
 </ul>
 </li>
-<li><code>awaitKeyBlocks(client, number)</code> await a certain number of key-blocks</li>
-<li><code>createSnapshot(client)</code> create a snapshot for local testing</li>
-<li><code>rollbackSnapshot(client)</code> rollback to previously created snapshot in local testing</li>
+<li><code>awaitKeyBlocks(aeSdk, number)</code> await a certain number of key-blocks</li>
+<li><code>createSnapshot(aeSdk)</code> create a snapshot for local testing</li>
+<li><code>rollbackSnapshot(aeSdk)</code> rollback to previously created snapshot in local testing</li>
 </ul>
 </li>
 </ul>
@@ -524,7 +524,7 @@
 </li>
 <li>replace <code>defaultWallets</code> import with <code>const { wallets } = require('@aeternity/aeproject');</code> for prefunded wallets</li>
 <li>replace <code>contractUtils</code> import with <code>const { utils } = require('@aeternity/aeproject');</code> for utils<ul>
-<li>consider using the new helpers for getting a client and creating snapshots similar to <code>test/exampleTest.js</code></li>
+<li>consider using the new helpers for initializing an instance of the SDK and creating snapshots similar to <code>test/exampleTest.js</code></li>
 </ul>
 </li>
 </ul>
