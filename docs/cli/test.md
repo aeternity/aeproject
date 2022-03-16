@@ -14,34 +14,61 @@ In the `test/exampleTest.js` file you can find an example for unit testing using
 
 ### 1. Dependencies
 
-`const { assert } = require('chai');`
 Javascript testing framework used with [mocha](https://mochajs.org/) for assertions, documented at https://www.chaijs.com/api/assert/
 
-`const { networks, utils, wallets } = require('@aeternity/aeproject');` Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.
+```js
+const { assert } = require('chai');
+```
+
+Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.
+
+```js
+const { networks, utils, wallets } = require('@aeternity/aeproject');
+```
 
 ### 2. SDK and Snapshotting Setup
 
-`before(...)` used in mocha for initializations needed to be done once before all tests
+Execute initializations in mocha needed to be done once before all tests:
+```js
+before(...)
+```
 
-`aeSdk = await utils.getSdk();` use included utils to initialize default SDK instance
+Initialize the default SDK instance with provided utils:
+```js
+const aeSdk = await utils.getSdk();
+```
 
-`const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);` use utils to get filesystem definition for given contract
+Get the filesystem definition for (custom) `includes` of the given contract:
+```js
+const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
+```
 
-`const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);` read contract source from filesystem
+Read the contract source from the filesystem:
+```js
+const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
+```
 
-`contract = await aeSdk.getContractInstance({ source, filesystem });` initialize contract instance with aeSdk
+Initialize the contract instance:
+```js
+const contract = await aeSdk.getContractInstance({ source, filesystem });
+```
 
-`await contract.deploy();` deploy initialized contract
+Deploy the contract:
+```js
+await contract.deploy();
+```
 
-`await utils.createSnapshot(aeSdk);` create snapshot once before all tests, so we can rollback to a clean state after each test
+Create a snapshot of the chain state once before all tests. This allows you to rollback to a clean state after each test if needed:
+```js
+await utils.createSnapshot(aeSdk);
+```
 
-```javascript
+Rollback to the previously created snapshot after each test for a clean state in the following tests:
+```js
 afterEach(async () => {
   await utils.rollbackSnapshot(aeSdk);
 });
 ```
-
-after each test use the util to rollback to previously created snapshot for a clean state in the following tests
 
 ### 3. Example Test
 
@@ -57,4 +84,4 @@ it('ExampleContract: set and get', async () => {
 });
 ```
 
-use mocha for test setup and chai for `assert`. Then implement contract usage using the aeternity sdk as explained in the guide at https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints
+Use mocha for test setup and chai for `assert`. Then implement contract usage using the aeternity sdk as explained in the guide at https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints
