@@ -6,11 +6,11 @@
 aeproject test
 ```
 
-The `test` command helps developers run their unit tests for aeternity projects. The command executes the tests scripts that are located in the **test** folder of your aeternity project. 
+The `test` command helps developers run their unit tests for æternity projects. The command executes the tests scripts that are located in the **test** folder of your æternity project. 
 
 ## Implement unit tests
 
-In the `test/exampleTest.js` file you can find an example for unit testing using aeproject.
+In the `test/exampleTest.js` file you can find an example for unit testing using AEproject.
 
 ### 1. Dependencies
 
@@ -20,7 +20,7 @@ Javascript testing framework used with [mocha](https://mochajs.org/) for asserti
 const { assert } = require('chai');
 ```
 
-Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.
+Helper and utilities for AEproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.
 
 ```js
 const { networks, utils, wallets } = require('@aeternity/aeproject');
@@ -28,7 +28,7 @@ const { networks, utils, wallets } = require('@aeternity/aeproject');
 
 ### 2. SDK and Snapshotting Setup
 
-Execute initializations in mocha needed to be done once before all tests:
+Provide your initializations in mocha which need to be done once before all tests:
 ```js
 before(...)
 ```

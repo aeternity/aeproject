@@ -1,7 +1,7 @@
 # Quick Start
 
 ## Requirements
-In order to have aeproject working you must have installed the following:
+In order to have AEproject working you must have installed the following:
 ```
 nodejs >= 14
 docker
@@ -28,7 +28,7 @@ Further explained in [Initialization Documentation](cli/init.md).
 aeproject env
 ```
 
-This will run a local aeternity network in dev-mode (node, compiler and nginx-proxy).
+This will run a local æternity network in dev-mode (node, compiler and nginx-proxy).
 
 To stop an already spawned local environment use `aeproject env --stop`
 
