@@ -14,7 +14,7 @@
     
     
       
-        <title>Unit Testing - aeproject: aeternity contract testing tool</title>
+        <title>Unit Testing - AEproject: Smart Contract Testing Framework</title>
       
     
     
@@ -76,7 +76,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="aeproject: aeternity contract testing tool" class="md-header__button md-logo" aria-label="aeproject: aeternity contract testing tool" data-md-component="logo">
+    <a href="../.." title="AEproject: Smart Contract Testing Framework" class="md-header__button md-logo" aria-label="AEproject: Smart Contract Testing Framework" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -89,7 +89,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            aeproject: aeternity contract testing tool
+            AEproject: Smart Contract Testing Framework
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -191,13 +191,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="aeproject: aeternity contract testing tool" class="md-nav__button md-logo" aria-label="aeproject: aeternity contract testing tool" data-md-component="logo">
+    <a href="../.." title="AEproject: Smart Contract Testing Framework" class="md-nav__button md-logo" aria-label="AEproject: Smart Contract Testing Framework" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
-    aeproject: aeternity contract testing tool
+    AEproject: Smart Contract Testing Framework
   </label>
   
     <div class="md-nav__source">
@@ -238,23 +238,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migration-from-3.x.x-to-4.x.x/" class="md-nav__link">
-        Migrate from 3.x.x to 4.x.x
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../init/" class="md-nav__link">
-        Initialize a new project
+        Project Initialization
       </a>
     </li>
   
@@ -269,7 +254,7 @@
   
     <li class="md-nav__item">
       <a href="../env/" class="md-nav__link">
-        Start local testing environment
+        Local Environment
       </a>
     </li>
   
@@ -364,6 +349,21 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration-from-3.x.x-to-4.x.x/" class="md-nav__link">
+        Migration from 3.x.x to 4.x.x
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -447,26 +447,43 @@
 <h2 id="run-unit-tests">Run unit tests</h2>
 <div class="highlight"><pre><span></span><code>aeproject test
 </code></pre></div>
-<p>The <code>test</code> command helps developers run their unit tests for aeternity projects. The command executes the tests scripts that are located in the <strong>test</strong> folder of your aeternity project. </p>
+<p>The <code>test</code> command helps developers run their unit tests for æternity projects. The command executes the tests scripts that are located in the <strong>test</strong> folder of your æternity project. </p>
 <h2 id="implement-unit-tests">Implement unit tests</h2>
-<p>In the <code>test/exampleTest.js</code> file you can find an example for unit testing using aeproject.</p>
+<p>In the <code>test/exampleTest.js</code> file you can find an example for unit testing using AEproject.</p>
 <h3 id="1-dependencies">1. Dependencies</h3>
-<p><code>const { assert } = require('chai');</code>
-Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> for assertions, documented at <a href="https://www.chaijs.com/api/assert/">https://www.chaijs.com/api/assert/</a></p>
-<p><code>const { networks, utils, wallets } = require('@aeternity/aeproject');</code> Helper and utilities for aeproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.</p>
+<p>Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> for assertions, documented at <a href="https://www.chaijs.com/api/assert/">https://www.chaijs.com/api/assert/</a></p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">assert</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;chai&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>Helper and utilities for AEproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">networks</span><span class="p">,</span> <span class="nx">utils</span><span class="p">,</span> <span class="nx">wallets</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;@aeternity/aeproject&#39;</span><span class="p">);</span>
+</code></pre></div>
 <h3 id="2-sdk-and-snapshotting-setup">2. SDK and Snapshotting Setup</h3>
-<p><code>before(...)</code> used in mocha for initializations needed to be done once before all tests</p>
-<p><code>aeSdk = await utils.getSdk();</code> use included utils to initialize default SDK instance</p>
-<p><code>const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);</code> use utils to get filesystem definition for given contract</p>
-<p><code>const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);</code> read contract source from filesystem</p>
-<p><code>contract = await aeSdk.getContractInstance({ source, filesystem });</code> initialize contract instance with aeSdk</p>
-<p><code>await contract.deploy();</code> deploy initialized contract</p>
-<p><code>await utils.createSnapshot(aeSdk);</code> create snapshot once before all tests, so we can rollback to a clean state after each test</p>
+<p>Provide your initializations in mocha which need to be done once before all tests:
+<div class="highlight"><pre><span></span><code><span class="nx">before</span><span class="p">(...)</span>
+</code></pre></div></p>
+<p>Initialize the default SDK instance with provided utils:
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="nx">aeSdk</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">();</span>
+</code></pre></div></p>
+<p>Get the filesystem definition for (custom) <code>includes</code> of the given contract:
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="nx">filesystem</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">getFilesystem</span><span class="p">(</span><span class="nx">EXAMPLE_CONTRACT_SOURCE</span><span class="p">);</span>
+</code></pre></div></p>
+<p>Read the contract source from the filesystem:
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="nx">source</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">getContractContent</span><span class="p">(</span><span class="nx">EXAMPLE_CONTRACT_SOURCE</span><span class="p">);</span>
+</code></pre></div></p>
+<p>Initialize the contract instance:
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="nx">contract</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">aeSdk</span><span class="p">.</span><span class="nx">getContractInstance</span><span class="p">({</span> <span class="nx">source</span><span class="p">,</span> <span class="nx">filesystem</span> <span class="p">});</span>
+</code></pre></div></p>
+<p>Deploy the contract:
+<div class="highlight"><pre><span></span><code><span class="k">await</span> <span class="nx">contract</span><span class="p">.</span><span class="nx">deploy</span><span class="p">();</span>
+</code></pre></div></p>
+<p>Create a snapshot of the chain state once before all tests. This allows you to rollback to a clean state after each test if needed:
+<div class="highlight"><pre><span></span><code><span class="k">await</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">createSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
+</code></pre></div></p>
+<p>Rollback to the previously created snapshot after each test for a clean state in the following tests:
 <div class="highlight"><pre><span></span><code><span class="nx">afterEach</span><span class="p">(</span><span class="k">async</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="k">await</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
 <span class="p">});</span>
-</code></pre></div>
-<p>after each test use the util to rollback to previously created snapshot for a clean state in the following tests</p>
+</code></pre></div></p>
 <h3 id="3-example-test">3. Example Test</h3>
 <div class="highlight"><pre><span></span><code><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;ExampleContract: set and get&#39;</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="nx">set</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">contract</span><span class="p">.</span><span class="nx">methods</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mf">42</span><span class="p">,</span> <span class="p">{</span> <span class="nx">onAccount</span><span class="o">:</span> <span class="nx">wallets</span><span class="p">[</span><span class="mf">1</span><span class="p">].</span><span class="nx">publicKey</span> <span class="p">});</span>
@@ -478,7 +495,7 @@ Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> 
   <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">decodedResult</span><span class="p">,</span> <span class="mf">42</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
-<p>use mocha for test setup and chai for <code>assert</code>. Then implement contract usage using the aeternity sdk as explained in the guide at <a href="https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints">https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints</a></p>
+<p>Use mocha for test setup and chai for <code>assert</code>. Then implement contract usage using the aeternity sdk as explained in the guide at <a href="https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints">https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints</a></p>
                 
               
               
@@ -498,7 +515,7 @@ Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> 
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../env/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Start local testing environment" rel="prev">
+        <a href="../env/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Local Environment" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -507,11 +524,26 @@ Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> 
               <span class="md-footer__direction">
                 Previous
               </span>
-              Start local testing environment
+              Local Environment
             </div>
           </div>
         </a>
       
+      
+        
+        <a href="../../migration-from-3.x.x-to-4.x.x/" class="md-footer__link md-footer__link--next" aria-label="Next: Migration from 3.x.x to 4.x.x" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Migration from 3.x.x to 4.x.x
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
       
     </nav>
   
