@@ -3,7 +3,7 @@
     "artifactsDir": "/artifacts",
     "updateArtifactsDir": "/update-artifacts",
     "dependencies": [
-        "@aeternity/aepp-sdk@10"
+        "@aeternity/aepp-sdk@11"
     ],
     "devDependencies": [
         "@aeternity/aeproject@beta",
