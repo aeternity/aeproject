@@ -12,7 +12,7 @@ async function isEnvRunning(cwd = './') {
       compilerConfiguration.containerName,
       proxyConfiguration.containerName,
     ];
-    return containers.every((containerName) => {
+    return containers.some((containerName) => {
       const line = info.split('\n').find((l) => l.includes(containerName));
       return line && (line.includes('Up') || line.includes('running'));
     });
