@@ -26,6 +26,8 @@ Helper and utilities for AEproject use, e.g. prefunded wallets, network definiti
 const { networks, utils, wallets } = require('@aeternity/aeproject');
 ```
 
+Read [AEproject Library](../lib.md) for a more detailed explanation about the usage of these imports.
+
 ### 2. SDK and Snapshotting Setup
 
 Provide your initializations in mocha which need to be done once before all tests:
