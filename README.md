@@ -16,4 +16,5 @@ npm install -g @aeternity/aeproject@beta
 * [Project Initialization](docs/cli/init.md)
 * [Local Environment](docs/cli/env.md)
 * [Unit Testing](docs/cli/test.md)
+* [AEproject Library](docs/lib.md)
 * [Migration from 3.x.x to 4.x.x](docs/migration-from-3.x.x-to-4.x.x.md)
