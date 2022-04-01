@@ -6,9 +6,9 @@ const { Universal, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 const networks = require('./networks.json');
 const wallets = require('./wallets.json');
 
-const getContractContent = (contractSource) => fs.readFileSync(contractSource, 'utf8');
+const getContractContent = (contractPath) => fs.readFileSync(contractPath, 'utf8');
 
-const getFilesystem = (contractSource) => {
+const getFilesystem = (contractPath) => {
   const defaultIncludes = [
     'List.aes', 'Option.aes', 'String.aes',
     'Func.aes', 'Pair.aes', 'Triple.aes',
@@ -18,12 +18,12 @@ const getFilesystem = (contractSource) => {
   const rgxIncludePath = /"([\d\w/.-_]+)"/i;
   const rgxMainPath = /.*\//g;
 
-  const contractContent = getContractContent(contractSource);
+  const contractContent = getContractContent(contractPath);
   const filesystem = {};
 
   const rootIncludes = contractContent.match(rgx);
   if (!rootIncludes) return filesystem;
-  const contractPath = rgxMainPath.exec(contractSource);
+  const contractPathMatch = rgxMainPath.exec(contractPath);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const rootInclude of rootIncludes) {
@@ -34,7 +34,7 @@ const getFilesystem = (contractSource) => {
 
     // eslint-disable-next-line no-console
     console.log(`==> Adding include to filesystem: ${includeRelativePath[1]}`);
-    const includePath = path.resolve(`${contractPath[0]}/${includeRelativePath[1]}`);
+    const includePath = path.resolve(`${contractPathMatch[0]}/${includeRelativePath[1]}`);
 
     try {
       filesystem[includeRelativePath[1]] = fs.readFileSync(includePath, 'utf-8');
