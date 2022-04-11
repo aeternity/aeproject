@@ -14,7 +14,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "^11.0.0",
+    "@aeternity/aepp-sdk": "^11.0.1",
     "axios": "^0.26.1",
     "commander": "^9.1.0",
     "promisify-child-process": "^4.1.1",
