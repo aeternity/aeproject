@@ -72,24 +72,24 @@ async function get(url) {
   });
 }
 
-const getSdk = async () => {
-  const instance = await new Node(networks.devmode.nodeUrl, { ignoreVersion: true })
-    .catch((error) => {
-      if (error.message && error.message.includes('ECONNREFUSED')) {
-        // eslint-disable-next-line no-console
-        console.log('please start environment first using \'aeproject env\'');
-        process.exit(1);
-      } else {
-        throw error;
-      }
-    });
+const getDefaultAccounts = () => wallets.map((keypair) => new MemoryAccount({ keypair }));
 
-  return new AeSdk({
+const getSdk = async () => {
+  const instance = new Node(networks.devmode.nodeUrl, { ignoreVersion: true });
+
+  const aeSdk = new AeSdk({
     nodes: [{ name: 'node', instance }],
     compilerUrl: networks.devmode.compilerUrl,
     interval: 50,
-    accounts: wallets.map((keypair) => new MemoryAccount({ keypair })),
   });
+
+  await Promise.all(
+    getDefaultAccounts().map((account, index) => aeSdk.addAccount(
+      account,
+      { select: index === 0 },
+    )),
+  );
+  return aeSdk;
 };
 
 const awaitKeyBlocks = async (aeSdk, n = 1) => {
@@ -120,4 +120,5 @@ module.exports = {
   createSnapshot,
   rollbackSnapshot,
   getSdk,
+  getDefaultAccounts,
 };
