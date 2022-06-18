@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const { Universal, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
+const { AeSdk, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
 const networks = require('./networks.json');
 const wallets = require('./wallets.json');
@@ -73,7 +73,7 @@ async function get(url) {
 }
 
 const getSdk = async () => {
-  const instance = await Node({ url: networks.devmode.nodeUrl, ignoreVersion: true })
+  const instance = await new Node(networks.devmode.nodeUrl, { ignoreVersion: true })
     .catch((error) => {
       if (error.message && error.message.includes('ECONNREFUSED')) {
         // eslint-disable-next-line no-console
@@ -84,12 +84,11 @@ const getSdk = async () => {
       }
     });
 
-  return Universal.compose({
-    deepProps: { Ae: { defaults: { interval: 50 } } },
-  })({
+  return new AeSdk({
     nodes: [{ name: 'node', instance }],
     compilerUrl: networks.devmode.compilerUrl,
-    accounts: wallets.map((keypair) => MemoryAccount({ keypair })),
+    interval: 50,
+    accounts: wallets.map((keypair) => new MemoryAccount({ keypair })),
   });
 };
 
