@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.1.0](https://github.com/aeternity/aeproject/compare/v4.0.0...v4.1.0) (2022-06-24)
+
+
+### Features
+
+* adjust for sdk 12 usage ([5fda5f2](https://github.com/aeternity/aeproject/commit/5fda5f278a4304629642286f2bd7322c823ddf7b))
+* upgrade to sdk 12 ([8f8de6f](https://github.com/aeternity/aeproject/commit/8f8de6f408acf70ff26d7fb57360860c8f87e839))
+
+
+### Bug Fixes
+
+* fix breaking changes for sdk 12 usage ([357c3d5](https://github.com/aeternity/aeproject/commit/357c3d5ad010f399ab3b7fa20f5e30ccc11ab462))
+
+
+### Miscellaneous
+
+* prepare for 4.1.0 release ([045f61e](https://github.com/aeternity/aeproject/commit/045f61eb21860267d720593e76fba5570b794c0b))
+
 ## [4.0.0](https://github.com/aeternity/aeproject/compare/v3.0.5...v4.0.0) (2022-04-12)
 
 
