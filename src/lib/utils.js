@@ -80,6 +80,7 @@ const getSdk = async () => {
   const aeSdk = new AeSdk({
     nodes: [{ name: 'node', instance }],
     compilerUrl: networks.devmode.compilerUrl,
+    interval: 50,
   });
 
   await Promise.all(
