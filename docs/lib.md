@@ -43,6 +43,11 @@ utils.rollbackSnapshot(aeSdk);
 ```
 Rollback to the latest snapshot using the æternity node devmode, using the passed `aeSdk`.
 
+```javascript
+utils.getDefaultAccounts();
+```
+Get the pre-funded default accounts as `MemoryAccount`, so they can be used natively using the `aeSdk`.
+
 ## Wallets
 
 List of configured keypairs that are pre-funded using the æternity node devmode as provided in AEproject. 
