@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/aeternity/aeproject/compare/v4.1.0...v4.1.1) (2022-07-08)
+
+
+### Bug Fixes
+
+* fix dependencies upgrade, prepare for 4.1.1 release ([58a83ab](https://github.com/aeternity/aeproject/commit/58a83ab26b6fb5456150d06745ef95d87b6e81e0))
+
 ## [4.1.0](https://github.com/aeternity/aeproject/compare/v4.0.0...v4.1.0) (2022-06-24)
 
 
