@@ -7,10 +7,8 @@ let dockerComposeCmd = 'docker compose';
 
 async function getDockerCompose() {
   const dockerSpaceCompose = await spawn('docker', ['compose']).catch(() => ({ code: 1 }));
-  console.log('dockerSpaceCompose', dockerSpaceCompose);
   if (dockerSpaceCompose.code === 0) return;
   const dockerMinusCompose = await spawn('docker-compose').catch(() => ({ code: 1 }));
-  console.log('dockerMinusCompose', dockerMinusCompose);
   if (dockerMinusCompose.code === 0) {
     dockerComposeCmd = 'docker-compose';
     return;
