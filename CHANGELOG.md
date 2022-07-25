@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.2](https://github.com/aeternity/aeproject/compare/v4.1.1...v4.1.2) (2022-07-25)
+
+
+### Bug Fixes
+
+* add support for docker compose without minus ([6e44339](https://github.com/aeternity/aeproject/commit/6e44339d95b7273245f489961103d70fe36ff885))
+
 ## [4.1.1](https://github.com/aeternity/aeproject/compare/v4.1.0...v4.1.1) (2022-07-08)
 
 
