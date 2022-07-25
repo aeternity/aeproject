@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.4](https://github.com/aeternity/aeproject/compare/v4.1.3...v4.1.4) (2022-07-25)
+
+
+### Bug Fixes
+
+* remove log for docker compose checks ([b372d69](https://github.com/aeternity/aeproject/commit/b372d696e51da11b12517cca402e70720d661592))
+
 ## [4.1.3](https://github.com/aeternity/aeproject/compare/v4.1.2...v4.1.3) (2022-07-25)
 
 
