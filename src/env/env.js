@@ -6,9 +6,11 @@ const { nodeConfiguration, compilerConfiguration, proxyConfiguration } = require
 let dockerComposeCmd = 'docker compose';
 
 async function getDockerCompose() {
-  const dockerSpaceCompose = await spawn('docker compose').catch(() => ({ code: 1 }));
+  const dockerSpaceCompose = await spawn('docker', ['compose']).catch(() => ({ code: 1 }));
+  console.log('dockerSpaceCompose', dockerSpaceCompose);
   if (dockerSpaceCompose.code === 0) return;
   const dockerMinusCompose = await spawn('docker-compose').catch(() => ({ code: 1 }));
+  console.log('dockerMinusCompose', dockerMinusCompose);
   if (dockerMinusCompose.code === 0) {
     dockerComposeCmd = 'docker-compose';
     return;
@@ -63,10 +65,7 @@ async function stopEnv(running) {
   print('===== stopping env =====');
 
   await getDockerCompose();
-  await spawn(dockerComposeCmd, [
-    'down',
-    '-v',
-  ]);
+  await exec(`${dockerComposeCmd} down -v`);
 
   print('===== Env was successfully stopped! =====');
 }
