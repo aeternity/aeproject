@@ -3,6 +3,20 @@ const { spawn, exec } = require('promisify-child-process');
 const { print, printError, awaitNodeAvailable } = require('../utils/utils');
 const { nodeConfiguration, compilerConfiguration, proxyConfiguration } = require('../config/node-config.json');
 
+let dockerComposeCmd = 'docker compose';
+
+async function getDockerCompose() {
+  const dockerSpaceCompose = await spawn('docker compose').catch(() => ({ code: 1 }));
+  if (dockerSpaceCompose.code === 0) return;
+  const dockerMinusCompose = await spawn('docker-compose').catch(() => ({ code: 1 }));
+  if (dockerMinusCompose.code === 0) {
+    dockerComposeCmd = 'docker-compose';
+    return;
+  }
+
+  throw new Error('===== docker compose is not installed! =====');
+}
+
 async function isEnvRunning(cwd = './') {
   const info = await getInfo(cwd);
 
@@ -48,7 +62,8 @@ async function stopEnv(running) {
 
   print('===== stopping env =====');
 
-  await spawn('docker-compose', [
+  await getDockerCompose();
+  await spawn(dockerComposeCmd, [
     'down',
     '-v',
   ]);
@@ -59,8 +74,9 @@ async function stopEnv(running) {
 async function startEnv(nodeVersion, compilerVersion) {
   print('===== starting env =====');
 
-  await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} docker-compose pull`);
-  await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} docker-compose up -d`);
+  await getDockerCompose();
+  await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} pull`);
+  await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} up -d`);
 
   await awaitNodeAvailable();
 
@@ -77,7 +93,8 @@ async function printInfo(running) {
 }
 
 async function getInfo(cwd) {
-  const info = await exec('docker-compose ps', { cwd });
+  await getDockerCompose();
+  const info = await exec(`${dockerComposeCmd} ps`, { cwd });
 
   if (info && info.stdout) {
     return info.stdout;
