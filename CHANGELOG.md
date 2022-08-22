@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.5](https://github.com/aeternity/aeproject/compare/v4.1.4...v4.1.5) (2022-08-22)
+
+
+### Bug Fixes
+
+* use fixed compiler version as latest is not supported by sdk ([945e3a5](https://github.com/aeternity/aeproject/commit/945e3a59051f193d07d603f8294cade954623b36))
+
 ## [4.1.4](https://github.com/aeternity/aeproject/compare/v4.1.3...v4.1.4) (2022-07-25)
 
 
