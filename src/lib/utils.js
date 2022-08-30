@@ -14,8 +14,8 @@ const getFilesystem = (contractPath) => {
     'Func.aes', 'Pair.aes', 'Triple.aes',
     'BLS12_381.aes', 'Frac.aes',
   ];
-  const rgx = /^include\s+"([\d\w/.-_]+)"/gmi;
-  const rgxIncludePath = /"([\d\w/.-_]+)"/i;
+  const rgx = /^include\s+"([\d\w/.\-_]+)"/gmi;
+  const rgxIncludePath = /"([\d\w/.\-_]+)"/i;
   const rgxMainPath = /.*\//g;
 
   const contractContent = getContractContent(contractPath);
