@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.0](https://github.com/aeternity/aeproject/compare/v4.1.5...v4.2.0) (2022-08-31)
+
+
+### Features
+
+* allow usage of native docker-compose without specifying env ([f8577e2](https://github.com/aeternity/aeproject/commit/f8577e270bb6f664180114a3f39e9b5b7f323b98))
+
+
+### Bug Fixes
+
+* correct escaping to use - in filesystem contracts ([3704bab](https://github.com/aeternity/aeproject/commit/3704bab7f266ae81746770116d682639af5f5fc1))
+
 ## [4.1.5](https://github.com/aeternity/aeproject/compare/v4.1.4...v4.1.5) (2022-08-22)
 
 
