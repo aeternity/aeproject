@@ -12,7 +12,8 @@ const getFilesystem = (contractPath) => {
   const defaultIncludes = [
     'List.aes', 'Option.aes', 'String.aes',
     'Func.aes', 'Pair.aes', 'Triple.aes',
-    'BLS12_381.aes', 'Frac.aes',
+    'BLS12_381.aes', 'Frac.aes', 'Set.aes',
+    'Bitwise.aes',
   ];
   const rgx = /^include\s+"([\d\w/.\-_]+)"/gmi;
   const rgxIncludePath = /"([\d\w/.\-_]+)"/i;
