@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/aeternity/aeproject/compare/v4.2.0...v4.2.1) (2022-09-28)
+
+
+### Bug Fixes
+
+* add missing stdlib includes in getFilesystem ([c29ae0d](https://github.com/aeternity/aeproject/commit/c29ae0d089991acc682853708a78fc8ca227287a))
+
 ## [4.2.0](https://github.com/aeternity/aeproject/compare/v4.1.5...v4.2.0) (2022-08-31)
 
 
