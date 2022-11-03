@@ -91,10 +91,11 @@ async function printInfo(running) {
 
 async function getInfo(cwd) {
   await getDockerCompose();
-  const info = await exec(`${dockerComposeCmd} ps`, { cwd });
+  const ps = await exec(`${dockerComposeCmd} ps`, { cwd });
+  const images = await exec(`${dockerComposeCmd} images`, { cwd });
 
-  if (info && info.stdout) {
-    return info.stdout;
+  if (ps && images && ps.stdout && images.stdout) {
+    return `${ps.stdout}\n${images.stdout}`;
   }
 
   return null;
