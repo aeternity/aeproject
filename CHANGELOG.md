@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.0](https://github.com/aeternity/aeproject/compare/v4.2.1...v4.3.0) (2022-11-04)
+
+
+### Features
+
+* add image versions in env --info ([d2c9ba8](https://github.com/aeternity/aeproject/commit/d2c9ba822d091a91759376f4078285bcb220e3c9))
+
 ## [4.2.1](https://github.com/aeternity/aeproject/compare/v4.2.0...v4.2.1) (2022-09-28)
 
 
