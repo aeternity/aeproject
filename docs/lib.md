@@ -48,6 +48,21 @@ utils.getDefaultAccounts();
 ```
 Get the pre-funded default accounts as `MemoryAccount`, so they can be used natively using the `aeSdk`.
 
+```javascript
+utils.getUsedFee(() => contract.methods.X(...));
+```
+Calls X and returns the total fee paid for the transaction
+
+```javascript
+utils.failsWith(() => contract.methods.X(...), 'errorMsg');
+```
+Calls X and checks if it fails with expected error
+
+```javascript
+utils.emittedEvents(() => contract.methods.X(...), ['eventName1']);
+```
+Calls X and checks whether all expected events were emitted
+
 ## Wallets
 
 List of configured keypairs that are pre-funded using the æternity node devmode as provided in AEproject. 

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const { assert } = require('chai');
 const { AeSdk, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
 const networks = require('./networks.json');
@@ -114,6 +115,48 @@ const rollbackSnapshot = async (aeSdk) => {
   }
 };
 
+/**
+ * Call a function and return the total fee paid for the transaction
+ *
+ * @param {Function} f  function to be called
+ * @returns {Promise<BigInt>} the total fee that was paid for the transaction
+ */
+const getUsedFee = async (f) => {
+  const {
+    result: { gasPrice, gasUsed },
+    txData: { tx: { fee } },
+  } = await f();
+  // eslint-disable-next-line no-undef
+  return gasPrice * BigInt(gasUsed) + fee;
+};
+
+/**
+ * Call a function and check if it fails with expected error
+ *
+ * @param {Function} fn function to be called
+ * @param {string} msg expected error message
+ */
+const failsWith = async (fn, msg) => {
+  try {
+    await fn();
+  } catch (err) {
+    assert.include(err.message, msg);
+    return;
+  }
+  assert.fail();
+};
+
+/**
+ * Call a function and check whether all expected events were emitted
+ *
+ * @param {Function} fn function to be called
+ * @param {string[]} eventNames expected event names
+ */
+const emittedEvents = async (fn, eventNames) => {
+  const { decodedEvents } = await fn();
+  assert.isTrue(eventNames.every((name) => decodedEvents.find((e) => e.name === name)));
+};
+
 module.exports = {
   getContractContent,
   getFilesystem,
@@ -122,4 +165,7 @@ module.exports = {
   rollbackSnapshot,
   getSdk,
   getDefaultAccounts,
+  getUsedFee,
+  failsWith,
+  emittedEvents,
 };

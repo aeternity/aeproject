@@ -43,4 +43,19 @@ describe('ExampleContract', () => {
     const { decodedResult } = await contract.methods.get();
     assert.equal(decodedResult, undefined);
   });
+
+  it('ExampleContract: calling init fails because already deployed', async () => {
+    await utils.failsWith(
+      () => contract.methods.init(),
+      'Contract already deployed'
+    );
+  });
+
+  it('ExampleContract: set emits SetXEvent', async () => {
+    await utils.emittedEvents(
+      () => contract.methods.set(42, { onAccount: utils.getDefaultAccounts()[1] }),
+      ['SetXEvent']
+    );
+
+  });
 });
