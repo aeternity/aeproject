@@ -5,6 +5,7 @@ const chai = require('chai');
 const chaiFiles = require('chai-files');
 const { isEnvRunning } = require('../src/env/env');
 const { version } = require('../package.json');
+const constants = require('../src/init/constants.json');
 
 chai.use(chaiFiles);
 const { assert } = chai;
@@ -39,6 +40,10 @@ describe('Happy Path', () => {
     it(folder ? `init ${folder}` : 'init', async () => {
       const res = await exec(folder ? `aeproject init ${folder}` : 'aeproject init', { cwd });
       assert.equal(res.code, 0);
+
+      const generatedGitIgnore = file(path.join(cwd, '.gitignore')).content;
+      const expectedGitIgnore = file(path.join(__dirname, `../src/init/${constants.recommendedGitIgnore}`)).content;
+      assert.equal(generatedGitIgnore, expectedGitIgnore);
 
       // link to use local aeproject utils
       await exec('npm link @aeternity/aeproject', { cwd: folder ? path.join(cwd, folder) : cwd });

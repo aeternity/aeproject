@@ -38,6 +38,7 @@ const createAEprojectProjectStructure = async (folder) => {
 
   await setupArtifacts(folder);
   await installDependencies(folder);
+  await generateGitIgnore(folder);
 
   print('===== aeproject successfully initialized =====');
   print('test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject');
@@ -93,6 +94,16 @@ const updateArtifacts = async (folder) => {
     }, Promise.resolve());
 
   await copyFolderRecursiveSync(fileSource, folder);
+};
+
+/**
+ * generates a .gitignore file based on the content of
+ * recommended-gitignore.txt
+ * @param {string} folder - folder to add .gitignore
+ */
+const generateGitIgnore = async (folder) => {
+  const gitIgnorePath = path.join(folder, '.gitignore');
+  await fs.promises.copyFile(`${__dirname}${constants.recommendedGitIgnore}`, gitIgnorePath);
 };
 
 module.exports = {
