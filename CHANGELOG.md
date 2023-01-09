@@ -1,5 +1,28 @@
 # Changelog
 
+## [4.4.0](https://github.com/aeternity/aeproject/compare/v4.3.0...v4.4.0) (2023-01-09)
+
+
+### Features
+
+* generate .gitignore ([eecf555](https://github.com/aeternity/aeproject/commit/eecf555d9e475ade17292390bb5f16ab549c176e))
+
+
+### Bug Fixes
+
+* use specific version of node to fix tests ([53a2446](https://github.com/aeternity/aeproject/commit/53a2446b37e615166c71e4cdbdcfc9f172c0823c))
+
+
+### Miscellaneous
+
+* update dependencies ([e88b1df](https://github.com/aeternity/aeproject/commit/e88b1df37c31a78be4e59e97c4aa80a3620b26ef))
+
+
+### Refactorings
+
+* remove the need for axios ([ed6cea0](https://github.com/aeternity/aeproject/commit/ed6cea077395631f47fb64f73e613b637ea77eed))
+* simplify `getFilesystem` regexes ([61e4dbc](https://github.com/aeternity/aeproject/commit/61e4dbcd7e165bdbfb3350f244560e9bafc80218))
+
 ## [4.3.0](https://github.com/aeternity/aeproject/compare/v4.2.1...v4.3.0) (2022-11-04)
 
 
