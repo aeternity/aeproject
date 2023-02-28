@@ -11,10 +11,15 @@ system:
   plugin_path: /home/aeternity/node/plugins
   plugins:
     - name: aeplugin_dev_mode
-      config:
+      config: # keeping the old config style at first to stay backwards compatible
         keyblock_interval: 0
         microblock_interval: 0
         auto_emit_microblocks: true
+
+dev_mode:
+  keyblock_interval: 0
+  microblock_interval: 0
+  auto_emit_microblocks: true
 
 fork_management:
   network_id: ae_dev
@@ -23,7 +28,8 @@ chain:
   persist: true
   consensus:
     "0":
-      name: "on_demand"
+      name: "on_demand" # keeping the old config style at first to stay backwards compatible
+      type: "on_demand"
 
 mining:
   beneficiary: "ak_RdoCvwe7kxPu2VBv2gQAc1V81sGyTTuxFv36AcvNQYZN7qgut"
