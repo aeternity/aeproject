@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.5.0](https://github.com/aeternity/aeproject/compare/v4.4.0...v4.5.0) (2023-03-01)
+
+
+### Features
+
+* add support for node v6.8.0 ([b6b97cd](https://github.com/aeternity/aeproject/commit/b6b97cda85759b83ebf6d57bf8728ee96261be64))
+
+
+### Miscellaneous
+
+* **deps:** mkdocs version update ([138e5b5](https://github.com/aeternity/aeproject/commit/138e5b5bfc02dadd8cf890cea6043cb10873933f))
+
 ## [4.4.0](https://github.com/aeternity/aeproject/compare/v4.3.0...v4.4.0) (2023-01-09)
 
 
