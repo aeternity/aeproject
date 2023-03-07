@@ -1,6 +1,6 @@
 const { spawn, exec } = require('promisify-child-process');
 
-const { print, printError, awaitNodeAvailable } = require('../utils/utils');
+const { print, printError, ensureNodeAndCompilerAvailable } = require('../utils/utils');
 const { nodeConfiguration, compilerConfiguration, proxyConfiguration } = require('../config/node-config.json');
 
 let dockerComposeCmd = 'docker compose';
@@ -69,15 +69,19 @@ async function stopEnv(running) {
 }
 
 async function startEnv(nodeVersion, compilerVersion) {
-  print('===== starting env =====');
+  if (await isEnvRunning()) {
+    printError('===== Compiler or Node is already running! =====');
+  } else {
+    print('===== starting env =====');
 
-  await getDockerCompose();
-  await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} pull`);
-  await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} up -d`);
+    await getDockerCompose();
+    await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} pull`);
+    await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} up -d --wait`);
 
-  await awaitNodeAvailable();
+    await ensureNodeAndCompilerAvailable();
 
-  print('===== Env was successfully started! =====');
+    print('===== Env was successfully started! =====');
+  }
 }
 
 async function printInfo(running) {

@@ -6,7 +6,7 @@
     "test": "mocha ./test/**/*.js --timeout 0 --exit"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "^12.1.3"
+    "@aeternity/aepp-sdk": "^13.0.0-beta.0"
   },
   "devDependencies": {
     "@aeternity/aeproject": "^4.3.0",
