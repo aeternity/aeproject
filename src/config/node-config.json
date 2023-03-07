@@ -4,7 +4,7 @@
         "containerName": "aeproject_node"
     },
     "compilerConfiguration": {
-        "imageVersion": "v6.1.0",
+        "imageVersion": "v7.2.0",
         "containerName": "aeproject_compiler"
     },
     "proxyConfiguration": {

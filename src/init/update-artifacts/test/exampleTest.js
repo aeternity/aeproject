@@ -14,11 +14,11 @@ describe('ExampleContract', () => {
     const fileSystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
 
     // get content of contract
-    const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
+    const sourceCode = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 
     // initialize the contract instance
-    contract = await aeSdk.getContractInstance({ source, fileSystem });
-    await contract.deploy();
+    contract = await aeSdk.initializeContract({ sourceCode, fileSystem });
+    await contract.init();
 
     // create a snapshot of the blockchain state
     await utils.createSnapshot(aeSdk);
@@ -30,17 +30,17 @@ describe('ExampleContract', () => {
   });
 
   it('ExampleContract: set and get', async () => {
-    const set = await contract.methods.set(42, { onAccount: utils.getDefaultAccounts()[1] });
+    const set = await contract.set(42, { onAccount: utils.getDefaultAccounts()[1] });
     assert.equal(set.decodedEvents[0].name, 'SetXEvent');
-    assert.equal(set.decodedEvents[0].args[0], await utils.getDefaultAccounts()[1].address());
+    assert.equal(set.decodedEvents[0].args[0], await utils.getDefaultAccounts()[1].address);
     assert.equal(set.decodedEvents[0].args[1], 42);
 
-    const { decodedResult } = await contract.methods.get();
+    const { decodedResult } = await contract.get();
     assert.equal(decodedResult, 42);
   });
 
   it('ExampleContract: get undefined when not set before', async () => {
-    const { decodedResult } = await contract.methods.get();
+    const { decodedResult } = await contract.get();
     assert.equal(decodedResult, undefined);
   });
 });

@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { AeSdk, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
+const {
+  AeSdk, MemoryAccount, Node, CompilerHttp,
+} = require('@aeternity/aepp-sdk');
 
 const networks = require('./networks.json');
 const wallets = require('./wallets.json');
@@ -49,28 +51,21 @@ const getFilesystem = (contractPath) => {
   return filesystem;
 };
 
-const getDefaultAccounts = () => wallets.map((keypair) => new MemoryAccount({ keypair }));
+const getDefaultAccounts = () => wallets.map((keypair) => new MemoryAccount(keypair.secretKey));
 
 const getSdk = async () => {
   const instance = new Node(networks.devmode.nodeUrl, { ignoreVersion: true });
 
-  const aeSdk = new AeSdk({
+  return new AeSdk({
+    accounts: getDefaultAccounts(),
     nodes: [{ name: 'node', instance }],
-    compilerUrl: networks.devmode.compilerUrl,
+    onCompiler: new CompilerHttp(networks.devmode.compilerUrl),
     interval: 50,
   });
-
-  await Promise.all(
-    getDefaultAccounts().map((account, index) => aeSdk.addAccount(
-      account,
-      { select: index === 0 },
-    )),
-  );
-  return aeSdk;
 };
 
 const awaitKeyBlocks = async (aeSdk, n = 1) => {
-  const height = await aeSdk.height();
+  const height = await aeSdk.getHeight();
   await get(`http://localhost:3001/emit_kb?n=${n}`);
   await aeSdk.awaitHeight(height + n);
 };
@@ -78,12 +73,12 @@ const awaitKeyBlocks = async (aeSdk, n = 1) => {
 let snapshotHeight = -1;
 
 const createSnapshot = async (aeSdk) => {
-  snapshotHeight = await aeSdk.height();
+  snapshotHeight = await aeSdk.getHeight();
   await awaitKeyBlocks(aeSdk, 1);
 };
 
 const rollbackSnapshot = async (aeSdk) => {
-  const currentBlockHeight = await aeSdk.height();
+  const currentBlockHeight = await aeSdk.getHeight();
   if (currentBlockHeight > snapshotHeight) {
     await get(`http://localhost:3001/rollback?height=${snapshotHeight}`);
     await awaitKeyBlocks(aeSdk, 1);

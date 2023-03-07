@@ -4,7 +4,7 @@
     "updateArtifactsDir": "/update-artifacts",
     "recommendedGitIgnore":"/recommended-gitignore.txt",
     "dependencies": [
-        "@aeternity/aepp-sdk@12"
+        "@aeternity/aepp-sdk@13"
     ],
     "devDependencies": [
         "@aeternity/aeproject@4",
