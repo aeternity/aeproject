@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.5.1](https://github.com/aeternity/aeproject/compare/v4.5.0...v4.5.1) (2023-03-07)
+
+
+### Miscellaneous
+
+* update dependencies ([fb1578c](https://github.com/aeternity/aeproject/commit/fb1578cd9f0ac2eac6109156a56a69e6f183ed41))
+* update to node v6.8.1 ([f247730](https://github.com/aeternity/aeproject/commit/f247730c5f51b910ae962e3a8ef97d7add799c0a))
+
 ## [4.5.0](https://github.com/aeternity/aeproject/compare/v4.4.0...v4.5.0) (2023-03-01)
 
 
