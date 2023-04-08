@@ -12,7 +12,7 @@ const { assert } = chai;
 const { file } = chaiFiles;
 
 const cwd = path.join(process.cwd(), '.testdir');
-const exec = (cmd, options) => execP(`. ~/.profile;${cmd}`, options);
+const exec = (cmd, options) => execP(`${fs.existsSync('~/.profile') ? '. ~/.profile;' : ''}${cmd}`, options);
 
 describe('Happy Path', () => {
   before(async () => {
