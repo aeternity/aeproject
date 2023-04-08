@@ -6,10 +6,10 @@
     "test": "mocha ./test/**/*.js --timeout 0 --exit"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "^13.0.0-beta.0"
+    "@aeternity/aepp-sdk": "^13.0.0"
   },
   "devDependencies": {
-    "@aeternity/aeproject": "^4.3.0",
+    "@aeternity/aeproject": "^4.5.1",
     "chai": "^4.3.7",
     "mocha": "^10.2.0"
   }
