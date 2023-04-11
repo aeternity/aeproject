@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.6.0](https://github.com/aeternity/aeproject/compare/v4.5.1...v4.6.0) (2023-04-11)
+
+
+### Features
+
+* upgrade to compiler image 7.3.0 for ARM64/Apple Silicon support ([83814e2](https://github.com/aeternity/aeproject/commit/83814e276d4e7e71599274f89053bfada6da7703))
+* upgrade to sdk 13 beta and compiler 7 ([0b717a5](https://github.com/aeternity/aeproject/commit/0b717a5f3a62a0ca8f03c4f327e2ac4760bd067b))
+
+
+### Miscellaneous
+
+* prepare for release 4.6.0 ([9910426](https://github.com/aeternity/aeproject/commit/991042609f05df8cb62a82383b824c2c9cf764f5))
+* upgrade to final release sdk ([2317283](https://github.com/aeternity/aeproject/commit/23172835bec6e9db4aa83cbbb0ad88322c228aaf))
+
 ## [4.5.1](https://github.com/aeternity/aeproject/compare/v4.5.0...v4.5.1) (2023-03-07)
 
 
