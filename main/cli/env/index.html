@@ -425,17 +425,18 @@
 <div class="highlight"><pre><span></span><code>aeproject env --stop
 </code></pre></div></p>
 <p>There are optional parameters <strong>--nodeVersion</strong> and <strong>--compilerVersion</strong>. To specify a specific version of node or compiler, or both
-<div class="highlight"><pre><span></span><code>aeproject env --nodeVersion v6.4.0
+<div class="highlight"><pre><span></span><code>aeproject env --nodeVersion v6.8.1
 # or
-aeproject env --compilerVersion v6.1.0
+aeproject env --compilerVersion v7.3.0
 # or
-aeproject env --nodeVersion v6.4.0 --compilerVersion v6.1.0
+aeproject env --nodeVersion v6.8.1 --compilerVersion v7.3.0
 </code></pre></div>
 This also applies to the commands <code>aeproject node</code> and <code>aeproject compiler</code>.</p>
 <p>To see whether you have running instances of the nodes along with a compiler you could run the following command
 <div class="highlight"><pre><span></span><code>aeproject env --info
 </code></pre></div></p>
 <p><strong>Note</strong>: By default AEproject uses the <code>latest-bundle</code> tag of the official <a href="https://hub.docker.com/r/aeternity/aeternity/tags">docker images</a>.</p>
+<p><strong>Compatibility</strong>: AEproject uses <code>@aeternity/aepp-sdk@13</code> which is only compatible using <code>node &gt;= v6</code> and <code>compiler &gt;= v7</code>, the only tested and recommended configuration, which also works on ARM64/Apple Silicon is from images <code>node v6.8.1</code> and <code>compiler v7.3.0</code>, upcoming newer versions with the same major version should work without issues.</p>
 <h2 id="disclaimer">Disclaimer</h2>
 <ul>
 <li>Firewalls and any other security feature can block your docker/docker-compose requests. Please check that docker/docker-compose is NOT in its blocked list or has permission to make requests.</li>
