@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.1](https://github.com/aeternity/aeproject/compare/v4.6.0...v4.6.1) (2023-04-12)
+
+
+### Bug Fixes
+
+* minor fixes, adjust docs ([abaa364](https://github.com/aeternity/aeproject/commit/abaa36460466ece306d0f31d23901d3b22fb0bee))
+
 ## [4.6.0](https://github.com/aeternity/aeproject/compare/v4.5.1...v4.6.0) (2023-04-11)
 
 
