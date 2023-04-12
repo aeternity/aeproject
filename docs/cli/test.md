@@ -32,12 +32,12 @@ Read [AEproject Library](../lib.md) for a more detailed explanation about the us
 
 Provide your initializations in mocha which need to be done once before all tests:
 ```js
-before(...)
+before(async () => ...)
 ```
 
 Initialize the default SDK instance with provided utils:
 ```js
-const aeSdk = await utils.getSdk();
+aeSdk = await utils.getSdk();
 ```
 
 Get the filesystem definition for (custom) `includes` of the given contract:
@@ -47,17 +47,17 @@ const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
 
 Read the contract source from the filesystem:
 ```js
-const source = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
+const sourceCode = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 ```
 
 Initialize the contract instance:
 ```js
-const contract = await aeSdk.getContractInstance({ source, filesystem });
+contract = await aeSdk.initializeContract({ sourceCode, filesystem });
 ```
 
 Deploy the contract:
 ```js
-await contract.deploy();
+await contract.init();
 ```
 
 Create a snapshot of the chain state once before all tests. This allows you to rollback to a clean state after each test if needed:
@@ -76,13 +76,13 @@ afterEach(async () => {
 
 ```javascript
 it('ExampleContract: set and get', async () => {
-  const set = await contract.methods.set(42, { onAccount: wallets[1].publicKey });
-  assert.equal(set.decodedEvents[0].name, 'SetXEvent');
-  assert.equal(set.decodedEvents[0].decoded[0], wallets[1].publicKey);
-  assert.equal(set.decodedEvents[0].decoded[1], 42);
+    const set = await contract.set(42, {onAccount: utils.getDefaultAccounts()[1]});
+    assert.equal(set.decodedEvents[0].name, 'SetXEvent');
+    assert.equal(set.decodedEvents[0].args[0], utils.getDefaultAccounts()[1].address);
+    assert.equal(set.decodedEvents[0].args[1], 42);
 
-  const { decodedResult } = await contract.methods.get();
-  assert.equal(decodedResult, 42);
+    const {decodedResult} = await contract.get();
+    assert.equal(decodedResult, 42);
 });
 ```
 

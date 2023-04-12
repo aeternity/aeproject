@@ -9,7 +9,7 @@
     "devDependencies": [
         "@aeternity/aeproject@4",
         "chai@4",
-        "mocha@9"
+        "mocha@10"
     ],
     "uninstallDependencies": [
         "aeproject",

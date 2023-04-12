@@ -32,7 +32,7 @@ describe('ExampleContract', () => {
   it('ExampleContract: set and get', async () => {
     const set = await contract.set(42, { onAccount: utils.getDefaultAccounts()[1] });
     assert.equal(set.decodedEvents[0].name, 'SetXEvent');
-    assert.equal(set.decodedEvents[0].args[0], await utils.getDefaultAccounts()[1].address);
+    assert.equal(set.decodedEvents[0].args[0], utils.getDefaultAccounts()[1].address);
     assert.equal(set.decodedEvents[0].args[1], 42);
 
     const { decodedResult } = await contract.get();
