@@ -1,10 +1,18 @@
 {
-    "extends": "airbnb-base",
+    "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+    ],
     "env": {
         "node": true,
         "mocha": true
     },
     "rules": {
+        "@typescript-eslint/no-use-before-define": "off",
         "no-use-before-define": "off"
-    }
+    },
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "ignorePatterns": ["tests/**"]
 }

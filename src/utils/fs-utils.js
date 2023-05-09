@@ -14,8 +14,8 @@ async function prompt(action, target) {
 }
 
 async function copyFolderRecursiveSync(srcDir, dstDir) {
-  let src; let
-    dst;
+  let src;
+  let dst;
 
   return fs.readdirSync(srcDir).reduce(async (accPromise, file) => {
     await accPromise;

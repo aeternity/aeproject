@@ -2,17 +2,34 @@
   "name": "@aeternity/aeproject",
   "version": "4.6.1",
   "description": "aeternity smart contract testing tool",
-  "main": "src/lib/index.js",
+  "main": "./.build/esm/src/lib/index.js",
+  "types": "./.build/types/src/lib/index.d.ts",
   "bin": {
-    "aeproject": "./src/cli.js"
+    "aeproject": "./.build/esm/src/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./.build/types/src/lib/index.d.ts",
+      "require": "./.build/cjs/src/lib/index.js",
+      "import": "./.build/esm/src/lib/index.js",
+      "default": "./.build/esm/src/lib/index.js"
+    }
   },
   "scripts": {
+    "build": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && npm run copy-files",
+    "build:clean": "rm -rf ./.build",
     "lint": "eslint .",
     "lint:fix": "eslint --ext .js --fix .",
     "lint:ci": "eslint --ext .js --max-warnings=0 .",
-    "test": "mocha ./tests/**/*.js --timeout 0 --exit"
+    "test": "mocha ./tests/**/*.js --timeout 0 --exit",
+    "prepublish": "npm run build",
+    "copy-files": "cp -r ./src/init/artifacts ./.build/cjs/src/init/ && cp -r ./src/init/artifacts ./.build/esm/src/init/ && cp -r ./src/init/update-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./.build/esm/src/init/"
   },
   "license": "ISC",
+  "engines" : {
+    "npm" : ">=8.0.0",
+    "node" : ">=16.0.0"
+  },
   "dependencies": {
     "@aeternity/aepp-sdk": "^13.0.0",
     "commander": "^10.0.0",
@@ -20,11 +37,15 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.59.5",
+    "@typescript-eslint/parser": "^5.59.5",
     "chai": "^4.3.7",
     "chai-files": "^1.4.0",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "typescript": "^5.0.4"
   }
 }

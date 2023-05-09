@@ -1,14 +1,26 @@
 const { spawn, exec } = require('promisify-child-process');
 
-const { print, printError, ensureNodeAndCompilerAvailable } = require('../utils/utils');
-const { nodeConfiguration, compilerConfiguration, proxyConfiguration } = require('../config/node-config.json');
+const {
+  print,
+  printError,
+  ensureNodeAndCompilerAvailable,
+} = require('../utils/utils');
+const {
+  nodeConfiguration,
+  compilerConfiguration,
+  proxyConfiguration,
+} = require('../config/node-config.json');
 
 let dockerComposeCmd = 'docker compose';
 
 async function getDockerCompose() {
-  const dockerSpaceCompose = await spawn('docker', ['compose']).catch(() => ({ code: 1 }));
+  const dockerSpaceCompose = await spawn('docker', ['compose']).catch(() => ({
+    code: 1,
+  }));
   if (dockerSpaceCompose.code === 0) return;
-  const dockerMinusCompose = await spawn('docker-compose').catch(() => ({ code: 1 }));
+  const dockerMinusCompose = await spawn('docker-compose').catch(() => ({
+    code: 1,
+  }));
   if (dockerMinusCompose.code === 0) {
     dockerComposeCmd = 'docker-compose';
     return;
@@ -75,8 +87,12 @@ async function startEnv(nodeVersion, compilerVersion) {
     print('===== starting env =====');
 
     await getDockerCompose();
-    await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} pull`);
-    await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} up -d --wait`);
+    await exec(
+      `NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} pull`,
+    );
+    await exec(
+      `NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} up -d --wait`,
+    );
 
     await ensureNodeAndCompilerAvailable();
 
@@ -86,7 +102,9 @@ async function startEnv(nodeVersion, compilerVersion) {
 
 async function printInfo(running) {
   if (!running) {
-    printError('===== Compiler or Node is not running! ===== \n===== Please run the relevant command for your image! =====');
+    printError(
+      '===== Compiler or Node is not running! ===== \n===== Please run the relevant command for your image! =====',
+    );
     return;
   }
 
