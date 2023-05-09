@@ -1,0 +1,16 @@
+{
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": ["./tests/**", ".eslintrc.js", "./src/init/artifacts/**", "./src/init/update-artifacts/**"],
+  "compilerOptions": {
+    "outDir": "./.build",
+    "target": "es2020",
+    "lib": ["es2020", "dom", "esnext"],
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowJs": true
+  },
+}

@@ -6,7 +6,10 @@ const { exec } = require('promisify-child-process');
 const constants = require('./constants.json');
 const { print } = require('../utils/utils');
 
-const { copyFolderRecursiveSync, deleteWithPrompt } = require('../utils/fs-utils');
+const {
+  copyFolderRecursiveSync,
+  deleteWithPrompt,
+} = require('../utils/fs-utils');
 
 async function run(folder, update) {
   checkNodeVersion();
@@ -38,10 +41,11 @@ const createAEprojectProjectStructure = async (folder) => {
 
   await setupArtifacts(folder);
   await installDependencies(folder);
-  await generateGitIgnore(folder);
 
   print('===== aeproject successfully initialized =====');
-  print('test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject');
+  print(
+    'test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject',
+  );
 };
 
 const updateAEprojectProjectLibraries = async (folder, update) => {
@@ -51,7 +55,9 @@ const updateAEprojectProjectLibraries = async (folder, update) => {
   await installDependencies(folder, update);
 
   print('===== aeproject sucessfully initalized =====');
-  print('test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject');
+  print(
+    'test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject',
+  );
 };
 
 const installDependencies = async (folder, update = false) => {
@@ -64,7 +70,9 @@ const installDependencies = async (folder, update = false) => {
       constants.dependencies.map((dependency) => installPromises.push(`${npm} install ${dependency}`));
       constants.devDependencies.map((dependency) => installPromises.push(`${npm} install --save-dev ${dependency}`));
       constants.uninstallDependencies.map((dependency) => installPromises.push(`${npm} uninstall ${dependency}`));
-      installPromises.push('npx npm-add-script -k "test" -v "mocha ./test/**/*.js --timeout 0 --exit" --force');
+      installPromises.push(
+        'npx npm-add-script -k "test" -v "mocha ./test/**/*.js --timeout 0 --exit" --force',
+      );
     }
 
     await installPromises.reduce(async (promiseAcc, command) => {
@@ -78,8 +86,14 @@ const installDependencies = async (folder, update = false) => {
 const setupArtifacts = async (folder) => {
   print('===== creating project file and directory structure =====');
 
-  await copyFolderRecursiveSync(`${__dirname}${constants.updateArtifactsDir}`, path.join(constants.artifactsDest, folder));
-  await copyFolderRecursiveSync(`${__dirname}${constants.artifactsDir}`, path.join(constants.artifactsDest, folder));
+  await copyFolderRecursiveSync(
+    `${__dirname}${constants.updateArtifactsDir}`,
+    path.join(constants.artifactsDest, folder),
+  );
+  await copyFolderRecursiveSync(
+    `${__dirname}${constants.artifactsDir}`,
+    path.join(constants.artifactsDest, folder),
+  );
 };
 
 const updateArtifacts = async (folder) => {
@@ -87,23 +101,12 @@ const updateArtifacts = async (folder) => {
 
   const fileSource = `${__dirname}${constants.updateArtifactsDir}`;
 
-  await constants.deleteArtifacts
-    .reduce(async (promiseAcc, artifact) => {
-      await promiseAcc;
-      await deleteWithPrompt(artifact);
-    }, Promise.resolve());
+  await constants.deleteArtifacts.reduce(async (promiseAcc, artifact) => {
+    await promiseAcc;
+    await deleteWithPrompt(artifact);
+  }, Promise.resolve());
 
   await copyFolderRecursiveSync(fileSource, folder);
-};
-
-/**
- * generates a .gitignore file based on the content of
- * recommended-gitignore.txt
- * @param {string} folder - folder to add .gitignore
- */
-const generateGitIgnore = async (folder) => {
-  const gitIgnorePath = path.join(folder, '.gitignore');
-  await fs.promises.copyFile(`${__dirname}${constants.recommendedGitIgnore}`, gitIgnorePath);
 };
 
 module.exports = {

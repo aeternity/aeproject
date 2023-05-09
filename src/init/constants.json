@@ -2,7 +2,6 @@
     "artifactsDest": "./",
     "artifactsDir": "/artifacts",
     "updateArtifactsDir": "/update-artifacts",
-    "recommendedGitIgnore":"/recommended-gitignore.txt",
     "dependencies": [
         "@aeternity/aepp-sdk@13"
     ],
