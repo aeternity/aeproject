@@ -12,17 +12,12 @@ export const getContractContent = (contractPath) => fs.readFileSync(contractPath
 
 export const getFilesystem = (contractPath) => {
   const defaultIncludes = [
-    'List.aes',
-    'Option.aes',
-    'String.aes',
-    'Func.aes',
-    'Pair.aes',
-    'Triple.aes',
-    'BLS12_381.aes',
-    'Frac.aes',
-    'Set.aes',
+    'List.aes', 'Option.aes', 'String.aes',
+    'Func.aes', 'Pair.aes', 'Triple.aes',
+    'BLS12_381.aes', 'Frac.aes', 'Set.aes',
     'Bitwise.aes',
   ];
+
   const rgx = /^include\s+"([\w/.-]+)"/gim;
   const rgxIncludePath = /"([\w/.-]+)"/i;
   const rgxMainPath = /.*\//g;
@@ -43,15 +38,10 @@ export const getFilesystem = (contractPath) => {
 
     // eslint-disable-next-line no-console
     console.log(`==> Adding include to filesystem: ${includeRelativePath[1]}`);
-    const includePath = path.resolve(
-      `${contractPathMatch[0]}/${includeRelativePath[1]}`,
-    );
+    const includePath = path.resolve(`${contractPathMatch[0]}/${includeRelativePath[1]}`);
 
     try {
-      filesystem[includeRelativePath[1]] = fs.readFileSync(
-        includePath,
-        'utf-8',
-      );
+      filesystem[includeRelativePath[1]] = fs.readFileSync(includePath, 'utf-8');
     } catch (error) {
       throw Error(`File to include '${includeRelativePath[1]}' not found.`);
     }
