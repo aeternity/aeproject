@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.6.2](https://github.com/aeternity/aeproject/compare/v4.6.1...v4.6.2) (2023-05-16)
+
+
+### Refactorings
+
+* use typescript to build project, migrate lib to ts ([1f7a164](https://github.com/aeternity/aeproject/commit/1f7a164d60443bc8cbb8b04b93959c452de6f7e2))
+
+
+### Miscellaneous
+
+* rollback unintended code-style changes ([a4fd777](https://github.com/aeternity/aeproject/commit/a4fd777eb736709a04cf613905a2476a1f1d71d4))
+* upgrade dependencies ([3482f75](https://github.com/aeternity/aeproject/commit/3482f7504de2714a24416701d59a876f345579ea))
+
 ## [4.6.1](https://github.com/aeternity/aeproject/compare/v4.6.0...v4.6.1) (2023-04-12)
 
 
