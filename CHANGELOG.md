@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.3](https://github.com/aeternity/aeproject/compare/v4.6.2...v4.6.3) (2023-05-17)
+
+
+### Miscellaneous
+
+* fix scripts, prepare for 4.6.3 ([06ea397](https://github.com/aeternity/aeproject/commit/06ea397f3ac0b585ee54ca82e8868538c84db02c))
+
 ## [4.6.2](https://github.com/aeternity/aeproject/compare/v4.6.1...v4.6.2) (2023-05-16)
 
 
