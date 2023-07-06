@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.7.0](https://github.com/aeternity/aeproject/compare/v4.6.3...v4.7.0) (2023-07-06)
+
+
+### Features
+
+* upgrade to compiler 7.4.0 ([72cccf7](https://github.com/aeternity/aeproject/commit/72cccf77a7a157e48b7f364a548105c3f6206252))
+
+
+### Miscellaneous
+
+* upgrade dependencies ([03a0caa](https://github.com/aeternity/aeproject/commit/03a0caa5da4e32a5e1e2b8e0f028baafb7853ca7))
+
 ## [4.6.3](https://github.com/aeternity/aeproject/compare/v4.6.2...v4.6.3) (2023-05-17)
 
 
