@@ -17,9 +17,9 @@ There are optional parameters **\-\-nodeVersion** and **\-\-compilerVersion**. T
 ```text
 aeproject env --nodeVersion v6.10.0
 # or
-aeproject env --compilerVersion v7.3.0
+aeproject env --compilerVersion v7.4.0
 # or
-aeproject env --nodeVersion v6.10.0 --compilerVersion v7.3.0
+aeproject env --nodeVersion v6.10.0 --compilerVersion v7.4.0
 ```
 This also applies to the commands `aeproject node` and `aeproject compiler`.
 
