@@ -75,13 +75,13 @@ let snapshotHeight = -1;
 
 export const createSnapshot = async (aeSdk) => {
   snapshotHeight = await aeSdk.getHeight();
-  await awaitKeyBlocks(aeSdk, 1);
 };
 
-export const rollbackSnapshot = async (aeSdk) => {
+export const rollbackHeight = async (aeSdk, height) => {
   const currentBlockHeight = await aeSdk.getHeight();
-  if (currentBlockHeight > snapshotHeight) {
-    await get(`http://localhost:3001/rollback?height=${snapshotHeight}`);
-    await awaitKeyBlocks(aeSdk, 1);
+  if (currentBlockHeight > height) {
+    await get(`http://localhost:3001/rollback?height=${height}`);
   }
 };
+
+export const rollbackSnapshot = async (aeSdk) => rollbackHeight(aeSdk, snapshotHeight);
