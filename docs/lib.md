@@ -44,6 +44,11 @@ utils.rollbackSnapshot(aeSdk);
 Rollback to the latest snapshot using the æternity node devmode, using the passed `aeSdk`.
 
 ```javascript
+utils.rollbackHeight(aeSdk, height);
+```
+Rollback to the specified height using the æternity node devmode, using the passed `aeSdk`.
+
+```javascript
 utils.getDefaultAccounts();
 ```
 Get the pre-funded default accounts as `MemoryAccount`, so they can be used natively using the `aeSdk`.
