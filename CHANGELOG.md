@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.8.0](https://github.com/aeternity/aeproject/compare/v4.7.0...v4.8.0) (2023-07-18)
+
+
+### Features
+
+* allow rollback to specific height ([670c11e](https://github.com/aeternity/aeproject/commit/670c11e440c38b88cd08428e059392bd05166f63))
+
+
+### Miscellaneous
+
+* prepare for release 4.8.0 ([5462ea3](https://github.com/aeternity/aeproject/commit/5462ea35234550eaddee2f7590bd3fcd89f00bd7))
+* upgrade dependencies ([6f570b3](https://github.com/aeternity/aeproject/commit/6f570b3d7f06154ee9c1e80e105049204871d557))
+* upgrade node to v6.11.0 with devmode timout fix ([3c5d558](https://github.com/aeternity/aeproject/commit/3c5d558002ca0e2c1cdbc366a29f41eed7cd7cb8))
+
 ## [4.7.0](https://github.com/aeternity/aeproject/compare/v4.6.3...v4.7.0) (2023-07-06)
 
 
