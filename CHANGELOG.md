@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.8.1](https://github.com/aeternity/aeproject/compare/v4.8.0...v4.8.1) (2023-07-18)
+
+
+### Bug Fixes
+
+* add back wait additional block workaround ([1a135b4](https://github.com/aeternity/aeproject/commit/1a135b46af5984047eaa42e5d81609fcbabc7b0d))
+
+
+### Miscellaneous
+
+* prepare for fix release 4.8.1 ([b448b44](https://github.com/aeternity/aeproject/commit/b448b445b0d151059fd88a0436e71599be042aad))
+
 ## [4.8.0](https://github.com/aeternity/aeproject/compare/v4.7.0...v4.8.0) (2023-07-18)
 
 
