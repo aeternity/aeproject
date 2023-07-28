@@ -1,5 +1,6 @@
 const { assert } = require('chai');
 const { utils } = require('@aeternity/aeproject');
+const { getFileSystem } = require("@aeternity/aepp-sdk");
 
 const EXAMPLE_CONTRACT_SOURCE = './contracts/ExampleContract.aes';
 
@@ -11,7 +12,7 @@ describe('ExampleContract', () => {
     aeSdk = await utils.getSdk();
 
     // a filesystem object must be passed to the compiler if the contract uses custom includes
-    const fileSystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
+    const fileSystem = await getFileSystem(EXAMPLE_CONTRACT_SOURCE);
 
     // get content of contract
     const sourceCode = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
