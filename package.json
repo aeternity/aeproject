@@ -31,7 +31,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "^13.2.0",
+    "@aeternity/aepp-sdk": "^13.2.1",
     "commander": "^11.0.0",
     "promisify-child-process": "^4.1.2",
     "prompts": "^2.4.2"
@@ -41,7 +41,7 @@
     "@typescript-eslint/parser": "^6.2.0",
     "chai": "^4.3.7",
     "chai-files": "^1.4.0",
-    "eslint": "^8.45.0",
+    "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-plugin-import": "^2.28.0",
