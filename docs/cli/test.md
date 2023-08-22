@@ -37,7 +37,7 @@ before(async () => ...)
 
 Initialize the default SDK instance with provided utils:
 ```js
-aeSdk = await utils.getSdk();
+aeSdk = utils.getSdk();
 ```
 
 Get the filesystem definition for (custom) `includes` of the given contract:
