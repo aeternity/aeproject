@@ -9,7 +9,7 @@ _Optionally_ a `folder` can be specified for the project to be initialized in, o
 Creates a new project structure with a few folders in which the developer can create **contracts** and **tests**, as well as installing needed dependencies.
 
 ## Update existing project
-For upgrade from old AEproject versions check out [Migration from 3.x.x to 4.x.x](../migration-from-3.x.x-to-4.x.x.md).
+For upgrade from old AEproject versions check out [Migration from 3.x.x to 4.x.x](../migration-from-3.x.x-to-4.x.x.md) and  [Migration from 4.x.x to 5.x.x](../migration-from-4.x.x-to-5.x.x.md).
 
 ```text
 aeproject init --update

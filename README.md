@@ -18,3 +18,4 @@ npm install -g @aeternity/aeproject
 * [Unit Testing](docs/cli/test.md)
 * [AEproject Library](docs/lib.md)
 * [Migration from 3.x.x to 4.x.x](docs/migration-from-3.x.x-to-4.x.x.md)
+* [Migration from 4.x.x to 5.x.x](docs/migration-from-4.x.x-to-5.x.x.md)
