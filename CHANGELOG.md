@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.8.2](https://github.com/aeternity/aeproject/compare/v4.8.1...v4.8.2) (2023-08-24)
+
+
+### Miscellaneous
+
+* remove unneeded await ([cf4b19e](https://github.com/aeternity/aeproject/commit/cf4b19e26949fa660f35efdbbad2322ba0718a66))
+* update sdk ([f666101](https://github.com/aeternity/aeproject/commit/f6661011629a7f23bae017987ea82951ac433cae))
+* update to latest compiler ([e65237c](https://github.com/aeternity/aeproject/commit/e65237c7bb79795e557ad6c6f99e6433835fbe46))
+* upgrade to latest sdk ([6de93f6](https://github.com/aeternity/aeproject/commit/6de93f69f6c3e29685b76a6de756520e7260cfba))
+
 ## [4.8.1](https://github.com/aeternity/aeproject/compare/v4.8.0...v4.8.1) (2023-07-18)
 
 
