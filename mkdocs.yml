@@ -47,4 +47,5 @@ nav:
   - cli/test.md
   - lib.md
   - migration-from-3.x.x-to-4.x.x.md
+  - migration-from-4.x.x-to-5.x.x.md
   - next-support.md

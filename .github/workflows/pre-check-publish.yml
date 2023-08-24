@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   pre-check-publish:
-
     runs-on: ubuntu-latest
 
     steps:
