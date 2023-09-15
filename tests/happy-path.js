@@ -5,6 +5,7 @@ const chai = require('chai');
 const chaiFiles = require('chai-files');
 const { isEnvRunning } = require('../src/env/env');
 const { version } = require('../package.json');
+const { print } = require("../src/utils/utils");
 
 chai.use(chaiFiles);
 const { assert } = chai;
@@ -60,18 +61,27 @@ describe('Happy Path', () => {
     assert.equal(res.code, 0);
     assert.isTrue(await isEnvRunning(cwd));
 
-    const resSecond = await exec('aeproject env --nodeVersion v6.10.0 --compilerVersion v7.4.0', { cwd });
-    assert.include(resSecond.stdout, 'v6.10.0');
-    assert.include(resSecond.stdout, 'v7.4.0');
+    // don't run for all gh-action matrix tests
+    if (process.env.NODE_TAG === 'latest' && process.env.COMPILER_TAG === 'latest' && process.env.NODE_VERSION === '18') {
+      const resSecond = await exec('aeproject env --nodeVersion v6.10.0 --compilerVersion v7.4.0', { cwd });
+      assert.include(resSecond.stdout, 'v6.10.0');
+      assert.include(resSecond.stdout, 'v7.4.0');
 
-    const resThird = await exec('aeproject env', { cwd });
-    assert.include(resThird.stdout, 'updating');
+      const resThird = await exec('aeproject env', { cwd });
+      assert.include(resThird.stdout, 'updating');
+    } else print('skipping env version and update tests')
   });
 
   it('env --restart', async () => {
     const res = await exec('aeproject env --restart', { cwd });
     assert.include(res.stdout, 'restarting');
     assert.isTrue(await isEnvRunning(cwd));
+  });
+
+  it('env --info', async () => {
+    const res = await exec('aeproject env --info', { cwd });
+    assert.equal(res.code, 0);
+    print(res.stdout)
   });
 
   it('test', async () => {
