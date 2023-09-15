@@ -30,7 +30,11 @@ aeproject env --info
 
 **Note**: By default AEproject uses the `latest-bundle` tag of the official [docker images](https://hub.docker.com/r/aeternity/aeternity/tags).
 
-**Compatibility**: AEproject uses `@aeternity/aepp-sdk@13` which is only compatible using `node >= v6` and `compiler >= v7`, the only tested and recommended configuration, which also works on ARM64/Apple Silicon is from images `node v6.8.1` and `compiler v7.3.0`, upcoming newer versions with the same major version should work without issues.
+**Compatibility**:
+ - aeproject uses the `-bundle` node docker images including dev mode, which are only published from `NODE_TAG >= v6.3.0`
+ - the default `aeternity.yaml` config file that ships with aeproject supports `NODE_TAG >= v6.8.0`
+ - the latest `@aeternity/aepp-sdk@13` is only compatible using `NODE_TAG >= v6.0.0` and `COMPILER_TAG >= v7.5.0`
+ - ARM64/Apple Silicon is supported from images `NODE_TAG >= v6.8.1` and `COMPILER_TAG >= v7.3.0`
 
 ## Disclaimer
 - Firewalls and any other security feature can block your docker/docker-compose requests. Please check that docker/docker-compose is NOT in its blocked list or has permission to make requests.
