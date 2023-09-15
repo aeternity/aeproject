@@ -1,7 +1,6 @@
 const { spawn, exec } = require('promisify-child-process');
 
 const { print, printError, ensureNodeAndCompilerAvailable } = require('../utils/utils');
-const { nodeConfiguration, compilerConfiguration, proxyConfiguration } = require('../config/node-config.json');
 
 let dockerComposeCmd = 'docker compose';
 
@@ -22,9 +21,9 @@ async function isEnvRunning(cwd = './') {
 
   if (info) {
     const containers = [
-      nodeConfiguration.containerName,
-      compilerConfiguration.containerName,
-      proxyConfiguration.containerName,
+      'aeproject_node',
+      'aeproject_compiler',
+      'aeproject_proxy',
     ];
     return containers.some((containerName) => {
       const line = info.split('\n').find((l) => l.includes(containerName));
@@ -36,9 +35,6 @@ async function isEnvRunning(cwd = './') {
 }
 
 async function run(option) {
-  const nodeVersion = option.nodeVersion || nodeConfiguration.imageVersion;
-  const compilerVersion = option.compilerVersion || compilerConfiguration.imageVersion;
-
   const running = await isEnvRunning();
 
   if (option.info) {
@@ -50,8 +46,12 @@ async function run(option) {
     await stopEnv(running);
     return;
   }
+  if (option.restart) {
+    await restartEnv(running);
+    return;
+  }
 
-  await startEnv(nodeVersion, compilerVersion);
+  await startEnv(option);
 }
 
 async function stopEnv(running) {
@@ -68,38 +68,58 @@ async function stopEnv(running) {
   print('===== Env was successfully stopped! =====');
 }
 
-async function startEnv(nodeVersion, compilerVersion) {
-  if (await isEnvRunning()) {
-    printError('===== Compiler or Node is already running! =====');
-  } else {
-    print('===== starting env =====');
-
-    await getDockerCompose();
-    await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} pull`);
-    await exec(`NODE_TAG=${nodeVersion} COMPILER_TAG=${compilerVersion} ${dockerComposeCmd} up -d --wait`);
-
-    await ensureNodeAndCompilerAvailable();
-
-    print('===== Env was successfully started! =====');
-  }
-}
-
-async function printInfo(running) {
+async function restartEnv(running) {
   if (!running) {
-    printError('===== Compiler or Node is not running! ===== \n===== Please run the relevant command for your image! =====');
+    printError('===== Env is not running! =====');
     return;
   }
 
-  print(await getInfo());
+  print('===== restarting env =====');
+
+  await getDockerCompose();
+  await exec(`${dockerComposeCmd} restart`);
+
+  print('===== env was successfully restarted! =====');
 }
 
-async function getInfo(cwd) {
+async function startEnv(option) {
+  if (await isEnvRunning()) {
+    print('===== env already running, updating env =====');
+  } else {
+    print('===== starting env =====');
+  }
+
+  const versionTags = `${option.nodeVersion ? `NODE_TAG=${option.nodeVersion}` : ''} ${option.compilerVersion ? `COMPILER_TAG=${option.compilerVersion}` : ''}`;
+  if (versionTags.trim() !== '') print(`using versions as specified: ${versionTags}`);
+  else print('using versions from docker-compose.yml');
+
+  await getDockerCompose();
+  await exec(`${versionTags} ${dockerComposeCmd} pull`);
+  await exec(`${versionTags} ${dockerComposeCmd} up -d --wait`);
+
+  await ensureNodeAndCompilerAvailable();
+
+  const isRunning = await isEnvRunning();
+  await printInfo(isRunning, true);
+  if (isRunning) print('===== env was successfully started =====');
+}
+
+async function printInfo(running, imagesOnly = false) {
+  if (!running) {
+    printError('===== compiler or node is not running ===== \n===== run \'aeproject env\' to start the development setup =====');
+    return;
+  }
+
+  print(await getInfo(undefined, imagesOnly));
+}
+
+async function getInfo(cwd = './', imagesOnly = false) {
   await getDockerCompose();
   const ps = await exec(`${dockerComposeCmd} ps`, { cwd });
   const images = await exec(`${dockerComposeCmd} images`, { cwd });
 
   if (ps && images && ps.stdout && images.stdout) {
-    return `${ps.stdout}\n${images.stdout}`;
+    return imagesOnly ? images.stdout : `${ps.stdout}\n${images.stdout}`;
   }
 
   return null;

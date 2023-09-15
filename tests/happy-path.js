@@ -59,6 +59,19 @@ describe('Happy Path', () => {
     const res = await exec('aeproject env', { cwd });
     assert.equal(res.code, 0);
     assert.isTrue(await isEnvRunning(cwd));
+
+    const resSecond = await exec('aeproject env --nodeVersion v6.10.0 --compilerVersion v7.4.0', { cwd });
+    assert.include(resSecond.stdout, 'v6.10.0');
+    assert.include(resSecond.stdout, 'v7.4.0');
+
+    const resThird = await exec('aeproject env', { cwd });
+    assert.include(resThird.stdout, 'updating');
+  });
+
+  it('env --restart', async () => {
+    const res = await exec('aeproject env --restart', { cwd });
+    assert.include(res.stdout, 'restarting');
+    assert.isTrue(await isEnvRunning(cwd));
   });
 
   it('test', async () => {

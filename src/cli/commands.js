@@ -1,11 +1,7 @@
 const init = require('../init/init');
 const testConfig = require('../test/test');
 const env = require('../env/env');
-const config = require('../config/node-config.json');
 const constants = require('../init/constants.json');
-
-const nodeConfig = config.nodeConfiguration;
-const compilerConfig = config.compilerConfiguration;
 
 const addInitOption = (program) => {
   program
@@ -31,10 +27,11 @@ const addEnvOption = (program) => {
   program
     .command('env')
     .description('Running a local network. Without any argument started with default configuration')
-    .option('--stop', 'Stop the node')
-    .option('--info', 'Displays information about your current node status if any, and absolute path where it has been started from')
-    .option('--nodeVersion [nodeVersion]', `Specify node version, default is ${nodeConfig.imageVersion}`, nodeConfig.imageVersion)
-    .option('--compilerVersion [compilerVersion]', `Specify compiler version, default is ${compilerConfig.imageVersion}`, compilerConfig.imageVersion)
+    .option('--stop', 'Stop the development environment')
+    .option('--restart', 'Restart the development environment')
+    .option('--info', 'Displays information about your current development environment status')
+    .option('--nodeVersion [nodeVersion]', 'Specify node version, default is whatever is locally configured in docker-compose.yml')
+    .option('--compilerVersion [compilerVersion]', 'Specify compiler version, default is whatever is locally configured in docker-compose.yml')
     .action(async (options) => {
       await env.run(options);
     });
