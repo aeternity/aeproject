@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.8.3](https://github.com/aeternity/aeproject/compare/v4.8.2...v4.8.3) (2023-09-20)
+
+
+### CI / CD
+
+* add matrix for compiler/node versions ([c6c7ea4](https://github.com/aeternity/aeproject/commit/c6c7ea46fe18cde0fda1132401c81addf5ef9f01))
+* use matrix test suite ([0be215e](https://github.com/aeternity/aeproject/commit/0be215e812b31c38bae8e6a8490e1efb28f493b3))
+
+
+### Refactorings
+
+* improve env command ([18022a4](https://github.com/aeternity/aeproject/commit/18022a40765808643e6607020372720d44709502))
+
+
+### Miscellaneous
+
+* update default compiler tag ([068b081](https://github.com/aeternity/aeproject/commit/068b081dd7e590955c848b95622b217673670cb0))
+* update dependencies ([78be83d](https://github.com/aeternity/aeproject/commit/78be83d76e742be16e737ce3e4466425a622b97d))
+
 ## [4.8.2](https://github.com/aeternity/aeproject/compare/v4.8.1...v4.8.2) (2023-08-24)
 
 
