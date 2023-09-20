@@ -436,7 +436,11 @@ This also applies to the commands <code>aeproject node</code> and <code>aeprojec
 <div class="highlight"><pre><span></span><code>aeproject env --info
 </code></pre></div></p>
 <p><strong>Note</strong>: By default AEproject uses the <code>latest-bundle</code> tag of the official <a href="https://hub.docker.com/r/aeternity/aeternity/tags">docker images</a>.</p>
-<p><strong>Compatibility</strong>: AEproject uses <code>@aeternity/aepp-sdk@13</code> which is only compatible using <code>node &gt;= v6</code> and <code>compiler &gt;= v7</code>, the only tested and recommended configuration, which also works on ARM64/Apple Silicon is from images <code>node v6.8.1</code> and <code>compiler v7.3.0</code>, upcoming newer versions with the same major version should work without issues.</p>
+<p><strong>Compatibility</strong>:
+ - aeproject uses the <code>-bundle</code> node docker images including dev mode, which are only published from <code>NODE_TAG &gt;= v6.3.0</code>
+ - the default <code>aeternity.yaml</code> config file that ships with aeproject supports <code>NODE_TAG &gt;= v6.8.0</code>
+ - the latest <code>@aeternity/aepp-sdk@13</code> is only compatible using <code>NODE_TAG &gt;= v6.0.0</code> and <code>COMPILER_TAG &gt;= v7.5.0</code>
+ - ARM64/Apple Silicon is supported from images <code>NODE_TAG &gt;= v6.8.1</code> and <code>COMPILER_TAG &gt;= v7.3.0</code></p>
 <h2 id="disclaimer">Disclaimer</h2>
 <ul>
 <li>Firewalls and any other security feature can block your docker/docker-compose requests. Please check that docker/docker-compose is NOT in its blocked list or has permission to make requests.</li>
