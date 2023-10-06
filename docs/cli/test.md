@@ -24,6 +24,7 @@ Helper and utilities for AEproject use, e.g. prefunded wallets, network definiti
 
 ```js
 const { networks, utils, wallets } = require('@aeternity/aeproject');
+const { getFileSystem } = require("@aeternity/aepp-sdk");
 ```
 
 Read [AEproject Library](../lib.md) for a more detailed explanation about the usage of these imports.
@@ -42,7 +43,7 @@ aeSdk = utils.getSdk();
 
 Get the filesystem definition for (custom) `includes` of the given contract:
 ```js
-const filesystem = utils.getFilesystem(EXAMPLE_CONTRACT_SOURCE);
+const fileSystem = await getFileSystem(EXAMPLE_CONTRACT_SOURCE);
 ```
 
 Read the contract source from the filesystem:
@@ -52,7 +53,7 @@ const sourceCode = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 
 Initialize the contract instance:
 ```js
-contract = await aeSdk.initializeContract({ sourceCode, filesystem });
+contract = await aeSdk.initializeContract({ sourceCode, fileSystem });
 ```
 
 Deploy the contract:

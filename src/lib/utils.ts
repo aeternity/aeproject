@@ -1,56 +1,13 @@
 import fs from 'fs';
-import path from 'path';
 
 import {
-  AeSdk, MemoryAccount, Node, CompilerHttp,
+  AeSdk, MemoryAccount, Node, CompilerHttp, getFileSystem,
 } from '@aeternity/aepp-sdk';
 import * as networks from './networks.json';
 import wallets from './wallets.json';
 import { get } from '../utils/utils';
 
 export const getContractContent = (contractPath) => fs.readFileSync(contractPath, 'utf8');
-
-export const getFilesystem = (contractPath) => {
-  const defaultIncludes = [
-    'List.aes', 'Option.aes', 'String.aes',
-    'Func.aes', 'Pair.aes', 'Triple.aes',
-    'BLS12_381.aes', 'Frac.aes', 'Set.aes',
-    'Bitwise.aes',
-  ];
-
-  const rgx = /^include\s+"([\w/.-]+)"/gim;
-  const rgxIncludePath = /"([\w/.-]+)"/i;
-  const rgxMainPath = /.*\//g;
-
-  const contractContent = getContractContent(contractPath);
-  const filesystem = {};
-
-  const rootIncludes = contractContent.match(rgx);
-  if (!rootIncludes) return filesystem;
-  const contractPathMatch = rgxMainPath.exec(contractPath);
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const rootInclude of rootIncludes) {
-    const includeRelativePath = rgxIncludePath.exec(rootInclude);
-
-    // eslint-disable-next-line no-continue
-    if (defaultIncludes.includes(includeRelativePath[1])) continue;
-
-    // eslint-disable-next-line no-console
-    console.log(`==> Adding include to filesystem: ${includeRelativePath[1]}`);
-    const includePath = path.resolve(`${contractPathMatch[0]}/${includeRelativePath[1]}`);
-
-    try {
-      filesystem[includeRelativePath[1]] = fs.readFileSync(includePath, 'utf-8');
-    } catch (error) {
-      throw Error(`File to include '${includeRelativePath[1]}' not found.`);
-    }
-
-    Object.assign(filesystem, getFilesystem(includePath));
-  }
-
-  return filesystem;
-};
 
 export const getDefaultAccounts = () => wallets.map((keypair) => new MemoryAccount(keypair.secretKey));
 
