@@ -3,6 +3,7 @@ const { exec: execP } = require('promisify-child-process');
 const fs = require('fs');
 const chai = require('chai');
 const chaiFiles = require('chai-files');
+
 const { isEnvRunning } = require('../src/env/env');
 const { version } = require('../package.json');
 const { print } = require("../src/utils/utils");
@@ -16,7 +17,7 @@ const exec = (cmd, options) => execP(`${fs.existsSync('~/.profile') ? '. ~/.prof
 
 describe('Happy Path', () => {
   before(async () => {
-    await exec('npm link');
+    await exec('npm run link:local');
     if (!fs.existsSync(cwd)) fs.mkdirSync(cwd);
   });
 

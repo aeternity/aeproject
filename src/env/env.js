@@ -95,7 +95,7 @@ async function startEnv(option) {
 
   await getDockerCompose();
   await exec(`${versionTags} ${dockerComposeCmd} pull`);
-  await exec(`${versionTags} ${dockerComposeCmd} up -d --wait`);
+  await exec(`${versionTags} ${dockerComposeCmd} up -d`);
 
   await ensureNodeAndCompilerAvailable();
 

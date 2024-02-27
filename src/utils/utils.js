@@ -4,7 +4,7 @@ const config = require('../config/config.json');
 // eslint-disable-next-line no-promise-executor-return
 const pause = async (duration) => new Promise((resolve) => setTimeout(resolve, duration));
 
-const ensureNodeAndCompilerAvailable = async (interval = 200, attempts = 1000) => {
+const ensureNodeAndCompilerAvailable = async (interval = 100, attempts = 1200) => {
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < attempts; i++) {
     // eslint-disable-next-line no-await-in-loop
