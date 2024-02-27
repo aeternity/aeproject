@@ -16,7 +16,7 @@ const exec = (cmd, options) => execP(`${fs.existsSync('~/.profile') ? '. ~/.prof
 
 describe('Happy Path', () => {
   before(async () => {
-    await exec('npm link');
+    await exec('npm run link:local');
     if (!fs.existsSync(cwd)) fs.mkdirSync(cwd);
   });
 
