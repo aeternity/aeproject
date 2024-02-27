@@ -10,4 +10,7 @@ main contract Example =
     Chain.event(SetXEvent(Call.caller, x))
     put(Some(x))
 
-  entrypoint get() : option(int) = state
+  entrypoint get() : int =
+    switch(state)
+      None => abort("NOTHING_SET_YET")
+      Some(var) => var

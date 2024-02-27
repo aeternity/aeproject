@@ -1,5 +1,9 @@
 const { assert } = require('chai');
 const { utils } = require('@aeternity/aeproject');
+const chaiAsPromised = require("chai-as-promised");
+const chai = require("chai");
+
+chai.use(chaiAsPromised);
 
 const EXAMPLE_CONTRACT_SOURCE = './contracts/ExampleContract.aes';
 
@@ -40,7 +44,6 @@ describe('ExampleContract', () => {
   });
 
   it('ExampleContract: get undefined when not set before', async () => {
-    const { decodedResult } = await contract.get();
-    assert.equal(decodedResult, undefined);
+    await assert.isRejected(contract.get(), "NOTHING_SET_YET");
   });
 });
