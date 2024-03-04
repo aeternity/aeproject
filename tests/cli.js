@@ -1,29 +1,19 @@
 const path = require('path');
-const { exec: execP } = require('promisify-child-process');
-const fs = require('fs');
 const chai = require('chai');
 const chaiFiles = require('chai-files');
 
 const { isEnvRunning } = require('../src/env/env');
 const { version } = require('../package.json');
 const { print } = require("../src/utils/utils");
+const { exec, cwd, prepareLocal, cleanLocal, linkLocalLib } = require("./util");
 
 chai.use(chaiFiles);
 const { assert } = chai;
 const { file } = chaiFiles;
 
-const cwd = path.join(process.cwd(), '.testdir');
-const exec = (cmd, options) => execP(`${fs.existsSync('~/.profile') ? '. ~/.profile;' : ''}${cmd}`, options);
-
-describe('Happy Path', () => {
-  before(async () => {
-    await exec('npm run link:local');
-    if (!fs.existsSync(cwd)) fs.mkdirSync(cwd);
-  });
-
-  after(() => {
-    fs.rmSync(cwd, { recursive: true });
-  });
+describe('command line usage', () => {
+  before(async () => await prepareLocal());
+  after(() => cleanLocal());
 
   it('help', async () => {
     const res = await exec('aeproject help', { cwd });
@@ -43,7 +33,7 @@ describe('Happy Path', () => {
       assert.equal(res.code, 0);
 
       // link to use local aeproject utils
-      await exec('npm link @aeternity/aeproject', { cwd: folder ? path.join(cwd, folder) : cwd });
+      await linkLocalLib(folder)
 
       assert.exists(file(path.join(cwd, '.gitignore')));
       assert.exists(file(path.join(cwd, 'docker-compose.yml')));

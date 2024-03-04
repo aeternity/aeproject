@@ -24,7 +24,7 @@
     "test": "mocha ./tests/**/*.js --timeout 0 --exit",
     "prepublishOnly": "npm run build",
     "copy-files": "cp -r ./src/init/artifacts ./.build/cjs/src/init/ && cp -r ./src/init/artifacts ./.build/esm/src/init/ && cp -r ./src/init/update-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./.build/esm/src/init/",
-    "link:local": "npm run build:clean && npm run build && npm link"
+    "link:local": "npm uninstall -g @aeternity/aeproject && npm run build:clean && npm run build && npm link"
   },
   "license": "ISC",
   "engines": {
