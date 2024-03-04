@@ -75,6 +75,7 @@ let snapshotHeight = -1;
 
 export const createSnapshot = async (aeSdk) => {
   snapshotHeight = await aeSdk.getHeight();
+  await awaitKeyBlocks(aeSdk, 1);
 };
 
 export const rollbackHeight = async (aeSdk, height) => {
