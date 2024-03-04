@@ -81,7 +81,6 @@ export const rollbackHeight = async (aeSdk, height) => {
   const currentBlockHeight = await aeSdk.getHeight();
   if (currentBlockHeight > height) {
     await get(`http://localhost:3001/rollback?height=${height}`);
-    await awaitKeyBlocks(aeSdk, 1);
   }
 };
 
