@@ -21,8 +21,8 @@ async function run(folder, update) {
 }
 
 const checkNodeVersion = () => {
-  if (parseInt(process.version.split('.')[0].replace('v', ''), 10) < 14) {
-    print('You need to use Node.js 14 or newer to use aeproject.');
+  if (parseInt(process.version.split('.')[0].replace('v', ''), 10) < 16) {
+    print('You need to use Node.js 16 or newer to use aeproject.');
     process.exit(1);
   }
 };
