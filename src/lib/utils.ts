@@ -8,9 +8,11 @@ import * as networks from './networks.json';
 import wallets from './wallets.json';
 import { get } from '../utils/utils';
 
-export const getContractContent = (contractPath) => fs.readFileSync(contractPath, 'utf8');
+export function getContractContent(contractPath: string): string {
+  return fs.readFileSync(contractPath, 'utf8');
+}
 
-export const getFilesystem = (contractPath) => {
+export function getFilesystem(contractPath: string): { [key: string]: string } {
   const defaultIncludes = [
     'List.aes', 'Option.aes', 'String.aes',
     'Func.aes', 'Pair.aes', 'Triple.aes',
@@ -50,11 +52,13 @@ export const getFilesystem = (contractPath) => {
   }
 
   return filesystem;
-};
+}
 
-export const getDefaultAccounts = () => wallets.map((keypair) => new MemoryAccount(keypair.secretKey));
+export function getDefaultAccounts(): MemoryAccount[] {
+  return wallets.map((keypair) => new MemoryAccount(keypair.secretKey));
+}
 
-export const getSdk = () => {
+export function getSdk(): AeSdk {
   const instance = new Node(networks.devmode.nodeUrl, { ignoreVersion: true });
 
   return new AeSdk({
@@ -63,26 +67,29 @@ export const getSdk = () => {
     onCompiler: new CompilerHttp(networks.devmode.compilerUrl),
     interval: 50,
   });
-};
+}
 
-export const awaitKeyBlocks = async (aeSdk, n = 1) => {
+export async function awaitKeyBlocks(aeSdk: AeSdk, n: number = 1): Promise<void> {
   const height = await aeSdk.getHeight();
   await get(`http://localhost:3001/emit_kb?n=${n}`);
   await aeSdk.awaitHeight(height + n);
-};
+}
 
 let snapshotHeight = -1;
 
-export const createSnapshot = async (aeSdk) => {
+export async function createSnapshot(aeSdk: AeSdk): Promise<void> {
   snapshotHeight = await aeSdk.getHeight();
   await awaitKeyBlocks(aeSdk, 1);
-};
+}
 
-export const rollbackHeight = async (aeSdk, height) => {
+export async function rollbackHeight(aeSdk: AeSdk, height: number): Promise<void> {
   const currentBlockHeight = await aeSdk.getHeight();
   if (currentBlockHeight > height) {
     await get(`http://localhost:3001/rollback?height=${height}`);
   }
-};
+}
 
-export const rollbackSnapshot = async (aeSdk) => rollbackHeight(aeSdk, snapshotHeight);
+export async function rollbackSnapshot(aeSdk: AeSdk): Promise<void> {
+  if (snapshotHeight === -1) throw new Error('no snapshot created');
+  return rollbackHeight(aeSdk, snapshotHeight);
+}
