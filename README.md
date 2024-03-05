@@ -22,12 +22,8 @@ npm install -g @aeternity/aeproject
 
 ## Release Process
 
-As `@aeternity/aeproject` has a dependency on itself for initialised project we need a 2-step release process. 
-
-1. add preparation commit, e.g. as https://github.com/aeternity/aeproject/commit/b448b445b0d151059fd88a0436e71599be042aad
-   - in `src/init/artifacts/package.json` update the `@aeternity/aeproject` to the to be released version
-   - push commit to `origin/main`, the CI run will eventually fail as it can't yet use the to be released version
-2. merge the release please PR
-3. build and publish locally
+1. merge the release please PR
+   - as `@aeternity/aeproject` has a dependency on itself as library, the CI run before publishing to npm after merging might fail
+2. build locally and publish
    - checkout latest `origin/main` including the merged release please PR, ensure no local changes
-   - publish to npm using `npm publish` (may require login if not already)
+   - publish to npm using `npm publish` (does automatically clean-build, may require login if not already)

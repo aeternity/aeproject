@@ -4,6 +4,7 @@ const path = require('path');
 const { exec } = require('promisify-child-process');
 
 const constants = require('./constants.json');
+const packageJson = require('../../package.json');
 const { print } = require('../utils/utils');
 
 const { copyFolderRecursiveSync, deleteWithPrompt } = require('../utils/fs-utils');
@@ -58,6 +59,8 @@ const installDependencies = async (folder, update = false) => {
     print('===== installing dependencies =====');
     const npm = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
     const installPromises = [`${npm} install`];
+
+    installPromises.push(`${npm} install --save-dev @aeternity/aeproject@${packageJson.version}`);
 
     if (update) {
       constants.dependencies.map((dependency) => installPromises.push(`${npm} install ${dependency}`));

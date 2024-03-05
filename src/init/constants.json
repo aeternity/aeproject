@@ -6,8 +6,8 @@
         "@aeternity/aepp-sdk@13"
     ],
     "devDependencies": [
-        "@aeternity/aeproject@4",
         "chai@4",
+        "chai-as-promised@7",
         "mocha@10"
     ],
     "uninstallDependencies": [
