@@ -1,16 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const prompts = require('prompts');
+const fs = require("fs");
+const path = require("path");
+const prompts = require("prompts");
 
 async function prompt(action, target) {
   const response = await prompts({
-    type: 'text',
-    name: 'value',
+    type: "text",
+    name: "value",
     message: `Do you want to ${action} '${target}'? (y/N):`,
   });
 
   const input = response.value.trim();
-  return input === 'YES' || input === 'yes' || input === 'Y' || input === 'y';
+  return input === "YES" || input === "yes" || input === "Y" || input === "y";
 }
 
 async function copyFolderRecursiveSync(srcDir, dstDir) {
@@ -31,7 +31,7 @@ async function copyFolderRecursiveSync(srcDir, dstDir) {
       await copyFolderRecursiveSync(src, dst);
     } else if (!fs.existsSync(dst)) {
       fs.writeFileSync(dst, fs.readFileSync(src));
-    } else if (await prompt('overwrite', dst)) {
+    } else if (await prompt("overwrite", dst)) {
       fs.writeFileSync(dst, fs.readFileSync(src));
     }
   }, Promise.resolve());
@@ -39,7 +39,7 @@ async function copyFolderRecursiveSync(srcDir, dstDir) {
 
 async function deleteWithPrompt(target) {
   if (fs.existsSync(target)) {
-    if (await prompt('delete', target)) {
+    if (await prompt("delete", target)) {
       fs.rmSync(target, { recursive: true });
     }
   }

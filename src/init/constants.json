@@ -1,24 +1,15 @@
 {
-    "artifactsDest": "./",
-    "artifactsDir": "/artifacts",
-    "updateArtifactsDir": "/update-artifacts",
-    "dependencies": [
-        "@aeternity/aepp-sdk@13"
-    ],
-    "devDependencies": [
-        "chai@4",
-        "chai-as-promised@7",
-        "mocha@10"
-    ],
-    "uninstallDependencies": [
-        "aeproject",
-        "aeproject-lib"
-    ],
-    "deleteArtifacts": [
-        "./config/",
-        "./docker/",
-        "./utils/",
-        "./deployment/",
-        "./docker-compose.compiler.yml"
-    ]
+  "artifactsDest": "./",
+  "artifactsDir": "/artifacts",
+  "updateArtifactsDir": "/update-artifacts",
+  "dependencies": ["@aeternity/aepp-sdk@13"],
+  "devDependencies": ["chai@4", "chai-as-promised@7", "mocha@10"],
+  "uninstallDependencies": ["aeproject", "aeproject-lib"],
+  "deleteArtifacts": [
+    "./config/",
+    "./docker/",
+    "./utils/",
+    "./deployment/",
+    "./docker-compose.compiler.yml"
+  ]
 }

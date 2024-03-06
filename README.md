@@ -12,13 +12,12 @@ npm install -g @aeternity/aeproject
 
 ## Documentation
 
-* [Quick Start](docs/index.md)
-* [Project Initialization](docs/cli/init.md)
-* [Local Environment](docs/cli/env.md)
-* [Unit Testing](docs/cli/test.md)
-* [AEproject Library](docs/lib.md)
-* [Migration from 3.x.x to 4.x.x](docs/migration-from-3.x.x-to-4.x.x.md)
-
+- [Quick Start](docs/index.md)
+- [Project Initialization](docs/cli/init.md)
+- [Local Environment](docs/cli/env.md)
+- [Unit Testing](docs/cli/test.md)
+- [AEproject Library](docs/lib.md)
+- [Migration from 3.x.x to 4.x.x](docs/migration-from-3.x.x-to-4.x.x.md)
 
 ## Release Process
 

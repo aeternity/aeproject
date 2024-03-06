@@ -1,13 +1,13 @@
-const { assert } = require('chai');
-const { utils } = require('@aeternity/aeproject');
+const { assert } = require("chai");
+const { utils } = require("@aeternity/aeproject");
 const chaiAsPromised = require("chai-as-promised");
 const chai = require("chai");
 
 chai.use(chaiAsPromised);
 
-const EXAMPLE_CONTRACT_SOURCE = './contracts/ExampleContract.aes';
+const EXAMPLE_CONTRACT_SOURCE = "./contracts/ExampleContract.aes";
 
-describe('ExampleContract', () => {
+describe("ExampleContract", () => {
   let aeSdk;
   let contract;
 
@@ -33,17 +33,22 @@ describe('ExampleContract', () => {
     await utils.rollbackSnapshot(aeSdk);
   });
 
-  it('ExampleContract: set and get', async () => {
-    const set = await contract.set(42, { onAccount: utils.getDefaultAccounts()[1] });
-    assert.equal(set.decodedEvents[0].name, 'SetXEvent');
-    assert.equal(set.decodedEvents[0].args[0], utils.getDefaultAccounts()[1].address);
+  it("ExampleContract: set and get", async () => {
+    const set = await contract.set(42, {
+      onAccount: utils.getDefaultAccounts()[1],
+    });
+    assert.equal(set.decodedEvents[0].name, "SetXEvent");
+    assert.equal(
+      set.decodedEvents[0].args[0],
+      utils.getDefaultAccounts()[1].address,
+    );
     assert.equal(set.decodedEvents[0].args[1], 42);
 
     const { decodedResult } = await contract.get();
     assert.equal(decodedResult, 42);
   });
 
-  it('ExampleContract: get undefined when not set before', async () => {
+  it("ExampleContract: get undefined when not set before", async () => {
     await assert.isRejected(contract.get(), "NOTHING_SET_YET");
   });
 });

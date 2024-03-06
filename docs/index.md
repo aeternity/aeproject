@@ -1,7 +1,9 @@
 # Quick Start
 
 ## Requirements
+
 In order to have AEproject working you must have installed the following:
+
 ```
 nodejs >= 16
 docker
@@ -10,11 +12,13 @@ docker
 **Note:** on windows WSL 2 must be used
 
 ## Install
+
 ```text
 npm install -g @aeternity/aeproject
 ```
 
 ## Init a project
+
 ```text
 aeproject init [folder]
 ```
@@ -24,6 +28,7 @@ This will create the project scaffold with an example contract including tests a
 Further explained in [Initialization Documentation](cli/init.md).
 
 ## Running a local environment
+
 ```text
 aeproject env
 ```

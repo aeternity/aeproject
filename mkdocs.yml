@@ -1,8 +1,8 @@
-site_name: 'AEproject: Smart Contract Testing Framework'
+site_name: "AEproject: Smart Contract Testing Framework"
 plugins:
   - search
-repo_url: 'https://github.com/aeternity/aeproject'
-edit_uri: ''
+repo_url: "https://github.com/aeternity/aeproject"
+edit_uri: ""
 
 extra:
   version:

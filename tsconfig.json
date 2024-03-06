@@ -1,8 +1,11 @@
 {
-  "include": [
-    "./src/**/*"
+  "include": ["./src/**/*"],
+  "exclude": [
+    "./tests/**",
+    ".eslintrc.js",
+    "./src/init/artifacts/**",
+    "./src/init/update-artifacts/**"
   ],
-  "exclude": ["./tests/**", ".eslintrc.js", "./src/init/artifacts/**", "./src/init/update-artifacts/**"],
   "compilerOptions": {
     "outDir": "./.build",
     "target": "es2020",
@@ -12,5 +15,5 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowJs": true
-  },
+  }
 }
