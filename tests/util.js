@@ -13,12 +13,13 @@ async function exec(cmd, options) {
 }
 
 async function prepareLocal() {
+  cleanLocal();
   await exec("npm run link:local");
   if (!fs.existsSync(cwd)) fs.mkdirSync(cwd);
 }
 
 function cleanLocal() {
-  fs.rmSync(cwd, { recursive: true });
+  if (fs.existsSync(cwd)) fs.rmSync(cwd, { recursive: true });
 }
 
 async function linkLocalLib(folder) {

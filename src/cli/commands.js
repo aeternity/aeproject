@@ -13,8 +13,13 @@ const addInitOption = (program) => {
       constants.artifactsDest,
     )
     .option("--update", "update project files")
+    .option(
+      "--next",
+      "apply patches to initialise or update for use with the upcoming release",
+    )
+    .option("-y", "overwrite all files in update process")
     .action(async (folder, option) => {
-      await init.run(folder, option.update);
+      await init.run(folder, option.update, option.next, option.y);
     });
 };
 

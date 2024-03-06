@@ -17,3 +17,7 @@ aeproject init --update
 ```
 
 Updates the project structure and needed artifacts to the latest version, as well as installing needed dependencies.
+
+## Upcoming Hard-fork initialization
+
+The additional parameter `--next` can be used to either initialize or update a project with changes for an upcoming hard-fork if available.

@@ -67,13 +67,13 @@ export function getDefaultAccounts(): MemoryAccount[] {
   return wallets.map((keypair) => new MemoryAccount(keypair.secretKey));
 }
 
-export function getSdk(): AeSdk {
-  const instance = new Node(networks.devmode.nodeUrl, { ignoreVersion: true });
+export function getSdk(options: {}): AeSdk {
+  const instance = new Node(networks.devmode.nodeUrl, options);
 
   return new AeSdk({
     accounts: getDefaultAccounts(),
     nodes: [{ name: "node", instance }],
-    onCompiler: new CompilerHttp(networks.devmode.compilerUrl),
+    onCompiler: new CompilerHttp(networks.devmode.compilerUrl, options),
     interval: 50,
   });
 }

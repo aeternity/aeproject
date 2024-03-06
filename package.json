@@ -26,7 +26,7 @@
     "lint:ci": "eslint --ext .js --max-warnings=0 .",
     "test": "mocha ./tests/**/*.js --timeout 0 --exit",
     "prepack": "npm run build:clean && npm run build",
-    "copy-files": "cp -r ./src/init/artifacts ./.build/cjs/src/init/ && cp -r ./src/init/artifacts ./.build/esm/src/init/ && cp -r ./src/init/update-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./.build/esm/src/init/",
+    "copy-files": "cp -r ./src/init/artifacts ./.build/cjs/src/init/ && cp -r ./src/init/artifacts ./.build/esm/src/init/ && cp -r ./src/init/update-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./.build/esm/src/init/ && cp -r ./src/init/next-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/next-artifacts ./.build/esm/src/init/",
     "link:local": "npm uninstall -g @aeternity/aeproject && npm run build:clean && npm run build && npm link"
   },
   "license": "ISC",

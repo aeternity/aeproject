@@ -13,7 +13,7 @@ async function prompt(action, target) {
   return input === "YES" || input === "yes" || input === "Y" || input === "y";
 }
 
-async function copyFolderRecursiveSync(srcDir, dstDir) {
+async function copyFolderRecursiveSync(srcDir, dstDir, y = false) {
   let src;
   let dst;
 
@@ -28,18 +28,18 @@ async function copyFolderRecursiveSync(srcDir, dstDir) {
         fs.mkdirSync(dst);
       }
 
-      await copyFolderRecursiveSync(src, dst);
+      await copyFolderRecursiveSync(src, dst, y);
     } else if (!fs.existsSync(dst)) {
       fs.writeFileSync(dst, fs.readFileSync(src));
-    } else if (await prompt("overwrite", dst)) {
+    } else if (y || (await prompt("overwrite", dst))) {
       fs.writeFileSync(dst, fs.readFileSync(src));
     }
   }, Promise.resolve());
 }
 
-async function deleteWithPrompt(target) {
+async function deleteWithPrompt(target, y = false) {
   if (fs.existsSync(target)) {
-    if (await prompt("delete", target)) {
+    if (y || (await prompt("delete", target))) {
       fs.rmSync(target, { recursive: true });
     }
   }

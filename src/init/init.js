@@ -12,16 +12,29 @@ const {
   deleteWithPrompt,
 } = require("../utils/fs-utils");
 
-async function run(folder, update) {
+async function run(folder, update, next, y) {
   checkNodeVersion();
   createFolder(folder);
 
   if (update) {
-    await updateAEprojectProjectLibraries(folder, update);
+    await updateAEprojectProjectLibraries(folder, update, y);
   } else {
     await createAEprojectProjectStructure(folder);
   }
+
+  // currently implements ceres patches, might be different in the future when ceres is the default
+  if (next) await patchForNextRelease(folder, y);
 }
+
+const patchForNextRelease = async (folder, y) => {
+  print(
+    "===== updating project file and directory structure for next version =====",
+  );
+
+  const fileSource = `${__dirname}${constants.nextArtifactsDir}`;
+
+  await copyFolderRecursiveSync(fileSource, folder, y);
+};
 
 const checkNodeVersion = () => {
   if (parseInt(process.version.split(".")[0].replace("v", ""), 10) < 16) {
@@ -49,10 +62,10 @@ const createAEprojectProjectStructure = async (folder) => {
   );
 };
 
-const updateAEprojectProjectLibraries = async (folder, update) => {
+const updateAEprojectProjectLibraries = async (folder, update, y) => {
   print("===== updating aeproject =====");
 
-  await updateArtifacts(folder);
+  await updateArtifacts(folder, y);
   await installDependencies(folder, update);
 
   print("===== aeproject sucessfully initalized =====");
@@ -107,17 +120,17 @@ const setupArtifacts = async (folder) => {
   );
 };
 
-const updateArtifacts = async (folder) => {
+const updateArtifacts = async (folder, y) => {
   print("===== updating project file and directory structure =====");
 
   const fileSource = `${__dirname}${constants.updateArtifactsDir}`;
 
   await constants.deleteArtifacts.reduce(async (promiseAcc, artifact) => {
     await promiseAcc;
-    await deleteWithPrompt(artifact);
+    await deleteWithPrompt(artifact, y);
   }, Promise.resolve());
 
-  await copyFolderRecursiveSync(fileSource, folder);
+  await copyFolderRecursiveSync(fileSource, folder, y);
 };
 
 module.exports = {

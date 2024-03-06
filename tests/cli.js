@@ -92,6 +92,41 @@ describe("command line usage", () => {
     assert.include(res.stdout, "2 passing");
   });
 
+  it("init --update --next", async () => {
+    const res = await exec("aeproject init --update --next -y", { cwd });
+    assert.equal(res.code, 0);
+    assert.equal(res.stderr, "");
+    assert.include(
+      res.stdout,
+      "===== updating project file and directory structure =====",
+    );
+    assert.include(
+      res.stdout,
+      "===== updating project file and directory structure for next version =====",
+    );
+
+    assert.include(file(path.join(cwd, "docker/aeternity.yaml")), "hard_forks");
+    assert.include(
+      file(path.join(cwd, "test/exampleTest.js")),
+      "ignoreVersion: true",
+    );
+    assert.include(
+      file(path.join(cwd, "docker-compose.yml")),
+      "COMPILER_TAG:-latest",
+    );
+    assert.include(
+      file(path.join(cwd, "docker-compose.yml")),
+      "NODE_TAG:-latest",
+    );
+
+    const resEnv = await exec("aeproject env", { cwd });
+    assert.equal(resEnv.code, 0);
+    assert.isTrue(await isEnvRunning(cwd));
+
+    assert.include(resEnv.stdout, "aeternity/aeternity       latest-bundle");
+    assert.include(resEnv.stdout, "aeternity/aesophia_http   latest");
+  });
+
   it("env --stop", async () => {
     const res = await exec("aeproject env --stop", { cwd });
     assert.equal(res.code, 0);

@@ -18,6 +18,7 @@ npm install -g @aeternity/aeproject
 - [Unit Testing](docs/cli/test.md)
 - [AEproject Library](docs/lib.md)
 - [Migration from 3.x.x to 4.x.x](docs/migration-from-3.x.x-to-4.x.x.md)
+- [Upcoming Hard-Fork / Ceres Support](docs/ceres-support.md)
 
 ## Release Process
 
