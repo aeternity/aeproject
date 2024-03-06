@@ -56,11 +56,7 @@ describe("command line usage", () => {
     assert.isTrue(await isEnvRunning(cwd));
 
     // don't run for all gh-action matrix tests
-    if (
-      process.env.NODE_TAG === "latest" &&
-      process.env.COMPILER_TAG === "latest" &&
-      process.env.NODE_VERSION === "18"
-    ) {
+    if (!process.env.AUX_CI_RUN) {
       const resSecond = await exec(
         "aeproject env --nodeVersion v6.10.0 --compilerVersion v7.4.0",
         { cwd },
@@ -70,7 +66,8 @@ describe("command line usage", () => {
 
       const resThird = await exec("aeproject env", { cwd });
       assert.include(resThird.stdout, "updating");
-    } else print("skipping env version and update tests");
+    } else
+      print("skipping env version and update tests for auxiliary test run");
   });
 
   it("env --restart", async () => {
@@ -93,38 +90,43 @@ describe("command line usage", () => {
   });
 
   it("init --update --next", async () => {
-    const res = await exec("aeproject init --update --next -y", { cwd });
-    assert.equal(res.code, 0);
-    assert.equal(res.stderr, "");
-    assert.include(
-      res.stdout,
-      "===== updating project file and directory structure =====",
-    );
-    assert.include(
-      res.stdout,
-      "===== updating project file and directory structure for next version =====",
-    );
+    if (!process.env.AUX_CI_RUN) {
+      const res = await exec("aeproject init --update --next -y", { cwd });
+      assert.equal(res.code, 0);
+      assert.equal(res.stderr, "");
+      assert.include(
+        res.stdout,
+        "===== updating project file and directory structure =====",
+      );
+      assert.include(
+        res.stdout,
+        "===== updating project file and directory structure for next version =====",
+      );
 
-    assert.include(file(path.join(cwd, "docker/aeternity.yaml")), "hard_forks");
-    assert.include(
-      file(path.join(cwd, "test/exampleTest.js")),
-      "ignoreVersion: true",
-    );
-    assert.include(
-      file(path.join(cwd, "docker-compose.yml")),
-      "COMPILER_TAG:-latest",
-    );
-    assert.include(
-      file(path.join(cwd, "docker-compose.yml")),
-      "NODE_TAG:-latest",
-    );
+      assert.include(
+        file(path.join(cwd, "docker/aeternity.yaml")),
+        "hard_forks",
+      );
+      assert.include(
+        file(path.join(cwd, "test/exampleTest.js")),
+        "ignoreVersion: true",
+      );
+      assert.include(
+        file(path.join(cwd, "docker-compose.yml")),
+        "COMPILER_TAG:-latest",
+      );
+      assert.include(
+        file(path.join(cwd, "docker-compose.yml")),
+        "NODE_TAG:-latest",
+      );
 
-    const resEnv = await exec("aeproject env", { cwd });
-    assert.equal(resEnv.code, 0);
-    assert.isTrue(await isEnvRunning(cwd));
+      const resEnv = await exec("aeproject env", { cwd });
+      assert.equal(resEnv.code, 0);
+      assert.isTrue(await isEnvRunning(cwd));
 
-    assert.include(resEnv.stdout, "aeternity/aeternity       latest-bundle");
-    assert.include(resEnv.stdout, "aeternity/aesophia_http   latest");
+      assert.include(resEnv.stdout, "aeternity/aeternity       latest-bundle");
+      assert.include(resEnv.stdout, "aeternity/aesophia_http   latest");
+    } else console.log("skipping next test for auxiliary test run");
   });
 
   it("env --stop", async () => {
