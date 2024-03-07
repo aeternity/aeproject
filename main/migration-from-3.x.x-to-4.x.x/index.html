@@ -485,44 +485,36 @@
 <h1 id="migration-from-3xx-to-4xx">Migration from 3.x.x to 4.x.x</h1>
 <h2 id="changes">Changes</h2>
 <p><strong>AEproject</strong> <code>v4.0.0</code> underwent some bigger changes, is now available as official package of the æternity organization on NPM and is compatible to the recently published node <a href="https://github.com/aeternity/aeternity/blob/v6.4.0/docs/release-notes/RELEASE-NOTES-6.4.0.md">v6.4.0</a>.</p>
-<p>Install the new AEproject version
+<p>Install the new AEproject version</p>
 <div class="highlight"><pre><span></span><code>npm install -g @aeternity/aeproject
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="removed-commands">Removed commands</h3>
 <p>Following commands have been removed and cannot be used anymore. Most of them didn't work properly or aren't used by anyone:</p>
 <ul>
 <li><code>aeproject compatibility</code> (discontinued)</li>
-<li><code>aeproject compile</code><ul>
+<li><code>aeproject compile</code></li>
 <li>manual compilation isn't needed for use of aeproject, alternatively use the <a href="https://github.com/aeternity/aepp-cli-js">CLI</a> or the <a href="https://github.com/aeternity/aepp-sdk-js">SDK</a> programmatically</li>
-</ul>
-</li>
-<li><code>aeproject deploy</code><ul>
+<li><code>aeproject deploy</code></li>
 <li>deployment isn't supported in aeproject anymore, alternatively use the <a href="https://github.com/aeternity/aepp-cli-js">CLI</a> or the <a href="https://github.com/aeternity/aepp-sdk-js">SDK</a> programmatically</li>
-</ul>
-</li>
 <li><code>aeproject export</code> (discontinued)</li>
-<li><code>aeproject tx-inspector</code> <ul>
+<li><code>aeproject tx-inspector</code></li>
 <li>manual tx inspection is moved to the <a href="https://github.com/aeternity/aepp-cli-js">CLI</a></li>
-</ul>
-</li>
 </ul>
 <h3 id="updated-commands">Updated commands</h3>
 <ul>
-<li><code>aeproject init</code><ul>
+<li><code>aeproject init</code></li>
 <li>added the <code>folder</code> argument to create a new folder for the project initialization</li>
-</ul>
-</li>
 </ul>
 <h3 id="project-structure">Project structure</h3>
 <p>The latest available node and compiler will always be used with starting the testing environment.</p>
 <p>Testing is now handled locally in the project using <code>mocha</code> and <code>chai</code> as direct dev dependencies.</p>
 <p><code>@aeternity/aeproject</code> is added itself as dependency and includes some library-functions that can be used in testing.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">networks</span><span class="p">,</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;@aeternity/aeproject&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">networks</span><span class="p">,</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@aeternity/aeproject&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
 <li><code>networks</code> includes network definitions for local development, testnet and mainnet</li>
 <li><code>wallets</code> includes example wallets that are prefunded in local development</li>
-<li><code>utils</code> includes helper functions for testing<ul>
+<li><code>utils</code> includes helper functions for testing</li>
 <li><code>getFilesystem(source)</code> to get the filesystem definition for a given contract for deployment</li>
 <li><code>getSdk()</code> get an instance of the SDK for local development<ul>
 <li>initialized with all prefunded wallets for <code>onAccount</code> to be used calling from different accounts</li>
@@ -532,14 +524,12 @@
 <li><code>createSnapshot(aeSdk)</code> create a snapshot for local testing</li>
 <li><code>rollbackSnapshot(aeSdk)</code> rollback to previously created snapshot in local testing</li>
 </ul>
-</li>
-</ul>
 <h2 id="instructions">Instructions</h2>
 <ol>
-<li>
-<p>Upgrade your project
-    <div class="highlight"><pre><span></span><code>aeproject init --update
-</code></pre></div></p>
+<li>Upgrade your project</li>
+</ol>
+<div class="highlight"><pre><span></span><code>aeproject init --update
+</code></pre></div>
 <ul>
 <li>adds new files needed<ul>
 <li>including new example contract and tests</li>
@@ -550,12 +540,12 @@
 <li>example contract and example tests should not be accepted if used in your project for testing</li>
 </ul>
 </li>
-<li>automatically installs needed dependencies and removes unnecessary ones</li>
-</ul>
+<li>
+<p>automatically installs needed dependencies and removes unnecessary ones</p>
 </li>
 <li>
 <p>Adapt Testing Setup (compare your tests with <code>test/exampleTest.js</code>) to</p>
-<ul>
+</li>
 <li>include <code>const { assert } = require('chai');</code> for assertions</li>
 <li>replace <code>NETWORKS</code> import with <code>const { networks } = require('@aeternity/aeproject');</code> for networks definition<ul>
 <li>local testing network is now <code>devmode</code> instead of <code>local</code></li>
@@ -567,8 +557,6 @@
 </ul>
 </li>
 </ul>
-</li>
-</ol>
 
 
 

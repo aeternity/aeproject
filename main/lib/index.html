@@ -446,39 +446,39 @@
 
 <h1 id="aeproject-library">AEproject Library</h1>
 <p>Installed automatically with each project initialized with <code>aeproject init</code>, otherwise can be installed using <code>npm i @aeternity/aeproject</code>.</p>
-<p>Available imports include helper definitions and utils using:
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="p">,</span><span class="w"> </span><span class="nx">networks</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;@aeternity/aeproject&#39;</span><span class="p">);</span>
-</code></pre></div></p>
+<p>Available imports include helper definitions and utils using:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="p">,</span><span class="w"> </span><span class="nx">networks</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@aeternity/aeproject&quot;</span><span class="p">);</span>
+</code></pre></div>
 <h2 id="utils">Utils</h2>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getContractContent</span><span class="p">(</span><span class="nx">contractPath</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getContractContent</span><span class="p">(</span><span class="nx">contractPath</span><span class="p">);</span>
 </code></pre></div>
-Read the contract source from given path, just a wrapper for <code>fs.readFileSync</code> using <code>utf-8</code> encoding.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getFilesystem</span><span class="p">(</span><span class="nx">contractPath</span><span class="p">);</span>
+<p>Read the contract source from given path, just a wrapper for <code>fs.readFileSync</code> using <code>utf-8</code> encoding.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getFilesystem</span><span class="p">(</span><span class="nx">contractPath</span><span class="p">);</span>
 </code></pre></div>
-Add the required filesystem imports for contract from given path, excluding the Sophia provided library imports.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
+<p>Add the required filesystem imports for contract from given path, excluding the Sophia provided library imports.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
 </code></pre></div>
-Promisified zero dependencies http <code>GET</code> request, usually used to control æternity node devmode endpoints.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">();</span>
+<p>Promisified zero dependencies http <code>GET</code> request, usually used to control æternity node devmode endpoints.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">();</span>
 </code></pre></div>
-Initialize the æternity SDK, pre-configured for optimal use in an AEproject project using æternity node devmode.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">awaitKeyBlocks</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="p">);</span>
+<p>Initialize the æternity SDK, pre-configured for optimal use in an AEproject project using æternity node devmode.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">awaitKeyBlocks</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="p">);</span>
 </code></pre></div>
-Create and wait for <code>n</code> number of key-blocks with the æternity node devmode, checked using the passed <code>aeSdk</code>.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">createSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
+<p>Create and wait for <code>n</code> number of key-blocks with the æternity node devmode, checked using the passed <code>aeSdk</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">createSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
 </code></pre></div>
-Create a snapshot of the current chain state using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
+<p>Create a snapshot of the current chain state using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
 </code></pre></div>
-Rollback to the latest snapshot using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackHeight</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">);</span>
+<p>Rollback to the latest snapshot using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackHeight</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">);</span>
 </code></pre></div>
-Rollback to the specified height using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
-<p><div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getDefaultAccounts</span><span class="p">();</span>
+<p>Rollback to the specified height using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getDefaultAccounts</span><span class="p">();</span>
 </code></pre></div>
-Get the pre-funded default accounts as <code>MemoryAccount</code>, so they can be used natively using the <code>aeSdk</code>.</p>
+<p>Get the pre-funded default accounts as <code>MemoryAccount</code>, so they can be used natively using the <code>aeSdk</code>.</p>
 <h2 id="wallets">Wallets</h2>
-<p>List of configured keypairs that are pre-funded using the æternity node devmode as provided in AEproject. </p>
+<p>List of configured keypairs that are pre-funded using the æternity node devmode as provided in AEproject.</p>
 <h2 id="networks">Networks</h2>
 <p>Exposed URLs for commonly used <code>nodeUrl</code> and <code>compilerUrl</code>, per default local <code>devmode</code> and optionally hosted URLs for <code>mainnet</code> and <code>testnet</code>.</p>
 

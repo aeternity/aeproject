@@ -488,53 +488,58 @@
 <h2 id="run-unit-tests">Run unit tests</h2>
 <div class="highlight"><pre><span></span><code>aeproject test
 </code></pre></div>
-<p>The <code>test</code> command helps developers run their unit tests for æternity projects. The command executes the tests scripts that are located in the <strong>test</strong> folder of your æternity project. </p>
+<p>The <code>test</code> command helps developers run their unit tests for æternity projects. The command executes the tests scripts that are located in the <strong>test</strong> folder of your æternity project.</p>
 <h2 id="implement-unit-tests">Implement unit tests</h2>
 <p>In the <code>test/exampleTest.js</code> file you can find an example for unit testing using AEproject.</p>
 <h3 id="1-dependencies">1. Dependencies</h3>
 <p>Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> for assertions, documented at <a href="https://www.chaijs.com/api/assert/">https://www.chaijs.com/api/assert/</a></p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">assert</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;chai&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">assert</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;chai&quot;</span><span class="p">);</span>
 </code></pre></div>
 <p>Helper and utilities for AEproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">networks</span><span class="p">,</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;@aeternity/aeproject&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">networks</span><span class="p">,</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@aeternity/aeproject&quot;</span><span class="p">);</span>
 </code></pre></div>
 <p>Read <a href="../../lib/">AEproject Library</a> for a more detailed explanation about the usage of these imports.</p>
 <h3 id="2-sdk-and-snapshotting-setup">2. SDK and Snapshotting Setup</h3>
-<p>Provide your initializations in mocha which need to be done once before all tests:
+<p>Provide your initializations in mocha which need to be done once before all tests:</p>
 <div class="highlight"><pre><span></span><code><span class="nx">before</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">...)</span>
-</code></pre></div></p>
-<p>Initialize the default SDK instance with provided utils:
+</code></pre></div>
+<p>Initialize the default SDK instance with provided utils:</p>
 <div class="highlight"><pre><span></span><code><span class="nx">aeSdk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">();</span>
-</code></pre></div></p>
-<p>Get the filesystem definition for (custom) <code>includes</code> of the given contract:
+</code></pre></div>
+<p>Get the filesystem definition for (custom) <code>includes</code> of the given contract:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">filesystem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getFilesystem</span><span class="p">(</span><span class="nx">EXAMPLE_CONTRACT_SOURCE</span><span class="p">);</span>
-</code></pre></div></p>
-<p>Read the contract source from the filesystem:
+</code></pre></div>
+<p>Read the contract source from the filesystem:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">sourceCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getContractContent</span><span class="p">(</span><span class="nx">EXAMPLE_CONTRACT_SOURCE</span><span class="p">);</span>
-</code></pre></div></p>
-<p>Initialize the contract instance:
+</code></pre></div>
+<p>Initialize the contract instance:</p>
 <div class="highlight"><pre><span></span><code><span class="nx">contract</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">aeSdk</span><span class="p">.</span><span class="nx">initializeContract</span><span class="p">({</span><span class="w"> </span><span class="nx">sourceCode</span><span class="p">,</span><span class="w"> </span><span class="nx">filesystem</span><span class="w"> </span><span class="p">});</span>
-</code></pre></div></p>
-<p>Deploy the contract:
+</code></pre></div>
+<p>Deploy the contract:</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="nx">contract</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
-</code></pre></div></p>
-<p>Create a snapshot of the chain state once before all tests. This allows you to rollback to a clean state after each test if needed:
+</code></pre></div>
+<p>Create a snapshot of the chain state once before all tests. This allows you to rollback to a clean state after each test if needed:</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">createSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
-</code></pre></div></p>
-<p>Rollback to the previously created snapshot after each test for a clean state in the following tests:
+</code></pre></div>
+<p>Rollback to the previously created snapshot after each test for a clean state in the following tests:</p>
 <div class="highlight"><pre><span></span><code><span class="nx">afterEach</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
 <span class="p">});</span>
-</code></pre></div></p>
+</code></pre></div>
 <h3 id="3-example-test">3. Example Test</h3>
-<div class="highlight"><pre><span></span><code><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;ExampleContract: set and get&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">contract</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mf">42</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">onAccount</span><span class="o">:</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getDefaultAccounts</span><span class="p">()[</span><span class="mf">1</span><span class="p">]});</span>
-<span class="w">    </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">set</span><span class="p">.</span><span class="nx">decodedEvents</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;SetXEvent&#39;</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">set</span><span class="p">.</span><span class="nx">decodedEvents</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">args</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getDefaultAccounts</span><span class="p">()[</span><span class="mf">1</span><span class="p">].</span><span class="nx">address</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">set</span><span class="p">.</span><span class="nx">decodedEvents</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">args</span><span class="p">[</span><span class="mf">1</span><span class="p">],</span><span class="w"> </span><span class="mf">42</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;ExampleContract: set and get&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">contract</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mf">42</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">onAccount</span><span class="o">:</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getDefaultAccounts</span><span class="p">()[</span><span class="mf">1</span><span class="p">],</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">set</span><span class="p">.</span><span class="nx">decodedEvents</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SetXEvent&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span>
+<span class="w">    </span><span class="nx">set</span><span class="p">.</span><span class="nx">decodedEvents</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">args</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span>
+<span class="w">    </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getDefaultAccounts</span><span class="p">()[</span><span class="mf">1</span><span class="p">].</span><span class="nx">address</span><span class="p">,</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">set</span><span class="p">.</span><span class="nx">decodedEvents</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">args</span><span class="p">[</span><span class="mf">1</span><span class="p">],</span><span class="w"> </span><span class="mf">42</span><span class="p">);</span>
 
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="nx">decodedResult</span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">contract</span><span class="p">.</span><span class="nx">get</span><span class="p">();</span>
-<span class="w">    </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">decodedResult</span><span class="p">,</span><span class="w"> </span><span class="mf">42</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">decodedResult</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">contract</span><span class="p">.</span><span class="nx">get</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">decodedResult</span><span class="p">,</span><span class="w"> </span><span class="mf">42</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>Use mocha for test setup and chai for <code>assert</code>. Then implement contract usage using the aeternity sdk as explained in the guide at <a href="https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints">https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/contracts.md#5-call-contract-entrypoints</a></p>
