@@ -1,5 +1,46 @@
 # Changelog
 
+## [4.9.0](https://github.com/aeternity/aeproject/compare/v4.8.3...v4.9.0) (2024-03-07)
+
+
+### Features
+
+* add ceres initializer and docs ([0721822](https://github.com/aeternity/aeproject/commit/072182206b07901b79ba1e18cde0462ad1789911))
+
+
+### Bug Fixes
+
+* add debug await key block after creating snapshot ([53fa2f9](https://github.com/aeternity/aeproject/commit/53fa2f9c5d15b116de531f5421eb5b4140719a3f))
+* check for actually supported node &gt;= 16 requirement ([f50464e](https://github.com/aeternity/aeproject/commit/f50464e59b57d7f9d93ab11114274f316cf1acc0))
+* rollback to correct height ([17a8262](https://github.com/aeternity/aeproject/commit/17a8262906a8436d3b51d0a522a0aacb227e2f5f))
+
+
+### CI / CD
+
+* fix workflow for incompatible versions ([e2080d2](https://github.com/aeternity/aeproject/commit/e2080d2f07a00e386b4f808b10fbe235edf6684b))
+* skip certain tests for aux ci runs ([e41d0b7](https://github.com/aeternity/aeproject/commit/e41d0b71634f29c197f36b45529b0c89747530b1))
+
+
+### Testing
+
+* add library usage tests ([cd81972](https://github.com/aeternity/aeproject/commit/cd819723af43750baf4c3f9b73ceda8099b16a25))
+
+
+### Refactorings
+
+* improve library typescript defs ([30a83f8](https://github.com/aeternity/aeproject/commit/30a83f819101eb243c713016b3aaa547e8cfc53b))
+* init command to take current aeproject library version ([124e8c9](https://github.com/aeternity/aeproject/commit/124e8c96fdc28fdd34c3935bda634cd69e655ed7))
+
+
+### Miscellaneous
+
+* add chai as promised test rejection example ([6a0d491](https://github.com/aeternity/aeproject/commit/6a0d491c8cdbe8668fc0ef07aa0ccc4de40539a6))
+* document and improve release process ([b302647](https://github.com/aeternity/aeproject/commit/b302647f548aa6e22f7c384abe2c4247a4e63cb8))
+* improve env initialisation and test setup ([d39e5d4](https://github.com/aeternity/aeproject/commit/d39e5d4a1492279f7cf9707f2300a84fd2117358))
+* introduce prettier ([388f867](https://github.com/aeternity/aeproject/commit/388f867ab40bc1fee00011f52e29c1a41b915833))
+* update dependencies ([5faaf66](https://github.com/aeternity/aeproject/commit/5faaf66454aea01f1861636c723991723c5dd624))
+* upgrade support latest aeternity node ([afd36a5](https://github.com/aeternity/aeproject/commit/afd36a51cd1a9f8f8bd5952c90712f42e44b3697))
+
 ## [4.8.3](https://github.com/aeternity/aeproject/compare/v4.8.2...v4.8.3) (2023-09-20)
 
 
