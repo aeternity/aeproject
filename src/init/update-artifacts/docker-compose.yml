@@ -3,6 +3,9 @@ services:
   aeproject_node:
     image: aeternity/aeternity:${NODE_TAG:-v6.12.0}-bundle
     hostname: node
+    # TODO: remove after releasing https://github.com/aeternity/aeternity/pull/4292
+    healthcheck:
+      interval: 2s
     environment:
       AETERNITY_CONFIG: /home/aeternity/aeternity.yaml
       AE__SYSTEM__CUSTOM_PREFUNDED_ACCS_FILE: "/home/aeternity/node/data/aecore/.genesis/accounts_test.json"
@@ -13,6 +16,9 @@ services:
   aeproject_compiler:
     image: aeternity/aesophia_http:${COMPILER_TAG:-v7.6.1}
     hostname: compiler
+    # TODO: remove after releasing https://github.com/aeternity/aesophia_http/pull/133
+    healthcheck:
+      interval: 2s
     ports:
       - "3080:3080"
 

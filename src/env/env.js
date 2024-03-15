@@ -1,10 +1,6 @@
 const { spawn, exec } = require("promisify-child-process");
 
-const {
-  print,
-  printError,
-  ensureNodeAndCompilerAvailable,
-} = require("../utils/utils");
+const { print, printError } = require("../utils/utils");
 
 let dockerComposeCmd = "docker compose";
 
@@ -104,9 +100,7 @@ async function startEnv(option) {
 
   await getDockerCompose();
   await exec(`${versionTags} ${dockerComposeCmd} pull`);
-  await exec(`${versionTags} ${dockerComposeCmd} up -d`);
-
-  await ensureNodeAndCompilerAvailable();
+  await exec(`${versionTags} ${dockerComposeCmd} up -d --wait`);
 
   const isRunning = await isEnvRunning();
   await printInfo(isRunning, true);
