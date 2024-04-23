@@ -1,7 +1,7 @@
 version: "3.6"
 services:
   aeproject_node:
-    image: aeternity/aeternity:${NODE_TAG:-latest}-bundle
+    image: aeternity/aeternity:${NODE_TAG:-v7.0.0-rc1}-bundle
     hostname: node
     # TODO: remove after releasing https://github.com/aeternity/aeternity/pull/4292
     healthcheck:

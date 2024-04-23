@@ -8,7 +8,7 @@ jobs:
       matrix:
         node-version: [16, 18, 20, 21]
         node-tag: [latest]
-        compiler-tag: [v7.6.1] # latest is v8.0.0-rc1 which is not supported by the sdk currently
+        compiler-tag: [latest]
         aux-ci-run: [true]
 
         # for lts node also test first known compatible and latest known good compiler and node versions

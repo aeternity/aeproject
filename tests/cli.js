@@ -89,7 +89,7 @@ describe("command line usage", () => {
     assert.include(res.stdout, "2 passing");
   });
 
-  it("init --update --next", async () => {
+  it("init --update --next; test", async () => {
     if (!process.env.AUX_CI_RUN) {
       const res = await exec("aeproject init --update --next -y", { cwd });
       assert.equal(res.code, 0);
@@ -108,24 +108,24 @@ describe("command line usage", () => {
         "hard_forks",
       );
       assert.include(
-        file(path.join(cwd, "test/exampleTest.js")),
-        "ignoreVersion: true",
-      );
-      assert.include(
         file(path.join(cwd, "docker-compose.yml")),
         "COMPILER_TAG:-latest",
       );
       assert.include(
         file(path.join(cwd, "docker-compose.yml")),
-        "NODE_TAG:-latest",
+        "NODE_TAG:-v7.0.0-rc1",
       );
 
       const resEnv = await exec("aeproject env", { cwd });
       assert.equal(resEnv.code, 0);
       assert.isTrue(await isEnvRunning(cwd));
 
-      assert.include(resEnv.stdout, "aeternity/aeternity       latest-bundle");
+      assert.include(resEnv.stdout, "aeternity/aeternity       v7.0.0-rc1-bundle");
       assert.include(resEnv.stdout, "aeternity/aesophia_http   latest");
+
+      const resTest = await exec("aeproject test", { cwd });
+      assert.equal(resTest.code, 0);
+      assert.include(resTest.stdout, "2 passing");
     } else console.log("skipping next test for auxiliary test run");
   });
 
