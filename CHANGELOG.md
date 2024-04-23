@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.9.1](https://github.com/aeternity/aeproject/compare/v4.9.0...v4.9.1) (2024-04-23)
+
+
+### Refactorings
+
+* optimize docker healthcheck ([77f7506](https://github.com/aeternity/aeproject/commit/77f750628ebc77e98b1240568cec10e2797e5f35))
+
+
+### Miscellaneous
+
+* upgrade sdk and docker for next versions ([63b0fb2](https://github.com/aeternity/aeproject/commit/63b0fb2d3867c1a8aa108fc036a9fb334282a3a4))
+
 ## [4.9.0](https://github.com/aeternity/aeproject/compare/v4.8.3...v4.9.0) (2024-03-07)
 
 
