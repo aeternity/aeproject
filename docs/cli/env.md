@@ -17,11 +17,11 @@ aeproject env --stop
 There are optional parameters **\-\-nodeVersion** and **\-\-compilerVersion**. To specify a specific version of node or compiler, or both
 
 ```text
-aeproject env --nodeVersion v6.12.0
+aeproject env --nodeVersion v7.0.0
 # or
-aeproject env --compilerVersion v7.6.1
+aeproject env --compilerVersion v8.0.0
 # or
-aeproject env --nodeVersion v6.12.0 --compilerVersion v7.6.1
+aeproject env --nodeVersion v7.0.0 --compilerVersion v8.0.0
 ```
 
 This also applies to the commands `aeproject node` and `aeproject compiler`.

@@ -22,7 +22,7 @@ async function run(folder, update, next, y) {
     await createAEprojectProjectStructure(folder);
   }
 
-  // currently implements ceres patches, might be different in the future when ceres is the default
+  // currently just patches to use latest node/compiler versions, can be reused in the future for upcoming breaking changes
   if (next) await patchForNextRelease(folder, y);
 }
 

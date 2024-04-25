@@ -79,6 +79,7 @@ describe("command line usage", () => {
   it("env --info", async () => {
     const res = await exec("aeproject env --info", { cwd });
     assert.equal(res.code, 0);
+
     print(res.stdout);
   });
 
@@ -104,23 +105,19 @@ describe("command line usage", () => {
       );
 
       assert.include(
-        file(path.join(cwd, "docker/aeternity.yaml")),
-        "hard_forks",
-      );
-      assert.include(
         file(path.join(cwd, "docker-compose.yml")),
         "COMPILER_TAG:-latest",
       );
       assert.include(
         file(path.join(cwd, "docker-compose.yml")),
-        "NODE_TAG:-v7.0.0-rc1",
+        "NODE_TAG:-latest",
       );
 
       const resEnv = await exec("aeproject env", { cwd });
       assert.equal(resEnv.code, 0);
       assert.isTrue(await isEnvRunning(cwd));
 
-      assert.include(resEnv.stdout, "aeternity/aeternity       v7.0.0-rc1-bundle");
+      assert.include(resEnv.stdout, "aeternity/aeternity       latest");
       assert.include(resEnv.stdout, "aeternity/aesophia_http   latest");
 
       const resTest = await exec("aeproject test", { cwd });

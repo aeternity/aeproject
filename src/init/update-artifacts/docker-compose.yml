@@ -1,7 +1,7 @@
 version: "3.6"
 services:
   aeproject_node:
-    image: aeternity/aeternity:${NODE_TAG:-v6.13.0}-bundle
+    image: aeternity/aeternity:${NODE_TAG:-v7.0.0}-bundle
     hostname: node
     # TODO: remove after releasing https://github.com/aeternity/aeternity/pull/4292
     healthcheck:
@@ -14,7 +14,7 @@ services:
       - "./docker/accounts.json:/home/aeternity/node/data/aecore/.genesis/accounts_test.json"
 
   aeproject_compiler:
-    image: aeternity/aesophia_http:${COMPILER_TAG:-v7.6.1}
+    image: aeternity/aesophia_http:${COMPILER_TAG:-v8.0.0}
     hostname: compiler
     # TODO: remove after releasing https://github.com/aeternity/aesophia_http/pull/133
     healthcheck:
