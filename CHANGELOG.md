@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.10.0](https://github.com/aeternity/aeproject/compare/v4.9.1...v4.10.0) (2024-04-26)
+
+
+### Features
+
+* default to use ceres ([104cbe4](https://github.com/aeternity/aeproject/commit/104cbe4b3b7224a9c7cddd8236096339d25db26c))
+
 ## [4.9.1](https://github.com/aeternity/aeproject/compare/v4.9.0...v4.9.1) (2024-04-23)
 
 
