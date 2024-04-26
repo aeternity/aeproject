@@ -18,7 +18,7 @@
     
     
       
-        <title>Upcoming Hard-Fork / Ceres Support - AEproject: Smart Contract Testing Framework</title>
+        <title>Upcoming Version Support - AEproject: Smart Contract Testing Framework</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upcoming-hard-fork-ceres-support" class="md-skip">
+        <a href="#upcoming-version-support" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Upcoming Hard-Fork / Ceres Support
+              Upcoming Version Support
             
           </span>
         </div>
@@ -393,7 +393,7 @@
           
   
   <span class="md-ellipsis">
-    Upcoming Hard-Fork / Ceres Support
+    Upcoming Version Support
   </span>
   
 
@@ -404,7 +404,7 @@
         
   
   <span class="md-ellipsis">
-    Upcoming Hard-Fork / Ceres Support
+    Upcoming Version Support
   </span>
   
 
@@ -510,20 +510,14 @@
                   
 
 
-<h1 id="upcoming-hard-fork-ceres-support">Upcoming Hard-Fork / Ceres Support</h1>
-<p>Aeproject can already be used for testing and setup with the upcoming Ceres hard-fork.</p>
+<h1 id="upcoming-version-support">Upcoming Version Support</h1>
+<p>Aeproject can already be used for testing and setup with the upcoming node versions.</p>
 <h3 id="automatic-update">Automatic update</h3>
-<p>Use <code>aeproject init --next</code> to initialize a new project that has the necessary adjustments for ceres applied.</p>
-<p>Use <code>aeproject init --update --next</code> to update an existing project with the adjustments for ceres. For updating existing tests implemented change occurrences of <code>utils.getSdk()</code> to <code>utils.getSdk({ ignoreVersion: true })</code> or use the same option for manually initialized sdk <code>Node</code> and <code>CompilerHttp</code>. </p>
+<p>Use <code>aeproject init --next</code> to initialize a new project that has the necessary adjustments to use the latest versions.</p>
+<p>Use <code>aeproject init --update --next</code> to update an existing project with the adjustments to use the latest versions. </p>
 <h3 id="manual-update">Manual update</h3>
 <ul>
-<li>change occurrences of <code>utils.getSdk()</code> to <code>utils.getSdk({ ignoreVersion: true })</code> or use the same option for manually initialized sdk <code>Node</code> and <code>CompilerHttp</code></li>
-<li>update <code>docker/aeternity.yml</code> to include 
-<div class="highlight"><pre><span></span><code><span class="nt">chain</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">hard_forks</span><span class="p">:</span>
-<span class="w">    </span><span class="s">&quot;1&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="w">    </span><span class="s">&quot;6&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-</code></pre></div></li>
+<li>change occurrences of <code>utils.getSdk()</code> to use <code>utils.getSdk({ ignoreVersion: true })</code> if needed or use the same option for manually initialized sdk <code>Node</code> and <code>CompilerHttp</code></li>
 <li>update <code>docker-compose.yml</code> to use the <code>latest</code> node and compiler tags or specify it manually in running with <code>aeproject env --nodeVersion latest --compilerVersion latest</code></li>
 </ul>
 
