@@ -20,11 +20,11 @@
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && npm run copy-files",
-    "build:clean": "rm -rf ./.build",
+    "build:clean": "rimraf ./.build",
     "lint": "eslint .",
     "lint:fix": "eslint --ext .js --fix .",
     "lint:ci": "eslint --ext .js --max-warnings=0 .",
-    "test": "npm run build && mocha ./tests/**/*.js --timeout 0 --exit",
+    "test": "vitest",
     "prepack": "npm run build:clean && npm run build",
     "copy-files": "cp -r ./src/init/artifacts ./.build/cjs/src/init/ && cp -r ./src/init/artifacts ./.build/esm/src/init/ && cp -r ./src/init/update-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./.build/esm/src/init/ && cp -r ./src/init/next-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/next-artifacts ./.build/esm/src/init/",
     "link:local": "npm uninstall -g @aeternity/aeproject && npm run build:clean && npm run build && npm link"
@@ -54,8 +54,9 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
-    "mocha": "^10.6.0",
     "prettier": "^3.3.2",
-    "typescript": "^5.5.3"
+    "rimraf": "^5.0.7",
+    "typescript": "^5.5.3",
+    "vitest": "^1.6.0"
   }
 }

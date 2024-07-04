@@ -1,19 +1,14 @@
-const path = require("path");
-const chai = require("chai");
-const chaiFiles = require("chai-files");
+import path from "path";
+import fs from "fs";
 
-const { isEnvRunning } = require("../src/env/env");
-const { version } = require("../package.json");
-const { print } = require("../src/utils/utils");
-const { exec, cwd, prepareLocal, cleanLocal, linkLocalLib } = require("./util");
-
-chai.use(chaiFiles);
-const { assert } = chai;
-const { file } = chaiFiles;
+import { isEnvRunning } from "../src/env/env";
+import { version } from "../package.json";
+import { print } from "../src/utils/utils";
+import { exec, cwd, prepareLocal, cleanLocal, linkLocalLib } from "./util.mjs";
 
 describe("command line usage", () => {
-  before(async () => await prepareLocal());
-  after(() => cleanLocal());
+  beforeAll(async () => await prepareLocal());
+  afterAll(() => cleanLocal());
 
   it("help", async () => {
     const res = await exec("aeproject help", { cwd });
@@ -38,15 +33,17 @@ describe("command line usage", () => {
       // link to use local aeproject utils
       await linkLocalLib(folder);
 
-      assert.exists(file(path.join(cwd, ".gitignore")));
-      assert.exists(file(path.join(cwd, "docker-compose.yml")));
-      assert.exists(file(path.join(cwd, "package.json")));
+      assert.exists(fs.existsSync(path.join(cwd, ".gitignore")));
+      assert.exists(fs.existsSync(path.join(cwd, "docker-compose.yml")));
+      assert.exists(fs.existsSync(path.join(cwd, "package.json")));
 
-      assert.exists(file(path.join(cwd, "contracts/ExampleContract.aes")));
-      assert.exists(file(path.join(cwd, "docker/accounts.json")));
-      assert.exists(file(path.join(cwd, "docker/aeternity.yaml")));
-      assert.exists(file(path.join(cwd, "docker/nginx.conf")));
-      assert.exists(file(path.join(cwd, "test/exampleTest.js")));
+      assert.exists(
+        fs.existsSync(path.join(cwd, "contracts/ExampleContract.aes")),
+      );
+      assert.exists(fs.existsSync(path.join(cwd, "docker/accounts.json")));
+      assert.exists(fs.existsSync(path.join(cwd, "docker/aeternity.yaml")));
+      assert.exists(fs.existsSync(path.join(cwd, "docker/nginx.conf")));
+      assert.exists(fs.existsSync(path.join(cwd, "test/exampleTest.js")));
     });
   }
 
@@ -106,11 +103,11 @@ describe("command line usage", () => {
       );
 
       assert.include(
-        file(path.join(cwd, "docker-compose.yml")),
+        fs.readFileSync(path.join(cwd, "docker-compose.yml"), "utf8"),
         "COMPILER_TAG:-latest",
       );
       assert.include(
-        file(path.join(cwd, "docker-compose.yml")),
+        fs.readFileSync(path.join(cwd, "docker-compose.yml"), "utf8"),
         "NODE_TAG:-latest",
       );
 

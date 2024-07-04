@@ -1,17 +1,12 @@
-const chai = require("chai");
-const chaiFiles = require("chai-files");
-const { utils } = require("@aeternity/aeproject");
+import * as utils from "./../src/lib/utils";
 
-const { exec, cwd, prepareLocal, cleanLocal, linkLocalLib } = require("./util");
-const { assert } = require("chai");
-const { generateKeyPair } = require("@aeternity/aepp-sdk");
-
-chai.use(chaiFiles);
+import { exec, cwd, prepareLocal, cleanLocal, linkLocalLib } from "./util";
+import { generateKeyPair } from "@aeternity/aepp-sdk";
 
 describe("library usage", () => {
   let aeSdk;
 
-  before(async () => {
+  beforeAll(async () => {
     await prepareLocal();
     await exec("aeproject init", { cwd });
     await linkLocalLib();
@@ -21,7 +16,7 @@ describe("library usage", () => {
     aeSdk = utils.getSdk();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await exec("aeproject env --stop", { cwd });
     cleanLocal();
   });
