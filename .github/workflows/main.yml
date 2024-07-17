@@ -6,8 +6,8 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        node-version: [16, 18, 20, 21]
-        node-tag: [v7.0.0] # latest known good
+        node-version: [16, 18, 20, 22]
+        node-tag: [v7.2.0] # latest known good
         compiler-tag: [v8.0.0] # latest known good
         aux-ci-run: [true]
 
@@ -17,10 +17,10 @@ jobs:
             node-tag: v6.8.0 # v6.3.0 to v6.7.0 use a different config format
             compiler-tag: v7.4.0
             aux-ci-run: true
-          #- node-version: 20
-          #  node-tag: latest currently doesn't work https://github.com/aeternity/aepp-sdk-js/issues/1999, https://github.com/aeternity/aeternity/issues/4376
-          #  compiler-tag: latest
-          #  aux-ci-run: true
+          - node-version: 20
+            node-tag: latest
+            compiler-tag: latest
+            aux-ci-run: true
           - node-version: 20
             node-tag: # latest known good versions are defaulted to, thus not passed explicitly
             compiler-tag:

@@ -17,11 +17,11 @@ aeproject env --stop
 There are optional parameters **\-\-nodeVersion** and **\-\-compilerVersion**. To specify a specific version of node or compiler, or both
 
 ```text
-aeproject env --nodeVersion v7.0.0
+aeproject env --nodeVersion v7.2.0
 # or
 aeproject env --compilerVersion v8.0.0
 # or
-aeproject env --nodeVersion v7.0.0 --compilerVersion v8.0.0
+aeproject env --nodeVersion v7.2.0 --compilerVersion v8.0.0
 ```
 
 This also applies to the commands `aeproject node` and `aeproject compiler`.
@@ -42,6 +42,7 @@ aeproject env --info
 - the latest `@aeternity/aepp-sdk@13` is only compatible using `NODE_TAG >= v6.0.0` and `COMPILER_TAG >= v7.5.0`
 - the sdk from `@aeternity/aepp-sdk@13 >= v13.3.2` is compatible with `NODE_TAG >= v7.0.0-rc1` and `COMPILER_TAG >= v8.0.0-rc1`
 - ARM64/Apple Silicon is supported from images `NODE_TAG >= v6.8.1` and `COMPILER_TAG >= v7.3.0`
+- due to a bug, `NODE_TAG = v7.1.0` is not compatible with aeproject
 
 ## Disclaimer
 
