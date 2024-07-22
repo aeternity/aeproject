@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.10.1](https://github.com/aeternity/aeproject/compare/v4.10.0...v4.10.1) (2024-07-22)
+
+
+### Refactorings
+
+* replace chai/mocha with vitest ([eb717e5](https://github.com/aeternity/aeproject/commit/eb717e5b8319747607805f6e25520ad0455f222d))
+
+
+### Miscellaneous
+
+* update compatible node version ([97bef2c](https://github.com/aeternity/aeproject/commit/97bef2c9f7fd157f3dd07e8508b299f229b84e1d))
+* update dependencies ([eee28ef](https://github.com/aeternity/aeproject/commit/eee28ef31829ee96df2a427d9bdda8784c78bc8a))
+* update dependency versions, temp fix ci ([e53bcca](https://github.com/aeternity/aeproject/commit/e53bcca602b79612704dc396ef377e187b62a279))
+
 ## [4.10.0](https://github.com/aeternity/aeproject/compare/v4.9.1...v4.10.0) (2024-04-26)
 
 
