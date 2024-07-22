@@ -503,11 +503,11 @@
 <div class="highlight"><pre><span></span><code>aeproject env --stop
 </code></pre></div>
 <p>There are optional parameters <strong>--nodeVersion</strong> and <strong>--compilerVersion</strong>. To specify a specific version of node or compiler, or both</p>
-<div class="highlight"><pre><span></span><code>aeproject env --nodeVersion v7.0.0
+<div class="highlight"><pre><span></span><code>aeproject env --nodeVersion v7.2.0
 # or
 aeproject env --compilerVersion v8.0.0
 # or
-aeproject env --nodeVersion v7.0.0 --compilerVersion v8.0.0
+aeproject env --nodeVersion v7.2.0 --compilerVersion v8.0.0
 </code></pre></div>
 <p>This also applies to the commands <code>aeproject node</code> and <code>aeproject compiler</code>.</p>
 <p>To see whether you have running instances of the nodes along with a compiler you could run the following command</p>
@@ -522,6 +522,7 @@ aeproject env --nodeVersion v7.0.0 --compilerVersion v8.0.0
 <li>the latest <code>@aeternity/aepp-sdk@13</code> is only compatible using <code>NODE_TAG &gt;= v6.0.0</code> and <code>COMPILER_TAG &gt;= v7.5.0</code></li>
 <li>the sdk from <code>@aeternity/aepp-sdk@13 &gt;= v13.3.2</code> is compatible with <code>NODE_TAG &gt;= v7.0.0-rc1</code> and <code>COMPILER_TAG &gt;= v8.0.0-rc1</code></li>
 <li>ARM64/Apple Silicon is supported from images <code>NODE_TAG &gt;= v6.8.1</code> and <code>COMPILER_TAG &gt;= v7.3.0</code></li>
+<li>due to a bug, <code>NODE_TAG = v7.1.0</code> is not compatible with aeproject</li>
 </ul>
 <h2 id="disclaimer">Disclaimer</h2>
 <ul>
