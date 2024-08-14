@@ -7,7 +7,7 @@
     "./src/init/update-artifacts/**"
   ],
   "compilerOptions": {
-    "outDir": "./.build",
+    "outDir": "./build",
     "target": "es2020",
     "lib": ["es2020", "dom", "esnext"],
     "moduleResolution": "node",

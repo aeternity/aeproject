@@ -2,31 +2,28 @@
   "name": "@aeternity/aeproject",
   "version": "4.10.1",
   "description": "aeternity smart contract testing tool",
-  "main": "./.build/esm/src/lib/index.js",
-  "types": "./.build/types/src/lib/index.d.ts",
+  "main": "./build/esm/src/lib/index.js",
+  "types": "./build/types/src/lib/index.d.ts",
   "bin": {
-    "aeproject": ".build/esm/src/cli.js"
+    "aeproject": "./build/cjs/src/cli.js"
   },
   "exports": {
     ".": {
-      "types": "./.build/types/src/lib/index.d.ts",
-      "require": "./.build/cjs/src/lib/index.js",
-      "import": "./.build/esm/src/lib/index.js",
-      "default": "./.build/esm/src/lib/index.js"
+      "types": "./build/types/src/lib/index.d.ts",
+      "require": "./build/cjs/src/lib/index.js",
+      "import": "./build/esm/src/lib/index.js",
+      "default": "./build/esm/src/lib/index.js"
     }
   },
-  "files": [
-    ".build"
-  ],
   "scripts": {
     "build": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && npm run copy-files",
-    "build:clean": "rimraf ./.build",
+    "build:clean": "rimraf ./build",
     "lint": "eslint .",
     "lint:fix": "eslint --ext .js --fix .",
     "lint:ci": "eslint --ext .js --max-warnings=0 .",
     "test": "vitest",
     "prepack": "npm run build:clean && npm run build",
-    "copy-files": "cp -r ./src/init/artifacts ./.build/cjs/src/init/ && cp -r ./src/init/artifacts ./.build/esm/src/init/ && cp -r ./src/init/update-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./.build/esm/src/init/ && cp -r ./src/init/next-artifacts ./.build/cjs/src/init/ && cp -r ./src/init/next-artifacts ./.build/esm/src/init/",
+    "copy-files": "cp -r ./src/init/artifacts ./build/cjs/src/init/ && cp -r ./src/init/artifacts ./build/esm/src/init/ && cp -r ./src/init/update-artifacts ./build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./build/esm/src/init/ && cp -r ./src/init/next-artifacts ./build/cjs/src/init/ && cp -r ./src/init/next-artifacts ./build/esm/src/init/",
     "link:local": "npm uninstall -g @aeternity/aeproject && npm run build:clean && npm run build && npm link"
   },
   "license": "ISC",
