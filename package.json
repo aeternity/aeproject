@@ -15,6 +15,10 @@
       "default": "./build/esm/src/lib/index.js"
     }
   },
+  "files": [
+    "build",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && npm run copy-files",
     "build:clean": "rimraf ./build",
