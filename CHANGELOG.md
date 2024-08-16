@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.10.2](https://github.com/aeternity/aeproject/compare/v4.10.1...v4.10.2) (2024-08-16)
+
+
+### Bug Fixes
+
+* publish ([c11f856](https://github.com/aeternity/aeproject/commit/c11f8561eeb462b0ea1c0849b147f900130db794))
+
+
+### Miscellaneous
+
+* update dependencies ([1cfc5ba](https://github.com/aeternity/aeproject/commit/1cfc5bae8a157f1c008325367953a5f043331580))
+
 ## [4.10.1](https://github.com/aeternity/aeproject/compare/v4.10.0...v4.10.1) (2024-07-22)
 
 
