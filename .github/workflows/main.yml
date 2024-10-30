@@ -13,15 +13,15 @@ jobs:
 
         # for lts node also test first known compatible and latest known good compiler and node versions
         include:
-          - node-version: 20
+          - node-version: 22
             node-tag: v6.8.0 # v6.3.0 to v6.7.0 use a different config format
             compiler-tag: v7.4.0
             aux-ci-run: true
-          - node-version: 20
+          - node-version: 22
             node-tag: latest
             compiler-tag: latest
             aux-ci-run: true
-          - node-version: 20
+          - node-version: 22
             node-tag: # latest known good versions are defaulted to, thus not passed explicitly
             compiler-tag:
             aux-ci-run: # no aux-ci-run as main ci run, latest version run all tests that are version independent
