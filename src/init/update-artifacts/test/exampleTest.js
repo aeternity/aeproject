@@ -3,6 +3,7 @@ import { getFileSystem } from "@aeternity/aepp-sdk";
 import { assert } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import * as chai from "chai";
+const { Contract } = require("@aeternity/aepp-sdk");
 import { before, describe, afterEach, it } from "mocha";
 
 chai.use(chaiAsPromised);
@@ -23,7 +24,11 @@ describe("ExampleContract", () => {
     const sourceCode = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 
     // initialize the contract instance
-    contract = await aeSdk.initializeContract({ sourceCode, fileSystem });
+    contract = await Contract.initialize({
+      ...aeSdk.getContext(),
+      sourceCode,
+      fileSystem,
+    });
     await contract.init();
 
     // create a snapshot of the blockchain state

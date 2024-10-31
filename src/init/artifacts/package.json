@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@aeternity/aepp-sdk": "^13.3.3"
+    "@aeternity/aepp-sdk": "^14.0.0"
   },
   "devDependencies": {
     "chai": "^5.1.2",
