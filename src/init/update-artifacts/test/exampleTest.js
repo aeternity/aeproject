@@ -2,6 +2,7 @@ const { assert } = require("chai");
 const { utils } = require("@aeternity/aeproject");
 const chaiAsPromised = require("chai-as-promised");
 const chai = require("chai");
+const { Contract } = require("@aeternity/aepp-sdk");
 
 chai.use(chaiAsPromised);
 
@@ -21,7 +22,11 @@ describe("ExampleContract", () => {
     const sourceCode = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 
     // initialize the contract instance
-    contract = await aeSdk.initializeContract({ sourceCode, fileSystem });
+    contract = await Contract.initialize({
+      ...aeSdk.getContext(),
+      sourceCode,
+      fileSystem,
+    });
     await contract.init();
 
     // create a snapshot of the blockchain state

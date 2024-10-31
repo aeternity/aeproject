@@ -1,7 +1,13 @@
 import fs from "fs";
 import path from "path";
 
-import { AeSdk, MemoryAccount, Node, CompilerHttp } from "@aeternity/aepp-sdk";
+import {
+  AeSdk,
+  MemoryAccount,
+  Node,
+  CompilerHttp,
+  Encoded,
+} from "@aeternity/aepp-sdk";
 import * as networks from "./networks.json";
 import wallets from "./wallets.json";
 import { get } from "../utils/utils";
@@ -64,7 +70,10 @@ export function getFilesystem(contractPath: string): { [key: string]: string } {
 }
 
 export function getDefaultAccounts(): MemoryAccount[] {
-  return wallets.map((keypair) => new MemoryAccount(keypair.secretKey));
+  return wallets.map(
+    (keypair) =>
+      new MemoryAccount(keypair.secretKey as Encoded.AccountSecretKey),
+  );
 }
 
 export function getSdk(options: {}): AeSdk {

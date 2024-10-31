@@ -57,7 +57,7 @@ const sourceCode = utils.getContractContent(EXAMPLE_CONTRACT_SOURCE);
 Initialize the contract instance:
 
 ```js
-contract = await aeSdk.initializeContract({ sourceCode, filesystem });
+contract = await Contract.initialize({ ...aeSdk.getContext(), sourceCode, filesystem });
 ```
 
 Deploy the contract:
