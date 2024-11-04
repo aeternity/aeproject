@@ -26,6 +26,9 @@ fork_management:
 
 chain:
   persist: true
+  hard_forks:
+    "1": 0
+    "6": 1
   consensus:
     "0":
       name: "on_demand" # keeping the old config style at first to stay backwards compatible

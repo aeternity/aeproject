@@ -1,6 +1,6 @@
 const { spawn, exec } = require("promisify-child-process");
 
-const { print, printError } = require("../utils/utils");
+const { print, printError, emitKeyBlocks } = require("../utils/utils");
 
 let dockerComposeCmd = "docker compose";
 
@@ -104,7 +104,11 @@ async function startEnv(option) {
 
   const isRunning = await isEnvRunning();
   await printInfo(isRunning, true);
-  if (isRunning) print("===== env was successfully started =====");
+
+  if (isRunning) {
+    await emitKeyBlocks(1);
+    print("===== env was successfully started =====");
+  }
 }
 
 async function printInfo(running, imagesOnly = false) {

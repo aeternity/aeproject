@@ -14,7 +14,7 @@ jobs:
         # for lts node also test first known compatible and latest known good compiler and node versions
         include:
           - node-version: 22
-            node-tag: v6.8.0 # v6.3.0 to v6.7.0 use a different config format
+            node-tag: v7.1.0 # sdk@14 only supports node v7.1.0 and above
             compiler-tag: v7.4.0
             aux-ci-run: true
           - node-version: 22

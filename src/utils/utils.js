@@ -1,6 +1,10 @@
 const http = require("http");
 const config = require("../config/config.json");
 
+const emitKeyBlocks = async (n) => {
+  await get(`http://localhost:3001/emit_kb?n=${n}`);
+};
+
 const get = async (url) =>
   new Promise((resolve, reject) => {
     // eslint-disable-next-line consistent-return
@@ -50,5 +54,6 @@ module.exports = {
   printError: console.error,
   config,
   getNetwork,
+  emitKeyBlocks,
   get,
 };

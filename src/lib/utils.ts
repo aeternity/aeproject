@@ -10,7 +10,7 @@ import {
 } from "@aeternity/aepp-sdk";
 import * as networks from "./networks.json";
 import wallets from "./wallets.json";
-import { get } from "../utils/utils";
+import { get, emitKeyBlocks } from "../utils/utils";
 
 export function getContractContent(contractPath: string): string {
   return fs.readFileSync(contractPath, "utf8");
@@ -92,7 +92,7 @@ export async function awaitKeyBlocks(
   n: number = 1,
 ): Promise<void> {
   const height = await aeSdk.getHeight();
-  await get(`http://localhost:3001/emit_kb?n=${n}`);
+  await emitKeyBlocks(n);
   await aeSdk.awaitHeight(height + n);
 }
 
