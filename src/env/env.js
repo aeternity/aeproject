@@ -105,6 +105,8 @@ async function startEnv(option) {
   const isRunning = await isEnvRunning();
   await printInfo(isRunning, true);
 
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
   if (isRunning) {
     await emitKeyBlocks(1);
     print("===== env was successfully started =====");

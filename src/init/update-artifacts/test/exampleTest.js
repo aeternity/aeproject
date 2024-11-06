@@ -13,6 +13,10 @@ describe("ExampleContract", () => {
   let contract;
 
   before(async () => {
+    await fetch("http://localhost:3001/v3/status")
+      .then((res) => res.text())
+      .then(console.log);
+
     aeSdk = utils.getSdk();
 
     // a filesystem object must be passed to the compiler if the contract uses custom includes
