@@ -1,32 +1,8 @@
-const http = require("http");
 const config = require("../config/config.json");
 
 const emitKeyBlocks = async (n) => {
-  await get(`http://localhost:3001/emit_kb?n=${n}`);
+  await fetch(`http://localhost:3001/emit_kb?n=${n}`);
 };
-
-const get = async (url) =>
-  new Promise((resolve, reject) => {
-    // eslint-disable-next-line consistent-return
-    const req = http.request(url, { method: "GET" }, (res) => {
-      if (res.statusCode < 200 || res.statusCode > 299) {
-        return reject(new Error(`HTTP status code ${res.statusCode}`));
-      }
-
-      const body = [];
-      res.on("data", (chunk) => body.push(chunk));
-      res.on("end", () => resolve(Buffer.concat(body).toString()));
-    });
-
-    req.on("error", (err) => reject(err));
-
-    req.on("timeout", () => {
-      req.destroy();
-      reject(new Error("Request time out"));
-    });
-
-    req.end();
-  });
 
 const getNetwork = (network) => {
   const networks = {
@@ -55,5 +31,4 @@ module.exports = {
   config,
   getNetwork,
   emitKeyBlocks,
-  get,
 };

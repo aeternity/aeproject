@@ -6,7 +6,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        node-version: [16, 18, 20, 22]
+        node-version: [18, 20, 22]
         node-tag: [v7.2.0] # latest known good
         compiler-tag: [v8.0.0] # latest known good
         aux-ci-run: [true]

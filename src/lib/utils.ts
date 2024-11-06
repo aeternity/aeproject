@@ -10,7 +10,7 @@ import {
 } from "@aeternity/aepp-sdk";
 import * as networks from "./networks.json";
 import wallets from "./wallets.json";
-import { get, emitKeyBlocks } from "../utils/utils";
+import { emitKeyBlocks } from "../utils/utils";
 
 export function getContractContent(contractPath: string): string {
   return fs.readFileSync(contractPath, "utf8");
@@ -109,7 +109,7 @@ export async function rollbackHeight(
 ): Promise<void> {
   const currentBlockHeight = await aeSdk.getHeight();
   if (currentBlockHeight > height) {
-    await get(`http://localhost:3001/rollback?height=${height}`);
+    await fetch(`http://localhost:3001/rollback?height=${height}`);
   }
 }
 
