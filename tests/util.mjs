@@ -23,7 +23,11 @@ export function cleanLocal() {
 }
 
 export async function linkLocalLib(folder) {
-  await exec("npm link @aeternity/aeproject", {
-    cwd: folder ? path.join(cwd, folder) : cwd,
-  });
+  const c = folder ? path.join(cwd, folder) : cwd;
+  await exec("npm i .. -D", { cwd: c });
+  await exec(
+    'perl -i -pe \'s/"prepare"/"rem-prepare"/g\' ../node_modules/@aeternity/aepp-sdk/package.json',
+    { cwd: c },
+  );
+  await exec("npm i ../node_modules/@aeternity/aepp-sdk", { cwd: c });
 }

@@ -92,7 +92,7 @@ describe("command line usage", () => {
     if (!process.env.AUX_CI_RUN) {
       const res = await exec("aeproject init --update --next -y", { cwd });
       // link to use local aeproject utils
-      await linkLocalLib(null);
+      await linkLocalLib();
 
       assert.equal(res.code, 0);
       assert.equal(res.stderr, "");

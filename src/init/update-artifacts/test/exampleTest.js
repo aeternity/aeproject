@@ -1,5 +1,4 @@
 import { utils } from "@aeternity/aeproject";
-import * as AeppSdk from "@aeternity/aepp-sdk";
 import { Contract, getFileSystem } from "@aeternity/aepp-sdk";
 import * as chai from "chai";
 import { assert } from "chai";
@@ -15,7 +14,7 @@ describe("ExampleContract", () => {
   let contract;
 
   before(async () => {
-    aeSdk = utils.getSdk(AeppSdk, {});
+    aeSdk = utils.getSdk({});
     // a filesystem object must be passed to the compiler if the contract uses custom includes
     const fileSystem = await getFileSystem(EXAMPLE_CONTRACT_SOURCE);
 
