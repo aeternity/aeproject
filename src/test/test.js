@@ -1,11 +1,11 @@
-const { exec } = require("promisify-child-process");
-const { print } = require("../utils/utils");
+import { exec } from "promisify-child-process";
+import { print } from "../utils/utils.js";
 
-const run = async () => {
+async function run() {
   const workingDirectory = process.cwd();
 
   await test(workingDirectory);
-};
+}
 
 async function test() {
   print("===== Starting Tests =====");
@@ -17,6 +17,4 @@ async function test() {
   await child;
 }
 
-module.exports = {
-  run,
-};
+export default { run };

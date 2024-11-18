@@ -1,9 +1,13 @@
-const init = require("../init/init");
-const testConfig = require("../test/test");
-const env = require("../env/env");
-const constants = require("../init/constants.json");
+import init from "../init/init.js";
+import testConfig from "../test/test.js";
+import env from "../env/env.js";
+import { readFile } from "fs/promises";
 
-const addInitOption = (program) => {
+const constants = JSON.parse(
+  await readFile(new URL("../init/constants.json", import.meta.url)),
+);
+
+function addInitOption(program) {
   program
     .command("init")
     .description("Initialize AEproject")
@@ -21,18 +25,18 @@ const addInitOption = (program) => {
     .action(async (folder, option) => {
       await init.run(folder, option.update, option.next, option.y);
     });
-};
+}
 
-const addTestOption = (program) => {
+function addTestOption(program) {
   program
     .command("test")
     .description("Running the tests")
     .action(async (options) => {
       await testConfig.run(options.path);
     });
-};
+}
 
-const addEnvOption = (program) => {
+function addEnvOption(program) {
   program
     .command("env")
     .description(
@@ -55,14 +59,10 @@ const addEnvOption = (program) => {
     .action(async (options) => {
       await env.run(options);
     });
-};
+}
 
-const initCommands = (program) => {
+export function initCommands(program) {
   addInitOption(program);
   addTestOption(program);
   addEnvOption(program);
-};
-
-module.exports = {
-  initCommands,
-};
+}

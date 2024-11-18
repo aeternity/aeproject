@@ -2,9 +2,20 @@ import fs from "fs";
 import path from "path";
 
 import { AeSdk, MemoryAccount, Node, CompilerHttp } from "@aeternity/aepp-sdk";
-import * as networks from "./networks.json";
-import wallets from "./wallets.json";
 import { get } from "../utils/utils";
+import { readFile } from "fs/promises";
+
+export const networks = JSON.parse(
+  await readFile(new URL("./networks.json", import.meta.url)).then((file) =>
+    file.toString("utf-8"),
+  ),
+);
+
+export const wallets = JSON.parse(
+  await readFile(new URL("./wallets.json", import.meta.url)).then((file) =>
+    file.toString("utf-8"),
+  ),
+);
 
 export function getContractContent(contractPath: string): string {
   return fs.readFileSync(contractPath, "utf8");

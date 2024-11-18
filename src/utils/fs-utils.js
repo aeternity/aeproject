@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const prompts = require("prompts");
+import fs from "fs";
+import path from "path";
+import prompts from "prompts";
 
 async function prompt(action, target) {
   const response = await prompts({
@@ -13,7 +13,7 @@ async function prompt(action, target) {
   return input === "YES" || input === "yes" || input === "Y" || input === "y";
 }
 
-async function copyFolderRecursiveSync(srcDir, dstDir, y = false) {
+export async function copyFolderRecursiveSync(srcDir, dstDir, y = false) {
   let src;
   let dst;
 
@@ -37,15 +37,10 @@ async function copyFolderRecursiveSync(srcDir, dstDir, y = false) {
   }, Promise.resolve());
 }
 
-async function deleteWithPrompt(target, y = false) {
+export async function deleteWithPrompt(target, y = false) {
   if (fs.existsSync(target)) {
     if (y || (await prompt("delete", target))) {
       fs.rmSync(target, { recursive: true });
     }
   }
 }
-
-module.exports = {
-  copyFolderRecursiveSync,
-  deleteWithPrompt,
-};

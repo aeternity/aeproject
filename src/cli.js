@@ -1,38 +1,40 @@
 #! /usr/bin/env node
+import { program } from "commander";
+import { initCommands } from "./cli/commands.js";
+import { readFile } from "fs/promises";
 
-const program = require("commander").program;
+const packageJson = JSON.parse(
+  await readFile(new URL("../package.json", import.meta.url)),
+);
 
-const commands = require("./cli/commands");
-const packageJson = require("../package.json");
-
-const setupVersion = () => {
+function setupVersion() {
   program.version(packageJson.version);
-};
+}
 
-const setupDefaultHandler = () => {
+function setupDefaultHandler() {
   program.on("command:*", () => {
     program.help();
   });
-};
+}
 
-const setupCommands = () => {
-  commands.initCommands(program);
-};
+function setupCommands() {
+  initCommands(program);
+}
 
-const parseParams = () => {
+function parseParams() {
   program.parse(process.argv);
-};
+}
 
-const presentHelpIfNeeded = () => {
+function presentHelpIfNeeded() {
   if (!program.args.length) program.help();
-};
+}
 
-const run = () => {
+function run() {
   setupVersion();
   setupDefaultHandler();
   setupCommands();
   parseParams();
   presentHelpIfNeeded();
-};
+}
 
 run();

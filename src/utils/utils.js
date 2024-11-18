@@ -1,8 +1,12 @@
-const http = require("http");
-const config = require("../config/config.json");
+import http from "http";
+import { readFile } from "fs/promises";
 
-const get = async (url) =>
-  new Promise((resolve, reject) => {
+const config = JSON.parse(
+  await readFile(new URL("../config/config.json", import.meta.url)),
+);
+
+async function get(url) {
+  return new Promise((resolve, reject) => {
     // eslint-disable-next-line consistent-return
     const req = http.request(url, { method: "GET" }, (res) => {
       if (res.statusCode < 200 || res.statusCode > 299) {
@@ -23,8 +27,9 @@ const get = async (url) =>
 
     req.end();
   });
+}
 
-const getNetwork = (network) => {
+export function getNetwork(network) {
   const networks = {
     local: {
       url: config.localhostParams.url,
@@ -41,14 +46,8 @@ const getNetwork = (network) => {
   };
 
   return networks[network];
-};
+}
 
-module.exports = {
-  // eslint-disable-next-line no-console
-  print: console.log,
-  // eslint-disable-next-line no-console
-  printError: console.error,
-  config,
-  getNetwork,
-  get,
-};
+export const print = console.log;
+export const printError = console.error;
+export { config, get };

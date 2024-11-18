@@ -1,8 +1,8 @@
-const { assert } = require("chai");
-const { utils } = require("@aeternity/aeproject");
-const chaiAsPromised = require("chai-as-promised");
-const chai = require("chai");
-const { getFileSystem } = require("@aeternity/aepp-sdk");
+import { utils } from "@aeternity/aeproject";
+import { getFileSystem } from "@aeternity/aepp-sdk";
+import { assert } from "chai";
+import chaiAsPromised from "chai-as-promised";
+import * as chai from "chai";
 
 chai.use(chaiAsPromised);
 

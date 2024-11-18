@@ -1,16 +1,23 @@
-const fs = require("fs");
-const path = require("path");
-
-const { exec } = require("promisify-child-process");
-
-const constants = require("./constants.json");
-const packageJson = require("../../package.json");
-const { print } = require("../utils/utils");
-
-const {
+import fs from "fs";
+import path from "path";
+import { exec } from "promisify-child-process";
+import { print } from "../utils/utils.js";
+import {
   copyFolderRecursiveSync,
   deleteWithPrompt,
-} = require("../utils/fs-utils");
+} from "../utils/fs-utils.js";
+import { fileURLToPath } from "url";
+import { readFile } from "fs/promises";
+
+const constants = JSON.parse(
+  await readFile(new URL("../init/constants.json", import.meta.url)),
+);
+const packageJson = JSON.parse(
+  await readFile(new URL("../../package.json", import.meta.url)),
+);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function run(folder, update, next, y) {
   checkNodeVersion();
@@ -26,7 +33,7 @@ async function run(folder, update, next, y) {
   if (next) await patchForNextRelease(folder, y);
 }
 
-const patchForNextRelease = async (folder, y) => {
+async function patchForNextRelease(folder, y) {
   print(
     "===== updating project file and directory structure for next version =====",
   );
@@ -34,23 +41,23 @@ const patchForNextRelease = async (folder, y) => {
   const fileSource = `${__dirname}${constants.nextArtifactsDir}`;
 
   await copyFolderRecursiveSync(fileSource, folder, y);
-};
+}
 
-const checkNodeVersion = () => {
+function checkNodeVersion() {
   if (parseInt(process.version.split(".")[0].replace("v", ""), 10) < 16) {
     print("You need to use Node.js 16 or newer to use aeproject.");
     process.exit(1);
   }
-};
+}
 
-const createFolder = (folder) => {
+function createFolder(folder) {
   if (folder !== constants.artifactsDest) {
     print(`creating project folder ${folder}`);
     fs.mkdirSync(folder);
   }
-};
+}
 
-const createAEprojectProjectStructure = async (folder) => {
+async function createAEprojectProjectStructure(folder) {
   print("===== initializing aeproject =====");
 
   await setupArtifacts(folder);
@@ -60,9 +67,9 @@ const createAEprojectProjectStructure = async (folder) => {
   print(
     "test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject",
   );
-};
+}
 
-const updateAEprojectProjectLibraries = async (folder, update, y) => {
+async function updateAEprojectProjectLibraries(folder, update, y) {
   print("===== updating aeproject =====");
 
   await updateArtifacts(folder, y);
@@ -72,9 +79,9 @@ const updateAEprojectProjectLibraries = async (folder, update, y) => {
   print(
     "test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject",
   );
-};
+}
 
-const installDependencies = async (folder, update = false) => {
+async function installDependencies(folder, update = false) {
   if (fs.existsSync(path.join(process.cwd(), folder, "package.json"))) {
     print("===== installing dependencies =====");
     const npm = /^win/.test(process.platform) ? "npm.cmd" : "npm";
@@ -105,9 +112,9 @@ const installDependencies = async (folder, update = false) => {
       await exec(command, { cwd: path.join(process.cwd(), folder) });
     }, Promise.resolve());
   }
-};
+}
 
-const setupArtifacts = async (folder) => {
+async function setupArtifacts(folder) {
   print("===== creating project file and directory structure =====");
 
   await copyFolderRecursiveSync(
@@ -118,9 +125,9 @@ const setupArtifacts = async (folder) => {
     `${__dirname}${constants.artifactsDir}`,
     path.join(constants.artifactsDest, folder),
   );
-};
+}
 
-const updateArtifacts = async (folder, y) => {
+async function updateArtifacts(folder, y) {
   print("===== updating project file and directory structure =====");
 
   const fileSource = `${__dirname}${constants.updateArtifactsDir}`;
@@ -131,8 +138,6 @@ const updateArtifacts = async (folder, y) => {
   }, Promise.resolve());
 
   await copyFolderRecursiveSync(fileSource, folder, y);
-};
+}
 
-module.exports = {
-  run,
-};
+export default { run };

@@ -9,8 +9,15 @@
     "@typescript-eslint/no-use-before-define": "off",
     "no-use-before-define": "off"
   },
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "requireConfigFile": false,
+    "sourceType": "module",
+    "project": "./tsconfig.json",
+    "ecmaVersion": 2020,
+    "ecmaFeatures": {
+      "modules": true
+    }
   },
   "ignorePatterns": ["tests/**"]
 }

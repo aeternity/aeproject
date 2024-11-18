@@ -3,14 +3,14 @@
   "version": "4.10.2",
   "description": "aeternity smart contract testing tool",
   "main": "./build/esm/src/lib/index.js",
-  "types": "./build/types/src/lib/index.d.ts",
+  "types": "./build/types/lib/index.d.ts",
   "bin": {
-    "aeproject": "./build/cjs/src/cli.js"
+    "aeproject": "./build/esm/src/cli.js"
   },
+  "type": "module",
   "exports": {
     ".": {
-      "types": "./build/types/src/lib/index.d.ts",
-      "require": "./build/cjs/src/lib/index.js",
+      "types": "./build/types/lib/index.d.ts",
       "import": "./build/esm/src/lib/index.js",
       "default": "./build/esm/src/lib/index.js"
     }
@@ -20,14 +20,14 @@
     "package.json"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && npm run copy-files",
+    "build": "tsc -b ./tsconfig.esm.json ./tsconfig.types.json && npm run copy-files && tsc-alias",
     "build:clean": "rimraf ./build",
     "lint": "eslint .",
     "lint:fix": "eslint --ext .js --fix .",
     "lint:ci": "eslint --ext .js --max-warnings=0 .",
-    "test": "vitest",
+    "test": "vitest run",
     "prepack": "npm run build:clean && npm run build",
-    "copy-files": "cp -r ./src/init/artifacts ./build/cjs/src/init/ && cp -r ./src/init/artifacts ./build/esm/src/init/ && cp -r ./src/init/update-artifacts ./build/cjs/src/init/ && cp -r ./src/init/update-artifacts ./build/esm/src/init/ && cp -r ./src/init/next-artifacts ./build/cjs/src/init/ && cp -r ./src/init/next-artifacts ./build/esm/src/init/",
+    "copy-files": "cp package.json ./build/esm && rsync -avum --include='*.json' --include='artifacts/**' --include='next-artifacts/**' --include='update-artifacts/**' --include='*/' --exclude='*' './src/' './build/esm/src'",
     "link:local": "npm uninstall -g @aeternity/aeproject && npm run build:clean && npm run build && npm link"
   },
   "license": "ISC",
@@ -43,14 +43,17 @@
   },
   "devDependencies": {
     "@aeternity/aeproject": "file:.",
+    "@babel/eslint-parser": "^7.25.9",
     "@types/node": "^22.8.4",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
+    "tsc-alias": "^1.8.10",
     "typescript": "^5.6.3",
     "vitest": "^2.1.4"
   }
