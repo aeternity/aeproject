@@ -17,12 +17,6 @@ utils.getContractContent(contractPath);
 Read the contract source from given path, just a wrapper for `fs.readFileSync` using `utf-8` encoding.
 
 ```javascript
-utils.getFilesystem(contractPath);
-```
-
-Add the required filesystem imports for contract from given path, excluding the Sophia provided library imports.
-
-```javascript
 utils.get(url);
 ```
 
