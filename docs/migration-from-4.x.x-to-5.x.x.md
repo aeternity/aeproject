@@ -1,16 +1,18 @@
 # Migration from 4.x.x to 5.x.x
 
-## Changes
+**AEproject** `v5.0.0` underwent some breaking changes.
 
-**AEproject** `v5.0.0` underwent some minor but breaking changes.
-
-Install the new AEproject version
+Install the latest AEproject version
 
 ```
 npm install -g @aeternity/aeproject
 ```
 
-### Removed from libs
+## Various Changes
+
+- **dropped commonjs support**, newly created projects will be created as esm projects, old cjs projects will not continue to work with newer aeproject versions, to keep using old cjs projects, `@aeternity/aeproject@4` will continue to work for now.
+
+## Removed from libs
 
 Following utils have been removed and cannot be used anymore:
 
