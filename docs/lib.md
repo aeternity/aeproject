@@ -17,12 +17,6 @@ utils.getContractContent(contractPath);
 Read the contract source from given path, just a wrapper for `fs.readFileSync` using `utf-8` encoding.
 
 ```javascript
-utils.get(url);
-```
-
-Promisified zero dependencies http `GET` request, usually used to control æternity node devmode endpoints.
-
-```javascript
 utils.getSdk();
 ```
 

@@ -1,8 +1,6 @@
 import fs from "fs";
-import path from "path";
 
 import { AeSdk, MemoryAccount, Node, CompilerHttp } from "@aeternity/aepp-sdk";
-import { get } from "../utils/utils";
 import { readFile } from "fs/promises";
 
 export const networks = JSON.parse(
@@ -41,7 +39,7 @@ export async function awaitKeyBlocks(
   n: number = 1,
 ): Promise<void> {
   const height = await aeSdk.getHeight();
-  await get(`http://localhost:3001/emit_kb?n=${n}`);
+  await fetch(`http://localhost:3001/emit_kb?n=${n}`);
   await aeSdk.awaitHeight(height + n);
 }
 
@@ -58,7 +56,7 @@ export async function rollbackHeight(
 ): Promise<void> {
   const currentBlockHeight = await aeSdk.getHeight();
   if (currentBlockHeight > height) {
-    await get(`http://localhost:3001/rollback?height=${height}`);
+    await fetch(`http://localhost:3001/rollback?height=${height}`);
   }
 }
 

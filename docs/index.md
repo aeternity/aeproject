@@ -5,7 +5,7 @@
 In order to have AEproject working you must have installed the following:
 
 ```
-nodejs >= 16
+nodejs >= 18
 docker
 ```
 

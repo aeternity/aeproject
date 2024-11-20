@@ -11,6 +11,7 @@ npm install -g @aeternity/aeproject
 ## Various Changes
 
 - **dropped commonjs support**, newly created projects will be created as esm projects, old cjs projects will not continue to work with newer aeproject versions, to keep using old cjs projects, `@aeternity/aeproject@4` will continue to work for now.
+- `node@16` is no longer supported, please update to v18 or higher
 
 ## Removed from libs
 
