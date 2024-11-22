@@ -14,7 +14,7 @@ npm install -g @aeternity/aeproject
 - `node@16` is no longer supported, please update to v18 or higher
 - updated to `@aeternity/aepp-sdk@14` to the latest version, see the [migration guide](https://github.com/aeternity/aepp-sdk-js/blob/v14.0.0/docs/guides/migration/14.md) for additional reference.
   - the aeproject provided `utils.getSdk({})` has to be adjusted to pass a reference to the sdk used `utils.getSdk(AeppSdk, {})` where AeppSdk can be imported using `import * as AeppSdk from "@aeternity/aepp-sdk";`
-
+  - `@aeternity/aepp-sdk@14` requires aeternity node version `>= 7.1.0`
 ## Removed from libs
 
 Following utils have been removed and cannot be used anymore:

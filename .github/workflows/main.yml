@@ -14,8 +14,8 @@ jobs:
         # for lts node also test first known compatible and latest known good compiler and node versions
         include:
           - node-version: 22
-            node-tag: v6.8.0 # v6.3.0 to v6.7.0 use a different config format
-            compiler-tag: v7.4.0
+            node-tag: v7.2.0 # @aeternity/aepp-sdk@14 only supports node v7.1.0 and above, the devmode bundle in v7.1.0 is buggy, thus using v7.2.0 as lowest usable version
+            compiler-tag: v8.0.0 # @aeternity/aepp-sdk@14 only supports compiler v8.0.0 and above
             aux-ci-run: true
           - node-version: 22
             node-tag: latest

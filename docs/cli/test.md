@@ -17,15 +17,16 @@ In the `test/exampleTest.js` file you can find an example for unit testing using
 Javascript testing framework used with [mocha](https://mochajs.org/) for assertions, documented at https://www.chaijs.com/api/assert/
 
 ```js
-const { assert } = require("chai");
+import { assert } from "chai";
+import { before, describe, afterEach, it } from "mocha";
 ```
 
 Helper and utilities for AEproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.
 
 ```js
-const { utils } = require("@aeternity/aeproject");
+import { utils } from "@aeternity/aeproject";
 import * as AeppSdk from "@aeternity/aepp-sdk";
-const { Contract, getFileSystem } = require("@aeternity/aepp-sdk");
+import { Contract, getFileSystem } from "@aeternity/aepp-sdk";
 ```
 
 Read [AEproject Library](../lib.md) for a more detailed explanation about the usage of these imports.

@@ -36,13 +36,8 @@ aeproject env --info
 
 **Compatibility**:
 
-- aeproject until `v4.8.3` is only compatible with node versions `NODE_TAG <= v6.11.0` due to some changes in the devmode plugin
-- aeproject uses the `-bundle` node docker images including dev mode, which are only published from `NODE_TAG >= v6.3.0`
-- the default `aeternity.yaml` config file that ships with aeproject supports `NODE_TAG >= v6.8.0`
-- the latest `@aeternity/aepp-sdk@13` is only compatible using `NODE_TAG >= v6.0.0` and `COMPILER_TAG >= v7.5.0`
-- the sdk from `@aeternity/aepp-sdk@13 >= v13.3.2` is compatible with `NODE_TAG >= v7.0.0-rc1` and `COMPILER_TAG >= v8.0.0-rc1`
-- ARM64/Apple Silicon is supported from images `NODE_TAG >= v6.8.1` and `COMPILER_TAG >= v7.3.0`
-- due to a bug, `NODE_TAG = v7.1.0` is not compatible with aeproject
+- the sdk from `@aeternity/aepp-sdk@14 >= v14.0.0` is compatible with `NODE_TAG >= v7.1.0` and `COMPILER_TAG >= v8.0.0`
+- due to a bug in the devmode plugin, `NODE_TAG = v7.1.0` is not compatible with aeproject
 
 ## Disclaimer
 
