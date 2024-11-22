@@ -1,6 +1,8 @@
 import * as utils from "./../src/lib/utils";
 
 import { exec, cwd, prepareLocal, cleanLocal, linkLocalLib } from "./util";
+import * as AeppSdk from "@aeternity/aepp-sdk";
+
 import { MemoryAccount } from "@aeternity/aepp-sdk";
 
 describe("library usage", () => {
@@ -13,7 +15,7 @@ describe("library usage", () => {
 
     await exec("aeproject env", { cwd });
 
-    aeSdk = utils.getSdk();
+    aeSdk = utils.getSdk(AeppSdk, {});
   });
 
   afterAll(async () => {

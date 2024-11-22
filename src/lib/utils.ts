@@ -1,6 +1,6 @@
 import fs from "fs";
-
-import { AeSdk, MemoryAccount, Node, CompilerHttp, Encoded } from "@aeternity/aepp-sdk";
+import * as AeppSdkType from "@aeternity/aepp-sdk";
+import { AeSdk, MemoryAccount, Encoded } from "@aeternity/aepp-sdk";
 import { readFile } from "fs/promises";
 
 export const networks = JSON.parse(
@@ -26,13 +26,13 @@ export function getDefaultAccounts(): MemoryAccount[] {
   );
 }
 
-export function getSdk(options: {}): AeSdk {
-  const instance = new Node(networks.devmode.nodeUrl, options);
+export function getSdk(AeppSdk: typeof AeppSdkType, options: {}): AeSdk {
+  const instance = new AeppSdk.Node(networks.devmode.nodeUrl, options);
 
-  return new AeSdk({
+  return new AeppSdk.AeSdk({
     accounts: getDefaultAccounts(),
     nodes: [{ name: "node", instance }],
-    onCompiler: new CompilerHttp(networks.devmode.compilerUrl, options),
+    onCompiler: new AeppSdk.CompilerHttp(networks.devmode.compilerUrl, options),
     interval: 50,
   });
 }

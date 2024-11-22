@@ -23,8 +23,9 @@ const { assert } = require("chai");
 Helper and utilities for AEproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.
 
 ```js
-const { networks, utils, wallets } = require("@aeternity/aeproject");
-const { getFileSystem } = require("@aeternity/aepp-sdk");
+const { utils } = require("@aeternity/aeproject");
+import * as AeppSdk from "@aeternity/aepp-sdk";
+const { Contract, getFileSystem } = require("@aeternity/aepp-sdk");
 ```
 
 Read [AEproject Library](../lib.md) for a more detailed explanation about the usage of these imports.
@@ -40,7 +41,7 @@ before(async () => ...)
 Initialize the default SDK instance with provided utils:
 
 ```js
-aeSdk = utils.getSdk();
+aeSdk = utils.getSdk(AeppSdk, {});
 ```
 
 Get the filesystem definition for (custom) `includes` of the given contract:

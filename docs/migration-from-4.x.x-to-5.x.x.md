@@ -13,6 +13,7 @@ npm install -g @aeternity/aeproject
 - **dropped commonjs support**, newly created projects will be created as esm projects, old cjs projects will not continue to work with newer aeproject versions, to keep using old cjs projects, `@aeternity/aeproject@4` will continue to work for now.
 - `node@16` is no longer supported, please update to v18 or higher
 - updated to `@aeternity/aepp-sdk@14` to the latest version, see the [migration guide](https://github.com/aeternity/aepp-sdk-js/blob/v14.0.0/docs/guides/migration/14.md) for additional reference.
+  - the aeproject provided `utils.getSdk({})` has to be adjusted to pass a reference to the sdk used `utils.getSdk(AeppSdk, {})` where AeppSdk can be imported using `import * as AeppSdk from "@aeternity/aepp-sdk";`
 
 ## Removed from libs
 

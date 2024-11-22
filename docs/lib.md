@@ -17,7 +17,8 @@ utils.getContractContent(contractPath);
 Read the contract source from given path, just a wrapper for `fs.readFileSync` using `utf-8` encoding.
 
 ```javascript
-utils.getSdk();
+import * as AeppSdk from "@aeternity/aepp-sdk";
+utils.getSdk(AeppSdk, {});
 ```
 
 Initialize the æternity SDK, pre-configured for optimal use in an AEproject project using æternity node devmode.
