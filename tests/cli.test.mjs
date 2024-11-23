@@ -21,8 +21,8 @@ describe("command line usage", () => {
     assert.include(res.stdout, version);
   });
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const folder of [null, "testprojectfolder"]) {
+    // eslint-disable-next-line vitest/valid-title
     it(folder ? `init ${folder}` : "init", async () => {
       const res = await exec(
         folder ? `aeproject init ${folder}` : "aeproject init",
