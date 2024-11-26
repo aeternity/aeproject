@@ -22,12 +22,13 @@ export function cleanLocal() {
   if (fs.existsSync(cwd)) fs.rmSync(cwd, { recursive: true });
 }
 
+let isPacked = false;
+
 export async function linkLocalLib(folder) {
   const c = folder ? path.join(cwd, folder) : cwd;
-  await exec("npm i .. -D", { cwd: c });
-  await exec(
-    'perl -i -pe \'s/"prepare"/"rem-prepare"/g\' ../node_modules/@aeternity/aepp-sdk/package.json',
-    { cwd: c },
-  );
-  await exec("npm i ../node_modules/@aeternity/aepp-sdk", { cwd: c });
+  if (!isPacked) {
+    await exec("npm pack --ignore-scripts");
+    isPacked = true;
+  }
+  await exec(`npm i ${path.join(process.cwd(), "aeternity-aeproject-*.tgz")} -D`, { cwd: c });
 }
