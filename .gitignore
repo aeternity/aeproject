@@ -6,3 +6,4 @@ site
 .testdir
 build
 .venv
+aeternity-aeproject-*.tgz
