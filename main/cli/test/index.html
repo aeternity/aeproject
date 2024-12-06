@@ -473,6 +473,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../../migration-from-4.x.x-to-5.x.x/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Migration from 4.x.x to 5.x.x
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../next-support/" class="md-nav__link">
         
   
@@ -587,10 +607,13 @@
 <p>In the <code>test/exampleTest.js</code> file you can find an example for unit testing using AEproject.</p>
 <h3 id="1-dependencies">1. Dependencies</h3>
 <p>Javascript testing framework used with <a href="https://mochajs.org/">mocha</a> for assertions, documented at <a href="https://www.chaijs.com/api/assert/">https://www.chaijs.com/api/assert/</a></p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">assert</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;chai&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">assert</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;chai&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">before</span><span class="p">,</span><span class="w"> </span><span class="nx">describe</span><span class="p">,</span><span class="w"> </span><span class="nx">afterEach</span><span class="p">,</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;mocha&quot;</span><span class="p">;</span>
 </code></pre></div>
 <p>Helper and utilities for AEproject use, e.g. prefunded wallets, network definition and utility functions for SDK initialization and snapshotting.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">networks</span><span class="p">,</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@aeternity/aeproject&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">utils</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@aeternity/aeproject&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">AeppSdk</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@aeternity/aepp-sdk&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Contract</span><span class="p">,</span><span class="w"> </span><span class="nx">getFileSystem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@aeternity/aepp-sdk&quot;</span><span class="p">;</span>
 </code></pre></div>
 <p>Read <a href="../../lib/">AEproject Library</a> for a more detailed explanation about the usage of these imports.</p>
 <h3 id="2-sdk-and-snapshotting-setup">2. SDK and Snapshotting Setup</h3>
@@ -598,16 +621,16 @@
 <div class="highlight"><pre><span></span><code><span class="nx">before</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">...)</span>
 </code></pre></div>
 <p>Initialize the default SDK instance with provided utils:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">aeSdk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">();</span>
+<div class="highlight"><pre><span></span><code><span class="nx">aeSdk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">(</span><span class="nx">AeppSdk</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
 </code></pre></div>
 <p>Get the filesystem definition for (custom) <code>includes</code> of the given contract:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">filesystem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getFilesystem</span><span class="p">(</span><span class="nx">EXAMPLE_CONTRACT_SOURCE</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">fileSystem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getFileSystem</span><span class="p">(</span><span class="nx">EXAMPLE_CONTRACT_SOURCE</span><span class="p">);</span>
 </code></pre></div>
 <p>Read the contract source from the filesystem:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">sourceCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">utils</span><span class="p">.</span><span class="nx">getContractContent</span><span class="p">(</span><span class="nx">EXAMPLE_CONTRACT_SOURCE</span><span class="p">);</span>
 </code></pre></div>
 <p>Initialize the contract instance:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">contract</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">aeSdk</span><span class="p">.</span><span class="nx">initializeContract</span><span class="p">({</span><span class="w"> </span><span class="nx">sourceCode</span><span class="p">,</span><span class="w"> </span><span class="nx">filesystem</span><span class="w"> </span><span class="p">});</span>
+<div class="highlight"><pre><span></span><code><span class="nx">contract</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Contract</span><span class="p">.</span><span class="nx">initialize</span><span class="p">({</span><span class="w"> </span><span class="p">...</span><span class="nx">aeSdk</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(),</span><span class="w"> </span><span class="nx">sourceCode</span><span class="p">,</span><span class="w"> </span><span class="nx">fileSystem</span><span class="w"> </span><span class="p">});</span>
 </code></pre></div>
 <p>Deploy the contract:</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="nx">contract</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>

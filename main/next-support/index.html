@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../migration-from-3.x.x-to-4.x.x/">
+        <link rel="prev" href="../migration-from-4.x.x-to-5.x.x/">
       
       
       
@@ -377,6 +377,26 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-from-4.x.x-to-5.x.x/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Migration from 4.x.x to 5.x.x
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -514,7 +534,7 @@
 <p>Aeproject can already be used for testing and setup with the upcoming node versions.</p>
 <h3 id="automatic-update">Automatic update</h3>
 <p>Use <code>aeproject init --next</code> to initialize a new project that has the necessary adjustments to use the latest versions.</p>
-<p>Use <code>aeproject init --update --next</code> to update an existing project with the adjustments to use the latest versions. </p>
+<p>Use <code>aeproject init --update --next</code> to update an existing project with the adjustments to use the latest versions.</p>
 <h3 id="manual-update">Manual update</h3>
 <ul>
 <li>change occurrences of <code>utils.getSdk()</code> to use <code>utils.getSdk({ ignoreVersion: true })</code> if needed or use the same option for manually initialized sdk <code>Node</code> and <code>CompilerHttp</code></li>

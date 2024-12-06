@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../cli/test/">
+        <link rel="prev" href="../migration-from-3.x.x-to-4.x.x/">
       
       
-        <link rel="next" href="../migration-from-3.x.x-to-4.x.x/">
+        <link rel="next" href="../next-support/">
       
       
       <link rel="icon" href="../images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>AEproject Library - AEproject: Smart Contract Testing Framework</title>
+        <title>Migration from 4.x.x to 5.x.x - AEproject: Smart Contract Testing Framework</title>
       
     
     
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aeproject-library" class="md-skip">
+        <a href="#migration-from-4xx-to-5xx" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              AEproject Library
+              Migration from 4.x.x to 5.x.x
             
           </span>
         </div>
@@ -339,30 +339,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    AEproject Library
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../lib/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -371,53 +351,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#utils" class="md-nav__link">
-    <span class="md-ellipsis">
-      Utils
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#wallets" class="md-nav__link">
-    <span class="md-ellipsis">
-      Wallets
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#networks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Networks
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -446,10 +379,30 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../migration-from-4.x.x-to-5.x.x/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Migration from 4.x.x to 5.x.x
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -458,6 +411,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#various-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Various Changes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removed-from-libs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed from libs
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -509,27 +500,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#utils" class="md-nav__link">
+  <a href="#various-changes" class="md-nav__link">
     <span class="md-ellipsis">
-      Utils
+      Various Changes
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#wallets" class="md-nav__link">
+  <a href="#removed-from-libs" class="md-nav__link">
     <span class="md-ellipsis">
-      Wallets
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#networks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Networks
+      Removed from libs
     </span>
   </a>
   
@@ -550,38 +532,24 @@
                   
 
 
-<h1 id="aeproject-library">AEproject Library</h1>
-<p>Installed automatically with each project initialized with <code>aeproject init</code>, otherwise can be installed using <code>npm i @aeternity/aeproject</code>.</p>
-<p>Available imports include helper definitions and utils using:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="p">,</span><span class="w"> </span><span class="nx">networks</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@aeternity/aeproject&quot;</span><span class="p">);</span>
+<h1 id="migration-from-4xx-to-5xx">Migration from 4.x.x to 5.x.x</h1>
+<p><strong>AEproject</strong> <code>v5.0.0</code> underwent some breaking changes.</p>
+<p>Install the latest AEproject version</p>
+<div class="highlight"><pre><span></span><code>npm install -g @aeternity/aeproject
 </code></pre></div>
-<h2 id="utils">Utils</h2>
-<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getContractContent</span><span class="p">(</span><span class="nx">contractPath</span><span class="p">);</span>
-</code></pre></div>
-<p>Read the contract source from given path, just a wrapper for <code>fs.readFileSync</code> using <code>utf-8</code> encoding.</p>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">AeppSdk</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@aeternity/aepp-sdk&quot;</span><span class="p">;</span>
-<span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">(</span><span class="nx">AeppSdk</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
-</code></pre></div>
-<p>Initialize the æternity SDK, pre-configured for optimal use in an AEproject project using æternity node devmode.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">awaitKeyBlocks</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="p">);</span>
-</code></pre></div>
-<p>Create and wait for <code>n</code> number of key-blocks with the æternity node devmode, checked using the passed <code>aeSdk</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">createSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
-</code></pre></div>
-<p>Create a snapshot of the current chain state using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackSnapshot</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">);</span>
-</code></pre></div>
-<p>Rollback to the latest snapshot using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">rollbackHeight</span><span class="p">(</span><span class="nx">aeSdk</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="p">);</span>
-</code></pre></div>
-<p>Rollback to the specified height using the æternity node devmode, using the passed <code>aeSdk</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getDefaultAccounts</span><span class="p">();</span>
-</code></pre></div>
-<p>Get the pre-funded default accounts as <code>MemoryAccount</code>, so they can be used natively using the <code>aeSdk</code>.</p>
-<h2 id="wallets">Wallets</h2>
-<p>List of configured keypairs that are pre-funded using the æternity node devmode as provided in AEproject.</p>
-<h2 id="networks">Networks</h2>
-<p>Exposed URLs for commonly used <code>nodeUrl</code> and <code>compilerUrl</code>, per default local <code>devmode</code> and optionally hosted URLs for <code>mainnet</code> and <code>testnet</code>.</p>
+<h2 id="various-changes">Various Changes</h2>
+<ul>
+<li><strong>dropped commonjs support</strong>, newly created projects will be created as esm projects, old cjs projects will not continue to work with newer aeproject versions, to keep using old cjs projects, <code>@aeternity/aeproject@4</code> will continue to work for now.</li>
+<li><code>node@16</code> is no longer supported, please update to v18 or higher</li>
+<li>updated to <code>@aeternity/aepp-sdk@14</code> to the latest version, see the <a href="https://github.com/aeternity/aepp-sdk-js/blob/v14.0.0/docs/guides/migration/14.md">migration guide</a> for additional reference.</li>
+<li>the aeproject provided <code>utils.getSdk({})</code> has to be adjusted to pass a reference to the sdk used <code>utils.getSdk(AeppSdk, {})</code> where AeppSdk can be imported using <code>import * as AeppSdk from "@aeternity/aepp-sdk";</code></li>
+<li><code>@aeternity/aepp-sdk@14</code> requires aeternity node version <code>&gt;= 7.1.0</code></li>
+</ul>
+<h2 id="removed-from-libs">Removed from libs</h2>
+<p>Following utils have been removed and cannot be used anymore:</p>
+<ul>
+<li><code>utils.getFilesystem()</code> discontinued, as it is now natively available in the sdk via import, e.g. <code>const { getFileSystem } = require("@aeternity/aepp-sdk");</code></li>
+</ul>
 
 
 

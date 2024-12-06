@@ -431,6 +431,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../../migration-from-4.x.x-to-5.x.x/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Migration from 4.x.x to 5.x.x
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../next-support/" class="md-nav__link">
         
   
@@ -516,13 +536,8 @@ aeproject env --nodeVersion v7.2.0 --compilerVersion v8.0.0
 <p><strong>Note</strong>: By default AEproject uses the <code>latest-bundle</code> tag of the official <a href="https://hub.docker.com/r/aeternity/aeternity/tags">docker images</a>.</p>
 <p><strong>Compatibility</strong>:</p>
 <ul>
-<li>aeproject until <code>v4.8.3</code> is only compatible with node versions <code>NODE_TAG &lt;= v6.11.0</code> due to some changes in the devmode plugin</li>
-<li>aeproject uses the <code>-bundle</code> node docker images including dev mode, which are only published from <code>NODE_TAG &gt;= v6.3.0</code></li>
-<li>the default <code>aeternity.yaml</code> config file that ships with aeproject supports <code>NODE_TAG &gt;= v6.8.0</code></li>
-<li>the latest <code>@aeternity/aepp-sdk@13</code> is only compatible using <code>NODE_TAG &gt;= v6.0.0</code> and <code>COMPILER_TAG &gt;= v7.5.0</code></li>
-<li>the sdk from <code>@aeternity/aepp-sdk@13 &gt;= v13.3.2</code> is compatible with <code>NODE_TAG &gt;= v7.0.0-rc1</code> and <code>COMPILER_TAG &gt;= v8.0.0-rc1</code></li>
-<li>ARM64/Apple Silicon is supported from images <code>NODE_TAG &gt;= v6.8.1</code> and <code>COMPILER_TAG &gt;= v7.3.0</code></li>
-<li>due to a bug, <code>NODE_TAG = v7.1.0</code> is not compatible with aeproject</li>
+<li>the sdk from <code>@aeternity/aepp-sdk@14 &gt;= v14.0.0</code> is compatible with <code>NODE_TAG &gt;= v7.1.0</code> and <code>COMPILER_TAG &gt;= v8.0.0</code></li>
+<li>due to a bug in the devmode plugin, <code>NODE_TAG = v7.1.0</code> is not compatible with aeproject</li>
 </ul>
 <h2 id="disclaimer">Disclaimer</h2>
 <ul>
