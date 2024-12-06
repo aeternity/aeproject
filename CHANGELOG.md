@@ -1,5 +1,37 @@
 # Changelog
 
+## [5.0.0](https://github.com/aeternity/aeproject/compare/v4.10.2...v5.0.0) (2024-12-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* update to sdk 14
+* drop custom get function, require node >= 18
+* drop cjs support
+* use sdk provided filesystem util, remove aeproject util implementation
+
+### Bug Fixes
+
+* build artifact files ([f4059cd](https://github.com/aeternity/aeproject/commit/f4059cda07c51c6e13ca0c899b40b1867549e420))
+* sdk import usage ([5609660](https://github.com/aeternity/aeproject/commit/5609660dfb852c022351d1077265e109a77ad452))
+
+
+### Refactorings
+
+* drop cjs support ([a92df6e](https://github.com/aeternity/aeproject/commit/a92df6ebf2cb594a54425f79499673a8dc6028dc))
+* drop custom get function, require node &gt;= 18 ([ef569b9](https://github.com/aeternity/aeproject/commit/ef569b9efff27d073575f42caad628b55a607646))
+* update to sdk 14 ([ecbdf3c](https://github.com/aeternity/aeproject/commit/ecbdf3c222e72f644eb4790a528175f33231ffd3))
+* use sdk provided filesystem util, remove aeproject util implementation ([93cf8c5](https://github.com/aeternity/aeproject/commit/93cf8c500db77ee2a108d90befd63f27cf4f5a81))
+
+
+### Miscellaneous
+
+* update dependencies ([6494ded](https://github.com/aeternity/aeproject/commit/6494ded4a78e44d512f4a927346f0ac1bf54cc30))
+* update eslint ([db4f3e5](https://github.com/aeternity/aeproject/commit/db4f3e5c0f606085e1b1d31a93682e958cafab1f))
+* upgrade to chai@5 for new projects ([dce8f50](https://github.com/aeternity/aeproject/commit/dce8f5051878895da1c1350b2256b158d77a60ea))
+* use `npm pack` in tests ([e82cd51](https://github.com/aeternity/aeproject/commit/e82cd517cb1f99fc24ba4d0d26876f012400d9e0))
+* use the same sdk ([a90943e](https://github.com/aeternity/aeproject/commit/a90943e913ccde538b3e8872ae759211125aea37))
+
 ## [4.10.2](https://github.com/aeternity/aeproject/compare/v4.10.1...v4.10.2) (2024-08-16)
 
 
