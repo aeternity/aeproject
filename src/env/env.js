@@ -1,20 +1,13 @@
-import { spawn, exec } from "promisify-child-process";
-import { print, printError } from "../utils/utils.js";
-
-let dockerComposeCmd = "docker compose";
+import { print, printError, exec } from "../utils/utils.js";
 
 async function getDockerCompose() {
-  const dockerSpaceCompose = await spawn("docker", ["compose"]).catch(() => ({
-    code: 1,
-  }));
-  if (dockerSpaceCompose.code === 0) return;
-  const dockerMinusCompose = await spawn("docker-compose").catch(() => ({
-    code: 1,
-  }));
+  if (getDockerCompose._cmd) return getDockerCompose._cmd;
 
-  if (dockerMinusCompose.code === 0) {
-    dockerComposeCmd = "docker-compose";
-    return;
+  for (const cmd of ["docker compose", "docker-compose"]) {
+    if (await exec(cmd).catch(() => false)) {
+      getDockerCompose._cmd = cmd;
+      return cmd;
+    }
   }
 
   throw new Error("===== docker compose is not installed! =====");
@@ -66,8 +59,8 @@ async function stopEnv(running) {
 
   print("===== stopping env =====");
 
-  await getDockerCompose();
-  await exec(`${dockerComposeCmd} down -v`);
+  const cmd = await getDockerCompose();
+  await exec(`${cmd} down -v`);
 
   print("===== Env was successfully stopped! =====");
 }
@@ -80,8 +73,8 @@ async function restartEnv(running) {
 
   print("===== restarting env =====");
 
-  await getDockerCompose();
-  await exec(`${dockerComposeCmd} restart`);
+  const cmd = await getDockerCompose();
+  await exec(`${cmd} restart`);
 
   print("===== env was successfully restarted! =====");
 }
@@ -98,9 +91,9 @@ async function startEnv(option) {
     print(`using versions as specified: ${versionTags}`);
   else print("using versions from docker-compose.yml");
 
-  await getDockerCompose();
-  await exec(`${versionTags} ${dockerComposeCmd} pull`);
-  await exec(`${versionTags} ${dockerComposeCmd} up -d --wait`);
+  const cmd = await getDockerCompose();
+  await exec(`${versionTags} ${cmd} pull`);
+  await exec(`${versionTags} ${cmd} up -d --wait`);
 
   const isRunning = await isEnvRunning();
   await printInfo(isRunning, true);
@@ -119,9 +112,9 @@ async function printInfo(running, imagesOnly = false) {
 }
 
 async function getInfo(cwd = "./", imagesOnly = false) {
-  await getDockerCompose();
-  const ps = await exec(`${dockerComposeCmd} ps`, { cwd });
-  const images = await exec(`${dockerComposeCmd} images`, { cwd });
+  const cmd = await getDockerCompose();
+  const ps = await exec(`${cmd} ps`, { cwd });
+  const images = await exec(`${cmd} images`, { cwd });
 
   if (ps && images && ps.stdout && images.stdout) {
     return imagesOnly ? images.stdout : `${ps.stdout}\n${images.stdout}`;

@@ -1,7 +1,6 @@
 import path from "path";
-
-import { exec as execP } from "promisify-child-process";
 import fs from "fs";
+import { exec as execP } from "../src/utils/utils";
 
 export const cwd = path.join(process.cwd(), ".testdir");
 

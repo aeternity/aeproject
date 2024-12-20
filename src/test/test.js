@@ -1,4 +1,4 @@
-import { exec } from "promisify-child-process";
+import { spawn } from "child_process";
 import { print } from "../utils/utils.js";
 
 async function run() {
@@ -10,11 +10,9 @@ async function run() {
 async function test() {
   print("===== Starting Tests =====");
 
-  const child = exec("npm test");
+  const proc = spawn("npm", ["test"], { stdio: "inherit" });
 
-  child.stdout.on("data", (out) => process.stdout.write(out));
-  child.stderr.on("data", (err) => process.stderr.write(err));
-  await child;
+  await new Promise((resolve) => proc.on("close", resolve));
 }
 
 export default { run };
