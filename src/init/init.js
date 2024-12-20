@@ -41,8 +41,8 @@ async function patchForNextRelease(folder, y) {
 }
 
 function checkNodeVersion() {
-  if (parseInt(process.version.split(".")[0].replace("v", ""), 10) < 16) {
-    print("You need to use Node.js 16 or newer to use aeproject.");
+  if (parseInt(process.version.split(".")[0].replace("v", ""), 10) < 18) {
+    print("You need to use Node.js 18 or newer to use aeproject.");
     process.exit(1);
   }
 }
