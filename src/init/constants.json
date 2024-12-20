@@ -3,7 +3,7 @@
   "artifactsDir": "/artifacts",
   "updateArtifactsDir": "/update-artifacts",
   "nextArtifactsDir": "/next-artifacts",
-  "dependencies": ["@aeternity/aepp-sdk@13"],
+  "dependencies": ["@aeternity/aepp-sdk@14"],
   "devDependencies": ["chai@5", "chai-as-promised@8", "mocha@10"],
   "uninstallDependencies": ["aeproject", "aeproject-lib"],
   "deleteArtifacts": [
