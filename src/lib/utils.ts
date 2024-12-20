@@ -31,7 +31,10 @@ export function getDefaultAccounts(): MemoryAccount[] {
   );
 }
 
-export function getSdk(options: {}): AeSdk {
+export function getSdk(
+  options: ConstructorParameters<typeof Node>[1] &
+    ConstructorParameters<typeof CompilerHttp>[1],
+): AeSdk {
   const instance = new Node(networks.devmode.nodeUrl, options);
 
   return new AeSdk({
