@@ -19,7 +19,7 @@ function addInitOption(program) {
     .option("--update", "update project files")
     .option(
       "--next",
-      "apply patches to initialise or update for use with the upcoming release",
+      "apply patches to initialize or update for use with the upcoming release",
     )
     .option("-y", "overwrite all files in update process")
     .action(async (folder, option) => {
