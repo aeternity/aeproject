@@ -38,7 +38,6 @@ export function getSdk(options: {}): AeSdk {
     accounts: getDefaultAccounts(),
     nodes: [{ name: "node", instance }],
     onCompiler: new CompilerHttp(networks.devmode.compilerUrl, options),
-    interval: 50,
   });
 }
 
