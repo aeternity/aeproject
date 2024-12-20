@@ -9,11 +9,9 @@
   },
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./build/types/lib/index.d.ts",
-      "import": "./build/esm/src/lib/index.js",
-      "default": "./build/esm/src/lib/index.js"
-    }
+    "types": "./build/types/lib/index.d.ts",
+    "import": "./build/esm/src/lib/index.js",
+    "default": "./build/esm/src/lib/index.js"
   },
   "files": [
     "build",
