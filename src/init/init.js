@@ -75,7 +75,7 @@ async function updateAEprojectProjectLibraries(folder, update, y) {
   await updateArtifacts(folder, y);
   await installDependencies(folder, update);
 
-  print("===== aeproject sucessfully initalized =====");
+  print("===== aeproject successfully initialized =====");
   print(
     "test/exampleTest.js and contract/ExampleContract.aes have been added as example how to use aeproject",
   );
