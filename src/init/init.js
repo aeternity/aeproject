@@ -2,10 +2,7 @@ import fs from "fs";
 import path from "path";
 import { exec } from "promisify-child-process";
 import { print } from "../utils/utils.js";
-import {
-  copyFolderRecursiveSync,
-  deleteWithPrompt,
-} from "../utils/fs-utils.js";
+import { copyFolderRecursive, deleteWithPrompt } from "../utils/fs-utils.js";
 import { fileURLToPath } from "url";
 import { readFile } from "fs/promises";
 
@@ -40,7 +37,7 @@ async function patchForNextRelease(folder, y) {
 
   const fileSource = `${__dirname}${constants.nextArtifactsDir}`;
 
-  await copyFolderRecursiveSync(fileSource, folder, y);
+  await copyFolderRecursive(fileSource, folder, y);
 }
 
 function checkNodeVersion() {
@@ -117,11 +114,11 @@ async function installDependencies(folder, update = false) {
 async function setupArtifacts(folder) {
   print("===== creating project file and directory structure =====");
 
-  await copyFolderRecursiveSync(
+  await copyFolderRecursive(
     `${__dirname}${constants.updateArtifactsDir}`,
     path.join(constants.artifactsDest, folder),
   );
-  await copyFolderRecursiveSync(
+  await copyFolderRecursive(
     `${__dirname}${constants.artifactsDir}`,
     path.join(constants.artifactsDest, folder),
   );
@@ -137,7 +134,7 @@ async function updateArtifacts(folder, y) {
     await deleteWithPrompt(artifact, y);
   }, Promise.resolve());
 
-  await copyFolderRecursiveSync(fileSource, folder, y);
+  await copyFolderRecursive(fileSource, folder, y);
 }
 
 export default { run };
