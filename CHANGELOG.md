@@ -1,5 +1,29 @@
 # Changelog
 
+## [5.0.1](https://github.com/aeternity/aeproject/compare/v5.0.0...v5.0.1) (2025-01-15)
+
+
+### Bug Fixes
+
+* define `getSdk` options type ([a84f9c8](https://github.com/aeternity/aeproject/commit/a84f9c84d31484d68618b920824c5cbad78786df))
+* install sdk@14 in dependent projects ([68e05c3](https://github.com/aeternity/aeproject/commit/68e05c3dd7704cab8fdec88e1aa3df4f177521cd))
+* require node@18 as per release notes ([743ee8f](https://github.com/aeternity/aeproject/commit/743ee8fab07a2eccde449e64463d292a32c632f0))
+
+
+### Refactorings
+
+* promisify instead promisify-child-process ([#517](https://github.com/aeternity/aeproject/issues/517)) ([ed3fdaf](https://github.com/aeternity/aeproject/commit/ed3fdaf0b9029cdf7c3232561bbeba34f5037b98))
+* remove unused `config`, `getNetwork` in internal utils ([dddd2a0](https://github.com/aeternity/aeproject/commit/dddd2a06bbe2b2b7578f35cc31c29594c3f666eb))
+* simplify package exports ([f63f3b4](https://github.com/aeternity/aeproject/commit/f63f3b420c48abc0e00b98f90e002f09c49f38ed))
+* use fs.cp instead of own implementation ([#515](https://github.com/aeternity/aeproject/issues/515)) ([9f8ccce](https://github.com/aeternity/aeproject/commit/9f8ccce3fe00b6f507e6cd9fda49fcf285e27244))
+* use sdk-default polling intervals (0 for ae_dev) ([fa990be](https://github.com/aeternity/aeproject/commit/fa990bebeb433707536492d99eec2a863d1f0675))
+
+
+### Miscellaneous
+
+* fix typos ([fad6c64](https://github.com/aeternity/aeproject/commit/fad6c64551262289865df4aa5e696f327c2b0418))
+* remove deprecated version in docker-compose.yml ([d04f2cc](https://github.com/aeternity/aeproject/commit/d04f2cc60794924bbb0899d6a41a1ec9507de838))
+
 ## [5.0.0](https://github.com/aeternity/aeproject/compare/v4.10.2...v5.0.0) (2024-12-06)
 
 
