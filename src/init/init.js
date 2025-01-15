@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { exec } from "promisify-child-process";
-import { print } from "../utils/utils.js";
+import { print, exec } from "../utils/utils.js";
 import { copyFolderRecursive, deleteWithPrompt } from "../utils/fs-utils.js";
 import { fileURLToPath } from "url";
 import { readFile } from "fs/promises";

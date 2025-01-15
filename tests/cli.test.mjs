@@ -11,24 +11,21 @@ describe("command line usage", () => {
   afterAll(() => cleanLocal());
 
   it("help", async () => {
-    const res = await exec("aeproject help", { cwd });
-    assert.equal(res.code, 0);
+    await exec("aeproject help", { cwd });
   });
 
   it("version", async () => {
     const res = await exec("aeproject --version", { cwd });
-    assert.equal(res.code, 0);
     assert.include(res.stdout, version);
   });
 
   for (const folder of [null, "testprojectfolder"]) {
     // eslint-disable-next-line vitest/valid-title
     it(folder ? `init ${folder}` : "init", async () => {
-      const res = await exec(
+      await exec(
         folder ? `aeproject init ${folder}` : "aeproject init",
         { cwd },
       );
-      assert.equal(res.code, 0);
 
       // link to use local aeproject utils
       await linkLocalLib(folder);
@@ -48,8 +45,7 @@ describe("command line usage", () => {
   }
 
   it("env", async () => {
-    const res = await exec("aeproject env", { cwd });
-    assert.equal(res.code, 0);
+    await exec("aeproject env", { cwd });
     assert.isTrue(await isEnvRunning(cwd));
 
     // don't run for all gh-action matrix tests
@@ -75,14 +71,11 @@ describe("command line usage", () => {
 
   it("env --info", async () => {
     const res = await exec("aeproject env --info", { cwd });
-    assert.equal(res.code, 0);
-
     print(res.stdout);
   });
 
   it("test", async () => {
     const res = await exec("aeproject test", { cwd });
-    assert.equal(res.code, 0);
     assert.equal(res.stderr, "");
     assert.include(res.stdout, "2 passing");
   });
@@ -94,7 +87,6 @@ describe("command line usage", () => {
       // link to use local aeproject utils
       await linkLocalLib();
 
-      assert.equal(res.code, 0);
       assert.equal(res.stderr, "");
       assert.include(
         res.stdout,
@@ -115,21 +107,18 @@ describe("command line usage", () => {
       );
 
       const resEnv = await exec("aeproject env", { cwd });
-      assert.equal(resEnv.code, 0);
       assert.isTrue(await isEnvRunning(cwd));
 
       assert.include(resEnv.stdout, "aeternity/aeternity       latest");
       assert.include(resEnv.stdout, "aeternity/aesophia_http   latest");
 
       const resTest = await exec("aeproject test", { cwd });
-      assert.equal(resTest.code, 0);
       assert.include(resTest.stdout, "2 passing");
     } else console.log("skipping next test for auxiliary test run");
   });
 
   it("env --stop", async () => {
-    const res = await exec("aeproject env --stop", { cwd });
-    assert.equal(res.code, 0);
+    await exec("aeproject env --stop", { cwd });
     assert.isFalse(await isEnvRunning(cwd));
   });
 });
