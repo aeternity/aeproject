@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import fs from "fs/promises";
 import prompts from "prompts";
 
 async function prompt(action, target) {
@@ -13,34 +12,31 @@ async function prompt(action, target) {
   return input === "YES" || input === "yes" || input === "Y" || input === "y";
 }
 
-export async function copyFolderRecursiveSync(srcDir, dstDir, y = false) {
-  let src;
-  let dst;
+async function getStatOrNullIfMissed(path) {
+  try {
+    return await fs.stat(path);
+  } catch (error) {
+    if (error.code === "ENOENT") return null;
+    throw error;
+  }
+}
 
-  return fs.readdirSync(srcDir).reduce(async (accPromise, file) => {
-    await accPromise;
-    src = path.join(srcDir, file);
-    dst = path.join(dstDir, file);
-
-    const stat = fs.statSync(src);
-    if (stat && stat.isDirectory()) {
-      if (!fs.existsSync(dst)) {
-        fs.mkdirSync(dst);
-      }
-
-      await copyFolderRecursiveSync(src, dst, y);
-    } else if (!fs.existsSync(dst)) {
-      fs.writeFileSync(dst, fs.readFileSync(src));
-    } else if (y || (await prompt("overwrite", dst))) {
-      fs.writeFileSync(dst, fs.readFileSync(src));
-    }
-  }, Promise.resolve());
+export async function copyFolderRecursive(srcDir, dstDir, y = false) {
+  return fs.cp(srcDir, dstDir, {
+    recursive: true,
+    async filter(_src, dest) {
+      if (y) return true;
+      const stat = await getStatOrNullIfMissed(dest);
+      if (stat == null) return true;
+      if (stat.isDirectory()) return true;
+      return await prompt("overwrite", dest);
+    },
+  });
 }
 
 export async function deleteWithPrompt(target, y = false) {
-  if (fs.existsSync(target)) {
-    if (y || (await prompt("delete", target))) {
-      fs.rmSync(target, { recursive: true });
-    }
+  if ((await getStatOrNullIfMissed(target)) == null) return;
+  if (y || (await prompt("delete", target))) {
+    await fs.rm(target, { recursive: true });
   }
 }
