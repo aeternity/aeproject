@@ -31,10 +31,10 @@
   "license": "ISC",
   "engines": {
     "npm": ">=8.0.0",
-    "node": ">=18.18.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "^14.0.0",
+    "@aeternity/aepp-sdk": "^15.0.1",
     "commander": "^12.1.0",
     "prompts": "^2.4.2"
   },
