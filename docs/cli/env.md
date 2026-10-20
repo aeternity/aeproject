@@ -36,7 +36,7 @@ aeproject env --info
 
 **Compatibility**:
 
-- the sdk from `@aeternity/aepp-sdk@14 >= v14.0.0` is compatible with `NODE_TAG >= v7.1.0` and `COMPILER_TAG >= v8.0.0`
+- the sdk from `@aeternity/aepp-sdk@15 >= v15.0.0` is compatible with `NODE_TAG >= v7.1.0` and `COMPILER_TAG >= v8.0.0`
 - due to a bug in the devmode plugin, `NODE_TAG = v7.1.0` is not compatible with aeproject
 
 ## Disclaimer
