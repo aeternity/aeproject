@@ -49,7 +49,12 @@ export async function awaitKeyBlocks(
   n: number = 1,
 ): Promise<void> {
   const height = await aeSdk.getHeight();
-  await fetch(`http://localhost:3001/emit_kb?n=${n}`);
+  const response = await fetch(`http://localhost:3001/emit_kb?n=${n}`);
+  if (!response.ok) {
+    throw new Error(
+      `Failed to emit key blocks: ${response.status} ${response.statusText}`,
+    );
+  }
   await aeSdk.awaitHeight(height + n);
 }
 
@@ -66,7 +71,14 @@ export async function rollbackHeight(
 ): Promise<void> {
   const currentBlockHeight = await aeSdk.getHeight();
   if (currentBlockHeight > height) {
-    await fetch(`http://localhost:3001/rollback?height=${height}`);
+    const response = await fetch(
+      `http://localhost:3001/rollback?height=${height}`,
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to rollback: ${response.status} ${response.statusText}`,
+      );
+    }
   }
 }
 
