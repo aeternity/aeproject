@@ -553,13 +553,13 @@
 <h1 id="aeproject-library">AEproject Library</h1>
 <p>Installed automatically with each project initialized with <code>aeproject init</code>, otherwise can be installed using <code>npm i @aeternity/aeproject</code>.</p>
 <p>Available imports include helper definitions and utils using:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="p">,</span><span class="w"> </span><span class="nx">networks</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@aeternity/aeproject&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">utils</span><span class="p">,</span><span class="w"> </span><span class="nx">wallets</span><span class="p">,</span><span class="w"> </span><span class="nx">networks</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">"@aeternity/aeproject"</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="utils">Utils</h2>
 <div class="highlight"><pre><span></span><code><span class="nx">utils</span><span class="p">.</span><span class="nx">getContractContent</span><span class="p">(</span><span class="nx">contractPath</span><span class="p">);</span>
 </code></pre></div>
 <p>Read the contract source from given path, just a wrapper for <code>fs.readFileSync</code> using <code>utf-8</code> encoding.</p>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">AeppSdk</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@aeternity/aepp-sdk&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">AeppSdk</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@aeternity/aepp-sdk"</span><span class="p">;</span>
 <span class="nx">utils</span><span class="p">.</span><span class="nx">getSdk</span><span class="p">(</span><span class="nx">AeppSdk</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
 </code></pre></div>
 <p>Initialize the æternity SDK, pre-configured for optimal use in an AEproject project using æternity node devmode.</p>
