@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/aeternity/aeproject/compare/v5.1.0...v5.1.1) (2026-10-25)
+
+
+### CI / CD
+
+* update deprecated actions in the docs workflows ([#522](https://github.com/aeternity/aeproject/issues/522)) ([1b8e8f4](https://github.com/aeternity/aeproject/commit/1b8e8f4ebc2cabb0d14d3fa9a77428862dec3114))
+
 ## [5.1.0](https://github.com/aeternity/aeproject/compare/v5.0.0...v5.1.0) (2026-10-20)
 
 
